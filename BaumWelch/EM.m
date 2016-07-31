@@ -25,30 +25,28 @@ function [startT, T, E, likelihood] = EM(X, m, n, itter)
         % m x k
         beta = backwardAlg(X, startT, T, E, scale);
         % m x k
+        % gamma_t(i) = P(y_t = i|x_1:k)
         gamma = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [m, 1]);
         
         xi = zeros(m);
         for t = 1 : k - 1
-            newXi = (alpha(:, t) * (beta(:, t + 1) .* E(:, X(t), X(t + 1)))') .* T;
+            newXi = (alpha(:, t) * (beta(:, t + 1) .* E(:, X(t + 1)))') .* T;
             xi = xi + newXi / sum(sum(newXi));
         end
 
         % update estimation parameters
         startT = gamma(:, 1);
         T =  xi;
-        for t = 1 : n
-            E(:, t) = E(:, t) + sum(gamma(:, X == t), 2);
+        for i = 1 : n
+            E(:, i) = E(:, i) + sum(gamma(:, X==i), 2);
         end
         T = bsxfun(@times, T, 1 ./ sum(T, 2));
         E = bsxfun(@times, E, 1 ./ sum(E, 2));
         likelihood(end + 1) = sum(log(scale));
         if length(likelihood)>1 & abs((likelihood(end) - likelihood(end -1)) / likelihood(end)) < epsilon
             % likelihood converged
-            % figure
-            % plot(likelihood)
-            % title('likelihood')
             likelihood = likelihood(end);
-            return;
+            return
         end
     end
 end
