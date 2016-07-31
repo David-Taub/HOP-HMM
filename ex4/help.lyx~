@@ -1,0 +1,183 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+
+\series bold
+Forward Algorithm 1st order
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $T_{y_{t-1},y_{t}}=P(y_{t}|y_{t-1})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $E_{y_{t},x_{t}}=P(x_{t}|y_{t})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+chain: 
+\begin_inset Formula $\mathrm{P}(A_{n},\ldots,A_{1})=\mathrm{P}(A_{n}|A_{n-1},\ldots,A_{1})\cdot\mathrm{P}(A_{n-1},\ldots,A_{1})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we are using the markovian fact: 
+\begin_inset Formula $P(x_{t}|y_{t},y_{t-1},x_{1:t-1})=P(x_{t}|y_{t})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\alpha_{_{t}}(y_{t})=P(y_{t},x_{1:t})=\sum_{y_{t-1}}P(y_{t},y_{t-1},x_{1:t})=\sum_{y_{t-1}}P(x_{t}|y_{t},y_{t-1},x_{1:t-1})P(y_{t},y_{t-1},x_{1:t-1})=$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\sum_{y_{t-1}}P(x_{t}|y_{t},y_{t-1},x_{1:t-1})P(y_{t}|y_{t-1},x_{1:t-1})P(y_{t-1},x_{1:t-1})=\sum_{y_{t-1}}P(x_{t}|y_{t})P(y_{t}|y_{t-1})\alpha_{t-1}(y_{t-1})=$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=P(x_{t}|y_{t})\sum_{y_{t-1}}P(y_{t}|y_{t-1})\alpha_{t-1}(y_{t-1})=P(x_{t}|y_{t})\sum_{y_{t-1}}T_{y_{t-1},y_{t}}\alpha_{t-1}(y_{t-1})=E_{y_{t},x_{t}}T^{'}\cdot\alpha_{t-1}(y_{t-1})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+ours:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\alpha_{_{t}}(y_{t})=\frac{P(y_{t},x_{1:t})}{P(x_{1:t})}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\alpha_{_{t}}(y_{t})=\frac{P(y_{t},x_{1:t})}{P(x_{1:t})}=\sum_{y_{t-1}}P(x_{t}|y_{t},y_{t-1},x_{1:t-1})P(y_{t}|y_{t-1},x_{1:t-1})\frac{P(y_{t-1},x_{1:t-1})}{P(x_{1:t-1})}\frac{1}{P(x_{t})}=$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=P(x_{t}|y_{t})\sum_{y_{t-1}}P(y_{t}|y_{t-1})\alpha_{t-1}(y_{t-1})\frac{1}{P(x_{t})}=P(x_{t}|y_{t})\sum_{y_{t-1}}T_{y_{t-1},y_{t}}\alpha_{t-1}(y_{t-1})\frac{1}{P(x_{t})}=E_{y_{t},x_{t}}T^{'}\cdot\alpha_{t-1}(y_{t-1})\frac{1}{P(x_{t})}$
+\end_inset
+
+ 
+\begin_inset space \space{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+backwards
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\beta_{t}(y)=P(x_{t+1:k}|y)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\beta_{k}(y_{t})=1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\beta_{k-1}(y_{k-1})=T\cdot E(:,X(t+1))=\sum_{y_{j}}P(y_{j}|y)P(x_{t+1}|y_{j})$
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
