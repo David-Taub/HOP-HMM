@@ -381,31 +381,18 @@ EM:
 \begin_inset Newline newline
 \end_inset
 
-
-\begin_inset Newline newline
+Starting working on Tommy's version of 2nd order HMM, and its EM.
+ Only difference from before is the E is now 3D, m x n x n, 
+\begin_inset Formula $E_{ijk}=P(x_{t}=k|y_{t}=i,x_{t-1}=j$
 \end_inset
 
-
-\begin_inset Newline newline
-\end_inset
-
-
+)
 \end_layout
 
 \begin_layout Standard
 
 \series bold
 (31/07/16) - My task now is to build a 2nd order EM which is a special version
- of 2nd order HMM, and its EM.
- Only difference from before is the E is now 3D, m x n x n, 
-\begin_inset Formula $E_{ijk}=P(x_{t}=k|y_{t}=i,x_{t-1}=j$
-\end_inset
-
-)
-\begin_inset Newline linebreak
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
