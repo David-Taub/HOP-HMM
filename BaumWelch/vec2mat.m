@@ -7,5 +7,5 @@
 % 0 0 1 0
 % 1 1 0 0 
 function M = vec2mat(v, n)
-	M = full(sparse(v, 1:length(v), 1, n, length(v)));
+	M = full(sparse(v, 1:length(v), 1, n, length(v))) == 1;
 end

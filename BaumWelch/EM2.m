@@ -1,5 +1,5 @@
 
-function [startT, T, E, likelihood] = EM2(X, m, n, itter)
+function [startT, T, E, likelihood, gamma] = EM2(X, m, n, itter)
     % X - 1 x k emission variables
     % m - ammount of possible states (y)ee
     % n - amount of possible emmissions (x)
@@ -11,50 +11,62 @@ function [startT, T, E, likelihood] = EM2(X, m, n, itter)
     % T(1, :) = [];
     % E(1, :) = [];
     % return;
-    
+
     k = length(X);
     epsilon = 10 ^ -4;
-    [startT, T, E] = genRandParamsExt2(m, n);
     % errors = [];
-    likelihood = [];
     itters = 1:itter;
-    for i=itters;
+    likelihood = -Inf;
+    repeat = 3;
+    for rep=1:repeat
+        [repStartT, repT, repE] = genRandParamsExt2(m, n);
+        iterLike = [];
+        for it=itters;
 
-        % m x k
-        [alpha, scale] = forwardAlg2nd(X, startT, T, E);
-        % m x k
-        beta = backwardAlg2nd(X, startT, T, E, scale);
-        % m x k
-        % gamma_t(i) = P(y_t = i|x_1:k)
-        gamma = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [m, 1]);
-        
-        xi = zeros(m);
-        for t = 1 : k - 1
-            newXi = (alpha(:, t) * (beta(:, t + 1) .* E(:, X(t), X(t + 1)))') .* T;
-            xi = xi + newXi / sum(sum(newXi));
-        end
+            % m x k
+            [alpha, scale] = forwardAlg2nd(X, repStartT, repT, repE);
+            % m x k
+            beta = backwardAlg2nd(X, repStartT, repT, repE, scale);
+            % m x k
+            % gamma_t(i) = P(y_t = i|x_1:k)
+            repGamma = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [m, 1]);
+            
+            xi = zeros(m);
+            for t = 1 : k - 1
+                newXi = (alpha(:, t) * (beta(:, t + 1) .* repE(:, X(t), X(t + 1)))') .* repT;
+                xi = xi + newXi / sum(sum(newXi));
+            end
 
-        % update estimation parameters
-        startT = gamma(:, 1);
-        T =  xi;
-        for i = 1 : n
-            for j = 1 : n
-                ijCouple = ([0, X] == i & [X, 0] == j);
-                E(:, i, j) = E(:, i, j) + sum(gamma(:, ijCouple(1:end-1)), 2);
-            end 
-        end
-        for i = 1 : m
-            for j = 1 : n
-                E(i, j, :) = E(i, j, :)  / sum(E(i, j, :), 3);
-            end 
-        end
+            % update estimation parameters
+            repStartT = repGamma(:, 1);
+            repT =  xi;
+            for i = 1 : n
+                for j = 1 : n
+                    ijCouple = ([0, X] == i & [X, 0] == j);
+                    repE(:, i, j) = repE(:, i, j) + sum(repGamma(:, ijCouple(1:end-1)), 2);
+                end 
+            end
+            for i = 1 : m
+                for j = 1 : n
+                    repE(i, j, :) = repE(i, j, :)  / sum(repE(i, j, :), 3);
+                end 
+            end
 
-        T = bsxfun(@times, T, 1 ./ sum(T, 2));
-        likelihood(end + 1) = sum(log(scale));
-        if length(likelihood)>1 & abs((likelihood(end) - likelihood(end -1)) / likelihood(end)) < epsilon
-            % likelihood converged
-            likelihood = likelihood(end);
-            return
+            repT = bsxfun(@times, repT, 1 ./ sum(repT, 2));
+            iterLike(end + 1) = sum(log(scale));
+            if length(iterLike)>1 & abs((iterLike(end) - iterLike(end -1)) / iterLike(end)) < epsilon
+                % likelihood converged
+                repLike = iterLike(end);
+                fprintf('EM2 converged after %d iteratios: %f\n', it, repLike);
+                break
+            end
+        end
+        if likelihood < repLike
+            likelihood = repLike;
+            E = repE;
+            T = repT;
+            startT = repStartT;
+            gamma = repGamma; 
         end
     end
 end
