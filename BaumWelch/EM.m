@@ -1,5 +1,5 @@
 
-function [startT, T, E, likelihood] = EM(X, m, n, itter)
+function [startT, T, E, likelihood, gamma] = EM(X, m, n, itter);
     % X - 1 x k emission variables
     % m - ammount of possible states (y)ee
     % n - amount of possible emmissions (x)
@@ -18,39 +18,51 @@ function [startT, T, E, likelihood] = EM(X, m, n, itter)
     % errors = [];
     likelihood = [];
     itters = 1:itter;
-    for i=itters;
+    likelihood = -Inf;
+    repeat = 3;
+    for rep=1:repeat
+        [repStartT, repT, repE] = genRandParamsExt(m, n);
+        iterLike = [];
+        for it=itters;
 
-        % m x k
-        [alpha, scale] = forwardAlg(X, startT, T, E);
-        % m x k
-        beta = backwardAlg(X, startT, T, E, scale);
-        % m x k
-        gamma = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [m, 1]);
-        
-        xi = zeros(m);
-        for t = 1 : k - 1
-            newXi = (alpha(:, t) * (beta(:, t + 1) .* E(:, X(t), X(t + 1)))') .* T;
-            xi = xi + newXi / sum(sum(newXi));
-        end
+            % m x k
+            [alpha, scale] = forwardAlg(X, repStartT, repT, repE);
+            % m x k
+            beta = backwardAlg(X, repStartT, repT, repE, scale);
+            % m x k
+            % gamma_t(i) = P(y_t = i|x_1:k)
+            repGamma = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [m, 1]);
+            
+            xi = zeros(m);
+            for t = 1 : k - 1
 
-        % update estimation parameters
-        startT = gamma(:, 1);
-        T =  xi;
-        for t = 1 : n
-            E(:, t) = E(:, t) + sum(gamma(:, X == t), 2);
+                newXi = (alpha(:, t) * (beta(:, t + 1) .* repE(:, X(t + 1)))') .* repT;
+                xi = xi + newXi / sum(sum(newXi));
+            end
+
+            % update estimation parameters
+            repStartT = repGamma(:, 1);
+            repT =  xi;
+            for i = 1 : n
+                repE(:, i) = repE(:, i) + sum(repGamma(:, X==i), 2);
+            end
+    	    repT = bsxfun(@times, repT, 1 ./ sum(repT, 2));
+            repE = bsxfun(@times, repE, 1 ./ sum(repE, 2));
+            iterLike(end + 1) = sum(log(scale));
+            if length(iterLike)>1 & abs((iterLike(end) - iterLike(end -1)) / iterLike(end)) < epsilon
+                % likelihood converged
+                repLike = iterLike(end);
+                fprintf('EM converged after %d iteratios: %f\n', it, repLike);
+                break
+            end
+        end % end of itterations loop
+        if likelihood < repLike
+            likelihood = repLike;
+            E = repE;
+            T = repT;
+            gamma = repGamma;
+            startT = repStartT;
         end
-        T = bsxfun(@times, T, 1 ./ sum(T, 2));
-        E = bsxfun(@times, E, 1 ./ sum(E, 2));
-        likelihood(end + 1) = sum(log(scale));
-        if length(likelihood)>1 & abs((likelihood(end) - likelihood(end -1)) / likelihood(end)) < epsilon
-            % likelihood converged
-            % figure
-            % plot(likelihood)
-            % title('likelihood')
-            likelihood = likelihood(end);
-            return;
-        end
-    end
+    end % end of repeat loop
 end
-
 

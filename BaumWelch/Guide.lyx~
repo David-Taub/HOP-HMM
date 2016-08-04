@@ -381,18 +381,31 @@ EM:
 \begin_inset Newline newline
 \end_inset
 
-Starting working on Tommy's version of 2nd order HMM, and its EM.
- Only difference from before is the E is now 3D, m x n x n, 
-\begin_inset Formula $E_{ijk}=P(x_{t}=k|y_{t}=i,x_{t-1}=j$
+
+\begin_inset Newline newline
 \end_inset
 
-)
+
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 
 \series bold
 (31/07/16) - My task now is to build a 2nd order EM which is a special version
+ of 2nd order HMM, and its EM.
+ Only difference from before is the E is now 3D, m x n x n, 
+\begin_inset Formula $E_{ijk}=P(x_{t}=k|y_{t}=i,x_{t-1}=j$
+\end_inset
+
+)
+\begin_inset Newline linebreak
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -432,7 +445,7 @@ we are using the markovian fact:
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $\alpha_{_{t}}(y_{t})=P(y_{t},x_{1:t})=\sum_{y_{t-1}}P(y_{t},y_{t-1},x_{1:t})=\sum_{y_{t-1}}P(x_{t}|y_{t},y_{t-1},x_{1:t-1})P(y_{t},y_{t-1},x_{1:t-1})=$
+\begin_inset Formula $\alpha_{_{t}}(y)=P(y_{t}=y,x_{1:t})=\sum_{j}P(y_{t}=y,y_{t-1}=j,x_{1:t})=\sum_{y_{t-1}}P(x_{t}|y_{t},y_{t-1},x_{1:t-1})P(y_{t},y_{t-1},x_{1:t-1})=$
 \end_inset
 
 
@@ -511,7 +524,7 @@ backwards
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $\beta_{t}(y)=P(x_{t+1:k}|y)$
+\begin_inset Formula $\beta_{t}(y)=P(x_{t+1:k}|y_{t}=y)$
 \end_inset
 
 
@@ -526,6 +539,36 @@ backwards
 
 \begin_layout Standard
 \begin_inset Formula $\beta_{k-1}(y)=T\cdot E(:,X(t+1))=\sum_{y_{j}}P(y_{j}|y)P(x_{t+1}|y_{j})=\sum_{y_{j}}P(y_{j}|y)P(x_{t+1}|y_{j})=P(x_{k}|y)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Updating the EM with BaumWelch temp variables:
+\end_layout
+
+\begin_layout Standard
+1st order: (notation here 
+\begin_inset Formula $\alpha_{i}(t)=\alpha_{t}(i)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\gamma_{i}(t)=P(X_{t}=i|Y,\theta)=\frac{\alpha_{i}(t)\beta_{i}(t)}{\sum_{j=1}^{N}\alpha_{j}(t)\beta_{j}(t)}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+2nd order:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\gamma_{i}(t)=P(X_{t}=i|Y,\theta)=\frac{\alpha_{i}(t)\beta_{i}(t)}{\sum_{j=1}^{N}\alpha_{j}(t)\beta_{j}(t)}$
 \end_inset
 
 
