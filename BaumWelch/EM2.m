@@ -39,7 +39,7 @@ function [startT, T, E, likelihood, gamma] = EM2(X, m, n, itter)
 
             % update estimation parameters
             repStartT = repGamma(:, 1);
-            repT =  xi;
+            repT = repT + xi;
             for i = 1 : n
                 for j = 1 : n
                     ijCouple = ([0, X] == i & [X, 0] == j);
