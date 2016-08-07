@@ -16,18 +16,24 @@
 % really change EM file
 function BaumWelch()
     close all;
-    repeat = 4; maxIter = 200; epsilonT = 0.005;
+    repeat = 1; 
+    maxIter = 200; 
+    tEpsilon = 0.005;
     m = 2;
     n = 4;
-    e1 = []; e2 = [];
-    like1 = []; like2 = [];
-    [startTReal, TReal, EReal] = genGenomeParams(epsilonT)
-    % [startTReal, TReal, EReal] = genStrong2dParams(epsilonT);
-    % [startTReal, TReal, EReal] = genRandEyeParamsExt(m, n, epsilonT, epsilonT);
+    k = 1000 * 1 / tEpsilon;
+    
+    e1 = zeros(1, repeat); 
+    e2 = zeros(1, repeat);
+    like1 = zeros(1, repeat); 
+    like2 = zeros(1, repeat);
+    
+    [startTReal, TReal, EReal] = genGenomeParams(tEpsilon)
+    % [startTReal, TReal, EReal] = genStrong2dParams(tEpsilon);
+    % [startTReal, TReal, EReal] = genRandEyeParamsExt(m, n, tEpsilon, tEpsilon);
 
-    for i =1:repeat
+    for repIndex =1:repeat
 
-        k = 200000;
         % Create X and Y
         fprintf('Genarated Params\n');
         % [startTReal, TReal, EReal]
@@ -38,76 +44,62 @@ function BaumWelch()
         % 1
         fprintf('Running EM\n');
         tic
-        [startTMine, TMine, EMine, likelihood, gamma] = EM(X, m, n, maxIter);
+        [startTMine, TMine, EMine, likelihood, gamma] = EM(X, m, n, maxIter, tEpsilon);
         toc
-        [like1(end+1), perm] = getLikelihood(Y, gamma);
-        [startTMine, TMine, EMine] = permuteParams(perm, startTMine, TMine, EMine)
+        [like1(repIndex) , perm] = getLikelihood(Y, gamma);
+        [startTMine, TMine, EMine] = permuteParams(perm, startTMine, TMine, EMine);
 
-        fprintf('EM 1: %f\n', like1(end));
+        fprintf('EM 1: %f\n', like1(repIndex));
         YEst = viterbi(X, startTMine, TMine, EMine);
         err = calcError(Y, YEst);
-        e1(end + 1) = err;
+        e1(repIndex) = err;
         fprintf('Error 1: %f\n', err);
 
         % 2 
         fprintf('Running EM2\n');
         tic
-        [startTMine2, TMine2, EMine2, likelihood, gamma2] = EM2(X, m, n, maxIter);
+        [startTMine2, TMine2, EMine2, likelihood, gamma2] = EM2(X, m, n, maxIter, tEpsilon);
         toc
-        [like2(end+1), perm] = getLikelihood(Y, gamma2);
-        [startTMine2, TMine2, EMine2] = permuteParams(perm, startTMine2, TMine2, EMine2)
-        fprintf('EM 2: %f\n', like2(end));
+        [like2(repIndex), perm] = getLikelihood(Y, gamma2);
+        [startTMine2, TMine2, EMine2] = permuteParams(perm, startTMine2, TMine2, EMine2);
+        fprintf('EM 2: %f\n', like2(repIndex));
         
         YEst = viterbi(X, startTMine2, TMine2, EMine2);
         err = calcError(Y, YEst);
-        e2(end + 1) = err;
+        e2(repIndex) = err;
         fprintf('Error 2: %f\n', err);
-
-        % %1 WWW
-        % fprintf('Running EM 3\n');
-        % [model,log_like] = HMM_EM(X, m);
-        
-        % fprintf('Viterbi\n');
-        % YEst = viterbi(X, model.P, model.A, model.B);
-        % err = calcError(Y, YEst);
-        % fprintf('Error 3: %f\n', err);
-        % e3(end + 1) = err;
-
-        % plot(e1)
-        % hold on 
-        % plot(e2)
-        % % hold on 
-        % % plot(e3)
-        % hold off
-        % ylim([0,1]) ;
-        % legend('1st Order', '2nd Order');%, '1st Order from WWW');
-        % drawnow
-        % figure;
-        figure(1)
-        plot(like1);
-        hold on;
-        plot(like2);
-        legend('Likelihood 1', 'Likelihood 2');
-        title('Likelihood per Repetition');
-        hold off
-        
-        figure(2)
-        plot(e1);
-        hold on;
-        plot(e2);
-        legend('Vit Error 1', 'Vit Error 2');
-        title('Viterbi Error per Repetition');
-        hold off
-
-        drawnow;
     end
-    % figure
-    % E1(:,:) = EMine2(1,:,:);
-    % E2(:,:) = EMine2(2,:,:);
-    % subplot(1,2,1); imagesc(E1);
-    % title('Enhancer: est')
-    % subplot(1,2,2); imagesc(E2);
-    % title('Non-Enhancer: est')
+    figure(1)
+    plot(exp(like1 / k));
+    hold on;
+    plot(exp(like2 / k));
+    legend('Likelihood GeoAvg 1', 'Likelihood GeoAvg 2');
+    title('Likelihood GeoAvg per Repetition');
+    hold off
+    
+    figure(2)
+    plot(e1);
+    hold on;
+    plot(e2);
+    legend('Vit Error 1', 'Vit Error 2');
+    title('Viterbi Error per Repetition');
+    hold off
+    % drawnow;
+
+    figure
+
+    E1(:,:) = EReal(1,:,:);
+    E2(:,:) = EReal(2,:,:);
+    E3(:,:) = EMine2(1,:,:);
+    E4(:,:) = EMine2(2,:,:);
+    subplot(2,2,1); imagesc(E1);
+    title('Enhancer: real')
+    subplot(2,2,2); imagesc(E2);
+    title('Non-Enhancer: real')
+    subplot(2,2,3); imagesc(E3);
+    title('Enhancer: est')
+    subplot(2,2,4); imagesc(E4);
+    title('Non-Enhancer: est')
     
     % figure
     % bar([mean(e1), mean(e2)]);%, mean(e3)])
@@ -151,7 +143,7 @@ end
 % E - 2 x 4 x 4
 % T - 2 x 2
 % startT- 1 x 2
-function [startT, T, E] = genGenomeParams(epsilonT)
+function [startT, T, E] = genGenomeParams(tEpsilon)
     % enhancer - 1
     % A C G T - 1 2 3 4
     m = 2;
@@ -177,7 +169,7 @@ function [startT, T, E] = genGenomeParams(epsilonT)
     startT = startT / sum(startT);
     % m x m 
     % T = eye(m);
-    T = eye(m) + epsilonT * rand(m);
+    T = eye(m) + tEpsilon * rand(m);
     T = bsxfun(@times, T, 1 ./ sum(T, 2));
     % subplot(1,2,1); imagesc(E1);
     % title('Enhancer: real')
@@ -186,7 +178,7 @@ function [startT, T, E] = genGenomeParams(epsilonT)
 end
 
 % startT- 1 x 2
-function [startT, T, E] = genStrong2dParams(epsilonT)
+function [startT, T, E] = genStrong2dParams(tEpsilon)
     % enhancer - 1
     % A C G T - 1 2 3 4
     m = 2;
@@ -214,7 +206,7 @@ function [startT, T, E] = genStrong2dParams(epsilonT)
     startT = startT / sum(startT);
     % m x m 
     % T = eye(m);
-    T = eye(m) + epsilonT * rand(m);
+    T = eye(m) + tEpsilon * rand(m);
     T = bsxfun(@times, T, 1 ./ sum(T, 2));
     % subplot(1,2,1); imagesc(E1);
     % title('Enhancer: real')
@@ -267,13 +259,13 @@ end
 
 
 
-function [startT, T, E] = genRandEyeParamsExt(m, n, epsilonT, epsilonE)
+function [startT, T, E] = genRandEyeParamsExt(m, n, tEpsilon, epsilonE)
     % normalized random probabilities
     startT = rand(m, 1);
     startT = startT / sum(startT);
     % m x m 
     % T = eye(m);
-    T = eye(m) + epsilonT * rand(m);
+    T = eye(m) + tEpsilon * rand(m);
     T = bsxfun(@times, T, 1 ./ sum(T, 2));
     % m x n
     E = eye(m, n) + epsilonE * rand(m, n);

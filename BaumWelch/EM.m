@@ -1,5 +1,5 @@
 
-function [startT, T, E, likelihood, gamma] = EM(X, m, n, itter);
+function [startT, T, E, likelihood, gamma] = EM(X, m, n, itter, tEpsilon)
     % X - 1 x k emission variables
     % m - ammount of possible states (y)ee
     % n - amount of possible emmissions (x)
@@ -37,6 +37,14 @@ function [startT, T, E, likelihood, gamma] = EM(X, m, n, itter);
             end
     	    T = bsxfun(@times, T, 1 ./ sum(T, 2));
             E = bsxfun(@times, E, 1 ./ sum(E, 2));
+            for i = 1 : m
+                for j = 1 : m
+                    if i ~= j & T(i,j) > tEpsilon
+                        T(i, i) = T(i, i) + (T(i, j) - tEpsilon);
+                        T(i, j) = tEpsilon;
+                    end
+                end
+            end
             iterLike(end + 1) = sum(log(scale));
             if length(iterLike)>1 & abs((iterLike(end) - iterLike(end -1)) / iterLike(end)) < epsilon
                 % likelihood converged

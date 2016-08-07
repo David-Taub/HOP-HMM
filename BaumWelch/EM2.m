@@ -1,5 +1,5 @@
 
-function [startT, T, E, likelihood, gamma] = EM2(X, m, n, itter)
+function [startT, T, E, likelihood, gamma] = EM2(X, m, n, itter, tEpsilon)
     % X - 1 x k emission variables
     % m - ammount of possible states (y)ee
     % n - amount of possible emmissions (x)
@@ -53,6 +53,15 @@ function [startT, T, E, likelihood, gamma] = EM2(X, m, n, itter)
             end
 
             repT = bsxfun(@times, repT, 1 ./ sum(repT, 2));
+            % correct T to stay strongly diagonal using the tEpsilon prior
+            for i = 1 : m
+                for j = 1 : m
+                    if i ~= j & repT(i,j) > tEpsilon
+                        repT(i, i) = repT(i, i) + (repT(i, j) - tEpsilon);
+                        repT(i, j) = tEpsilon;
+                    end
+                end
+            end
             iterLike(end + 1) = sum(log(scale));
             if length(iterLike)>1 & abs((iterLike(end) - iterLike(end -1)) / iterLike(end)) < epsilon
                 % likelihood converged
