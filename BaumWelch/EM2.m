@@ -66,7 +66,7 @@ function [startT, T, E, likelihood, gamma] = EM2(X, m, n, itter, tEpsilon)
             if length(iterLike)>1 & abs((iterLike(end) - iterLike(end -1)) / iterLike(end)) < epsilon
                 % likelihood converged
                 repLike = iterLike(end);
-                fprintf('EM2 converged after %d iteratios: %f\n', it, repLike);
+                % fprintf('EM2 converged after %d iteratios: %f\n', it, repLike);
                 break
             end
         end

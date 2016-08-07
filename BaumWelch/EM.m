@@ -49,7 +49,7 @@ function [startT, T, E, likelihood, gamma] = EM(X, m, n, itter, tEpsilon)
             if length(iterLike)>1 & abs((iterLike(end) - iterLike(end -1)) / iterLike(end)) < epsilon
                 % likelihood converged
                 likelihood = iterLike(end);
-                fprintf('EM converged after %d iteratios: %f\n', it, likelihood);
+                % fprintf('EM converged after %d iteratios: %f\n', it, likelihood);
                 break
             end
         end % end of itterations loop
