@@ -16,12 +16,12 @@
 % really change EM file
 function BaumWelch()
     close all;
-    repeat = 1; 
+    repeat = 3; 
     maxIter = 200; 
     tEpsilon = 0.005;
     m = 2;
     n = 4;
-    k = 20000;
+    k = 200000;
     
     e1 = zeros(1, repeat); 
     e2 = zeros(1, repeat);
@@ -71,11 +71,11 @@ function BaumWelch()
         TReal
         TEst1
         TEst2
+        plotY(Y, YEst1, YEst2);
+        plotE(EReal, EEst2);
     end
-    plotY(Y, YEst1, YEst2);
     plotLike(like1, like2, k);
     plotErr(e1, e2);
-    plotE(EReal, EEst2);
 end
 function plotY(Y, YEst1, YEst2)
     figure;
@@ -83,7 +83,7 @@ function plotY(Y, YEst1, YEst2)
     v = genDiffScatter(Y, 1);
     scatter(v, ones(1, length(v)) * 0.1, ones(1,length(v)) * 10, 's', 'filled');
     v = genDiffScatter(abs(diff(Y)), 0);
-    scatter(v, ones(1, length(v)) * 0.1, ones(1,length(v)) * 100, '+');
+    scatter(repmat(v, [5, 1]), repmat([0.1: 0.1: 0.5].', [1, length(v)]), ones(1,length(v)) * 100, '+');
     v = genDiffScatter(YEst1, 1);
     scatter(v, ones(1, length(v)) * 0.2, ones(1,length(v)) * 10, 's', 'filled');
     v = genDiffScatter(YEst2, 1);
@@ -98,9 +98,9 @@ function plotY(Y, YEst1, YEst2)
 end
 function plotLike(like1, like2, k)
     figure
-    plot(exp(like1 / k));
+    plot(like1);
     hold on;
-    plot(exp(like2 / k));
+    plot(like2);
     legend('Likelihood GeoAvg 1', 'Likelihood GeoAvg 2');
     title('Likelihood GeoAvg per Repetition');
     hold off
@@ -144,7 +144,7 @@ function [likelihood, perm]= getLikelihood(Y, gamma)
         likelihood = like1;
         perm = [1, 2];
     else
-        likelihood = like2
+        likelihood = like2;
         perm = [2, 1];
     end
     likelihood = exp(likelihood ./ length(Y));

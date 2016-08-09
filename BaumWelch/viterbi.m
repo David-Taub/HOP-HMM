@@ -27,7 +27,7 @@ function Y = viterbi1st(X, startT, T, E)
 
     V(:, 1) = log(startT) + log(E(:, X(1)));
     for t = 2 : k
-        [V(:, t), ind(:, t)] = max(repmat(V(:, t-1).', [m, 1]) + T.', [], 2);
+        [V(:, t), ind(:, t)] = max(repmat(V(:, t-1).', [m, 1]) + log(T.'), [], 2);
         V(:, t) = V(:, t) + log(E(:, X(t)));
     end
     % Y_k = argmax(y, V_k,y)
@@ -64,7 +64,7 @@ function Y = viterbi2nd(X, startT, T, E)
 
     V(:, 1) = log(startT) + log(EStart(:, X(1)));
     for t = 2 : k
-        [V(:, t), ind(:, t)] = max(repmat(V(:, t-1).', [m, 1]) + T.', [], 2);
+        [V(:, t), ind(:, t)] = max(repmat(V(:, t-1).', [m, 1]) + log(T.'), [], 2);
 		V(:, t) = V(:, t) + log(E(:, X(t-1), X(t)));
     end
     % Y_k = argmax(y, V_k,y)

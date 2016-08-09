@@ -35,7 +35,7 @@ function [startT, T, E, likelihood, gamma] = EM(X, m, n, itter, tEpsilon)
             for i = 1 : n
                 E(:, i) = E(:, i) + sum(gamma(:, X==i), 2);
             end
-    	    T = bsxfun(@times, T, 1 ./ sum(T, 2));
+            T = bsxfun(@times, T, 1 ./ sum(T, 2));
             E = bsxfun(@times, E, 1 ./ sum(E, 2));
             for i = 1 : m
                 for j = 1 : m
