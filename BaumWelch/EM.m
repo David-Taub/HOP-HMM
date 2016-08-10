@@ -1,68 +1,73 @@
 
-function [startT, T, E, likelihood, gamma] = EM(X, m, n, itter);
+function [startT, T, E, likelihood, gamma] = EM(X, m, n, itter, tEpsilon)
     % X - 1 x k emission variables
     % m - ammount of possible states (y)ee
     % n - amount of possible emmissions (x)
     % initial estimation parameters
-    % [startT, T, E] = genRandParams(m, n);
-    % [T, E] = hmmtrain(X,T,E);
-    % T(:, 1) = [];
-    % startT = T(1, :);
-    % T(1, :) = [];
-    % E(1, :) = [];
-    % return;
     
     k = length(X);
     epsilon = 10 ^ -4;
-    [startT, T, E] = genRandParamsExt(m, n);
-    % errors = [];
-    likelihood = [];
-    itters = 1:itter;
-    likelihood = -Inf;
+    bestLikelihood = -Inf;
     repeat = 3;
     for rep=1:repeat
-        [repStartT, repT, repE] = genRandParamsExt(m, n);
+        [startT, T, E] = genRandParamsExt(m, n);
         iterLike = [];
-        for it=itters;
+        for it=1:itter;
 
             % m x k
-            [alpha, scale] = forwardAlg(X, repStartT, repT, repE);
+            [alpha, scale] = forwardAlg(X, startT, T, E);
             % m x k
-            beta = backwardAlg(X, repStartT, repT, repE, scale);
+            beta = backwardAlg(X, startT, T, E, scale);
             % m x k
             % gamma_t(i) = P(y_t = i|x_1:k)
-            repGamma = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [m, 1]);
+            gamma = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [m, 1]);
             
             xi = zeros(m);
             for t = 1 : k - 1
-
-                newXi = (alpha(:, t) * (beta(:, t + 1) .* repE(:, X(t + 1)))') .* repT;
-                xi = xi + newXi / sum(sum(newXi));
+                % for each letter we get more information about the transition matrix update
+                newXi = (alpha(:, t) * (beta(:, t + 1) .* E(:, X(t + 1)))') .* T;
+                xi = xi + (newXi / sum(sum(newXi)));
             end
 
             % update estimation parameters
-            repStartT = repGamma(:, 1);
-            repT =  xi;
+            startT = gamma(:, 1);
+            T = T + xi;
             for i = 1 : n
-                repE(:, i) = repE(:, i) + sum(repGamma(:, X==i), 2);
+                E(:, i) = E(:, i) + sum(gamma(:, X==i), 2);
             end
-    	    repT = bsxfun(@times, repT, 1 ./ sum(repT, 2));
-            repE = bsxfun(@times, repE, 1 ./ sum(repE, 2));
+            T = bsxfun(@times, T, 1 ./ sum(T, 2));
+            E = bsxfun(@times, E, 1 ./ sum(E, 2));
+            for i = 1 : m
+                for j = 1 : m
+                    if i ~= j & T(i,j) > tEpsilon
+                        T(i, i) = T(i, i) + (T(i, j) - tEpsilon);
+                        T(i, j) = tEpsilon;
+                    end
+                end
+            end
             iterLike(end + 1) = sum(log(scale));
             if length(iterLike)>1 & abs((iterLike(end) - iterLike(end -1)) / iterLike(end)) < epsilon
                 % likelihood converged
-                repLike = iterLike(end);
-                fprintf('EM converged after %d iteratios: %f\n', it, repLike);
+                likelihood = iterLike(end);
+                % fprintf('EM converged after %d iteratios: %f\n', it, likelihood);
                 break
             end
         end % end of itterations loop
-        if likelihood < repLike
-            likelihood = repLike;
-            E = repE;
-            T = repT;
-            gamma = repGamma;
-            startT = repStartT;
+
+        if bestLikelihood < likelihood
+            bestLikelihood = likelihood;
+            bestE = E;
+            bestT = T;
+            bestGamma = gamma;
+            bestStartT = startT;
         end
     end % end of repeat loop
+    
+    % return parameters with best likelihood
+    E = bestE;
+    T = bestT;
+    gamma = bestGamma;
+    startT = bestStartT;
+    likelihood = bestLikelihood;
 end
 
