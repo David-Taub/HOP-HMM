@@ -41,19 +41,19 @@ function BaumWelch()
         [X, Y] = genHmm2nd(k, startTReal, TReal, EReal);
         % [X, Y] = genHmm(k, startTReal, TReal, EReal);
 
-        % 1
-        fprintf('Running EM\n');
-        tic
-        [startTEst1, TEst1, EEst1, likelihood, gamma] = EM(X, m, n, maxIter, tEpsilon);
-        toc
-        [like1(repIndex) , perm] = getLikelihood(Y, gamma);
-        [startTEst1, TEst1, EEst1] = permuteParams(perm, startTEst1, TEst1, EEst1);
+        % % 1
+        % fprintf('Running EM\n');
+        % tic
+        % [startTEst1, TEst1, EEst1, likelihood, gamma] = EM(X, m, n, maxIter, tEpsilon);
+        % toc
+        % [like1(repIndex) , perm] = getLikelihood(Y, gamma);
+        % [startTEst1, TEst1, EEst1] = permuteParams(perm, startTEst1, TEst1, EEst1);
 
-        fprintf('EM 1: %f\n', like1(repIndex));
-        YEst1 = viterbi(X, startTEst1, TEst1, EEst1);
-        err = calcError(Y, YEst1);
-        e1(repIndex) = err;
-        fprintf('Error 1: %f\n', err);
+        % fprintf('EM 1: %f\n', like1(repIndex));
+        % YEst1 = viterbi(X, startTEst1, TEst1, EEst1);
+        % err = calcError(Y, YEst1);
+        % e1(repIndex) = err;
+        % fprintf('Error 1: %f\n', err);
 
         % 2 
         fprintf('Running EM2\n');
@@ -68,16 +68,17 @@ function BaumWelch()
         err = calcError(Y, YEst2);
         e2(repIndex) = err;
         fprintf('Error 2: %f\n', err);
-        TReal
-        TEst1
-        TEst2
-        plotY(Y, YEst1, YEst2);
+        % TReal
+        % TEst1
+        % TEst2
+        % plotY12(Y, YEst1, YEst2);
+        plotY2(Y, YEst2);
         plotE(EReal, EEst2);
     end
-    plotLike(like1, like2, k);
-    plotErr(e1, e2);
+    plotLike(like2, like2, k);
+    plotErr(e2, e2);
 end
-function plotY(Y, YEst1, YEst2)
+function plotY12(Y, YEst1, YEst2)
     figure;
     hold on
     v = genDiffScatter(Y, 1);
@@ -95,6 +96,23 @@ function plotY(Y, YEst1, YEst2)
     hold off;
     ylim([0,1]);
     legend('Y', 'change Y', 'YEst1', 'YEst2', 'YEst1 Errors', 'YEst2 Errors');
+end
+function plotY2(Y, YEst2)
+    figure;
+    hold on
+    v = genDiffScatter(Y, 1);
+    scatter(v, ones(1, length(v)) * 0.1, ones(1,length(v)) * 10, 's', 'filled');
+    v = genDiffScatter(abs(diff(Y)), 0);
+    scatter(v, ones(1, length(v)) * 0.1, ones(1,length(v)) * 100, '+');
+    scatter(v, ones(1, length(v)) * 0.2, ones(1,length(v)) * 100, '+');
+    scatter(v, ones(1, length(v)) * 0.3, ones(1,length(v)) * 100, '+');
+    v = genDiffScatter(YEst2, 1);
+    scatter(v, ones(1, length(v)) * 0.2, ones(1,length(v)) * 10, 's', 'filled');
+    v = genDiffScatter(YEst2, Y);
+    scatter(v, ones(1, length(v)) * 0.3, ones(1,length(v)) * 10, 's', 'filled');
+    hold off;
+    ylim([0,1]);
+    legend('Y', 'change Y','change Y','change Y', 'YEst2', 'YEst2 Errors');
 end
 function plotLike(like1, like2, k)
     figure
