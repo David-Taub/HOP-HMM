@@ -21,19 +21,19 @@ function Y = viterbi1st(X, startT, T, E)
     m = length(T);
     % m x k
     V = zeros(m,k);
-    ind = zeros(m,k);
+    backtracking = zeros(m,k);
     % k, 1
     Y = zeros(1, k);
 
     V(:, 1) = log(startT) + log(E(:, X(1)));
     for t = 2 : k
-        [V(:, t), ind(:, t)] = max(repmat(V(:, t-1).', [m, 1]) + T.', [], 2);
+        [V(:, t), backtracking(:, t)] = max(repmat(V(:, t-1).', [m, 1]) + log(T.'), [], 2);
         V(:, t) = V(:, t) + log(E(:, X(t)));
     end
     % Y_k = argmax(y, V_k,y)
     [~, Y(k)] = max(V(:, k));
     for t = k-1 : -1 : 1
-        Y(t) = ind(Y(t+1), t+1);
+        Y(t) = backtracking(Y(t+1), t+1);
     end
     % checked
 end
@@ -54,23 +54,25 @@ function Y = viterbi2nd(X, startT, T, E)
     k = length(X);
     [m, n, ~] = size(E);
     % m x k
-    V = zeros(m,k);
-    ind = zeros(m,k);
+    maxLike = zeros(m,k);
+    backtracking = zeros(m,k);
     % k, 1
     Y = zeros(1, k);
 
     EStart(:, :) = sum(E, 2);
     EStart = EStart ./ repmat(sum(EStart, 2), [1, n]);
 
-    V(:, 1) = log(startT) + log(EStart(:, X(1)));
+    maxLike(:, 1) = log(startT) + log(EStart(:, X(1)));
     for t = 2 : k
-        [V(:, t), ind(:, t)] = max(repmat(V(:, t-1).', [m, 1]) + T.', [], 2);
-		V(:, t) = V(:, t) + log(E(:, X(t-1), X(t)));
+        [stateStep(:, 1), backtracking(:, t)] = max(repmat(maxLike(:, t-1), [1, m]) + log(T), [], 1);
+        textStep = log(E(:, X(t-1), X(t)));
+		maxLike(:, t) = stateStep + textStep;
     end
+
+    % back tracking
     % Y_k = argmax(y, V_k,y)
-    [~, Y(k)] = max(V(:, k));
+    [~, Y(k)] = max(maxLike(:, k));
     for t = k-1 : -1 : 1
-        Y(t) = ind(Y(t+1), t+1);
+        Y(t) = backtracking(Y(t+1), t+1);
     end
-    % checked
 end

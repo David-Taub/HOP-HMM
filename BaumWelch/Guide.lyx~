@@ -549,15 +549,11 @@ Updating the EM with BaumWelch temp variables:
 \end_layout
 
 \begin_layout Standard
-1st order: (notation here 
-\begin_inset Formula $\alpha_{i}(t)=\alpha_{t}(i)$
-\end_inset
-
-
+1st order: 
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $\gamma_{i}(t)=P(X_{t}=i|Y,\theta)=\frac{\alpha_{i}(t)\beta_{i}(t)}{\sum_{j=1}^{N}\alpha_{j}(t)\beta_{j}(t)}$
+\begin_inset Formula $\gamma_{t}(i)=P(y_{t}=i|x_{1:k})=\frac{\alpha_{t}(i)\beta_{t}(i)}{\sum_{j=1}^{m}\alpha_{t}(j)\beta_{t}(j)}$
 \end_inset
 
 

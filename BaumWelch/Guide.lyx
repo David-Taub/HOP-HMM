@@ -570,5 +570,26 @@ Updating the EM with BaumWelch temp variables:
 
 \end_layout
 
+\begin_layout Standard
+8.8.16 - talk with tommy
+\end_layout
+
+\begin_layout Standard
+nayman pirson, find linear classifier with log of ratio between likelihoods
+ of enhancer and nonenhancer markovian model
+\end_layout
+
+\begin_layout Standard
+should be 
+\begin_inset Formula $\left\langle \omega,X\right\rangle $
+\end_inset
+
+ where we build these with the log likelihood ratio, and instances if X
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
 \end_body
 \end_document
