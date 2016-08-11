@@ -109,7 +109,7 @@ end
 % matSize - 1 x k
 % subscripts - k x n
 % indices - 1 x n
-function indices = mySub2ind(matSize, subscripts)
+function indices = matSub2ind(matSize, subscripts)
     subtractedSub = subscripts.';
     subtractedSub(2:end, :) = subtractedSub(2:end, :) - 1;
     % subtractedSub
@@ -129,7 +129,7 @@ function indices = getIndeices1D(seq, order)
         k(:,i) = seq(i : end - order + i);
     end
     matSize = 4 * ones(1, order);
-    indices = mySub2ind(matSize, k);
+    indices = matSub2ind(matSize, k);
 end
 
 % seq - 1 x n
