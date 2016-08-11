@@ -10,7 +10,7 @@ function main()
     bestAlpha = 0;
     bestEen = 0;
     bestEnen = 0;
-    for order = 1:8
+    for order = 1:2
         
         [posE, negE] = trainMarkov(posSeqsTrain, negSeqsTrain, order);
         
@@ -21,6 +21,14 @@ function main()
         threshold = thresholds(i);
         testErr = classify(posE, negE, posSeqsTest, negSeqsTest, threshold);
         [order, threshold, trainErr, testErr]
+
+        % hmm E
+        E = cat(1, shiftdim(posE, -1), shiftdim(negE, -1));
+        pos2neg = 1 / 300;
+        neg2pos = 1 / 300;
+        T = [1 - pos2neg, pos2neg; neg2pos, 1 - neg2pos];
+        startT = [0; 1];
+        [alpha, scale] = forwardAlg(posSeqsTrain{1}, startT, T, E);
     end
 end
 
@@ -105,19 +113,6 @@ function seq = readSeq(filePath, L)
     % fprintf(' done.\n');
 end
 
-% very similar to sub2ind, but receives the subscripts as matrix
-% matSize - 1 x k
-% subscripts - k x n
-% indices - 1 x n
-function indices = matSub2ind(matSize, subscripts)
-    subtractedSub = subscripts.';
-    subtractedSub(2:end, :) = subtractedSub(2:end, :) - 1;
-    % subtractedSub
-    cumMatSize = cumprod([1, matSize]);
-    cumMatSize = cumMatSize(1, 1:end - 1);
-    indices = cumMatSize * subtractedSub;
-end
-
 
 % seq - 1 x n
 % indices - 1 x n (numbers from 1 to order)
@@ -129,7 +124,7 @@ function indices = getIndeices1D(seq, order)
         k(:,i) = seq(i : end - order + i);
     end
     matSize = 4 * ones(1, order);
-    indices = matSub2ind(matSize, k);
+    indices = matSub2ind(matSize, k.');
 end
 
 % seq - 1 x n
