@@ -10,7 +10,7 @@ function main()
     bestAlpha = 0;
     bestEen = 0;
     bestEnen = 0;
-    for order = 1:2
+    for order = 1:4
         
         [posE, negE] = trainMarkov(posSeqsTrain, negSeqsTrain, order);
         
@@ -29,6 +29,8 @@ function main()
         T = [1 - pos2neg, pos2neg; neg2pos, 1 - neg2pos];
         startT = [0; 1];
         [alpha, scale] = forwardAlg(posSeqsTrain{1}, startT, T, E);
+        beta = backwardAlg(posSeqsTrain{1}, startT, T, E, scale);
+        gamma = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [2, 1]);
     end
 end
 
