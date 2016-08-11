@@ -142,9 +142,3 @@ function logLike = getLogLikeFromSeq(seq, E)
     % logLike
     logLike = logLike;
 end
-
-function dim = matDim(M)
-    s = size(M);
-    s(s==1) = [];
-    dim = length(s);
-end
