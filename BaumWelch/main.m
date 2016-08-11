@@ -1,10 +1,10 @@
 function main()
     close all;
     L = 700;
-    posSeqsTrain = readSeq('Data/Enhancers.train.seq', L);
-    negSeqsTrain = readSeq('Data/NEnhancers.train.seq', L);
-    posSeqsTest = readSeq('Data/Enhancers.test.seq', L);
-    negSeqsTest = readSeq('Data/NEnhancers.test.seq', L);
+    posSeqsTrain = readSeq('Enhancers.train.seq', L);
+    negSeqsTrain = readSeq('NEnhancers.train.seq', L);
+    posSeqsTest = readSeq('Enhancers.test.seq', L);
+    negSeqsTest = readSeq('NEnhancers.test.seq', L);
     bestTrainError = inf;
     bestOrder = 0;
     bestAlpha = 0;
