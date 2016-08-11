@@ -1,66 +1,150 @@
 function main()
+    close all;
+    L = 700;
+    posSeqsTrain = readSeq('Data/Enhancers.train.seq', L);
+    negSeqsTrain = readSeq('Data/NEnhancers.train.seq', L);
+    posSeqsTest = readSeq('Data/Enhancers.test.seq', L);
+    negSeqsTest = readSeq('Data/NEnhancers.test.seq', L);
+    bestTrainError = inf;
+    bestOrder = 0;
+    bestAlpha = 0;
+    bestEen = 0;
+    bestEnen = 0;
+    for order = 1:8
+        
+        [posE, negE] = trainMarkov(posSeqsTrain, negSeqsTrain, order);
+        
+        thresholds = 0.98 : 0.00005 : 1.01;
+        % thresholds = 1.0004;
+        trainErrs = classify(posE, negE, posSeqsTrain, negSeqsTrain, thresholds);
+        [trainErr, i] = min(trainErrs);
+        threshold = thresholds(i);
+        testErr = classify(posE, negE, posSeqsTest, negSeqsTest, threshold);
+        [order, threshold, trainErr, testErr]
+    end
 end
-function getSeq()
-    [accPtrain, seqPtrain] = textread('Data/Enhancers.train.seq', '%s%s%*[^\n]','delimiter','\t','bufsize',20000);
-    [accNtrain, seqNtrain] = textread('Data/NEnhancers.train.seq','%s%s%*[^\n]','delimiter','\t','bufsize',20000);
-    [accPtest, seqPtest]   = textread('Data/Enhancers.test.seq',  '%s%s%*[^\n]','delimiter','\t','bufsize',20000);
-    [accNtest, seqNtest]   = textread('Data/NEnhancers.test.seq', '%s%s%*[^\n]','delimiter','\t','bufsize',20000);
 
-    accP = [accPtrain; accPtest]; 
-    seqP = [seqPtrain; seqPtest];
-    accN = [accNtrain; accNtest]; 
-    seqN = [seqNtrain; seqNtest];
+function [posE, negE] = trainMarkov(posSeqs, negSeqs, order)
+    posE = getEFromSeqs(posSeqs, order);
+    negE = getEFromSeqs(negSeqs, order);
+end
 
-    pos = [true(length(accP), 1); false(length(accN), 1)];
-    neg = ~pos;
-    acc = [accP; accN];
-    seq = [seqP; seqN];
-    train = [true(length(accPtrain),1); false(length(accPtest),1); true(length(accNtrain),1);false(length(accNtest),1)]; test=~train;
+function err = classify(posE, negE, posSeqs, negSeqs, thresholds)
+    likePosIsPos = getLogLikes(posE, posSeqs); %high
+    likePosIsNeg = getLogLikes(negE, posSeqs); %low
+    likeNegIsPos = getLogLikes(posE, negSeqs); %low
+    likeNegIsNeg = getLogLikes(negE, negSeqs); %high
 
-    clear accP seqP accN seqN I accPtrain seqPtrain accNtrain seqNtrain accPtest seqPtest accNtest seqNtest
-    N = length(seq);
+    ratioPos = likePosIsPos ./ likePosIsNeg; %high / low = high
+    ratioNeg = likeNegIsPos ./ likeNegIsNeg; %low
+    % m = min([likePosIsPos ; likePosIsNeg ; likeNegIsPos ; likeNegIsNeg])
+    % M = max([likePosIsPos ; likePosIsNeg ; likeNegIsPos ; likeNegIsNeg])
+    % Ls = m : 1: M;
+    % hold on
+    % plot(Ls, histc(likePosIsPos, Ls));
+    % plot(Ls, histc(likePosIsNeg, Ls));
+    % plot(Ls, histc(likeNegIsPos, Ls));
+    % plot(Ls, histc(likeNegIsNeg, Ls));
+    % legend('pp', 'pn', 'np', 'nn')
+    % hold off;
+    
+    err = zeros(size(thresholds));
+    for i = 1:length(thresholds);
+        err(i) = sum(ratioPos > thresholds(i)) + ...
+                 sum(ratioNeg < thresholds(i));
+    end
+    err = err ./ (length(ratioPos) + length(ratioNeg));
+end
+
+function E = getEFromSeqs(seqs, order)
+    ambient = 10 ^ -6;
+    N = length(seqs);
+    matSize = [4 * ones(1, order), 1];
+    E = zeros(matSize);
+    Es = zeros(prod(4 ^ order), N);
+    for i = 1 : N
+        % fprintf('Getting emission matrix %d / %d\r', i, N)
+        indices = getIndeices1D(seqs{i}, order);
+        h = histc(indices, 1 : 4 ^ order);
+        Ecur = reshape(h, [matSize, 1]);
+        E = E + Ecur;
+    end
+    h = h + ambient;
+    E = bsxfun(@times, E, 1 ./ sum(E, order));
+    % fprintf('\nDone.\n');
+end
+
+function logLikes = getLogLikes(E, seqs)
+    N = length(seqs);
+    logLikes = zeros(N,1);
+    for i=1:N
+        % fprintf('Getting log likelihood %d / %d\r', i, N)
+        logLikes(i) = getLogLikeFromSeq(seqs{i}, E);
+    end
+    % fprintf('\nDone.\n');
+end
+
+% reads .seq format file (Tommy's format) and returns the sequence as numbers
+function seq = readSeq(filePath, L)
+    % fprintf('Reading %s...', filePath);
+    [acc, seq] = textread(filePath, '%s%s%*[^\n]','delimiter','\t','bufsize',20000);
     for i=1:length(seq)
         seq{i}=upper(seq{i}); 
     end;
+    N = length(seq);
     len = zeros(1,N); for i=1:N, len(i)=length(seq{i}); end;
-    % try nt2int(seq{i})
-    for i=1:length(seq), seq{i}=seq{i}(ceil(len(i)/2) + [-249:250]); end;
-    len = zeros(1,N); for i=1:N, len(i)=length(seq{i}); end;
+    seq(len < L) = [];
+    len(len < L) = [];
+    N = length(seq);
+    for i=1:length(seq), seq{i}=seq{i}(ceil(len(i)/2) + [-floor(L/2) + 1: floor(L/2)]); end;
 
     % map sequences to dinucleotide indices
     for i=1:N,
-        t = nt2int(seq{i});
-        mononuc{i} = t;
-        dinuc{i} = sub2ind([4,4],t(2:end),t(1:end-1));
-        trinuc{i} = sub2ind([4,4,4],t(3:end),t(2:end-1),t(1:end-2));
-        quadnuc{i} = sub2ind([4,4,4,4],t(4:end),t(3:end-1),t(2:end-2),t(1:end-3));
-        pentanuc{i} = sub2ind([4,4,4,4,4],t(5:end),t(4:end-1),t(3:end-2),t(2:end-3),t(1:end-4));
-        hexanuc{i} = sub2ind([4,4,4,4,4,4],t(6:end),t(5:end-1),t(4:end-2),t(3:end-3),t(2:end-4),t(1:end-5));
-        % pentnuc{i} = sub2ind([4,4,4,4,4,4,4],t(7:end),t(6:end-1),t(5:end-2),t(4:end-3),t(3:end-4),t(2:end-5),t(1:end-6));
+        seq{i} = nt2int(seq{i});
     end
-
-    for i=1:4,   mono{i} = int2nt(dec2base(i-1,4,1) - 'a' + 50); end;
-    for i=1:4^2, di{i}   = int2nt(dec2base(i-1,4,2) - 'a' + 50); end;
-    for i=1:4^3, tri{i}  = int2nt(dec2base(i-1,4,3) - 'a' + 50); end;
-    for i=1:4^4, quad{i} = int2nt(dec2base(i-1,4,4) - 'a' + 50); end;
-    for i=1:4^5, pent{i} = int2nt(dec2base(i-1,4,5) - 'a' + 50); end;
-    for i=1:4^6, hexa{i} = int2nt(dec2base(i-1,4,6) - 'a' + 50); end;
-    for i=1:4^7, pent{i} = int2nt(dec2base(i-1,4,7) - 'a' + 50); end;
-
-
-    alpha = 0.01;
-    MONOPCT = zeros(N,4);   for i=1:N, MONOPCT(i,:) = (alpha + histc(mononuc{i},1:4))  / ((4   * alpha) + len(i)); end;
-    DIPCT   = zeros(N,4^2); for i=1:N, DIPCT(i,:)   = (alpha + histc(dinuc{i},1:4^2))  / ((4^2 * alpha) + (len(i)-1)); end;
-    TRIPCT  = zeros(N,4^3); for i=1:N, TRIPCT(i,:)  = (alpha + histc(trinuc{i},1:4^3)) / ((4^3 * alpha) + (len(i)-2)); end;
-    QUADPCT = zeros(N,4^4); for i=1:N, QUADPCT(i,:) = (alpha + histc(quadnuc{i},1:4^4)) / ((4^4 * alpha) + (len(i)-3)); end;
-    PENTAPCT= zeros(N,4^5); for i=1:N, PENTAPCT(i,:)= (alpha + histc(pentanuc{i},1:4^5)) / ((4^5 * alpha) + (len(i)-4)); end;
-    HEXAPCT = zeros(N,4^6); for i=1:N, HEXAPCT(i,:) = (alpha + histc(hexanuc{i},1:4^6)) / ((4^6 * alpha) + (len(i)-5)); end;
-    % PENTPCT = zeros(N,4^7); for i=1:N, PENTPCT(i,:) = (alpha + histc(pentnuc{i},1:4^7)) / ((4^7 * alpha) + (len(i)-6)); end;
-
-    X1=MONOPCT; X2=DIPCT; X3=TRIPCT; X4=QUADPCT; X5=PENTAPCT; X6=HEXAPCT; Y=pos;
-
-    svm2 = fitcsvm(X2(train,:),Y(train),'KernelFunction','linear','Standardize',true,'KernelScale','auto');
-    [label2,score2] = predict(svm2,X2(test,:)); 100*mean(label2==Y(test)),;
-    [tx2,ty2,~,auc2] = perfcurve(pos(test)',score2(:,2),true); plot(tx2,ty2,'LineWidth',2);title(100*auc2);
+    % fprintf(' done.\n');
 end
+
+% very similar to sub2ind, but receives the subscripts as matrix
+% matSize - 1 x k
+% subscripts - k x n
+% indices - 1 x n
+function indices = mySub2ind(matSize, subscripts)
+    subtractedSub = subscripts.';
+    subtractedSub(2:end, :) = subtractedSub(2:end, :) - 1;
+    % subtractedSub
+    cumMatSize = cumprod([1, matSize]);
+    cumMatSize = cumMatSize(1, 1:end - 1);
+    indices = cumMatSize * subtractedSub;
+end
+
+
+% seq - 1 x n
+% indices - 1 x n (numbers from 1 to order)
+function indices = getIndeices1D(seq, order)
+    N = length(seq);
+    k = zeros(N - order + 1, order);
+    for i = 1 : order
+        seq(i : end - order + i);
+        k(:,i) = seq(i : end - order + i);
+    end
+    matSize = 4 * ones(1, order);
+    indices = mySub2ind(matSize, k);
+end
+
+% seq - 1 x n
+% E - 4 x ... x 4 (order times)
+% logLike - number
+function logLike = getLogLikeFromSeq(seq, E)
+    order = matDim(E);
+    indices = getIndeices1D(seq, order);
+    logLike = sum(sum(log(E(indices)), 1), 2);
+    % logLike
+    logLike = logLike;
+end
+
+function dim = matDim(M)
+    s = size(M);
+    s(s==1) = [];
+    dim = length(s);
 end
