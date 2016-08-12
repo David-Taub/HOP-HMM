@@ -1,16 +1,12 @@
 function main()
     close all;
-    L = 700;
+    L = 1000;
     posSeqsTrain = readSeq('Enhancers.train.seq', L);
     negSeqsTrain = readSeq('NEnhancers.train.seq', L);
     posSeqsTest = readSeq('Enhancers.test.seq', L);
     negSeqsTest = readSeq('NEnhancers.test.seq', L);
-    bestTrainError = inf;
-    bestOrder = 0;
-    bestAlpha = 0;
-    bestEen = 0;
-    bestEnen = 0;
-    for order = 1:4
+    m = 2;
+    for order = 6:6
         
         [posE, negE] = trainMarkov(posSeqsTrain, negSeqsTrain, order);
         
@@ -22,18 +18,44 @@ function main()
         testErr = classify(posE, negE, posSeqsTest, negSeqsTest, threshold);
         [order, threshold, trainErr, testErr]
 
-        % hmm E
-        E = cat(1, shiftdim(posE, -1), shiftdim(negE, -1));
         pos2neg = 1 / 300;
-        neg2pos = 1 / 300;
-        T = [1 - pos2neg, pos2neg; neg2pos, 1 - neg2pos];
-        startT = [0; 1];
-        [alpha, scale] = forwardAlg(posSeqsTrain{1}, startT, T, E);
-        beta = backwardAlg(posSeqsTrain{1}, startT, T, E, scale);
-        gamma = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [2, 1]);
+        neg2pos = 1 / 50;
+        [startT, T, E] = createHmmParams(posE, negE, neg2pos, pos2neg);
+
+        N = min(length(posSeqsTrain), length(negSeqsTrain));
+        seqs = posSeqsTrain;
+        post = zeros(m, L, N);
+        parfor i = 1 : N
+            [alpha, scale] = forwardAlg(seqs{i}, startT, T, E);
+            beta = backwardAlg(seqs{i}, startT, T, E, scale);
+            post(:, :, i) = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [m, 1]);
+        end
+        posPost(:, :) = post(1, :, :);
+
+
+        seqs = negSeqsTrain;
+        post = zeros(m, L, N);
+        parfor i = 1 : N
+            [alpha, scale] = forwardAlg(seqs{i}, startT, T, E);
+            beta = backwardAlg(seqs{i}, startT, T, E, scale);
+            post(:, :, i) = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [m, 1]);
+        end
+        negPost(:, :) = post(1, :, :);
+
+        plot(mean(posPost(:, :), 1));
+        hold on;
+        plot(mean(negPost(:, :), 1));
+        ylim([0,1]);
+        title('Postirior Probability of Being Enhancer')
+        hold off;
     end
 end
 
+function [startT, T, E] = createHmmParams(posE, negE, neg2pos, pos2neg)
+    E = cat(1, shiftdim(posE, -1), shiftdim(negE, -1));
+    T = [1 - pos2neg, pos2neg; neg2pos, 1 - neg2pos];
+    startT = [0.5; 0.5];
+end
 function [posE, negE] = trainMarkov(posSeqs, negSeqs, order)
     posE = getEFromSeqs(posSeqs, order);
     negE = getEFromSeqs(negSeqs, order);
@@ -71,7 +93,6 @@ function E = getEFromSeqs(seqs, order)
     N = length(seqs);
     matSize = [4 * ones(1, order), 1];
     E = zeros(matSize);
-    Es = zeros(prod(4 ^ order), N);
     for i = 1 : N
         % fprintf('Getting emission matrix %d / %d\r', i, N)
         indices = getIndeices1D(seqs{i}, order);
@@ -79,7 +100,7 @@ function E = getEFromSeqs(seqs, order)
         Ecur = reshape(h, [matSize, 1]);
         E = E + Ecur;
     end
-    h = h + ambient;
+    E = E + ambient;
     E = bsxfun(@times, E, 1 ./ sum(E, order));
     % fprintf('\nDone.\n');
 end
@@ -97,7 +118,7 @@ end
 % reads .seq format file (Tommy's format) and returns the sequence as numbers
 function seq = readSeq(filePath, L)
     % fprintf('Reading %s...', filePath);
-    [acc, seq] = textread(filePath, '%s%s%*[^\n]','delimiter','\t','bufsize',20000);
+    [~, seq] = textread(filePath, '%s%s%*[^\n]','delimiter','\t','bufsize',20000);
     for i=1:length(seq)
         seq{i}=upper(seq{i}); 
     end;
@@ -136,6 +157,4 @@ function logLike = getLogLikeFromSeq(seq, E)
     order = matDim(E);
     indices = getIndeices1D(seq, order);
     logLike = sum(sum(log(E(indices)), 1), 2);
-    % logLike
-    logLike = logLike;
 end
