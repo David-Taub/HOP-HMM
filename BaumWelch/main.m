@@ -1,29 +1,100 @@
-function main()
+function maing
+
     close all;
     L = 700;
-    posSeqsTrain = readSeq('Data/Enhancers.train.seq', L);
-    negSeqsTrain = readSeq('Data/NEnhancers.train.seq', L);
-    posSeqsTest = readSeq('Data/Enhancers.test.seq', L);
-    negSeqsTest = readSeq('Data/NEnhancers.test.seq', L);
-    bestTrainError = inf;
-    bestOrder = 0;
-    bestAlpha = 0;
-    bestEen = 0;
-    bestEnen = 0;
-    for order = 1:8
+    posSeqsTrain = readSeq('Enhancers.train.seq', L);
+    negSeqsTrain = readSeq('NEnhancers.train.seq', L);
+    posSeqsTest = readSeq('Enhancers.test.seq', L);
+    negSeqsTest = readSeq('NEnhancers.test.seq', L);
+    m = 2;
+    for order = 6:6
         
         [posE, negE] = trainMarkov(posSeqsTrain, negSeqsTrain, order);
         
-        thresholds = 0.98 : 0.00005 : 1.01;
+        % thresholds = 0.98 : 0.00005 : 1.01;
         % thresholds = 1.0004;
-        trainErrs = classify(posE, negE, posSeqsTrain, negSeqsTrain, thresholds);
-        [trainErr, i] = min(trainErrs);
-        threshold = thresholds(i);
-        testErr = classify(posE, negE, posSeqsTest, negSeqsTest, threshold);
-        [order, threshold, trainErr, testErr]
+        % trainErrs = classify(posE, negE, posSeqsTrain, negSeqsTrain, thresholds);
+        % [trainErr, i] = min(trainErrs);
+        % threshold = thresholds(i);
+        % testErr = classify(posE, negE, posSeqsTest, negSeqsTest, threshold);
+        % [order, threshold, trainErr, testErr]
+
+        pos2neg = 1 / 300;
+        neg2pos = 1 / 50;
+        1
+        [startT, T, E] = createHmmParams(posE, negE, neg2pos, pos2neg);
+
+        N = min(length(posSeqsTrain), length(negSeqsTrain));
+        % N = 200;
+        posPostirior = getPostirior(posSeqsTrain, N, startT, T, E);
+        negPostirior = getPostirior(negSeqsTrain, N, startT, T, E);
+
+        
+        posTops = getTopPart(posPostirior);
+        negTops = getTopPart(negPostirior);
+
+        minTops = min(min(posTops), min(negTops));
+        maxTops = max(max(posTops), max(negTops));
+        success = [];
+        thresholds = minTops : 0.01 : maxTops;
+        parfor i = 1:length(thresholds)
+            correctPos = length(posTops(posTops > thresholds(i)));
+            correctNeg  = length(negTops(negTops < thresholds(i)));
+            success(i) = (correctPos + correctNeg) / (2 * N);
+        end
+        % best = max(success)
+        [best, i] = max(success);
+        [best, thresholds(i)]
+
+        figure 
+        hold on
+        plot(posTops)
+        plot(negTops)
+        hold off
+        legend('pos', 'neg')
+        figure
+        hold on;
+        plot(mean(posPostirior, 1));
+        plot(mean(negPostirior, 1));
+        ylim([0,1]);
+        legend('positive postirior', 'negative postirior');
+        title('postirior Probability of Being Enhancer');
+        hold off;
     end
 end
 
+function out = getTopPart(M)
+    L = size(M, 2);
+    marginsRatio = 0.15;
+    topPartRatio = 0.15;
+    M = M(:, ceil(L * marginsRatio) : end - ceil(L * marginsRatio));
+    M = sort(M, 2, 'descend');
+    M = M(:, ceil(L * marginsRatio) : end - ceil(L * marginsRatio));
+    % out = mean(M(: ,1:ceil(size(M, 2) * topPartRatio)), 2);
+    % out = sum(M>0.5, 2) / L;
+    out = mean(M, 2);
+end
+% seqs - sequences of length L
+% N - number of sequences to calculate the postirior with
+% out - N x L
+function out = getPostirior(seqs, N, startT, T, E)
+    m = 2;
+    L = length(seqs{1});
+    postirior = zeros(m, L, N);
+    parfor i = 1 : N
+        [alpha, scale] = forwardAlg(seqs{i}, startT, T, E);
+        beta = backwardAlg(seqs{i}, startT, T, E, scale);
+        postirior(:, :, i) = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [m, 1]);
+    end
+    % return postirior of the positive state, 
+    out(:,:) = postirior(1, :, :);
+    out = out';
+end
+function [startT, T, E] = createHmmParams(posE, negE, neg2pos, pos2neg)
+    E = cat(1, shiftdim(posE, -1), shiftdim(negE, -1));
+    T = [1 - pos2neg, pos2neg; neg2pos, 1 - neg2pos];
+    startT = [0.5; 0.5];
+end
 function [posE, negE] = trainMarkov(posSeqs, negSeqs, order)
     posE = getEFromSeqs(posSeqs, order);
     negE = getEFromSeqs(negSeqs, order);
@@ -61,7 +132,6 @@ function E = getEFromSeqs(seqs, order)
     N = length(seqs);
     matSize = [4 * ones(1, order), 1];
     E = zeros(matSize);
-    Es = zeros(prod(4 ^ order), N);
     for i = 1 : N
         % fprintf('Getting emission matrix %d / %d\r', i, N)
         indices = getIndeices1D(seqs{i}, order);
@@ -69,7 +139,7 @@ function E = getEFromSeqs(seqs, order)
         Ecur = reshape(h, [matSize, 1]);
         E = E + Ecur;
     end
-    h = h + ambient;
+    E = E + ambient;
     E = bsxfun(@times, E, 1 ./ sum(E, order));
     % fprintf('\nDone.\n');
 end
@@ -87,7 +157,7 @@ end
 % reads .seq format file (Tommy's format) and returns the sequence as numbers
 function seq = readSeq(filePath, L)
     % fprintf('Reading %s...', filePath);
-    [acc, seq] = textread(filePath, '%s%s%*[^\n]','delimiter','\t','bufsize',20000);
+    [~, seq] = textread(filePath, '%s%s%*[^\n]','delimiter','\t','bufsize',20000);
     for i=1:length(seq)
         seq{i}=upper(seq{i}); 
     end;
@@ -105,19 +175,6 @@ function seq = readSeq(filePath, L)
     % fprintf(' done.\n');
 end
 
-% very similar to sub2ind, but receives the subscripts as matrix
-% matSize - 1 x k
-% subscripts - k x n
-% indices - 1 x n
-function indices = mySub2ind(matSize, subscripts)
-    subtractedSub = subscripts.';
-    subtractedSub(2:end, :) = subtractedSub(2:end, :) - 1;
-    % subtractedSub
-    cumMatSize = cumprod([1, matSize]);
-    cumMatSize = cumMatSize(1, 1:end - 1);
-    indices = cumMatSize * subtractedSub;
-end
-
 
 % seq - 1 x n
 % indices - 1 x n (numbers from 1 to order)
@@ -129,7 +186,7 @@ function indices = getIndeices1D(seq, order)
         k(:,i) = seq(i : end - order + i);
     end
     matSize = 4 * ones(1, order);
-    indices = mySub2ind(matSize, k);
+    indices = matSub2ind(matSize, k.');
 end
 
 % seq - 1 x n
@@ -139,12 +196,4 @@ function logLike = getLogLikeFromSeq(seq, E)
     order = matDim(E);
     indices = getIndeices1D(seq, order);
     logLike = sum(sum(log(E(indices)), 1), 2);
-    % logLike
-    logLike = logLike;
-end
-
-function dim = matDim(M)
-    s = size(M);
-    s(s==1) = [];
-    dim = length(s);
 end
