@@ -395,8 +395,15 @@ EM:
 \begin_layout Standard
 
 \series bold
-(31/07/16) - My task now is to build a 2nd order EM which is a special version
- of 2nd order HMM, and its EM.
+\bar under
+talk with tommy (31/07/16)
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+- My task now is to build a 2nd order EM which is a special version of 2nd
+ order HMM, and its EM.
  Only difference from before is the E is now 3D, m x n x n, 
 \begin_inset Formula $E_{ijk}=P(x_{t}=k|y_{t}=i,x_{t-1}=j$
 \end_inset
@@ -406,6 +413,12 @@ EM:
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+some notes while converting the 1st order EM to 2nd order EM- trying to
+ understand deeply how postirior is calculated, what is the scale variable
+ role etc
 \end_layout
 
 \begin_layout Standard
@@ -463,6 +476,16 @@ we are using the markovian fact:
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+I found in the internet a variation of the Baum Welch algorithm that overcomes
+ the calculation errors using a scale variable - but this changes the meaning
+ of the alpha cells
+\end_layout
+
+\begin_layout Standard
+I cannot fully understand why this gives proper results
 \end_layout
 
 \begin_layout Standard
@@ -568,6 +591,50 @@ Updating the EM with BaumWelch temp variables:
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+8.8.16 - talk with tommy
+\end_layout
+
+\begin_layout Standard
+nayman pirson, find linear classifier with log of ratio between likelihoods
+ of enhancer and nonenhancer markovian model
+\end_layout
+
+\begin_layout Standard
+should be 
+\begin_inset Formula $\left\langle \omega,X\right\rangle $
+\end_inset
+
+ where we build these with the log likelihood ratio, and instances if X
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+14.08.16 - talk with tommy
+\end_layout
+
+\begin_layout Standard
+fix bug in graph - right end in postirior goes up, probably bug in forward
+ 
+\backslash
+ backward alg.
+ check if happens in same size with lower order
+\end_layout
+
+\begin_layout Standard
+use postirior of regions to classify them as pos 
+\backslash
+ neg.
+ avg of highest X% of the region threshold?
+\end_layout
+
+\begin_layout Standard
+long term - 
 \end_layout
 
 \end_body

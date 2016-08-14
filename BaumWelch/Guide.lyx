@@ -395,8 +395,15 @@ EM:
 \begin_layout Standard
 
 \series bold
-(31/07/16) - My task now is to build a 2nd order EM which is a special version
- of 2nd order HMM, and its EM.
+\bar under
+talk with tommy (31/07/16)
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+- My task now is to build a 2nd order EM which is a special version of 2nd
+ order HMM, and its EM.
  Only difference from before is the E is now 3D, m x n x n, 
 \begin_inset Formula $E_{ijk}=P(x_{t}=k|y_{t}=i,x_{t-1}=j$
 \end_inset
@@ -406,6 +413,12 @@ EM:
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+some notes while converting the 1st order EM to 2nd order EM- trying to
+ understand deeply how postirior is calculated, what is the scale variable
+ role etc
 \end_layout
 
 \begin_layout Standard
@@ -463,6 +476,16 @@ we are using the markovian fact:
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+I found in the internet a variation of the Baum Welch algorithm that overcomes
+ the calculation errors using a scale variable - but this changes the meaning
+ of the alpha cells
+\end_layout
+
+\begin_layout Standard
+I cannot fully understand why this gives proper results
 \end_layout
 
 \begin_layout Standard
@@ -571,11 +594,13 @@ Updating the EM with BaumWelch temp variables:
 \end_layout
 
 \begin_layout Standard
-8.8.16 - talk with tommy
+
+\bar under
+8.8.16 - talk with Tommy
 \end_layout
 
 \begin_layout Standard
-nayman pirson, find linear classifier with log of ratio between likelihoods
+Neyman–Pearson, find linear classifier with log of ratio between likelihoods
  of enhancer and nonenhancer markovian model
 \end_layout
 
@@ -589,7 +614,60 @@ should be
 
 \begin_layout Standard
 
+\bar under
+14.08.16 - talk with tommy
 \end_layout
 
+\begin_layout Itemize
+fix bug in graph - right end in postirior goes up, probably bug in forward
+ 
+\backslash
+ backward alg.
+ check if happens in same size with lower order
+\end_layout
+
+\begin_layout Itemize
+use postirior of regions to classify them as pos 
+\backslash
+ neg.
+ avg of highest X% of the region threshold?
+\end_layout
+
+\begin_layout Itemize
+longer regions- re-extract from the big genome data file in Tommy's folder
+\end_layout
+
+\begin_layout Itemize
+long term - multi class.
+ we have peeks from different tissues.
+ we want
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+find other regions which are enhancers
+\end_layout
+
+\begin_layout Itemize
+find good classifications of enhancers.
+\end_layout
+
+\begin_layout Itemize
+find the edges of enhancers
+\end_layout
+
+\begin_layout Itemize
+for regions which have overlap between two or more tissues, use postirior
+ prob.
+ to find if they are half this and half that or a new and different class
+\end_layout
+
+\begin_layout Itemize
+get words (high order) which are more common in each class.
+ With these words we can find in Jaspar DB if there are known proteins that
+ bound to these motifs.
+\end_layout
+
+\end_deeper
 \end_body
 \end_document
