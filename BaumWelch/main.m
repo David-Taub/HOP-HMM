@@ -1,12 +1,13 @@
-function main()
+function maing
+
     close all;
-    L = 1000;
+    L = 700;
     posSeqsTrain = readSeq('Enhancers.train.seq', L);
     negSeqsTrain = readSeq('NEnhancers.train.seq', L);
     posSeqsTest = readSeq('Enhancers.test.seq', L);
     negSeqsTest = readSeq('NEnhancers.test.seq', L);
     m = 2;
-    for order = 6:6
+    for order = 2:2
         
         [posE, negE] = trainMarkov(posSeqsTrain, negSeqsTrain, order);
         
@@ -23,34 +24,45 @@ function main()
         [startT, T, E] = createHmmParams(posE, negE, neg2pos, pos2neg);
 
         N = min(length(posSeqsTrain), length(negSeqsTrain));
-        seqs = posSeqsTrain;
-        post = zeros(m, L, N);
-        parfor i = 1 : N
-            [alpha, scale] = forwardAlg(seqs{i}, startT, T, E);
-            beta = backwardAlg(seqs{i}, startT, T, E, scale);
-            post(:, :, i) = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [m, 1]);
-        end
-        posPost(:, :) = post(1, :, :);
+        N = 200;
+        posPostirior = getPostirior(posSeqsTrain, N, startT, T, E);
+        negPostirior = getPostirior(negSeqsTrain, N, startT, T, E);
 
-
-        seqs = negSeqsTrain;
-        post = zeros(m, L, N);
-        parfor i = 1 : N
-            [alpha, scale] = forwardAlg(seqs{i}, startT, T, E);
-            beta = backwardAlg(seqs{i}, startT, T, E, scale);
-            post(:, :, i) = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [m, 1]);
-        end
-        negPost(:, :) = post(1, :, :);
-
-        plot(mean(posPost(:, :), 1));
+        figure
         hold on;
-        plot(mean(negPost(:, :), 1));
+        plot(mean(posPostirior, 2));
+        plot(mean(negPostirior, 2));
         ylim([0,1]);
-        title('Postirior Probability of Being Enhancer')
+        legend('positive postirior', 'negative postirior');
+        title('postirior Probability of Being Enhancer');
         hold off;
     end
 end
 
+% seqs - sequences of length L
+% N - number of sequences to calculate the postirior with
+function out = getPostirior(seqs, N, startT, T, E, eta)
+    m = 2;
+    L = length(seqs{1});
+    postirior = zeros(m, L, N);
+    for i = 1 : N
+        [alpha, scale] = forwardAlg(seqs{i}, startT, T, E, eta);
+        beta = backwardAlg(seqs{i}, startT, T, E, scale, eta);
+        alphas(i, :) = alpha(1,:);
+        betas(i, :) = beta(1,:);
+        scales(i, :) = scale;
+        postirior(:, :, i) = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [m, 1]);
+    end
+    figure;
+    hold on
+    plot(mean(alphas, 1));
+    plot(mean(betas, 1));
+    plot(mean(scales, 1));
+    hold off
+    legend('a', 'b', 's')
+    % return postirior of the positive state, 
+    out(:,:) = postirior(1, :, :);
+end
 function [startT, T, E] = createHmmParams(posE, negE, neg2pos, pos2neg)
     E = cat(1, shiftdim(posE, -1), shiftdim(negE, -1));
     T = [1 - pos2neg, pos2neg; neg2pos, 1 - neg2pos];

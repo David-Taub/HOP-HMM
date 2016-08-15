@@ -3,7 +3,7 @@
 % startT - m x 1 probabilities of first states
 % E - m x n emission matrix E_ij means x_t = j | y_t = i
 % X - 1 x k emission variables
-function [alpha, scale] = forwardAlg(X, startT, T, E)
+function [alpha, scale] = forwardAlg(X, startT, T, E, eta)
     % alpha(i,j) P(y_j=i| x_1, ...x_j, startT, T, E)
     % scale(i) = P(x_i| startT, T, E)
     % meaning: alpha_j(i) = alpha(j, i)
@@ -28,7 +28,7 @@ function [alpha, scale] = forwardAlg(X, startT, T, E)
             subscripts = [1:m ; repmat(X(t-order+1 : t).', [1, m])];
             indices = matSub2ind(matSize, subscripts);
         end
-        newAlphas = (T.' * alpha(:, t-1)) .* Et(indices).';
+        newAlphas = (T.' * (alpha(:, t-1) .^ eta)) .* Et(indices).';
         scale(t) = sum(newAlphas);
         alpha(:, t) = newAlphas / scale(t);
     end
