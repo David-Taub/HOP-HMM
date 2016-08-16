@@ -7,7 +7,7 @@ function maing
     posSeqsTest = readSeq('Enhancers.test.seq', L);
     negSeqsTest = readSeq('NEnhancers.test.seq', L);
     m = 2;
-    for order = 2:2
+    for order = 6:6
         
         [posE, negE] = trainMarkov(posSeqsTrain, negSeqsTrain, order);
         
@@ -21,13 +21,13 @@ function maing
 
         pos2neg = 1 / 300;
         neg2pos = 1 / 50;
+        1
         [startT, T, E] = createHmmParams(posE, negE, neg2pos, pos2neg);
 
         N = min(length(posSeqsTrain), length(negSeqsTrain));
-        % N = 100;
-        eta = 0.95;
-        posPostirior = getPostirior(posSeqsTrain, N, startT, T, E, eta);
-        negPostirior = getPostirior(negSeqsTrain, N, startT, T, E, eta);
+        % N = 200;
+        posPostirior = getPostirior(posSeqsTrain, N, startT, T, E);
+        negPostirior = getPostirior(negSeqsTrain, N, startT, T, E);
 
         
         posTops = getTopPart(posPostirior);
@@ -37,10 +37,10 @@ function maing
         maxTops = max(max(posTops), max(negTops));
         success = [];
         thresholds = minTops : 0.01 : maxTops;
-        for threshold = thresholds
-            correctPos = length(posTops(posTops > threshold));
-            correctNeg  = length(negTops(negTops < threshold));
-            success(end+1) = (correctPos + correctNeg) / (2 * N);
+        parfor i = 1:length(thresholds)
+            correctPos = length(posTops(posTops > thresholds(i)));
+            correctNeg  = length(negTops(negTops < thresholds(i)));
+            success(i) = (correctPos + correctNeg) / (2 * N);
         end
         % best = max(success)
         [best, i] = max(success);
@@ -77,13 +77,13 @@ end
 % seqs - sequences of length L
 % N - number of sequences to calculate the postirior with
 % out - N x L
-function out = getPostirior(seqs, N, startT, T, E, eta)
+function out = getPostirior(seqs, N, startT, T, E)
     m = 2;
     L = length(seqs{1});
     postirior = zeros(m, L, N);
-    for i = 1 : N
-        [alpha, scale] = forwardAlg(seqs{i}, startT, T, E, eta);
-        beta = backwardAlg(seqs{i}, startT, T, E, scale, eta);
+    parfor i = 1 : N
+        [alpha, scale] = forwardAlg(seqs{i}, startT, T, E);
+        beta = backwardAlg(seqs{i}, startT, T, E, scale);
         postirior(:, :, i) = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [m, 1]);
     end
     % return postirior of the positive state, 
