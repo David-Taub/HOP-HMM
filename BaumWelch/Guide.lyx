@@ -623,7 +623,7 @@ fix bug in graph - right end in postirior goes up, probably bug in forward
  
 \backslash
  backward alg.
- check if happens in same size with lower order
+ check if happens in same size with lower order (FIXED)
 \end_layout
 
 \begin_layout Itemize

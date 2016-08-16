@@ -596,11 +596,11 @@ Updating the EM with BaumWelch temp variables:
 \begin_layout Standard
 
 \bar under
-8.8.16 - talk with tommy
+8.8.16 - talk with Tommy
 \end_layout
 
 \begin_layout Standard
-nayman pirson, find linear classifier with log of ratio between likelihoods
+Neyman–Pearson, find linear classifier with log of ratio between likelihoods
  of enhancer and nonenhancer markovian model
 \end_layout
 
@@ -618,7 +618,7 @@ should be
 14.08.16 - talk with tommy
 \end_layout
 
-\begin_layout Standard
+\begin_layout Itemize
 fix bug in graph - right end in postirior goes up, probably bug in forward
  
 \backslash
@@ -626,16 +626,48 @@ fix bug in graph - right end in postirior goes up, probably bug in forward
  check if happens in same size with lower order
 \end_layout
 
-\begin_layout Standard
+\begin_layout Itemize
 use postirior of regions to classify them as pos 
 \backslash
  neg.
  avg of highest X% of the region threshold?
 \end_layout
 
-\begin_layout Standard
-long term - 
+\begin_layout Itemize
+longer regions- re-extract from the big genome data file in Tommy's folder
 \end_layout
 
+\begin_layout Itemize
+long term - multi class.
+ we have peeks from different tissues.
+ we want
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+find other regions which are enhancers
+\end_layout
+
+\begin_layout Itemize
+find good classifications of enhancers.
+\end_layout
+
+\begin_layout Itemize
+find the edges of enhancers
+\end_layout
+
+\begin_layout Itemize
+for regions which have overlap between two or more tissues, use postirior
+ prob.
+ to find if they are half this and half that or a new and different class
+\end_layout
+
+\begin_layout Itemize
+get words (high order) which are more common in each class.
+ With these words we can find in Jaspar DB if there are known proteins that
+ bound to these motifs.
+\end_layout
+
+\end_deeper
 \end_body
 \end_document
