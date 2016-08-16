@@ -1,4 +1,4 @@
-function maing
+function main()
 
     close all;
     L = 700;
@@ -21,11 +21,10 @@ function maing
 
         pos2neg = 1 / 300;
         neg2pos = 1 / 50;
-        1
+        
         [startT, T, E] = createHmmParams(posE, negE, neg2pos, pos2neg);
 
         N = min(length(posSeqsTrain), length(negSeqsTrain));
-        % N = 200;
         posPostirior = getPostirior(posSeqsTrain, N, startT, T, E);
         negPostirior = getPostirior(negSeqsTrain, N, startT, T, E);
 
@@ -61,7 +60,9 @@ function maing
         title('postirior Probability of Being Enhancer');
         hold off;
     end
+    save('data.mat')
 end
+
 
 function out = getTopPart(M)
     L = size(M, 2);
@@ -79,11 +80,11 @@ end
 % out - N x L
 function out = getPostirior(seqs, N, startT, T, E)
     m = 2;
-    L = length(seqs{1});
+    L = length(seqs(1, :));
     postirior = zeros(m, L, N);
-    parfor i = 1 : N
-        [alpha, scale] = forwardAlg(seqs{i}, startT, T, E);
-        beta = backwardAlg(seqs{i}, startT, T, E, scale);
+    for i = 1 : N
+        [alpha, scale] = forwardAlg(seqs(i, :), startT, T, E);
+        beta = backwardAlg(seqs(i, :), startT, T, E, scale);
         postirior(:, :, i) = alpha .* beta ./ repmat(sum(alpha .* beta, 1), [m, 1]);
     end
     % return postirior of the positive state, 
@@ -134,7 +135,7 @@ function E = getEFromSeqs(seqs, order)
     E = zeros(matSize);
     for i = 1 : N
         % fprintf('Getting emission matrix %d / %d\r', i, N)
-        indices = getIndeices1D(seqs{i}, order);
+        indices = getIndeices1D(seqs(i, :), order);
         h = histc(indices, 1 : 4 ^ order);
         Ecur = reshape(h, [matSize, 1]);
         E = E + Ecur;
@@ -149,30 +150,25 @@ function logLikes = getLogLikes(E, seqs)
     logLikes = zeros(N,1);
     for i=1:N
         % fprintf('Getting log likelihood %d / %d\r', i, N)
-        logLikes(i) = getLogLikeFromSeq(seqs{i}, E);
+        logLikes(i) = getLogLikeFromSeq(seqs(i, :), E);
     end
     % fprintf('\nDone.\n');
 end
 
 % reads .seq format file (Tommy's format) and returns the sequence as numbers
-function seq = readSeq(filePath, L)
+function out = readSeq(filePath, L)
     % fprintf('Reading %s...', filePath);
     [~, seq] = textread(filePath, '%s%s%*[^\n]','delimiter','\t','bufsize',20000);
+    out = zeros(length(seq), L); 
     for i=1:length(seq)
         seq{i}=upper(seq{i}); 
-    end;
-    N = length(seq);
-    len = zeros(1,N); for i=1:N, len(i)=length(seq{i}); end;
-    seq(len < L) = [];
-    len(len < L) = [];
-    N = length(seq);
-    for i=1:length(seq), seq{i}=seq{i}(ceil(len(i)/2) + [-floor(L/2) + 1: floor(L/2)]); end;
-
-    % map sequences to dinucleotide indices
-    for i=1:N,
-        seq{i} = nt2int(seq{i});
+        if length(seq{i}) < L
+            continue;
+        end
+        seq{i}=seq{i}(ceil(length(seq{i})/2) + [-floor(L/2) + 1: floor(L/2)]);
+        out(i, :) = nt2int(seq{i});
     end
-    % fprintf(' done.\n');
+    out( ~any(out,2), : ) = [];  %remove zero rows
 end
 
 
