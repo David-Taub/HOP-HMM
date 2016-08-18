@@ -1,7 +1,7 @@
 function main()
 
     close all;
-    L = 700;
+    L = 500;
     posSeqsTrain = readSeq('Enhancers.train.seq', L);
     negSeqsTrain = readSeq('NEnhancers.train.seq', L);
     posSeqsTest = readSeq('Enhancers.test.seq', L);
@@ -24,11 +24,12 @@ function main()
         
         [startT, T, E] = createHmmParams(posE, negE, neg2pos, pos2neg);
 
-        N = min(length(posSeqsTrain), length(negSeqsTrain));
-        posPostirior = getPostirior(posSeqsTrain, N, startT, T, E);
-        negPostirior = getPostirior(negSeqsTrain, N, startT, T, E);
+        % N x 1
+        posPostirior = getPostirior(posSeqsTrain, startT, T, E);
+        negPostirior = getPostirior(negSeqsTrain, startT, T, E);
 
         
+        % N x 1
         posTops = getTopPart(posPostirior);
         negTops = getTopPart(negPostirior);
 
@@ -36,14 +37,8 @@ function main()
         maxTops = max(max(posTops), max(negTops));
         success = [];
         thresholds = minTops : 0.01 : maxTops;
-        parfor i = 1:length(thresholds)
-            correctPos = length(posTops(posTops > thresholds(i)));
-            correctNeg  = length(negTops(negTops < thresholds(i)));
-            success(i) = (correctPos + correctNeg) / (2 * N);
-        end
-        % best = max(success)
-        [best, i] = max(success);
-        [best, thresholds(i)]
+        size(thresholds)
+        [trainErr, threshold] = findThreshold(posTops, negTops, thresholds)
 
         figure 
         hold on
@@ -75,12 +70,28 @@ function out = getTopPart(M)
     % out = sum(M>0.5, 2) / L;
     out = mean(M, 2);
 end
-% seqs - sequences of length L
+
+% high - N1 x 1
+% low - N2 x 1
+% thresholds - 1 x R
+function [err, threshold] = findThreshold(high, low, thresholds)
+    N = size(high, 1) + size(low, 1);
+    % N1 x R
+    tp = bsxfun(@lt, repmat(high, [1, length(thresholds)]), thresholds);
+    % N2 x R
+    tn = bsxfun(@gt, repmat(low, [1, length(thresholds)]), thresholds);
+    % 1 x R
+    errs = (sum(tp, 1) + sum(tn, 1)) ./ N;
+    [err, i] = min(errs, [], 2);
+    threshold = thresholds(i);
+end
+
+% seqs - N x L
 % N - number of sequences to calculate the postirior with
 % out - N x L
-function out = getPostirior(seqs, N, startT, T, E)
+function out = getPostirior(seqs, startT, T, E)
+    [N, L] = size(seqs);
     m = 2;
-    L = length(seqs(1, :));
     postirior = zeros(m, L, N);
     for i = 1 : N
         [alpha, scale] = forwardAlg(seqs(i, :), startT, T, E);
@@ -134,7 +145,6 @@ function E = getEFromSeqs(seqs, order)
     matSize = [4 * ones(1, order), 1];
     E = zeros(matSize);
     for i = 1 : N
-        % fprintf('Getting emission matrix %d / %d\r', i, N)
         indices = getIndeices1D(seqs(i, :), order);
         h = histc(indices, 1 : 4 ^ order);
         Ecur = reshape(h, [matSize, 1]);
@@ -142,7 +152,6 @@ function E = getEFromSeqs(seqs, order)
     end
     E = E + ambient;
     E = bsxfun(@times, E, 1 ./ sum(E, order));
-    % fprintf('\nDone.\n');
 end
 
 function logLikes = getLogLikes(E, seqs)
