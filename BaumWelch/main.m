@@ -161,6 +161,23 @@ end
 function logLikes = getLogLikes(E, seqs)
     N = size(seqs, 1);
     logLikes = zeros(N,1);
+
+    order = matDim(E);
+    indices = getIndeices1D(seqs, order);
+
+    STOPPED HERE
+    STOPPED HERE
+    STOPPED HERE
+    STOPPED HERE
+    STOPPED HERE
+    STOPPED HERE
+    indices = reshape(indices, [L, N]);
+    logLike = sum(sum(log(E(indices)), 2), 1);
+    STOPPED HERE
+    STOPPED HERE
+    STOPPED HERE
+    STOPPED HERE
+    STOPPED HERE
     for i=1:N
         logLikes(i) = getLogLikeFromSeq(seqs(i, :), E);
     end
@@ -183,24 +200,26 @@ function out = readSeq(filePath, L)
 end
 
 
-% seq - 1 x n
+% seqs - N x L
 % indices - 1 x n (numbers from 1 to order)
-function indices = getIndeices1D(seq, order)
-    N = length(seq);
-    k = zeros(N - order + 1, order);
-    for i = 1 : order
-        seq(i : end - order + i);
-        k(:,i) = seq(i : end - order + i);
-    end
+function indices = getIndeices1D(seqs, order)
+    [N, L] = size(seqs);
     matSize = 4 * ones(1, order);
-    indices = matSub2ind(matSize, k.');
+
+    k = zeros(N, L - order + 1, order);
+    for i = 1 : order
+        k(:, :, i) = seqs(:, i : end - order + i);
+    end
+    k = permute(k, [3, 2, 1]);
+
+    indices = matSub2ind(matSize, k(:, :));
 end
 
 % seq - 1 x n
 % E - 4 x ... x 4 (order times)
 % logLike - number
-function logLike = getLogLikeFromSeq(seq, E)
+function logLike = getLogLikeFromSeq(seqs, E)
     order = matDim(E);
-    indices = getIndeices1D(seq, order);
+    indices = getIndeices1D(seqs, order);
     logLike = sum(sum(log(E(indices)), 2), 1);
 end
