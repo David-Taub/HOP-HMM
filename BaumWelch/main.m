@@ -1,11 +1,12 @@
 function main()
     close all;
     L = 500;
+    tic
     posSeqsTrain = readSeq('Enhancers.train.seq', L);
     negSeqsTrain = readSeq('NEnhancers.train.seq', L);
     posSeqsTest = readSeq('Enhancers.test.seq', L);
     negSeqsTest = readSeq('NEnhancers.test.seq', L);
-
+    toc
     Xtrain = cat(1, posSeqsTrain, negSeqsTrain);
     Xtest = cat(1, posSeqsTest, negSeqsTest);
     YTrain = cat(1, ones(size(posSeqsTrain, 1),1), zeros(size(negSeqsTrain, 1),1));
@@ -153,14 +154,9 @@ function E = getEFromSeqs(seqs, order)
     ambient = 10 ^ -6;
     N = length(seqs);
     matSize = [4 * ones(1, order), 1];
-    E = zeros(matSize);
-    for i = 1 : N
-        indices = getIndeices1D(seqs(i, :), order);
-        h = histc(indices, 1 : 4 ^ order);
-        Ecur = reshape(h, [matSize, 1]);
-        E = E + Ecur;
-    end
-    E = E + ambient;
+    indices = getIndeices1D(seqs, order);
+    h = histc(indices, 1 : 4 ^ order);
+    E = reshape(h, [matSize, 1]) + ambient;
     E = bsxfun(@times, E, 1 ./ sum(E, order));
 end
 
@@ -174,18 +170,24 @@ end
 
 % reads .seq format file (Tommy's format) and returns the sequence as numbers
 function out = readSeq(filePath, L)
-    % fprintf('Reading %s...', filePath);
-    [~, seq] = textread(filePath, '%s%s%*[^\n]','delimiter','\t','bufsize',20000);
-    out = zeros(length(seq), L); 
-    for i=1:length(seq)
-        seq{i}=upper(seq{i}); 
-        if length(seq{i}) < L
+    matPath = strcat(filePath, '.mat');
+    if exist(matPath, 'file') == 2
+        out = load(matPath);
+        out = out.out;
+        return;
+    end
+    [~, seqsCells] = textread(filePath, '%s%s%*[^\n]','delimiter','\t','bufsize',20000);
+    out = zeros(length(seqsCells), L); 
+    for i=1:length(seqsCells)
+        seqsCells{i}=upper(seqsCells{i}); 
+        if length(seqsCells{i}) < L
             continue;
         end
-        seq{i}=seq{i}(ceil(length(seq{i})/2) + [-floor(L/2) + 1: floor(L/2)]);
-        out(i, :) = nt2int(seq{i});
+        seqsCells{i}=seqsCells{i}(ceil(length(seqsCells{i})/2) + [-floor(L/2) + 1: floor(L/2)]);
+        out(i, :) = nt2int(seqsCells{i});
     end
     out( ~any(out,2), : ) = [];  %remove zero rows
+    save(matPath, 'out');
 end
 
 
