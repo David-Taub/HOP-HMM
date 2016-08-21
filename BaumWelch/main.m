@@ -13,56 +13,55 @@ function main()
     YTest = cat(1, ones(size(posSeqsTest, 1),1), zeros(size(negSeqsTest, 1),1));
 
     m = 2;
-    for order = 6:6
-        
-        [posE, negE] = trainMarkov(posSeqsTrain, negSeqsTrain, order);
-        
-        thresholds = 0.0 : 0.005 : 1.01;
-        [trainErr, threshold] = classify(posE, negE, posSeqsTrain, negSeqsTrain, thresholds);
-        [testErr, threshold] = classify(posE, negE, posSeqsTest, negSeqsTest, threshold);
-        [order, threshold, trainErr, testErr]
+    order = 7;
+    anaFreq(posSeqsTrain, negSeqsTrain, order);
+    [posE, negE] = trainMarkov(posSeqsTrain, negSeqsTrain, order);
+    % return
+    % thresholds = 0.0 : 0.005 : 1.01;
+    % [trainErr, threshold] = classify(posE, negE, posSeqsTrain, negSeqsTrain, thresholds);
+    % [testErr, threshold] = classify(posE, negE, posSeqsTest, negSeqsTest, threshold);
+    % [order, threshold, trainErr, testErr]
 
-        pos2neg = 1 / 300;
-        neg2pos = 1 / 50;
-        
-        [startT, T, E] = createHmmParams(posE, negE, neg2pos, pos2neg);
+    pos2neg = 1 / 250; % this values minimizes training error
+    neg2pos = 1 / 50;
+    
+    [startT, T, E] = createHmmParams(posE, negE, neg2pos, pos2neg);
 
-        % N x 1
-        posPostirior = getPostirior(posSeqsTrain, startT, T, E);
-        negPostirior = getPostirior(negSeqsTrain, startT, T, E);
-        % N x 1
-        posTops = getTopPart(posPostirior);
-        negTops = getTopPart(negPostirior);
+    % N x 1
+    posPostirior = getPostirior(posSeqsTrain, startT, T, E);
+    negPostirior = getPostirior(negSeqsTrain, startT, T, E);
+    % N x 1
+    posTops = getTopPart(posPostirior);
+    negTops = getTopPart(negPostirior);
 
-        minTops = min(min(posTops), min(negTops));
-        maxTops = max(max(posTops), max(negTops));
-        success = [];
-        thresholds = minTops : 0.01 : maxTops;
-        [trainErr, threshold] = findThreshold(posTops, negTops, thresholds);
-        % N x 1
-        posPostirior = getPostirior(posSeqsTest, startT, T, E);
-        negPostirior = getPostirior(negSeqsTest, startT, T, E);
-        % N x 1
-        posTops = getTopPart(posPostirior);
-        negTops = getTopPart(negPostirior);
-        testErr = getLose(posTops, negTops, threshold);
-        [order, trainErr, testErr]
+    minTops = min(min(posTops), min(negTops));
+    maxTops = max(max(posTops), max(negTops));
+    success = [];
+    thresholds = minTops : 0.01 : maxTops;
+    [trainErr, threshold] = findThreshold(posTops, negTops, thresholds);
+    % N x 1
+    posPostirior = getPostirior(posSeqsTest, startT, T, E);
+    negPostirior = getPostirior(negSeqsTest, startT, T, E);
+    % N x 1
+    posTops = getTopPart(posPostirior);
+    negTops = getTopPart(negPostirior);
+    testErr = getLose(posTops, negTops, threshold);
+    [order, trainErr, testErr]
 
-        % figure 
-        % hold on
-        % plot(posTops)
-        % plot(negTops)
-        % hold off
-        % legend('pos', 'neg')
-        % figure
-        % hold on;
-        % plot(mean(posPostirior, 1));
-        % plot(mean(negPostirior, 1));
-        % ylim([0,1]);
-        % legend('positive postirior', 'negative postirior');
-        % title('postirior Probability of Being Enhancer');
-        % hold off;
-    end
+    % figure 
+    % hold on
+    % plot(posTops)
+    % plot(negTops)
+    % hold off
+    % legend('pos', 'neg')
+    % figure
+    % hold on;
+    % plot(mean(posPostirior, 1));
+    % plot(mean(negPostirior, 1));
+    % ylim([0,1]);
+    % legend('positive postirior', 'negative postirior');
+    % title('postirior Probability of Being Enhancer');
+    % hold off;
     save('data.mat')
 end
 
@@ -82,10 +81,10 @@ end
 % low - N2 x 1
 % thresholds - 1 x R
 function [err, threshold] = findThreshold(high, low, thresholds)
-    figure
-    hold on
-    plot(histc(high, 0:0.01:2))
-    plot(histc(low, 0:0.01:2))
+    % figure
+    % hold on
+    % plot(histc(high, 0:0.01:2))
+    % plot(histc(low, 0:0.01:2))
     N = size(high, 1) + size(low, 1);
     % N1 x R
     tp = bsxfun(@lt, repmat(high, [1, length(thresholds)]), thresholds);
@@ -152,14 +151,46 @@ end
 
 function E = getEFromSeqs(seqs, order)
     ambient = 10 ^ -6;
-    N = length(seqs);
     matSize = [4 * ones(1, order), 1];
     indices = getIndeices1D(seqs, order);
     h = histc(indices, 1 : 4 ^ order);
     E = reshape(h, [matSize, 1]) + ambient;
+
     E = bsxfun(@times, E, 1 ./ sum(E, order));
 end
 
+function anaFreq(seqsPos, seqsNeg, order)
+    matSize = [4 * ones(1, order), 1];
+    indicesP = getIndeices1D(seqsPos, order);
+    indicesN = getIndeices1D(seqsNeg, order);
+    hP = histc(indicesP, 1 : 4 ^ order);
+    hN = histc(indicesN, 1 : 4 ^ order);
+    h = (hP - hN);
+    N = 100;
+    mottifs = zeros(N, order);
+    [sortedX,sortingIndices] = sort(h,'descend');
+    % maxValues = sortedX(1:N);
+    maxValueIndices = sortingIndices(1:N);
+    maxValues = h(maxValueIndices);
+    if order == 7
+    [a(:, 1), a(:, 2), a(:, 3), a(:, 4), a(:, 5), a(:, 6), a(:, 7)] = ...
+        ind2sub(matSize, maxValueIndices);
+    elseif order == 6
+    [a(:, 1), a(:, 2), a(:, 3), a(:, 4), a(:, 5), a(:, 6)] = ...
+        ind2sub(matSize, maxValueIndices);
+    elseif order == 5
+    [a(:, 1), a(:, 2), a(:, 3), a(:, 4), a(:, 5)] = ...
+        ind2sub(matSize, maxValueIndices);
+    elseif order == 4
+    [a(:, 1), a(:, 2), a(:, 3), a(:, 4)] = ...
+        ind2sub(matSize, maxValueIndices);
+    end
+    for i = 1:N
+        fprintf('%s (%d / %d)\n', int2nt(a(i, :)), maxValues(i), sum(h));
+    end
+    plot(sortedX)
+
+end
 function logLikes = getLogLikes(E, seqs)
     [N, L] = size(seqs);
     order = matDim(E);
