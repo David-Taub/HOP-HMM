@@ -12,11 +12,11 @@ function main()
     YTest = cat(1, ones(size(posSeqsTest, 1),1), zeros(size(negSeqsTest, 1),1));
 
     m = 2;
-    parfor order = 6:6
+    for order = 6:6
         
         [posE, negE] = trainMarkov(posSeqsTrain, negSeqsTrain, order);
         
-        thresholds = 0.98 : 0.00005 : 1.01;
+        thresholds = 0.0 : 0.005 : 1.01;
         [trainErr, threshold] = classify(posE, negE, posSeqsTrain, negSeqsTrain, thresholds);
         [testErr, threshold] = classify(posE, negE, posSeqsTest, negSeqsTest, threshold);
         [order, threshold, trainErr, testErr]
@@ -81,6 +81,10 @@ end
 % low - N2 x 1
 % thresholds - 1 x R
 function [err, threshold] = findThreshold(high, low, thresholds)
+    figure
+    hold on
+    plot(histc(high, 0:0.01:2))
+    plot(histc(low, 0:0.01:2))
     N = size(high, 1) + size(low, 1);
     % N1 x R
     tp = bsxfun(@lt, repmat(high, [1, length(thresholds)]), thresholds);
@@ -129,16 +133,18 @@ end
 function [err, threshold] = classify(posE, negE, posSeqs, negSeqs, thresholds)
     likePosIsPos = getLogLikes(posE, posSeqs); %high
     likePosIsNeg = getLogLikes(negE, posSeqs); %low
+    ratioPos = likePosIsPos ./ likePosIsNeg; %high / low = high
+    
     likeNegIsPos = getLogLikes(posE, negSeqs); %low
     likeNegIsNeg = getLogLikes(negE, negSeqs); %high
-
-    ratioPos = likePosIsPos ./ likePosIsNeg; %high / low = high
     ratioNeg = likeNegIsPos ./ likeNegIsNeg; %low
+
+
     if length(thresholds) > 1
-        [err, threshold] = findThreshold(ratioPos, ratioNeg, thresholds);
+        [err, threshold] = findThreshold( ratioNeg.', ratioPos.', thresholds);
     else
         threshold = thresholds;
-        err = getLose(ratioPos, ratioNeg, threshold);
+        err = getLose(ratioNeg.', ratioPos.', threshold);
     end
         
 end
@@ -159,28 +165,11 @@ function E = getEFromSeqs(seqs, order)
 end
 
 function logLikes = getLogLikes(E, seqs)
-    N = size(seqs, 1);
-    logLikes = zeros(N,1);
-
+    [N, L] = size(seqs);
     order = matDim(E);
     indices = getIndeices1D(seqs, order);
-
-    STOPPED HERE
-    STOPPED HERE
-    STOPPED HERE
-    STOPPED HERE
-    STOPPED HERE
-    STOPPED HERE
-    indices = reshape(indices, [L, N]);
-    logLike = sum(sum(log(E(indices)), 2), 1);
-    STOPPED HERE
-    STOPPED HERE
-    STOPPED HERE
-    STOPPED HERE
-    STOPPED HERE
-    for i=1:N
-        logLikes(i) = getLogLikeFromSeq(seqs(i, :), E);
-    end
+    indices = reshape(indices, [L - order + 1, N]);
+    logLikes = sum(log(E(indices)), 1);
 end
 
 % reads .seq format file (Tommy's format) and returns the sequence as numbers
@@ -211,15 +200,6 @@ function indices = getIndeices1D(seqs, order)
         k(:, :, i) = seqs(:, i : end - order + i);
     end
     k = permute(k, [3, 2, 1]);
-
     indices = matSub2ind(matSize, k(:, :));
 end
 
-% seq - 1 x n
-% E - 4 x ... x 4 (order times)
-% logLike - number
-function logLike = getLogLikeFromSeq(seqs, E)
-    order = matDim(E);
-    indices = getIndeices1D(seqs, order);
-    logLike = sum(sum(log(E(indices)), 2), 1);
-end
