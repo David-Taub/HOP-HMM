@@ -1,4 +1,4 @@
-function [overlaps, from, to] = reader()
+function [seqs, overlaps, from, to] = reader()
     suffix = '-H3K27ac.peaks.mat';
     homePath = '/cs/cbio/tommy/Enhancers/Data/GSE29184_Bing_Ren';
     fileList = dir(homePath);
@@ -35,13 +35,22 @@ function [overlaps, from, to] = reader()
         to = cat(1, to, toAdd.');
     end
     [overlaps, from, to] = merge(overlaps, from, to);
+    load('genome_mm9.mat');
+    seqs = getSeqs(from, to, genome);
+    save('peaks.mat', 'seqs', 'overlaps', 'from', 'to');
 end
 
-function seqs = getSeqs(from, to, chrs)
-    load('genome_mm9.mat')
-    chrInd = floor(from / 10^9);
+function seqs = getSeqs(from, to, genome)
+    chromoLengthUB = 10^9;
+    chrs = fieldnames(genome);
+    chrInd = floor(from / chromoLengthUB);
+    from = mod(from, chromoLengthUB);
+    to = mod(to, chromoLengthUB);
     chrNames = chrs(chrInd);
-
+    for i = 1:length(chrNames)
+        fullChromosome = getfield(genome, chrNames{i});
+        seqs{i} = fullChromosome(from(i):to(i));
+    end
 end
 
 function filtered = filterPeaks(S);
