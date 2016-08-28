@@ -1,53 +1,73 @@
 function main()
-    close all;
+    % get the n'st most frequent overlap
     L = 500;
-    tic
-    posSeqsTrain = readSeq('Enhancers.train.seq', L);
-    negSeqsTrain = readSeq('NEnhancers.train.seq', L);
-    posSeqsTest = readSeq('Enhancers.test.seq', L);
-    negSeqsTest = readSeq('NEnhancers.test.seq', L);
-    toc
-    Xtrain = cat(1, posSeqsTrain, negSeqsTrain);
-    Xtest = cat(1, posSeqsTest, negSeqsTest);
-    YTrain = cat(1, ones(size(posSeqsTrain, 1),1), zeros(size(negSeqsTrain, 1),1));
-    YTest = cat(1, ones(size(posSeqsTest, 1),1), zeros(size(negSeqsTest, 1),1));
-
-    m = 2;
-    order = 7;
-    anaFreq(posSeqsTrain, negSeqsTrain, order);
-    [posE, negE] = trainMarkov(posSeqsTrain, negSeqsTrain, order);
-    % return
-    % thresholds = 0.0 : 0.005 : 1.01;
-    % [trainErr, threshold] = classify(posE, negE, posSeqsTrain, negSeqsTrain, thresholds);
-    % [testErr, threshold] = classify(posE, negE, posSeqsTest, negSeqsTest, threshold);
-    % [order, threshold, trainErr, testErr]
-
-    pos2neg = 1 / 250; % this values minimizes training error
-    neg2pos = 1 / 50;
+    n = [1:70];
+    [posSeqsTrainCells, posSeqsTestCells] = getNstFreq(n);
     
-    [startT, T, E] = createHmmParams(posE, negE, neg2pos, pos2neg);
+    % posSeqsTrain = readSeq('Enhancers.train.seq', L);
+    posSeqsTrain = regularSeqs(posSeqsTrainCells, L);
+    negSeqsTrain = readSeq('NEnhancers.train.seq', L);
+    % posSeqsTest = readSeq('Enhancers.test.seq', L);
+    posSeqsTest = regularSeqs(posSeqsTestCells, L);
+    negSeqsTest = readSeq('NEnhancers.test.seq', L);
 
-    % N x 1
-    posPostirior = getPostirior(posSeqsTrain, startT, T, E);
-    negPostirior = getPostirior(negSeqsTrain, startT, T, E);
-    % N x 1
-    posTops = getTopPart(posPostirior);
-    negTops = getTopPart(negPostirior);
+    XTrain = cat(1, posSeqsTrain, negSeqsTrain);
+    XTest = cat(1, posSeqsTest, negSeqsTest);
+    YTrain = cat(1, ones(size(posSeqsTrain, 1),1), ones(size(negSeqsTrain, 1),1) .* 2);
+    YTest = cat(1, ones(size(posSeqsTest, 1),1), ones(size(negSeqsTest, 1),1) .* 2);
+    process(XTrain, YTrain, XTest, YTest)
 
-    minTops = min(min(posTops), min(negTops));
-    maxTops = max(max(posTops), max(negTops));
-    success = [];
-    thresholds = minTops : 0.01 : maxTops;
-    [trainErr, threshold] = findThreshold(posTops, negTops, thresholds);
-    % N x 1
-    posPostirior = getPostirior(posSeqsTest, startT, T, E);
-    negPostirior = getPostirior(negSeqsTest, startT, T, E);
-    % N x 1
-    posTops = getTopPart(posPostirior);
-    negTops = getTopPart(negPostirior);
-    testErr = getLose(posTops, negTops, threshold);
-    [order, trainErr, testErr]
+end
 
+function [posSeqsTrainCells, posSeqsTestCells] = getNstFreq(n)
+    load('/cs/stud/boogalla/projects/CompGenetics/BaumWelch/peaks.mat');
+    [olTypes, ~, ind] = unique(overlaps, 'rows');
+    olHist = histc(ind, 1:max(ind));
+    [~, olOrd] = sort(olHist, 'descend');
+    nstPeaks = ismember(ind, olOrd(n));
+    posSeqs = {seqs{nstPeaks}};
+    posSeqsTrainCells = {posSeqs{1:floor(length(posSeqs) / 2)}};
+    posSeqsTestCells = {posSeqs{ceil(length(posSeqs) / 2):end}};
+end
+
+function process(XTrain, YTrain, XTest, YTest)
+    close all;
+    m = 2;
+    % order = 3;
+    for order = 3:5
+        % anaFreq(posSeqsTrain, negSeqsTrain, order);
+        E = trainMarkov(XTrain, YTrain, order);
+        thresholds = 0.0 : 0.005 : 1.01;
+        [trainErr, threshold] = classify(E, XTrain, YTrain, thresholds);
+        [testErr, threshold] = classify(E, XTest, YTest, threshold);
+        [order, threshold, trainErr, testErr]
+
+        pos2neg = 1 / 250; % this values minimizes training error
+        neg2pos = 1 / 50;
+        
+        [startT, T] = createHmmParams(neg2pos, pos2neg);
+
+        % N x 1
+        posPostirior = getPostirior(XTrain(YTrain == 1, :), startT, T, E);
+        negPostirior = getPostirior(XTrain(YTrain == 2, :), startT, T, E);
+        % N x 1
+        posTops = getTopPart(posPostirior);
+        negTops = getTopPart(negPostirior);
+
+        minTops = min(min(posTops), min(negTops));
+        maxTops = max(max(posTops), max(negTops));
+        success = [];
+        thresholds = minTops : 0.01 : maxTops;
+        [trainErr, threshold] = findThreshold(posTops, negTops, thresholds);
+        % N x 1
+        posPostirior = getPostirior(XTest(YTest == 1, :), startT, T, E);
+        negPostirior = getPostirior(XTest(YTest == 2, :), startT, T, E);
+        % N x 1
+        posTops = getTopPart(posPostirior);
+        negTops = getTopPart(negPostirior);
+        testErr = getLose(posTops, negTops, threshold);
+        [order, trainErr, testErr]
+    end
     % figure 
     % hold on
     % plot(posTops)
@@ -119,24 +139,32 @@ function out = getPostirior(seqs, startT, T, E)
     out(:,:) = postirior(:, 1, :);
 end
 
-function [startT, T, E] = createHmmParams(posE, negE, neg2pos, pos2neg)
-    E = cat(1, shiftdim(posE, -1), shiftdim(negE, -1));
+function [startT, T, E] = createHmmParams(neg2pos, pos2neg)
     T = [1 - pos2neg, pos2neg; neg2pos, 1 - neg2pos];
     startT = [0.5; 0.5];
 end
 
-function [posE, negE] = trainMarkov(posSeqs, negSeqs, order)
-    posE = getEFromSeqs(posSeqs, order);
-    negE = getEFromSeqs(negSeqs, order);
+function E = trainMarkov(X, Y, order)
+    E = [];
+    % for i = [unique(Y)]
+    for i = 1:max(Y, [], 1)
+        Ei = getEFromSeqs(X(Y == i, :), order);
+        Ei = shiftdim(Ei, -1);
+        E = cat(1, E, Ei);
+    end
 end
 
-function [err, threshold] = classify(posE, negE, posSeqs, negSeqs, thresholds)
-    likePosIsPos = getLogLikes(posE, posSeqs); %high
-    likePosIsNeg = getLogLikes(negE, posSeqs); %low
+% 2 label classify using the log liklihood ratio
+function [err, threshold] = classify(E, X, Y, thresholds)
+    s = size(E);
+    posE = reshape(E(1,:), s(2:end));
+    negE = reshape(E(2,:), s(2:end));
+    likePosIsPos = getLogLikes(posE, X(Y == 1, :)); %high
+    likePosIsNeg = getLogLikes(negE, X(Y == 1, :)); %low
     ratioPos = likePosIsPos ./ likePosIsNeg; %high / low = high
     
-    likeNegIsPos = getLogLikes(posE, negSeqs); %low
-    likeNegIsNeg = getLogLikes(negE, negSeqs); %high
+    likeNegIsPos = getLogLikes(posE, X(Y == 2, :)); %low
+    likeNegIsNeg = getLogLikes(negE, X(Y == 2, :)); %high
     ratioNeg = likeNegIsPos ./ likeNegIsNeg; %low
 
 
@@ -150,12 +178,12 @@ function [err, threshold] = classify(posE, negE, posSeqs, negSeqs, thresholds)
 end
 
 function E = getEFromSeqs(seqs, order)
+    % ambient is a trick to avoid zero division for absent motifs
     ambient = 10 ^ -6;
     matSize = [4 * ones(1, order), 1];
     indices = getIndeices1D(seqs, order);
     h = histc(indices, 1 : 4 ^ order);
     E = reshape(h, [matSize, 1]) + ambient;
-
     E = bsxfun(@times, E, 1 ./ sum(E, order));
 end
 
@@ -167,7 +195,7 @@ function anaFreq(seqsPos, seqsNeg, order)
     hN = histc(indicesN, 1 : 4 ^ order);
     h = (hP - hN);
     N = 100;
-    mottifs = zeros(N, order);
+    motifs = zeros(N, order);
     [sortedX,sortingIndices] = sort(h,'descend');
     % maxValues = sortedX(1:N);
     maxValueIndices = sortingIndices(1:N);
@@ -208,6 +236,13 @@ function out = readSeq(filePath, L)
         return;
     end
     [~, seqsCells] = textread(filePath, '%s%s%*[^\n]','delimiter','\t','bufsize',20000);
+    out = regularSeqs(seqsCells, L);
+    save(matPath, 'out');
+end
+
+% remove short seqs
+% ACGT -> 1234
+function out = regularSeqs(seqsCells, L)
     out = zeros(length(seqsCells), L); 
     for i=1:length(seqsCells)
         seqsCells{i}=upper(seqsCells{i}); 
@@ -218,9 +253,9 @@ function out = readSeq(filePath, L)
         out(i, :) = nt2int(seqsCells{i});
     end
     out( ~any(out,2), : ) = [];  %remove zero rows
-    save(matPath, 'out');
+    % in some of the data we have NNN which can be any nucleotide
+    out(out==15) = 1;
 end
-
 
 % seqs - N x L
 % indices - 1 x n (numbers from 1 to order)
