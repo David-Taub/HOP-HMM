@@ -1,40 +1,69 @@
 function main()
     % get the n'st most frequent overlap
     L = 500;
-    n = [1:70];
-    [posSeqsTrainCells, posSeqsTestCells] = getNstFreq(n);
-    
-    % posSeqsTrain = readSeq('Enhancers.train.seq', L);
-    posSeqsTrain = regularSeqs(posSeqsTrainCells, L);
-    negSeqsTrain = readSeq('NEnhancers.train.seq', L);
-    % posSeqsTest = readSeq('Enhancers.test.seq', L);
-    posSeqsTest = regularSeqs(posSeqsTestCells, L);
-    negSeqsTest = readSeq('NEnhancers.test.seq', L);
+    n = [1:1];
+    [posSeqs, negSeqs] = loadTommySeqs(n, L);
 
-    XTrain = cat(1, posSeqsTrain, negSeqsTrain);
-    XTest = cat(1, posSeqsTest, negSeqsTest);
-    YTrain = cat(1, ones(size(posSeqsTrain, 1),1), ones(size(negSeqsTrain, 1),1) .* 2);
-    YTest = cat(1, ones(size(posSeqsTest, 1),1), ones(size(negSeqsTest, 1),1) .* 2);
-    process(XTrain, YTrain, XTest, YTest)
+    trainLabLength = ceil(size(posSeqs,1) / 2);
+
+    XTrain = [posSeqs(1:trainLabLength, :); negSeqs(1:trainLabLength, :)];
+    XTest = [posSeqs(trainLabLength + 1: end, :); negSeqs(trainLabLength + 1:end, :)];
+    YTrain = cat(1, ones(trainLabLength, 1), ones(trainLabLength, 1) .* 2);
+    YTest = cat(1, ones(size(posSeqs, 1) - trainLabLength,1), ones(size(posSeqs, 1) - trainLabLength,1) .* 2);
+    process(XTrain, YTrain, XTest, YTest);
 
 end
 
-function [posSeqsTrainCells, posSeqsTestCells] = getNstFreq(n)
+% L - sequence lengths
+% n - number of classes to get for the positive sequences, where class
+% means unique overlap between tissues, and if n is 1:3 then we take 
+% the sequences of the three most frequent class
+function [posSeqs, negSeqs] = loadSeqs(n, L)
     load('/cs/stud/boogalla/projects/CompGenetics/BaumWelch/peaks.mat');
-    [olTypes, ~, ind] = unique(overlaps, 'rows');
-    olHist = histc(ind, 1:max(ind));
-    [~, olOrd] = sort(olHist, 'descend');
-    nstPeaks = ismember(ind, olOrd(n));
-    posSeqs = {seqs{nstPeaks}};
-    posSeqsTrainCells = {posSeqs{1:floor(length(posSeqs) / 2)}};
-    posSeqsTestCells = {posSeqs{ceil(length(posSeqs) / 2):end}};
+    [~, ~, ind] = unique(overlaps, 'rows');
+    overlapsHist = histc(ind, 1:max(ind));
+    [~, overlapsOrd] = sort(overlapsHist, 'descend');
+    nstPeaks = ismember(ind, overlapsOrd(n));
+    posSeqs = regularSeqs({seqs{nstPeaks}}, L);
+
+    load('/cs/stud/boogalla/projects/CompGenetics/BaumWelch/bg.mat');
+    negSeqs = seqs(:, ceil(size(seqs, 2)/2) + [-floor(L/2) + 1: floor(L/2)]);
+    
+    N = min(size(negSeqs, 1), size(posSeqs, 1));
+    posSeqs = posSeqs(1:N, :);
+    negSeqs = negSeqs(1:N, :);
+    % shuffle
+    negSeqs = negSeqs(randperm(size(negSeqs, 1)), :);
+    posSeqs = posSeqs(randperm(size(posSeqs, 1)), :);
+end
+
+
+% L - sequence lengths
+% n - number of classes to get for the positive sequences, where class
+% means unique overlap between tissues, and if n is 1:3 then we take 
+% the sequences of the three most frequent class
+function [posSeqs, negSeqs] = loadTommySeqs(n, L)
+    negSeqsTrain = readSeq('NEnhancers.train.seq', L);
+    posSeqsTrain = readSeq('Enhancers.train.seq', L);
+    negSeqsTest = readSeq('NEnhancers.test.seq', L);
+    posSeqsTest = readSeq('Enhancers.test.seq', L);
+
+    posSeqs = [posSeqsTest; posSeqsTrain];
+    negSeqs = [negSeqsTest; negSeqsTrain];
+
+    N = min(size(negSeqs, 1), size(posSeqs, 1));
+    posSeqs = posSeqs(1:N, :);
+    negSeqs = negSeqs(1:N, :);
+    % shuffle
+    negSeqs = negSeqs(randperm(size(negSeqs, 1)), :);
+    posSeqs = posSeqs(randperm(size(posSeqs, 1)), :);
 end
 
 function process(XTrain, YTrain, XTest, YTest)
     close all;
     m = 2;
     % order = 3;
-    for order = 3:5
+    for order = 4:6
         % anaFreq(posSeqsTrain, negSeqsTrain, order);
         E = trainMarkov(XTrain, YTrain, order);
         thresholds = 0.0 : 0.005 : 1.01;
