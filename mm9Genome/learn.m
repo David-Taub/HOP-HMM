@@ -7,29 +7,33 @@ function [MMmean, amounts] = learn(posSeqs, negSeqs, overlaps)
     M = size(overlaps, 2); %23
     MMmean = zeros(1, M+1);
     amounts = zeros(1, M+1);
-    Es = zeros(4, 4 ^ (order - 1), M + 1);
+    % Es = zeros(4, 4 ^ (order - 1), M + 1);
+    Es = zeros(4 ^ order, M + 1);
     for overlapClass = 0:M
-        [MMmean(overlapClass+1), ~, Es(:, :, overlapClass + 1), amounts(overlapClass+1)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order);
+        % [MMmean(overlapClass+1), ~, Es(:, :, overlapClass + 1), amounts(overlapClass+1)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order);
+        [MMmean(overlapClass+1), ~, Es(:, overlapClass + 1), amounts(overlapClass+1)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order);
     end
-    % plotEs(Es, M + 1);
+    diffHistPlot(Es, M + 1);
 end
 
 function [MMmean, HMMmean, Emean, amount] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order)
 
-    repeats = 5;
+    repeats = 2;
 
     testErrMMs  = zeros(1, repeats);
     testErrHMMs = zeros(1, repeats);
-    Es = zeros(4, 4 ^ (order -1), repeats);
+    Es = zeros(4 ^ order, repeats);
+    % Es = zeros(4, 4 ^ (order -1), repeats);
     for i = 1:repeats
         [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, overlapClass);
         amount = sum([YTrain == 1;YTest == 1], 1);
-        [testErrMMs(i), testErrHMMs(i), E] = learnData(XTrain, YTrain, XTest, YTest, order);
-        Es(:, :, i) = spread(reshape(E(1, :), ones(1, order) * 4));
+        % [testErrMMs(i), testErrHMMs(i), E] = learnData(XTrain, YTrain, XTest, YTest, order);
+        [testErrMMs(i), testErrHMMs(i), Es(:, i)] = learnData(XTrain, YTrain, XTest, YTest, order);
+        % Es(:, :, i) = spread(reshape(E(1, :), ones(1, order) * 4));
     end
     MMmean = mean(testErrMMs, 2);
     HMMmean = mean(testErrHMMs, 2);
-    Emean = mean(Es, 3);
+    Emean = mean(Es, 2);
 end
 
 % E - 4 x 4 x ... x 4 ('order' times)
@@ -65,6 +69,60 @@ function plotEs(Es, M)
     ax.YTickLabel = tissues;
     ax.XTickLabel = tissues;
     ax.XTickLabelRotation=45;
+    % set(gca,'YLim',[0 M],'YTick',1:M, 'XLim',[0 M],'XTick',1:M,...
+    %         'YTickLabel', tissues, 'XTickLabel', tissues);
+end
+
+function diffHist = freqFinder(seqsPos, seqsNeg, order)
+    matSize = [4 * ones(1, order), 1];
+    indicesP = getIndeices1D(seqsPos, order);
+    indicesN = getIndeices1D(seqsNeg, order);
+    posHist = histc(indicesP, 1 : 4 ^ order);
+    negHist = histc(indicesN, 1 : 4 ^ order);
+    diffHist = posHist - negHist;
+    % diffHist(diffHist < 0) = 0;
+    diffHist = diffHist / size(seqsPos, 1);
+    plot(sort(diffHist))
+    hold on
+end
+
+% Es = 4 ^ order x M
+function diffHistPlot(diffHist, M)
+    for p = [1,2,3,5,10,20,200]
+        tissues = {'all', 'BAT', 'BMDM', 'BoneMarrow',...
+                   'CH12', 'Cerebellum', 'Cortex',...
+                   'E14', 'Heart-E14.5', 'Heart',...
+                   'Kidney', 'Limb-E14.5', 'Liver-E14.5',...
+                   'Liver', 'MEF', 'MEL', 'OlfactBulb',...
+                   'Placenta', 'SmIntestine', 'Spleen',...
+                   'Testis', 'Thymus', 'WholeBrain-E14.5', 'mESC'};
+        [~, s] = sort(diffHist, 1);
+        s(p:end - p, :) = [];
+        diffHistU = diffHist(unique(s(:)), :);
+
+        % todo: pdist  linkage squareform dendrogram
+        tree = linkage(diffHistU.');
+        leafOrd = optimalleaforder(tree, pdist(diffHistU.'));
+        tissues = tissues(leafOrd);
+        diffHistU = diffHistU(:, leafOrd);
+        dendrogram(tree);
+        distMat = squareform(pdist(diffHistU.') .^ 2);
+
+        f = figure;
+        imagesc(distMat);colorbar;
+        title(sprintf('Emission Diff Between Tissues %d %d (S)', p, size(diffHistU,1)));
+        filepath = sprintf('/a/store-05/z/cbio/david/projects/CompGenetics/mm9Genome/graphs/Motifs_%d.jpg', p);
+        % set(gca,'YLim',[0 M],'YTick',1:12,'YTickLabel',months)
+        ax = gca;
+        ax.XLim = [0 M];
+        ax.YLim = [0 M];
+        ax.XTick = 1:M;
+        ax.YTick = 1:M;
+        ax.YTickLabel = tissues;
+        ax.XTickLabel = tissues;
+        ax.XTickLabelRotation=45;
+        saveas(f,filepath);%close all;
+    end
     % set(gca,'YLim',[0 M],'YTick',1:M, 'XLim',[0 M],'XTick',1:M,...
     %         'YTickLabel', tissues, 'XTickLabel', tissues);
 end
@@ -123,13 +181,14 @@ end
 % end
 
 function [testErrMM, testErrHMM, E] = learnData(XTrain, YTrain, XTest, YTest, order)
-    % anaFreq(XTrain(YTrain == 1, :), XTrain(YTrain == 2, :), order);
-    E = trainMarkov(XTrain, YTrain, order);
-    thresholds = 0.0 : 0.005 : 2;
-    [~, threshold] = classify(E, XTrain, YTrain, thresholds);
-    [testErrMM, ~] = classify(E, XTest, YTest, threshold);
+    E = freqFinder(XTrain(YTrain == 1, :), XTrain(YTrain == 2, :), order);
+    % E = trainMarkov(XTrain, YTrain, order);
+    % thresholds = 0.0 : 0.005 : 2;
+    % [~, threshold] = classify(E, XTrain, YTrain, thresholds);
+    % [testErrMM, ~] = classify(E, XTest, YTest, threshold);
     % [order, threshold, testErrMM, testErr]
     testErrHMM = 0;
+    testErrMM = 0;
 
     % pos2neg = 1 / 250; % this values minimizes training error
     % neg2pos = 1 / 50;
@@ -274,29 +333,36 @@ function E = getEFromSeqs(seqs, order)
     E = bsxfun(@times, E, 1 ./ sum(E, order));
 end
 
+
 function anaFreq(seqsPos, seqsNeg, order)
     matSize = [4 * ones(1, order), 1];
     indicesP = getIndeices1D(seqsPos, order);
     indicesN = getIndeices1D(seqsNeg, order);
-    hP = histc(indicesP, 1 : 4 ^ order);
-    hN = histc(indicesN, 1 : 4 ^ order);
-    h = hP - hN;
+    posHist = histc(indicesP, 1 : 4 ^ order);
+    negHist = histc(indicesN, 1 : 4 ^ order);
+    diffHist = posHist - negHist;
     N = 40;
-    [sortedX,sortingIndices] = sort(h,'descend');
+    [sortedX,sortingIndices] = sort(diffHist,'descend');
     % maxValues = sortedX(1:N);
     maxValueIndices = sortingIndices(1:N);
-    maxValues = h(maxValueIndices);
+    maxValues = diffHist(maxValueIndices);
     if order == 7
-    [a(:, 1), a(:, 2), a(:, 3), a(:, 4), a(:, 5), a(:, 6), a(:, 7)] = ...
+        [a(:, 1), a(:, 2), a(:, 3), a(:, 4), a(:, 5), a(:, 6), a(:, 7)] = ...
         ind2sub(matSize, maxValueIndices);
     elseif order == 6
-    [a(:, 1), a(:, 2), a(:, 3), a(:, 4), a(:, 5), a(:, 6)] = ...
+        [a(:, 1), a(:, 2), a(:, 3), a(:, 4), a(:, 5), a(:, 6)] = ...
         ind2sub(matSize, maxValueIndices);
     elseif order == 5
-    [a(:, 1), a(:, 2), a(:, 3), a(:, 4), a(:, 5)] = ...
+        [a(:, 1), a(:, 2), a(:, 3), a(:, 4), a(:, 5)] = ...
         ind2sub(matSize, maxValueIndices);
     elseif order == 4
-    [a(:, 1), a(:, 2), a(:, 3), a(:, 4)] = ...
+        [a(:, 1), a(:, 2), a(:, 3), a(:, 4)] = ...
+        ind2sub(matSize, maxValueIndices);
+    elseif order == 3
+        [a(:, 1), a(:, 2), a(:, 3)] = ...
+        ind2sub(matSize, maxValueIndices);
+    elseif order == 2
+        [a(:, 1), a(:, 2)] = ...
         ind2sub(matSize, maxValueIndices);
     end
     for i = 1:N
@@ -306,7 +372,6 @@ function anaFreq(seqsPos, seqsNeg, order)
     plot(sortedX)
     hold on
     drawnow
-
 end
 
 

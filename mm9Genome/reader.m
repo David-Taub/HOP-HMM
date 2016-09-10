@@ -19,15 +19,16 @@ function reader(peaks, genome, negSeqs)
               % 10000, 2, -1, 3, 0.05, 3, 3000;...
               % 1000.1, 2, -1, 3, 0.05, 3, 3000;...
              ];
-    ga(@(x) readParam(x, peaks, genome, negSeqs), 7,[], [], [], [],...
-         [0,0,0,0,0,0,2000], [0.1,1,0.08,1,0.08,1,4000] )
-    % for j = 1:size(params, 1)
-    %     tic
-    %     fprintf('Params #%d\n', j);
-    %     readParam(params(j,:), peaks, genome, negSeqs);
-    %     toc
-    % end
+    % ga(@(x) readParam(x, peaks, genome, negSeqs), 7,[], [], [], [],...
+    %      [0,0,0,0,0,0,2000], [0.1,1,0.08,1,0.08,1,4000] )
+    for j = 1:size(params, 1)
+        tic
+        fprintf('Params #%d\n', j);
+        readParam(params(j,:), peaks, genome, negSeqs);
+        toc
+    end
 end
+
 function err = readParam(param, peaks, genome, negSeqs)
     fprintf('\n');
     fprintf('%.3f ', param)
@@ -64,7 +65,7 @@ function err = readParam(param, peaks, genome, negSeqs)
 
     peaksPath = ['/cs/cbio/david/data/peaks_output/peaks_', num2str(j), '.mat'];
 %     save(peaksPath, 'posSeqs', 'overlaps', 'from', 'to', 'chr');
-    fprintf('%d ', size(posSeqs, 1));
+    fprintf('%d\t', size(posSeqs, 1));
     [MMmean, amounts] = learn(posSeqs, negSeqs, overlaps);
     err = MMmean(1);
     fprintf('%.4f', err);
