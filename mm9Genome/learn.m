@@ -44,34 +44,34 @@ function outE = spread(E)
     outE = outE(:,:);
 end
 
-function plotEs(Es, M)
-    tissues = {'BAT', 'BMDM', 'BoneMarrow',...
-               'CH12', 'Cerebellum', 'Cortex',...
-               'E14', 'Heart-E14.5', 'Heart',...
-               'Kidney', 'Limb-E14.5', 'Liver-E14.5',...
-               'Liver', 'MEF', 'MEL', 'OlfactBulb',...
-               'Placenta', 'SmIntestine', 'Spleen',...
-               'Testis', 'Thymus', 'WholeBrain-E14.5', 'mESC'};
+% function plotEs(Es, M)
+%     tissues = {'BAT', 'BMDM', 'BoneMarrow',...
+%                'CH12', 'Cerebellum', 'Cortex',...
+%                'E14', 'Heart-E14.5', 'Heart',...
+%                'Kidney', 'Limb-E14.5', 'Liver-E14.5',...
+%                'Liver', 'MEF', 'MEL', 'OlfactBulb',...
+%                'Placenta', 'SmIntestine', 'Spleen',...
+%                'Testis', 'Thymus', 'WholeBrain-E14.5', 'mESC'};
 
-    Es = mean(Es, 2);
-    EsRep = repmat(Es, [1, M, 1]);
-    %todo: remove cells without any instances get top X% of different cells
-    D = median((EsRep - permute(EsRep, [2,1,3])) .^ 2, 3);
-    figure;
-    imagesc(D);colorbar;
-    title('Emission Diff Between Tissues');
-    % set(gca,'YLim',[0 M],'YTick',1:12,'YTickLabel',months)
-    ax = gca;
-    ax.XLim = [0 M];
-    ax.YLim = [0 M];
-    ax.XTick = 1:M;
-    ax.YTick = 1:M;
-    ax.YTickLabel = tissues;
-    ax.XTickLabel = tissues;
-    ax.XTickLabelRotation=45;
-    % set(gca,'YLim',[0 M],'YTick',1:M, 'XLim',[0 M],'XTick',1:M,...
-    %         'YTickLabel', tissues, 'XTickLabel', tissues);
-end
+%     Es = mean(Es, 2);
+%     EsRep = repmat(Es, [1, M, 1]);
+%     %todo: remove cells without any instances get top X% of different cells
+%     D = median((EsRep - permute(EsRep, [2,1,3])) .^ 2, 3);
+%     figure;
+%     imagesc(D);colorbar;
+%     title('Emission Diff Between Tissues');
+%     % set(gca,'YLim',[0 M],'YTick',1:12,'YTickLabel',months)
+%     ax = gca;
+%     ax.XLim = [0 M];
+%     ax.YLim = [0 M];
+%     ax.XTick = 1:M;
+%     ax.YTick = 1:M;
+%     ax.YTickLabel = tissues;
+%     ax.XTickLabel = tissues;
+%     ax.XTickLabelRotation=45;
+%     % set(gca,'YLim',[0 M],'YTick',1:M, 'XLim',[0 M],'XTick',1:M,...
+%     %         'YTickLabel', tissues, 'XTickLabel', tissues);
+% end
 
 function diffHist = freqFinder(seqsPos, seqsNeg, order)
     matSize = [4 * ones(1, order), 1];
@@ -100,18 +100,23 @@ function diffHistPlot(diffHist, M)
         s(p:end - p, :) = [];
         diffHistU = diffHist(unique(s(:)), :);
 
-        % todo: pdist  linkage squareform dendrogram
         tree = linkage(diffHistU.');
+        
+        % reorder
         leafOrd = optimalleaforder(tree, pdist(diffHistU.'));
         tissues = tissues(leafOrd);
         diffHistU = diffHistU(:, leafOrd);
+        
         dendrogram(tree);
         distMat = squareform(pdist(diffHistU.') .^ 2);
 
         f = figure;
         imagesc(distMat);colorbar;
         title(sprintf('Emission Diff Between Tissues %d %d (S)', p, size(diffHistU,1)));
-        filepath = sprintf('/a/store-05/z/cbio/david/projects/CompGenetics/mm9Genome/graphs/Motifs_%d.jpg', p);
+        filepath = sprintf('/a/store-05/z/cbio/david/projects/CompGenetics/mm9Genome/graphs/reordered/Motifs_%d.jpg', p);
+        % filepath = sprintf('/a/store-05/z/cbio/david/projects/CompGenetics/mm9Genome/graphs/reordered/Motifs_%d_S.jpg', p);
+        % filepath = sprintf('/a/store-05/z/cbio/david/projects/CompGenetics/mm9Genome/graphs/Motifs_%d.jpg', p);
+        % filepath = sprintf('/a/store-05/z/cbio/david/projects/CompGenetics/mm9Genome/graphs/Motifs_%d_S.jpg', p);
         % set(gca,'YLim',[0 M],'YTick',1:12,'YTickLabel',months)
         ax = gca;
         ax.XLim = [0 M];
@@ -150,7 +155,7 @@ function [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, o
 
     % shuffle
     posSeqs = posSeqs(randperm(size(posSeqs, 1), N), :);
-    negSeqs = negSeqs(randperm(size(negSeqs, 1), N), :);
+    % negSeqs = negSeqs(randperm(size(negSeqs, 1), N), :);
 
     % get train dataset
     XTrain = [posSeqs(1:trainLabLength, :); negSeqs(1:trainLabLength, :)];
