@@ -4,22 +4,23 @@
 % negSeqs = readSeq('/cs/cbio/tommy/Enhancers/Data/NEnhancers.seq', 500);
 % negSeqs = sortBaseContent(negSeqs);
 % reader(T, genome, negSeqs);
+% while 1; try; reader(T, genome, negSeqsRaw); catch; end; end;
 function reader(peaks, genome, negSeqs)
     close all;
     % profile on
     format compact
 
     params = [...
-              0.005, 1, 0.05, 1, 0.05, 1, 3000;...
+              % 0.005, 1, 0.05, 1, 0.05, 1, 3000;...
               0.03, 1, 0.05, 1, 0.05, 1, 3000;...
-              0.02, 1, 0.05, 1, 0.05, 1, 3000;...
-              0.1, 1, 0.05, 1, 0.05, 1, 3000;...
-              15000, 2, -1, 3, 0.05, 3, 3000;...
-              10000, 2, -1, 3, 0.05, 3, 3000;...
-              1000.1, 2, -1, 3, 0.05, 3, 3000;...
+              % 0.02, 1, 0.05, 1, 0.05, 1, 3000;...
+              % 0.1, 1, 0.05, 1, 0.05, 1, 3000;...
+              % 15000, 2, -1, 3, 0.05, 3, 3000;...
+              % 10000, 2, -1, 3, 0.05, 3, 3000;...
+              % 1000.1, 2, -1, 3, 0.05, 3, 3000;...
              ];
     ga(@(x) readParam(x, peaks, genome, negSeqs), 7,[], [], [], [],...
-         [0,0,0,0,0,0,1000], [0.2,1,0.1,1,0.1,1,5000] )
+         [0,0,0,0,0,0,2000], [0.1,1,0.08,1,0.08,1,4000] )
     % for j = 1:size(params, 1)
     %     tic
     %     fprintf('Params #%d\n', j);
@@ -28,8 +29,8 @@ function reader(peaks, genome, negSeqs)
     % end
 end
 function err = readParam(param, peaks, genome, negSeqs)
-    fprintf('%.3f ', param)
     fprintf('\n');
+    fprintf('%.3f ', param)
     fid = fopen('/cs/stud/boogalla/projects/CompGenetics/mm9Genome/peaksOutput.csv', 'a');
     seqsLength = 500;
     N = length(peaks); %23
@@ -60,12 +61,13 @@ function err = readParam(param, peaks, genome, negSeqs)
     overlaps(any(posSeqs > 4, 2), :) = [];
     posSeqs(any(posSeqs > 4, 2), :) = [];
 
-    fprintf('%d\n', size(posSeqs, 1));
 
     peaksPath = ['/cs/cbio/david/data/peaks_output/peaks_', num2str(j), '.mat'];
 %     save(peaksPath, 'posSeqs', 'overlaps', 'from', 'to', 'chr');
-    [MMmean, MMvar, amounts] = learn(posSeqs, negSeqs, overlaps);
+    fprintf('%d ', size(posSeqs, 1));
+    [MMmean, amounts] = learn(posSeqs, negSeqs, overlaps);
     err = MMmean(1);
+    fprintf('%.4f', err);
     fprintf(fid, '%2.3f, ', param);
     for i = 1:length(amounts)
         fprintf(fid, '%.3f, ', MMmean(i));

@@ -1,38 +1,43 @@
-function [MMmean, MMvar, amounts] = learn(posSeqs, negSeqs, overlaps)
+function [MMmean, amounts] = learn(posSeqs, negSeqs, overlaps)
     % get the n'st most frequent overlap
     % load('/cs/stud/boogalla/  projects/CompGenetics/BaumWelch/peaks.mat');
     % posSeqs = seqs;
     % negSeqs = readSeq('NEnhancers.seq', L);
+    order = 6;
     M = size(overlaps, 2); %23
     MMmean = zeros(1, M+1);
-    MMvar = zeros(1, M+1);
     amounts = zeros(1, M+1);
+    Es = zeros(4, 4 ^ (order - 1), M + 1);
     for overlapClass = 0:M
-        [MMmean(overlapClass+1), MMvar(overlapClass+1), ~, ~, ~, amounts(overlapClass+1)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass);
+        [MMmean(overlapClass+1), ~, Es(:, :, overlapClass + 1), amounts(overlapClass+1)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order);
     end
-    % plot(mean(testErrMMs(1:k,:), 2));
-    % plotEs(Es, M);
+    % plotEs(Es, M + 1);
 end
 
-function [MMmean, MMvar, HMMmean, HMMvar, Emean, amount] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass)
+function [MMmean, HMMmean, Emean, amount] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order)
 
-    order = 6;
     repeats = 5;
 
     testErrMMs  = zeros(1, repeats);
     testErrHMMs = zeros(1, repeats);
-    Es = zeros(repeats, 4 ^ order);
+    Es = zeros(4, 4 ^ (order -1), repeats);
     for i = 1:repeats
         [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, overlapClass);
         amount = sum([YTrain == 1;YTest == 1], 1);
         [testErrMMs(i), testErrHMMs(i), E] = learnData(XTrain, YTrain, XTest, YTest, order);
-        Es(i, :) = E(1, :);
+        Es(:, :, i) = spread(reshape(E(1, :), ones(1, order) * 4));
     end
     MMmean = mean(testErrMMs, 2);
-    MMvar = var(testErrMMs, 0, 2);
     HMMmean = mean(testErrHMMs, 2);
-    HMMvar = var(testErrHMMs, 0, 2);
-    Emean = mean(Es, 1);
+    Emean = mean(Es, 3);
+end
+
+% E - 4 x 4 x ... x 4 ('order' times)
+% outE - 4 x n  where n = 4 ^ (order -1)
+function outE = spread(E)
+    order = matDim(E);
+    outE = shiftdim(E, order-1);
+    outE = outE(:,:);
 end
 
 function plotEs(Es, M)
@@ -46,6 +51,7 @@ function plotEs(Es, M)
 
     Es = mean(Es, 2);
     EsRep = repmat(Es, [1, M, 1]);
+    %todo: remove cells without any instances get top X% of different cells
     D = median((EsRep - permute(EsRep, [2,1,3])) .^ 2, 3);
     figure;
     imagesc(D);colorbar;
@@ -98,40 +104,6 @@ function [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, o
     YTest  = [ones(N - trainLabLength,1); ones(N - trainLabLength,1) .* 2];
 end
 
-% L - sequence lengths
-% n - number of classes to get for the positive sequences, where class
-% means unique overlap between tissues, and if n is 1:3 then we take 
-% the sequences of the three most frequent class
-function [XTrain, XTest, YTrain, YTest] = loadSeqs2(posSeqs, negSeqs, overlaps, overlapClass)
-    if overlapClass > 0
-        posSeqs = posSeqs(overlaps(:, overlapClass) == 1, :);
-    end
-
-    % posSeqs = regularSeqs(posSeqs, L);
-
-
-    % TODO: my BG seqs are bad. why?
-    % load('/cs/stud/boogalla/projects/CompGenetics/BaumWelch/bg.mat');
-    % negSeqs = seqs(:, ceil(size(seqs, 2)/2) + [-floor(L/2) + 1: floor(L/2)]);
-    % negSeqs = readSeq('NEnhancers.seq', L);
-    
-    trainTestRate = 0.9;
-    trainLabLength = ceil(size(posSeqs,1) * trainTestRate);
-        
-    N = min(size(negSeqs, 1), size(posSeqs, 1));
-    posSeqs = posSeqs(1:N, :);
-    negSeqs = negSeqs(1:N, :);
-    % shuffle
-    negSeqs = negSeqs(randperm(size(negSeqs, 1)), :);
-    posSeqs = posSeqs(randperm(size(posSeqs, 1)), :);
-
-
-    XTrain = [posSeqs(1:trainLabLength, :); negSeqs(1:trainLabLength, :)];
-    XTest = [posSeqs(trainLabLength + 1: end, :); negSeqs(trainLabLength + 1:end, :)];
-    YTrain = cat(1, ones(trainLabLength, 1), ones(trainLabLength, 1) .* 2);
-    YTest = cat(1, ones(size(posSeqs, 1) - trainLabLength,1), ones(size(posSeqs, 1) - trainLabLength,1) .* 2);
-end
-
 
 % L - sequence lengths
 % n - number of classes to get for the positive sequences, where class
@@ -149,9 +121,6 @@ end
 %     [posSeqs, negSeqs] = suffleAndTrim(posSeqs, negSeqs);
 
 % end
-
-function [posSeqs, negSeqs] = suffleAndTrim(posSeqs, negSeqs)
-end 
 
 function [testErrMM, testErrHMM, E] = learnData(XTrain, YTrain, XTest, YTest, order)
     % anaFreq(XTrain(YTrain == 1, :), XTrain(YTrain == 2, :), order);
@@ -312,7 +281,7 @@ function anaFreq(seqsPos, seqsNeg, order)
     hP = histc(indicesP, 1 : 4 ^ order);
     hN = histc(indicesN, 1 : 4 ^ order);
     h = hP - hN;
-    N = 10;
+    N = 40;
     [sortedX,sortingIndices] = sort(h,'descend');
     % maxValues = sortedX(1:N);
     maxValueIndices = sortingIndices(1:N);
