@@ -318,17 +318,6 @@ function [err, threshold] = classify(E, X, Y, thresholds)
     end
     
 end
-
-% X - N x L
-function likeRatio = getLikeRatio(E, X)
-    s = size(E);
-    posE = reshape(E(1,:), s(2:end));
-    negE = reshape(E(2,:), s(2:end));
-    likePos = getLogLikes(posE, X);
-    likeNeg = getLogLikes(negE, X);
-    likeRatio = likePos ./ likeNeg; %high / low = high
-end
-    
 function E = getEFromSeqs(seqs, order)
     % ambient is a trick to avoid zero division for absent motifs
     ambient = 10 ^ -6;
@@ -378,29 +367,5 @@ function anaFreq(seqsPos, seqsNeg, order)
     plot(sortedX)
     hold on
     drawnow
-end
-
-
-function logLikes = getLogLikes(E, seqs)
-    [N, L] = size(seqs);
-    order = matDim(E);
-    indices = getIndeices1D(seqs, order);
-    indices = reshape(indices, [L - order + 1, N]);
-    logLikes = sum(log(E(indices)), 1);
-end
-
-
-% seqs - N x L
-% indices - 1 x n (numbers from 1 to order)
-function indices = getIndeices1D(seqs, order)
-    [N, L] = size(seqs);
-    matSize = 4 * ones(1, order);
-
-    k = zeros(N, L - order + 1, order);
-    for i = 1 : order
-        k(:, :, i) = seqs(:, i : end - order + i);
-    end
-    k = permute(k, [3, 2, 1]);
-    indices = matSub2ind(matSize, k(:, :));
 end
 
