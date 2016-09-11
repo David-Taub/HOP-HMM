@@ -307,17 +307,8 @@ end
 
 % 2 label classify using the log liklihood ratio
 function [err, threshold] = classify(E, X, Y, thresholds)
-    s = size(E);
-    posE = reshape(E(1,:), s(2:end));
-    negE = reshape(E(2,:), s(2:end));
-    likePosIsPos = getLogLikes(posE, X(Y == 1, :)); %high
-    likePosIsNeg = getLogLikes(negE, X(Y == 1, :)); %low
-    ratioPos = likePosIsPos ./ likePosIsNeg; %high / low = high
-    
-    likeNegIsPos = getLogLikes(posE, X(Y == 2, :)); %low
-    likeNegIsNeg = getLogLikes(negE, X(Y == 2, :)); %high
-    ratioNeg = likeNegIsPos ./ likeNegIsNeg; %low
-
+    ratioPos = getLikeRatio(E, X(Y == 1, :));
+    ratioNeg = getLikeRatio(E, X(Y == 2, :));
 
     if length(thresholds) > 1
         [err, threshold] = findThreshold( ratioNeg.', ratioPos.', thresholds);
@@ -328,6 +319,16 @@ function [err, threshold] = classify(E, X, Y, thresholds)
     
 end
 
+% X - N x L
+function likeRatio = getLikeRatio(E, X)
+    s = size(E);
+    posE = reshape(E(1,:), s(2:end));
+    negE = reshape(E(2,:), s(2:end));
+    likePos = getLogLikes(posE, X);
+    likeNeg = getLogLikes(negE, X);
+    likeRatio = likePos ./ likeNeg; %high / low = high
+end
+    
 function E = getEFromSeqs(seqs, order)
     % ambient is a trick to avoid zero division for absent motifs
     ambient = 10 ^ -6;
