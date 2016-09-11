@@ -8,41 +8,41 @@ function [MMmean, amounts] = learn(posSeqs, negSeqs, overlaps)
     MMmean = zeros(1, M+1);
     amounts = zeros(1, M+1);
     % Es = zeros(4, 4 ^ (order - 1), M + 1);
-    Es = zeros(4 ^ order, M + 1);
+    freqDiffs = zeros(4 ^ order, M + 1);
     for overlapClass = 0:M
         % [MMmean(overlapClass+1), ~, Es(:, :, overlapClass + 1), amounts(overlapClass+1)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order);
-        [MMmean(overlapClass+1), ~, Es(:, overlapClass + 1), amounts(overlapClass+1)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order);
+        [MMmean(overlapClass+1), ~, freqDiffs(:, overlapClass + 1), amounts(overlapClass+1)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order);
     end
-    diffHistPlot(Es, M + 1);
+    % diffHistPlot(freqDiffs, M + 1);
 end
 
-function [MMmean, HMMmean, Emean, amount] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order)
+function [MMmean, HMMmean, freqDiff, amount] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order)
 
     repeats = 2;
 
     testErrMMs  = zeros(1, repeats);
     testErrHMMs = zeros(1, repeats);
-    Es = zeros(4 ^ order, repeats);
-    % Es = zeros(4, 4 ^ (order -1), repeats);
+    freqDiffs = zeros(4 ^ order, repeats);
+    % freqDiffs = zeros(4, 4 ^ (order -1), repeats);
     for i = 1:repeats
         [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, overlapClass);
         amount = sum([YTrain == 1;YTest == 1], 1);
         % [testErrMMs(i), testErrHMMs(i), E] = learnData(XTrain, YTrain, XTest, YTest, order);
-        [testErrMMs(i), testErrHMMs(i), Es(:, i)] = learnData(XTrain, YTrain, XTest, YTest, order);
-        % Es(:, :, i) = spread(reshape(E(1, :), ones(1, order) * 4));
+        [testErrMMs(i), testErrHMMs(i), freqDiffs(:, i)] = learnData(XTrain, YTrain, XTest, YTest, order);
+        % freqDiffs(:, :, i) = spread(reshape(E(1, :), ones(1, order) * 4));
     end
     MMmean = mean(testErrMMs, 2);
     HMMmean = mean(testErrHMMs, 2);
-    Emean = mean(Es, 2);
+    freqDiff = mean(freqDiffs, 2);
 end
 
 % E - 4 x 4 x ... x 4 ('order' times)
 % outE - 4 x n  where n = 4 ^ (order -1)
-function outE = spread(E)
-    order = matDim(E);
-    outE = shiftdim(E, order-1);
-    outE = outE(:,:);
-end
+% function outE = spread(E)
+%     order = matDim(E);
+%     outE = shiftdim(E, order-1);
+%     outE = outE(:,:);
+% end
 
 % function plotEs(Es, M)
 %     tissues = {'BAT', 'BMDM', 'BoneMarrow',...
@@ -155,7 +155,7 @@ function [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, o
 
     % shuffle
     posSeqs = posSeqs(randperm(size(posSeqs, 1), N), :);
-    % negSeqs = negSeqs(randperm(size(negSeqs, 1), N), :);
+    negSeqs = negSeqs(randperm(size(negSeqs, 1), N), :);
 
     % get train dataset
     XTrain = [posSeqs(1:trainLabLength, :); negSeqs(1:trainLabLength, :)];
@@ -185,15 +185,15 @@ end
 
 % end
 
-function [testErrMM, testErrHMM, E] = learnData(XTrain, YTrain, XTest, YTest, order)
-    E = freqFinder(XTrain(YTrain == 1, :), XTrain(YTrain == 2, :), order);
-    % E = trainMarkov(XTrain, YTrain, order);
-    % thresholds = 0.0 : 0.005 : 2;
-    % [~, threshold] = classify(E, XTrain, YTrain, thresholds);
-    % [testErrMM, ~] = classify(E, XTest, YTest, threshold);
-    % [order, threshold, testErrMM, testErr]
+function [testErrMM, testErrHMM, freqDiff] = learnData(XTrain, YTrain, XTest, YTest, order)
+    E = trainMarkov(XTrain, YTrain, order);
+    thresholds = 0.0 : 0.005 : 2;
+    [~, threshold] = classify(E, XTrain, YTrain, thresholds);
+    [testErrMM, ~] = classify(E, XTest, YTest, threshold);
+    [order, threshold, testErrMM, size(XTrain, 1) / 2]
+    freqDiff = freqFinder(XTrain(YTrain == 1, :), XTrain(YTrain == 2, :), order);
     testErrHMM = 0;
-    testErrMM = 0;
+    % testErrMM = 0;
 
     % pos2neg = 1 / 250; % this values minimizes training error
     % neg2pos = 1 / 50;
@@ -311,7 +311,7 @@ function [err, threshold] = classify(E, X, Y, thresholds)
     ratioNeg = getLikeRatio(E, X(Y == 2, :));
 
     if length(thresholds) > 1
-        [err, threshold] = findThreshold( ratioNeg.', ratioPos.', thresholds);
+        [err, threshold] = findThreshold(ratioNeg.', ratioPos.', thresholds);
     else
         threshold = thresholds;
         err = getLose(ratioNeg.', ratioPos.', threshold);
