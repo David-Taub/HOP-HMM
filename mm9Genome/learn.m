@@ -13,7 +13,7 @@ function [MMmean, amounts] = learn(posSeqs, negSeqs, overlaps)
         % [MMmean(overlapClass+1), ~, Es(:, :, overlapClass + 1), amounts(overlapClass+1)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order);
         [MMmean(overlapClass+1), ~, freqDiffs(:, overlapClass + 1), amounts(overlapClass+1)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order);
     end
-    % diffHistPlot(freqDiffs, M + 1);
+    diffHistPlot(freqDiffs, M + 1);
 end
 
 function [MMmean, HMMmean, freqDiff, amount] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order)
@@ -155,7 +155,7 @@ function [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, o
 
     % shuffle
     posSeqs = posSeqs(randperm(size(posSeqs, 1), N), :);
-    negSeqs = negSeqs(randperm(size(negSeqs, 1), N), :);
+    % negSeqs = negSeqs(randperm(size(negSeqs, 1), N), :);
 
     % get train dataset
     XTrain = [posSeqs(1:trainLabLength, :); negSeqs(1:trainLabLength, :)];
@@ -190,7 +190,8 @@ function [testErrMM, testErrHMM, freqDiff] = learnData(XTrain, YTrain, XTest, YT
     thresholds = 0.0 : 0.005 : 2;
     [~, threshold] = classify(E, XTrain, YTrain, thresholds);
     [testErrMM, ~] = classify(E, XTest, YTest, threshold);
-    [order, threshold, testErrMM, size(XTrain, 1) / 2]
+    [order, threshold, testErrMM]
+    size(XTrain, 1) / 2
     freqDiff = freqFinder(XTrain(YTrain == 1, :), XTrain(YTrain == 2, :), order);
     testErrHMM = 0;
     % testErrMM = 0;

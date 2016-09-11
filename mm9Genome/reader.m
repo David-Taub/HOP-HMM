@@ -32,7 +32,7 @@ end
 function err = readParam(param, peaks, genome, negSeqs)
     fprintf('\n');
     fprintf('%.3f ', param)
-    fid = fopen('/cs/stud/boogalla/projects/CompGenetics/mm9Genome/peaksOutput.csv', 'a');
+    fid = fopen('/cs/stud/boogalla/projects/CompGenetics/mm9Genome/data/peaksOutput.csv', 'a');
     seqsLength = 500;
     N = length(peaks); %23
     overlaps = []; from = []; to = []; chr = {};
