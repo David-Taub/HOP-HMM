@@ -4,36 +4,55 @@ function [MMmean, amounts] = learn(posSeqs, negSeqs, overlaps)
     % posSeqs = seqs;
     % negSeqs = readSeq('NEnhancers.seq', L);
     order = 6;
+    shuffleNeg = true;
+    reorderHeatMap = true;
     M = size(overlaps, 2); %23
     MMmean = zeros(1, M+1);
     amounts = zeros(1, M+1);
-    % Es = zeros(4, 4 ^ (order - 1), M + 1);
+    Es = zeros(2 * 4 ^ order, M + 1);
     freqDiffs = zeros(4 ^ order, M + 1);
     for overlapClass = 0:M
+        j = overlapClass + 1;
         % [MMmean(overlapClass+1), ~, Es(:, :, overlapClass + 1), amounts(overlapClass+1)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order);
-        [MMmean(overlapClass+1), ~, freqDiffs(:, overlapClass + 1), amounts(overlapClass+1)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order);
+        [MMmean(j), ~, freqDiffs(:, j), Es(:, j), amounts(j)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order, shuffleNeg);
     end
-    diffHistPlot(freqDiffs, M + 1);
+    % diffHistPlot(freqDiffs, M + 1, shuffleNeg, reorderHeatMap);
 end
 
-function [MMmean, HMMmean, freqDiff, amount] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order)
+
+% sample datasets, train and get test errors multiple times
+% also get motifs frequency analyzed
+function [MMmean, HMMmean, freqDiff, E, amount] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order, shuffleNeg)
 
     repeats = 2;
 
     testErrMMs  = zeros(1, repeats);
-    testErrHMMs = zeros(1, repeats);
+    % testErrHMMs = zeros(1, repeats);
     freqDiffs = zeros(4 ^ order, repeats);
-    % freqDiffs = zeros(4, 4 ^ (order -1), repeats);
+    Es = zeros(2 * 4 ^ order, repeats);
     for i = 1:repeats
-        [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, overlapClass);
+        [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, overlapClass, shuffleNeg);
         amount = sum([YTrain == 1;YTest == 1], 1);
-        % [testErrMMs(i), testErrHMMs(i), E] = learnData(XTrain, YTrain, XTest, YTest, order);
-        [testErrMMs(i), testErrHMMs(i), freqDiffs(:, i)] = learnData(XTrain, YTrain, XTest, YTest, order);
+        % train
+        E = trainMarkov(XTrain, YTrain, order);
+        thresholds = 0.8 : 0.005 : 1.2;
+        
+        % classify train and test datasets
+        [~, threshold] = classify(E, XTrain, YTrain, thresholds);
+        [testErrMMs(i), ~] = classify(E, XTest, YTest, threshold);
+
+        % post analyze
+        freqDiffs(:, i) = freqFinder(XTrain(YTrain == 1, :), XTrain(YTrain == 2, :), order);
+        % [testErrMMs(i), testErrHMMs(i), freqDiffs(:, i), E] = learnData(XTrain, YTrain, XTest, YTest, order);
+        Es(:, i) = E(:);
         % freqDiffs(:, :, i) = spread(reshape(E(1, :), ones(1, order) * 4));
     end
     MMmean = mean(testErrMMs, 2);
-    HMMmean = mean(testErrHMMs, 2);
+    [order, MMmean, amount]
+    % HMMmean = mean(testErrHMMs, 2);
+    HMMmean = 0;
     freqDiff = mean(freqDiffs, 2);
+    E = mean(Es, 2);
 end
 
 % E - 4 x 4 x ... x 4 ('order' times)
@@ -74,11 +93,11 @@ end
 % end
 
 function diffHist = freqFinder(seqsPos, seqsNeg, order)
-    matSize = [4 * ones(1, order), 1];
     indicesP = getIndeices1D(seqsPos, order);
     indicesN = getIndeices1D(seqsNeg, order);
     posHist = histc(indicesP, 1 : 4 ^ order);
     negHist = histc(indicesN, 1 : 4 ^ order);
+    diffHist = log(posHist/negHist);
     diffHist = posHist - negHist;
     % diffHist(diffHist < 0) = 0;
     diffHist = diffHist / size(seqsPos, 1);
@@ -87,7 +106,7 @@ function diffHist = freqFinder(seqsPos, seqsNeg, order)
 end
 
 % Es = 4 ^ order x M
-function diffHistPlot(diffHist, M)
+function diffHistPlot(diffHist, M, shuffleNeg, reorderHeatMap)
     for p = [1,2,3,5,10,20,200]
         tissues = {'all', 'BAT', 'BMDM', 'BoneMarrow',...
                    'CH12', 'Cerebellum', 'Cortex',...
@@ -103,20 +122,30 @@ function diffHistPlot(diffHist, M)
         tree = linkage(diffHistU.');
         
         % reorder
-        leafOrd = optimalleaforder(tree, pdist(diffHistU.'));
-        tissues = tissues(leafOrd);
-        diffHistU = diffHistU(:, leafOrd);
-        
+        if reorderHeatMap
+            leafOrd = optimalleaforder(tree, pdist(diffHistU.'));
+            tissues = tissues(leafOrd);
+            diffHistU = diffHistU(:, leafOrd);
+        end
         dendrogram(tree);
         distMat = squareform(pdist(diffHistU.') .^ 2);
 
         f = figure;
         imagesc(distMat);colorbar;
-        title(sprintf('Emission Diff Between Tissues %d %d (S)', p, size(diffHistU,1)));
-        filepath = sprintf('/a/store-05/z/cbio/david/projects/CompGenetics/mm9Genome/graphs/reordered/Motifs_%d.jpg', p);
-        % filepath = sprintf('/a/store-05/z/cbio/david/projects/CompGenetics/mm9Genome/graphs/reordered/Motifs_%d_S.jpg', p);
-        % filepath = sprintf('/a/store-05/z/cbio/david/projects/CompGenetics/mm9Genome/graphs/Motifs_%d.jpg', p);
-        % filepath = sprintf('/a/store-05/z/cbio/david/projects/CompGenetics/mm9Genome/graphs/Motifs_%d_S.jpg', p);
+        title(sprintf('Emission Diff Between Tissues %d %d', p, size(diffHistU,1)));
+        if reorderHeatMap
+            if shuffleNeg
+                filepath = sprintf('/a/store-05/z/cbio/david/projects/CompGenetics/mm9Genome/graphs/motifs/reordered/Motifs_%d_S.jpg', p);
+            else
+                filepath = sprintf('/a/store-05/z/cbio/david/projects/CompGenetics/mm9Genome/graphs/motifs/reordered/Motifs_%d.jpg', p);
+            end
+        else
+            if shuffleNeg
+                filepath = sprintf('/a/store-05/z/cbio/david/projects/CompGenetics/mm9Genome/graphs/motifs/Motifs_%d_S.jpg', p);
+            else
+                filepath = sprintf('/a/store-05/z/cbio/david/projects/CompGenetics/mm9Genome/graphs/motifs/Motifs_%d.jpg', p);
+            end
+        end
         % set(gca,'YLim',[0 M],'YTick',1:12,'YTickLabel',months)
         ax = gca;
         ax.XLim = [0 M];
@@ -128,26 +157,17 @@ function diffHistPlot(diffHist, M)
         ax.XTickLabelRotation=45;
         saveas(f,filepath);%close all;
     end
-    % set(gca,'YLim',[0 M],'YTick',1:M, 'XLim',[0 M],'XTick',1:M,...
-    %         'YTickLabel', tissues, 'XTickLabel', tissues);
 end
 
 % L - sequence lengths
 % n - number of classes to get for the positive sequences, where class
 % means unique overlap between tissues, and if n is 1:3 then we take 
 % the sequences of the three most frequent class
-function [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, overlapClass)
+function [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, overlapClass, shuffleNeg)
     if overlapClass > 0
         posSeqs = posSeqs(overlaps(:, overlapClass) == 1, :);
     end
 
-    % posSeqs = regularSeqs(posSeqs, L);
-
-
-    % TODO: my BG seqs are bad. why?
-    % load('/cs/stud/boogalla/projects/CompGenetics/BaumWelch/bg.mat');
-    % negSeqs = seqs(:, ceil(size(seqs, 2)/2) + [-floor(L/2) + 1: floor(L/2)]);
-    % negSeqs = readSeq('NEnhancers.seq', L);
     % assumes more negative than positives
     N = min(size(negSeqs, 1), size(posSeqs, 1));
     trainTestRate = 0.9;
@@ -155,12 +175,13 @@ function [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, o
 
     % shuffle
     posSeqs = posSeqs(randperm(size(posSeqs, 1), N), :);
-    % negSeqs = negSeqs(randperm(size(negSeqs, 1), N), :);
+    if shuffleNeg
+        negSeqs = negSeqs(randperm(size(negSeqs, 1), N), :);
+    end
 
     % get train dataset
     XTrain = [posSeqs(1:trainLabLength, :); negSeqs(1:trainLabLength, :)];
     YTrain = [ones(trainLabLength, 1); ones(trainLabLength, 1) .* 2];
-    
 
     % get test dataset
     XTest  = [posSeqs(trainLabLength + 1: N, :); negSeqs(trainLabLength + 1:N, :)];
@@ -185,9 +206,9 @@ end
 
 % end
 
-function [testErrMM, testErrHMM, freqDiff] = learnData(XTrain, YTrain, XTest, YTest, order)
+function [testErrMM, testErrHMM, freqDiff, E] = learnData(XTrain, YTrain, XTest, YTest, order)
     E = trainMarkov(XTrain, YTrain, order);
-    thresholds = 0.0 : 0.005 : 2;
+    thresholds = 0.8 : 0.005 : 1.2;
     [~, threshold] = classify(E, XTrain, YTrain, thresholds);
     [testErrMM, ~] = classify(E, XTest, YTest, threshold);
     [order, threshold, testErrMM]
@@ -235,7 +256,6 @@ function [testErrMM, testErrHMM, freqDiff] = learnData(XTrain, YTrain, XTest, YT
     % legend('positive postirior', 'negative postirior');
     % title('postirior Probability of Being Enhancer');
     % hold off;
-    % save('data.mat')
 end
 
 
@@ -310,8 +330,7 @@ end
 function [err, threshold] = classify(E, X, Y, thresholds)
     ratioPos = getLikeRatio(E, X(Y == 1, :));
     ratioNeg = getLikeRatio(E, X(Y == 2, :));
-
-    if length(thresholds) > 1
+        if length(thresholds) > 1
         [err, threshold] = findThreshold(ratioNeg.', ratioPos.', thresholds);
     else
         threshold = thresholds;
