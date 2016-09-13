@@ -13,26 +13,68 @@ function [MMmean, amounts] = learn(posSeqs, negSeqs, overlaps)
     Es = zeros(2 * 4 ^ order, M + 1);
     freqDiffs = zeros(4 ^ order, M + 1);
     for overlapClass = 0:M
-        j = overlapClass + 1;
+        j = overlapClass + 1
         [MMmean(j), ~, freqDiffs(:, j), Es(:, j), thresholds(j), amounts(j)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order, shuffleNeg);
     end
     crossClassify(posSeqs, negSeqs, overlaps, Es, thresholds, order, shuffleNeg);
     % diffHistPlot(freqDiffs, M + 1, shuffleNeg, reorderHeatMap);
+    % crossLikelihood(posSeqs, Es, overlaps, order);
+    % indicativeMotifsPlot(freqDiffs);
 end
 
 
-% sample datasets, train and get test errors multiple times
-% also get motifs frequency analyzed
-function T = crossClassify(posSeqs, negSeqs, overlaps, Es, thresholds, order, shuffleNeg)
+
+function crossLikelihood(posSeqs, Es, overlaps, order)
+    [N, M] = size(overlaps);
+    logLikes = zeros(N, M);
+    for j = 1:M
+        E = reshape(Es(:, j+1), [2, 4 .* ones(1, order)]);
+        posE = reshape(E(1, :), 4 .* ones(1, order));
+        logLikes(:, j) = getLogLikes(posE, posSeqs);
+    end
+    logLikes = exp(logLikes);
+    maxLogLikes = max(logLikes, [], 2);
+    logLikes = bsxfun(@times, logLikes, 1 ./ maxLogLikes);
+    % reorder
+    % [~, ~, ord] = unique(overlaps, 'rows');
+    [~, ord] = sortrows(overlaps);
+    overlaps = overlaps(ord, :);
+    logLikes = logLikes(ord, :);
+
+    diffLogLikes = logLikes - overlaps;
+
     figure
-    tissues = {'all', 'BAT', 'BMDM', 'BoneMarrow',...
+    subplot(1,3,1); imagesc(diffLogLikes); colorbar;
+    tissues = {'BAT', 'BMDM', 'BoneMarrow',...
                'CH12', 'Cerebellum', 'Cortex',...
                'E14', 'Heart-E14.5', 'Heart',...
                'Kidney', 'Limb-E14.5', 'Liver-E14.5',...
                'Liver', 'MEF', 'MEL', 'OlfactBulb',...
                'Placenta', 'SmIntestine', 'Spleen',...
-               'Testis', 'Thymus', 'WholeBrain-E14.5', 'mESC'};ax = gca;
-        
+               'Testis', 'Thymus', 'WholeBrain-E14.5', 'mESC'};
+    ax = gca;
+    ax.XTick = 1:M;
+    ax.XTickLabel = tissues;
+    ax.XTickLabelRotation=45;
+    title('diff');
+    subplot(1,3,2); imagesc(overlaps); colorbar;
+    ax = gca;
+    ax.XTick = 1:M;
+    ax.XTickLabel = tissues;
+    ax.XTickLabelRotation=45;
+    title('overlaps');
+    subplot(1,3,3); imagesc(logLikes); colorbar;
+    ax = gca;
+    ax.XTick = 1:M;
+    ax.XTickLabel = tissues;
+    ax.XTickLabelRotation=45;
+    title('likelihood');
+    
+end
+
+% sample datasets, train and get test errors multiple times
+% also get motifs frequency analyzed
+function crossClassify(posSeqs, negSeqs, overlaps, Es, thresholds, order, shuffleNeg)
     repeats = 2;
     M = size(overlaps, 2);
     T = zeros(M + 1, M + 1, repeats);
@@ -44,33 +86,64 @@ function T = crossClassify(posSeqs, negSeqs, overlaps, Es, thresholds, order, sh
                 [X, ~, Y, ~] = loadSeqs(posSeqs, negSeqs, overlaps, classifiedId, shuffleNeg);
                 [T(classifierId + 1, classifiedId + 1, i), ~] = classify(E, X, Y, threshold);
             end
-            imagesc(T(:,:,1));colorbar;
-            ax = gca;
-            ax.XLim = [0 M];
-            ax.YLim = [0 M];
-            ax.XTick = 1:M;
-            ax.YTick = 1:M;
-            ax.YTickLabel = tissues;
-            ax.XTickLabel = tissues;
-            ax.XTickLabelRotation=45;
+            plotHeatMap(T(:,:,1), true, false, true, 'Error Map');
             drawnow
         end
     end
     T = mean(T, 3);
+    plotHeatMap(T, true, true, true, 'Error Map: All Tissue Models vs. Tissue Datasets');
+end
 
-    % plot
-    figure;
-    imagesc(T);colorbar;
+function f = plotHeatMap(tissueDat, reorder, dendro, isSquare, plotTitle)
+    f = 0;
+    tissues = {'all', 'BAT', 'BMDM', 'BoneMarrow',...
+               'CH12', 'Cerebellum', 'Cortex',...
+               'E14', 'Heart-E14.5', 'Heart',...
+               'Kidney', 'Limb-E14.5', 'Liver-E14.5',...
+               'Liver', 'MEF', 'MEL', 'OlfactBulb',...
+               'Placenta', 'SmIntestine', 'Spleen',...
+               'Testis', 'Thymus', 'WholeBrain-E14.5', 'mESC'};
+    M = length(tissues);
+    
+    % reorder
+    if reorder
+        tree = linkage(tissueDat);
+        leafOrd = optimalleaforder(tree, pdist(tissueDat));
+        tissues = tissues(leafOrd);
+        tissueDat = tissueDat(leafOrd, :);
+        if isSquare
+            tissueDat = tissueDat(:, leafOrd);
+        end
+        if dendro
+            figure;
+            dendrogram(tree,'Reorder',leafOrd)
+            ax = gca;
+            ax.XTick = 1:M;
+            ax.XTickLabel = tissues;
+            ax.XTickLabelRotation=45;
+            title(plotTitle);
+            f = figure();
+        end
+    end
+
+    if isSquare
+        imagesc(tissueDat);colorbar;
+    else
+        D = squareform(pdist(tissueDat));
+        imagesc(D);colorbar;
+    end
+    title(plotTitle);
     ax = gca;
-    ax.XLim = [0 M];
-    ax.YLim = [0 M];
+    ax.XLim = [0.5 M+0.5];
+    ax.YLim = [0.5 M+0.5];
     ax.XTick = 1:M;
     ax.YTick = 1:M;
     ax.YTickLabel = tissues;
     ax.XTickLabel = tissues;
     ax.XTickLabelRotation=45;
-    title('Error Map: All Tissue Models vs. Tissue Datasets');
-end
+    title(plotTitle);
+
+end 
 % sample datasets, train and get test errors multiple times
 % also get motifs frequency analyzed
 function [MMmean, HMMmean, freqDiff, E, threshold, amount] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order, shuffleNeg)
@@ -101,7 +174,6 @@ function [MMmean, HMMmean, freqDiff, E, threshold, amount] = sampleAndLearnMulti
         % freqDiffs(:, :, i) = spread(reshape(E(1, :), ones(1, order) * 4));
     end
     MMmean = mean(testErrMMs, 2);
-    [order, MMmean, amount]
     % HMMmean = mean(testErrHMMs, 2);
     HMMmean = 0;
     freqDiff = mean(freqDiffs, 2);
@@ -152,41 +224,35 @@ function diffHist = freqFinder(seqsPos, seqsNeg, order)
     posHist = histc(indicesP, 1 : 4 ^ order);
     negHist = histc(indicesN, 1 : 4 ^ order);
     diffHist = log(posHist/negHist);
-    diffHist = posHist - negHist;
+    % diffHist = posHist - negHist;
     % diffHist(diffHist < 0) = 0;
     diffHist = diffHist / size(seqsPos, 1);
     % plot(sort(diffHist))
     % hold on
 end
-
+function indicativeMotifsPlot(diffHist)
+    [~, s] = sort(diffHist, 1);
+    size(s)
+    N = length(diffHist);
+    Ps = 1:floor(N / 2);
+    vals = zeros(1, length(Ps));
+    for i = 1:length(Ps)
+        curS = s;
+        curS(Ps(i):end - Ps(i), :) = [];
+        vals(i) = length(unique(curS(:)));
+    end
+    figure 
+    plot(Ps, vals);
+end
 % Es = 4 ^ order x M
 function diffHistPlot(diffHist, M, shuffleNeg, reorderHeatMap)
     for p = [1,2,3,5,10,20,200]
-        tissues = {'all', 'BAT', 'BMDM', 'BoneMarrow',...
-                   'CH12', 'Cerebellum', 'Cortex',...
-                   'E14', 'Heart-E14.5', 'Heart',...
-                   'Kidney', 'Limb-E14.5', 'Liver-E14.5',...
-                   'Liver', 'MEF', 'MEL', 'OlfactBulb',...
-                   'Placenta', 'SmIntestine', 'Spleen',...
-                   'Testis', 'Thymus', 'WholeBrain-E14.5', 'mESC'};
         [~, s] = sort(diffHist, 1);
         s(p:end - p, :) = [];
         diffHistU = diffHist(unique(s(:)), :);
 
-        tree = linkage(diffHistU.');
-        
-        % reorder
-        if reorderHeatMap
-            leafOrd = optimalleaforder(tree, pdist(diffHistU.'));
-            tissues = tissues(leafOrd);
-            diffHistU = diffHistU(:, leafOrd);
-        end
-        dendrogram(tree);
-        distMat = squareform(pdist(diffHistU.') .^ 2);
+        fig = plotHeatMap(diffHistU.', reorderHeatMap, true, false, sprintf('Emission Diff Between Tissues %d %d', p, size(diffHistU,1)));
 
-        f = figure;
-        imagesc(distMat);colorbar;
-        title(sprintf('Emission Diff Between Tissues %d %d', p, size(diffHistU,1)));
         if reorderHeatMap
             if shuffleNeg
                 filepath = sprintf('/a/store-05/z/cbio/david/projects/CompGenetics/mm9Genome/graphs/motifs/reordered/Motifs_%d_S.jpg', p);
@@ -201,15 +267,7 @@ function diffHistPlot(diffHist, M, shuffleNeg, reorderHeatMap)
             end
         end
         
-        ax = gca;
-        ax.XLim = [0 M];
-        ax.YLim = [0 M];
-        ax.XTick = 1:M;
-        ax.YTick = 1:M;
-        ax.YTickLabel = tissues;
-        ax.XTickLabel = tissues;
-        ax.XTickLabelRotation=45;
-        saveas(f,filepath);%close all;
+        saveas(fig,filepath);%close all;
     end
 end
 
