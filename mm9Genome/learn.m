@@ -9,20 +9,71 @@ function [MMmean, amounts] = learn(posSeqs, negSeqs, overlaps)
     M = size(overlaps, 2); %23
     MMmean = zeros(1, M+1);
     amounts = zeros(1, M+1);
+    thresholds = zeros(1, M+1);
     Es = zeros(2 * 4 ^ order, M + 1);
     freqDiffs = zeros(4 ^ order, M + 1);
     for overlapClass = 0:M
         j = overlapClass + 1;
-        % [MMmean(overlapClass+1), ~, Es(:, :, overlapClass + 1), amounts(overlapClass+1)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order);
-        [MMmean(j), ~, freqDiffs(:, j), Es(:, j), amounts(j)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order, shuffleNeg);
+        [MMmean(j), ~, freqDiffs(:, j), Es(:, j), thresholds(j), amounts(j)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order, shuffleNeg);
     end
+    crossClassify(posSeqs, negSeqs, overlaps, Es, thresholds, order, shuffleNeg);
     % diffHistPlot(freqDiffs, M + 1, shuffleNeg, reorderHeatMap);
 end
 
 
 % sample datasets, train and get test errors multiple times
 % also get motifs frequency analyzed
-function [MMmean, HMMmean, freqDiff, E, amount] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order, shuffleNeg)
+function T = crossClassify(posSeqs, negSeqs, overlaps, Es, thresholds, order, shuffleNeg)
+    figure
+    tissues = {'all', 'BAT', 'BMDM', 'BoneMarrow',...
+               'CH12', 'Cerebellum', 'Cortex',...
+               'E14', 'Heart-E14.5', 'Heart',...
+               'Kidney', 'Limb-E14.5', 'Liver-E14.5',...
+               'Liver', 'MEF', 'MEL', 'OlfactBulb',...
+               'Placenta', 'SmIntestine', 'Spleen',...
+               'Testis', 'Thymus', 'WholeBrain-E14.5', 'mESC'};ax = gca;
+        
+    repeats = 2;
+    M = size(overlaps, 2);
+    T = zeros(M + 1, M + 1, repeats);
+    for classifierId = 0:M
+        E = reshape(Es(:, classifierId + 1), [2,ones(1,order) * 4]);
+        threshold = thresholds(classifierId + 1);
+        for classifiedId = 0:M
+            for i = 1:repeats
+                [X, ~, Y, ~] = loadSeqs(posSeqs, negSeqs, overlaps, classifiedId, shuffleNeg);
+                [T(classifierId + 1, classifiedId + 1, i), ~] = classify(E, X, Y, threshold);
+            end
+            imagesc(T(:,:,1));colorbar;
+            ax = gca;
+            ax.XLim = [0 M];
+            ax.YLim = [0 M];
+            ax.XTick = 1:M;
+            ax.YTick = 1:M;
+            ax.YTickLabel = tissues;
+            ax.XTickLabel = tissues;
+            ax.XTickLabelRotation=45;
+            drawnow
+        end
+    end
+    T = mean(T, 3);
+
+    % plot
+    figure;
+    imagesc(T);colorbar;
+    ax = gca;
+    ax.XLim = [0 M];
+    ax.YLim = [0 M];
+    ax.XTick = 1:M;
+    ax.YTick = 1:M;
+    ax.YTickLabel = tissues;
+    ax.XTickLabel = tissues;
+    ax.XTickLabelRotation=45;
+    title('Error Map: All Tissue Models vs. Tissue Datasets');
+end
+% sample datasets, train and get test errors multiple times
+% also get motifs frequency analyzed
+function [MMmean, HMMmean, freqDiff, E, threshold, amount] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order, shuffleNeg)
 
     repeats = 2;
 
@@ -30,16 +81,18 @@ function [MMmean, HMMmean, freqDiff, E, amount] = sampleAndLearnMulti(posSeqs, n
     % testErrHMMs = zeros(1, repeats);
     freqDiffs = zeros(4 ^ order, repeats);
     Es = zeros(2 * 4 ^ order, repeats);
+    thresholds = zeros(1, repeats);
+    thresholdRange = 0.8 : 0.005 : 1.2;
+
     for i = 1:repeats
         [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, overlapClass, shuffleNeg);
         amount = sum([YTrain == 1;YTest == 1], 1);
         % train
         E = trainMarkov(XTrain, YTrain, order);
-        thresholds = 0.8 : 0.005 : 1.2;
         
         % classify train and test datasets
-        [~, threshold] = classify(E, XTrain, YTrain, thresholds);
-        [testErrMMs(i), ~] = classify(E, XTest, YTest, threshold);
+        [~, thresholds(i)] = classify(E, XTrain, YTrain, thresholdRange);
+        [testErrMMs(i), ~] = classify(E, XTest, YTest, thresholds(i));
 
         % post analyze
         freqDiffs(:, i) = freqFinder(XTrain(YTrain == 1, :), XTrain(YTrain == 2, :), order);
@@ -53,6 +106,7 @@ function [MMmean, HMMmean, freqDiff, E, amount] = sampleAndLearnMulti(posSeqs, n
     HMMmean = 0;
     freqDiff = mean(freqDiffs, 2);
     E = mean(Es, 2);
+    threshold = mean(thresholds, 2);
 end
 
 % E - 4 x 4 x ... x 4 ('order' times)
@@ -101,8 +155,8 @@ function diffHist = freqFinder(seqsPos, seqsNeg, order)
     diffHist = posHist - negHist;
     % diffHist(diffHist < 0) = 0;
     diffHist = diffHist / size(seqsPos, 1);
-    plot(sort(diffHist))
-    hold on
+    % plot(sort(diffHist))
+    % hold on
 end
 
 % Es = 4 ^ order x M
@@ -146,7 +200,7 @@ function diffHistPlot(diffHist, M, shuffleNeg, reorderHeatMap)
                 filepath = sprintf('/a/store-05/z/cbio/david/projects/CompGenetics/mm9Genome/graphs/motifs/Motifs_%d.jpg', p);
             end
         end
-        % set(gca,'YLim',[0 M],'YTick',1:12,'YTickLabel',months)
+        
         ax = gca;
         ax.XLim = [0 M];
         ax.YLim = [0 M];
