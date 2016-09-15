@@ -1,22 +1,34 @@
-function [MMmean, amounts] = learn(posSeqs, negSeqs, overlaps)
+
+function [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps)
     % get the n'st most frequent overlap
     % load('/cs/stud/boogalla/  projects/CompGenetics/BaumWelch/peaks.mat');
     % posSeqs = seqs;
     % negSeqs = readSeq('NEnhancers.seq', L);
+    tissues = {'all', 'BAT', 'BMDM', 'BoneMarrow',...
+               'CH12', 'Cerebellum', 'Cortex',...
+               'E14', 'Heart-E14.5', 'Heart',...
+               'Kidney', 'Limb-E14.5', 'Liver-E14.5',...
+               'Liver', 'MEF', 'MEL', 'OlfactBulb',...
+               'Placenta', 'SmIntestine', 'Spleen',...
+               'Testis', 'Thymus', 'WholeBrain-E14.5', 'mESC'};
     order = 6;
     shuffleNeg = true;
     reorderHeatMap = true;
     M = size(overlaps, 2); %23
-    MMmean = zeros(1, M+1);
+    % accuricy = zeros(1, M+1);
     amounts = zeros(1, M+1);
     thresholds = zeros(1, M+1);
     Es = zeros(2 * 4 ^ order, M + 1);
     freqDiffs = zeros(4 ^ order, M + 1);
     for overlapClass = 0:M
-        j = overlapClass + 1
-        [MMmean(j), ~, freqDiffs(:, j), Es(:, j), thresholds(j), amounts(j)] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order, shuffleNeg);
+        j = overlapClass + 1;
+        [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, overlapClass, shuffleNeg);
+        [MMResult, ~, freqDiffs(:, j), Es(:, j), thresholds(j), amounts(j)] = sampleAndLearnMulti(XTrain, XTest, YTrain, YTest, order);
+        tissues{j};
+        accuricy(j) = MMResult.ACC;
     end
-    crossClassify(posSeqs, negSeqs, overlaps, Es, thresholds, order, shuffleNeg);
+
+    % crossClassify(posSeqs, negSeqs, overlaps, Es, thresholds, order, shuffleNeg);
     % diffHistPlot(freqDiffs, M + 1, shuffleNeg, reorderHeatMap);
     % crossLikelihood(posSeqs, Es, overlaps, order);
     % indicativeMotifsPlot(freqDiffs);
@@ -32,11 +44,11 @@ function crossLikelihood(posSeqs, Es, overlaps, order)
         posE = reshape(E(1, :), 4 .* ones(1, order));
         logLikes(:, j) = getLogLikes(posE, posSeqs);
     end
-    logLikes = exp(logLikes);
     maxLogLikes = max(logLikes, [], 2);
-    logLikes = bsxfun(@times, logLikes, 1 ./ maxLogLikes);
+    logLikes = bsxfun(@minus, logLikes, maxLogLikes);
+    logLikes = exp(logLikes);
+
     % reorder
-    % [~, ~, ord] = unique(overlaps, 'rows');
     [~, ord] = sortrows(overlaps);
     overlaps = overlaps(ord, :);
     logLikes = logLikes(ord, :);
@@ -84,7 +96,8 @@ function crossClassify(posSeqs, negSeqs, overlaps, Es, thresholds, order, shuffl
         for classifiedId = 0:M
             for i = 1:repeats
                 [X, ~, Y, ~] = loadSeqs(posSeqs, negSeqs, overlaps, classifiedId, shuffleNeg);
-                [T(classifierId + 1, classifiedId + 1, i), ~] = classify(E, X, Y, threshold);
+                [result, ~] = classify(E, X, Y, threshold);
+                T(classifierId + 1, classifiedId + 1, i) = result.ACC;
             end
             plotHeatMap(T(:,:,1), true, false, true, 'Error Map');
             drawnow
@@ -146,39 +159,25 @@ function f = plotHeatMap(tissueDat, reorder, dendro, isSquare, plotTitle)
 end 
 % sample datasets, train and get test errors multiple times
 % also get motifs frequency analyzed
-function [MMmean, HMMmean, freqDiff, E, threshold, amount] = sampleAndLearnMulti(posSeqs, negSeqs, overlaps, overlapClass, order, shuffleNeg)
+function [MMErr, HMMErr, freqDiff, E, threshold, amount] = sampleAndLearnMulti(XTrain, XTest, YTrain, YTest, order)
 
-    repeats = 2;
 
-    testErrMMs  = zeros(1, repeats);
-    % testErrHMMs = zeros(1, repeats);
-    freqDiffs = zeros(4 ^ order, repeats);
-    Es = zeros(2 * 4 ^ order, repeats);
-    thresholds = zeros(1, repeats);
     thresholdRange = 0.8 : 0.005 : 1.2;
+    
+    amount = sum([YTrain == 1;YTest == 1], 1);
+    % train
+    E = trainMarkov(XTrain, YTrain, order);
+    
+    % classify train and test datasets
+    [~, threshold] = classify(E, XTrain, YTrain, thresholdRange);
+    [MMErr, ~] = classify(E, XTest, YTest, threshold);
 
-    for i = 1:repeats
-        [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, overlapClass, shuffleNeg);
-        amount = sum([YTrain == 1;YTest == 1], 1);
-        % train
-        E = trainMarkov(XTrain, YTrain, order);
-        
-        % classify train and test datasets
-        [~, thresholds(i)] = classify(E, XTrain, YTrain, thresholdRange);
-        [testErrMMs(i), ~] = classify(E, XTest, YTest, thresholds(i));
-
-        % post analyze
-        freqDiffs(:, i) = freqFinder(XTrain(YTrain == 1, :), XTrain(YTrain == 2, :), order);
-        % [testErrMMs(i), testErrHMMs(i), freqDiffs(:, i), E] = learnData(XTrain, YTrain, XTest, YTest, order);
-        Es(:, i) = E(:);
-        % freqDiffs(:, :, i) = spread(reshape(E(1, :), ones(1, order) * 4));
-    end
-    MMmean = mean(testErrMMs, 2);
-    % HMMmean = mean(testErrHMMs, 2);
-    HMMmean = 0;
-    freqDiff = mean(freqDiffs, 2);
-    E = mean(Es, 2);
-    threshold = mean(thresholds, 2);
+    % post analyze
+    freqDiff = freqFinder(XTrain(YTrain == 1, :), XTrain(YTrain == 2, :), order);
+    % [testErrMMs(i), testErrHMMs(i), freqDiffs(:, i), E] = learnData(XTrain, YTrain, XTest, YTest, order);
+    % freqDiffs(:, :, i) = spread(reshape(E(1, :), ones(1, order) * 4));
+    HMMErr = 0;
+    E = E(:);
 end
 
 % E - 4 x 4 x ... x 4 ('order' times)
@@ -323,8 +322,6 @@ function [testErrMM, testErrHMM, freqDiff, E] = learnData(XTrain, YTrain, XTest,
     thresholds = 0.8 : 0.005 : 1.2;
     [~, threshold] = classify(E, XTrain, YTrain, thresholds);
     [testErrMM, ~] = classify(E, XTest, YTest, threshold);
-    [order, threshold, testErrMM]
-    size(XTrain, 1) / 2
     freqDiff = freqFinder(XTrain(YTrain == 1, :), XTrain(YTrain == 2, :), order);
     testErrHMM = 0;
     % testErrMM = 0;
@@ -402,9 +399,32 @@ end
 % high - N1 x 1
 % low - N2 x 1
 % thresholds - 1 x R
-function err = getLose(high, low, threshold)
-    N = size(high, 1) + size(low, 1);
-    err = (sum(high < threshold, 1) + sum(low >= threshold, 1)) ./ N;
+function results = getLose(high, low, threshold)
+    
+    TP = sum(high > threshold, 1);
+    FP = sum(low  > threshold, 1);
+    FN = sum(high < threshold, 1);
+    TN = sum(low  < threshold, 1);
+    
+    results.MEA = length(high);
+    results.ACC = (TN + TP) / (FN + TN + FP + TN);
+    results.TPR = (TP) / (TP + FN); % sensitivity \ recall
+    results.FNR = (FN) / (TP + FN); % miss rate
+    results.TNR = (TN) / (TN + FP); % specificity
+    results.FPR = (FP) / (TN + FP); % fall out
+    results.MCC = (TP * TN - FP * FN) / sqrt((TP+FP)*(TP+FN)*(TN+FP)*(TN+FN));
+    
+    % AUC ROC
+    thresholdRange = min([high;low]) : 0.001 : max([high;low]);
+    L = length(thresholdRange);
+    % 1 x L
+    TPs = sum(bsxfun(@gt, repmat(high, [1, L]), thresholdRange), 1);
+    FNs = sum(bsxfun(@lt, repmat(high, [1, L]), thresholdRange), 1);
+    FPs = sum(bsxfun(@gt, repmat(low, [1, L]), thresholdRange), 1);
+    TNs = sum(bsxfun(@lt, repmat(low, [1, L]), thresholdRange), 1);
+    TPRs = (TPs) ./ (TPs + FNs);
+    FPRs = (FPs) ./ (TNs + FPs);
+    results.AUC = trapz(FPRs(end:-1:1), TPRs(end:-1:1));
 end
 
 % seqs - S x L
@@ -440,13 +460,14 @@ end
 
 % 2 label classify using the log liklihood ratio
 function [err, threshold] = classify(E, X, Y, thresholds)
-    ratioPos = getLikeRatio(E, X(Y == 1, :));
-    ratioNeg = getLikeRatio(E, X(Y == 2, :));
-        if length(thresholds) > 1
-        [err, threshold] = findThreshold(ratioNeg.', ratioPos.', thresholds);
+    ratioPos = getLikeRatio(E, X(Y == 1, :)); %high
+    ratioNeg = getLikeRatio(E, X(Y == 2, :)); %low
+    if length(thresholds) > 1
+        [~, threshold] = findThreshold(ratioNeg.', ratioPos.', thresholds);
+        err = getLose(ratioPos.', ratioNeg.', threshold);
     else
         threshold = thresholds;
-        err = getLose(ratioNeg.', ratioPos.', threshold);
+        err = getLose(ratioPos.', ratioNeg.', threshold);
     end
     
 end
