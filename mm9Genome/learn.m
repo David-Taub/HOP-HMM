@@ -12,25 +12,25 @@ function [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps)
                'Placenta', 'SmIntestine', 'Spleen',...
                'Testis', 'Thymus', 'WholeBrain-E14.5', 'mESC'};
     order = 6;
-    shuffleNeg = true;
+    negCGTrain = false;
+    negCGTest = false;
     reorderHeatMap = true;
     M = size(overlaps, 2); %23
-    % accuricy = zeros(1, M+1);
+    accuricy = zeros(1, M+1);
     amounts = zeros(1, M+1);
     thresholds = zeros(1, M+1);
     Es = zeros(2 * 4 ^ order, M + 1);
     freqDiffs = zeros(4 ^ order, M + 1);
-    for overlapClass = 0:M
+    datasets = loadSeqs(posSeqs, negSeqs, overlaps, negCGTrain, negCGTest);
+    for overlapClass = 0:0%M
         j = overlapClass + 1;
-        [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, overlapClass, shuffleNeg);
-        [MMResult, ~, freqDiffs(:, j), Es(:, j), thresholds(j), amounts(j)] = sampleAndLearnMulti(XTrain, XTest, YTrain, YTest, order);
-        tissues{j};
+        [MMResult, ~, freqDiffs(:, j), Es(:, j), thresholds(j), amounts(j)] = sampleAndLearnMulti(datasets{overlapClass + 1}, order);
         accuricy(j) = MMResult.ACC;
     end
 
-    % crossClassify(posSeqs, negSeqs, overlaps, Es, thresholds, order, shuffleNeg);
+    % crossClassify(datasets, Es, thresholds, order);
     % diffHistPlot(freqDiffs, M + 1, shuffleNeg, reorderHeatMap);
-    % crossLikelihood(posSeqs, Es, overlaps, order);
+    % crossLikelihood(datasets, Es, overlaps, order);
     % indicativeMotifsPlot(freqDiffs);
 end
 
@@ -86,25 +86,21 @@ end
 
 % sample datasets, train and get test errors multiple times
 % also get motifs frequency analyzed
-function crossClassify(posSeqs, negSeqs, overlaps, Es, thresholds, order, shuffleNeg)
-    repeats = 2;
-    M = size(overlaps, 2);
-    T = zeros(M + 1, M + 1, repeats);
-    for classifierId = 0:M
-        E = reshape(Es(:, classifierId + 1), [2,ones(1,order) * 4]);
-        threshold = thresholds(classifierId + 1);
-        for classifiedId = 0:M
-            for i = 1:repeats
-                [X, ~, Y, ~] = loadSeqs(posSeqs, negSeqs, overlaps, classifiedId, shuffleNeg);
-                [result, ~] = classify(E, X, Y, threshold);
-                T(classifierId + 1, classifiedId + 1, i) = result.ACC;
-            end
-            plotHeatMap(T(:,:,1), true, false, true, 'Error Map');
+function crossClassify(datasets, Es, thresholds, order)
+    M = length(datasets);
+    crossClassMat = zeros(M, M, repeats);
+    for j = 1:M
+        E = reshape(Es(:, j + 1), [2,ones(1,order) * 4]);
+        threshold = thresholds(j);
+        for i = 1:M
+            [result, ~] = classify(E, datasets{j}.XTest, datasets{j}.YTest, threshold);
+            crossClassMat(j, i) = result.ACC;
+            
+            plotHeatMap(crossClassMat(:,:), true, false, true, 'Error Map');
             drawnow
         end
     end
-    T = mean(T, 3);
-    plotHeatMap(T, true, true, true, 'Error Map: All Tissue Models vs. Tissue Datasets');
+    plotHeatMap(crossClassMat, true, true, true, 'Error Map: All Tissue Models vs. Tissue Datasets');
 end
 
 function f = plotHeatMap(tissueDat, reorder, dendro, isSquare, plotTitle)
@@ -159,22 +155,21 @@ function f = plotHeatMap(tissueDat, reorder, dendro, isSquare, plotTitle)
 end 
 % sample datasets, train and get test errors multiple times
 % also get motifs frequency analyzed
-function [MMErr, HMMErr, freqDiff, E, threshold, amount] = sampleAndLearnMulti(XTrain, XTest, YTrain, YTest, order)
+function [MMErr, HMMErr, freqDiff, E, threshold, amount] = sampleAndLearnMulti(dataset, order)
 
 
     thresholdRange = 0.8 : 0.005 : 1.2;
-    
-    amount = sum([YTrain == 1;YTest == 1], 1);
+    amount = sum([dataset.YTrain == 1;dataset.YTest == 1], 1);
     % train
-    E = trainMarkov(XTrain, YTrain, order);
+    E = trainMarkov(dataset.XTrain, dataset.YTrain, order);
     
     % classify train and test datasets
-    [~, threshold] = classify(E, XTrain, YTrain, thresholdRange);
-    [MMErr, ~] = classify(E, XTest, YTest, threshold);
+    [~, threshold] = classify(E, dataset.XTrain, dataset.YTrain, thresholdRange);
+    [MMErr, ~] = classify(E, dataset.XTest, dataset.YTest, threshold);
 
     % post analyze
-    freqDiff = freqFinder(XTrain(YTrain == 1, :), XTrain(YTrain == 2, :), order);
-    % [testErrMMs(i), testErrHMMs(i), freqDiffs(:, i), E] = learnData(XTrain, YTrain, XTest, YTest, order);
+    freqDiff = freqFinder(dataset.XTrain(dataset.YTrain == 1, :), dataset.XTrain(dataset.YTrain == 2, :), order);
+    % [testErrMMs(i), testErrHMMs(i), freqDiffs(:, i), E] = learnData(dataset.XTrain, YTrain, dataset.XTest, dataset.YTest, order);
     % freqDiffs(:, :, i) = spread(reshape(E(1, :), ones(1, order) * 4));
     HMMErr = 0;
     E = E(:);
@@ -270,33 +265,54 @@ function diffHistPlot(diffHist, M, shuffleNeg, reorderHeatMap)
     end
 end
 
-% L - sequence lengths
-% n - number of classes to get for the positive sequences, where class
-% means unique overlap between tissues, and if n is 1:3 then we take 
-% the sequences of the three most frequent class
-function [XTrain, XTest, YTrain, YTest] = loadSeqs(posSeqs, negSeqs, overlaps, overlapClass, shuffleNeg)
-    if overlapClass > 0
-        posSeqs = posSeqs(overlaps(:, overlapClass) == 1, :);
-    end
-
-    % assumes more negative than positives
+% negCGTest may be true only when negCGTrain is true
+function datasets = loadSeqs(posSeqs, negSeqs, overlaps, negCGTrain, negCGTest)
+    M = size(overlaps, 2);
     N = min(size(negSeqs, 1), size(posSeqs, 1));
+    datasets = cell(M+1, 1);
     trainTestRate = 0.9;
     trainLabLength = ceil(N * trainTestRate);
 
-    % shuffle
-    posSeqs = posSeqs(randperm(size(posSeqs, 1), N), :);
-    if shuffleNeg
+    % shuffle pos
+    posOrder = randperm(size(posSeqs, 1), N);
+    posSeqs = posSeqs(posOrder, :);
+    
+
+    % shuffle neg
+    % Note: the negative are given sorted by their ACGT content, so taking only the top means 
+    % the negative seqs are most alike the ACGT content of enhancers
+    if negCGTrain
+        if negCGTest
+            negSeqs = negSeqs(randperm(N, N), :);
+        else
+            mostCG = negSeqs(1:trainLabLength, :);
+            leastCG = negSeqs(trainLabLength + 1:end, :);
+            negSeqs = [mostCG(randperm(trainLabLength, trainLabLength), :);...
+                       leastCG(randperm(size(leastCG, 1), N - trainLabLength), :) ];
+        end
+    else
         negSeqs = negSeqs(randperm(size(negSeqs, 1), N), :);
     end
+    
+    % build 'all' (1) dataset
+    datasets{1}.XTrain = [posSeqs(1:trainLabLength, :); negSeqs(1:trainLabLength, :)];
+    datasets{1}.XTest  = [posSeqs(trainLabLength + 1: N, :); negSeqs(trainLabLength + 1:N, :)];
+    datasets{1}.YTrain = [ones(trainLabLength, 1); ones(trainLabLength, 1) .* 2];
+    datasets{1}.YTest  = [ones(N - trainLabLength,1); ones(N - trainLabLength,1) .* 2];
+    datasets{1}.overlapsTrain = overlaps(posOrder(1:trainLabLength), :);
+    datasets{1}.overlapsTest = overlaps(posOrder(trainLabLength+1:N), :);
+    
+    for i = 1 : M
+        trainPos = datasets{1}.overlapsTrain(:, i) == 1;
+        testPos = datasets{1}.overlapsTest(:, i) == 1;
+        datasets{i + 1}.XTrain = datasets{1}.XTrain([trainPos; trainPos], :);
+        datasets{i + 1}.XTest = datasets{1}.XTest([testPos; testPos], :);
+        datasets{i + 1}.YTrain = datasets{1}.YTrain([trainPos; trainPos]);
+        datasets{i + 1}.YTest = datasets{1}.YTest([testPos; testPos]);
+        datasets{i + 1}.overlapsTrain = datasets{1}.overlapsTrain(trainPos, :);
+        datasets{i + 1}.overlapsTest = datasets{1}.overlapsTest(testPos, :);
+    end
 
-    % get train dataset
-    XTrain = [posSeqs(1:trainLabLength, :); negSeqs(1:trainLabLength, :)];
-    YTrain = [ones(trainLabLength, 1); ones(trainLabLength, 1) .* 2];
-
-    % get test dataset
-    XTest  = [posSeqs(trainLabLength + 1: N, :); negSeqs(trainLabLength + 1:N, :)];
-    YTest  = [ones(N - trainLabLength,1); ones(N - trainLabLength,1) .* 2];
 end
 
 

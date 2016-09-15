@@ -67,9 +67,12 @@ function err = readParam(param, peaks, genome, negSeqs)
     fprintf('%d\t', size(posSeqs, 1));
     [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps);
     hold on;
-    scatter(amounts(1), accuricy(1), [], 'b');
+    scatter3(param(1), param(3), accuricy(1), 'b');
+    xlabel('H3K27ac')
+    ylabel('H3K4me1')
+    zlabel('Accuricy')
     drawnow;
-    % writeToFile(param, accuricy, amounts)
+    writeToFile(param, accuricy, amounts)
     err = 1 - accuricy(1);
     fprintf('%.4f', accuricy(1));
     
