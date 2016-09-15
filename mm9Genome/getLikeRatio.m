@@ -6,6 +6,6 @@ function likeRatio = getLikeRatio(E, X)
     negE = reshape(E(2,:), s(2:end));
     likePos = getLogLikes(posE, X);
     likeNeg = getLogLikes(negE, X);
-    likeRatio = likePos ./ likeNeg; %high / low = high
+    likeRatio = likePos - likeNeg; %high / low = high
 end
     
