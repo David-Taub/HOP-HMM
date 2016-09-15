@@ -4,7 +4,7 @@
 % negSeqs = readSeq('/cs/cbio/tommy/Enhancers/Data/NEnhancers.seq', 500);
 % negSeqs = sortBaseContent(negSeqs);
 % reader(T, genome, negSeqs);
-% while 1; try; reader(T, genome, negSeqsRaw); catch; end; end;
+% while 1; reader(T, genome, negSeqs); end;
 function reader(peaks, genome, negSeqs)
     close all;
     % profile on
@@ -19,20 +19,19 @@ function reader(peaks, genome, negSeqs)
               % 10000, 2, -1, 3, 0.05, 3, 3000;...
               % 1000.1, 2, -1, 3, 0.05, 3, 3000;...
              ];
-    % ga(@(x) readParam(x, peaks, genome, negSeqs), 7,[], [], [], [],...
-    %      [0,0,0,0,0,0,2000], [0.1,1,0.08,1,0.08,1,4000] )
-    for j = 1:size(params, 1)
-        tic
-        fprintf('Params #%d\n', j);
-        readParam(params(j,:), peaks, genome, negSeqs);
-        toc
-    end
+    ga(@(x) readParam(x, peaks, genome, negSeqs), 7,[], [], [], [],...
+         [0,0,0,0,0,0,2000], [0.07,1,0.08,1,0.08,1,4000] )
+    % for j = 1:size(params, 1)
+    %     tic
+    %     fprintf('Params #%d\n', j);
+    %     readParam(params(j,:), peaks, genome, negSeqs);
+    %     toc
+    % end
 end
 
 function err = readParam(param, peaks, genome, negSeqs)
     fprintf('\n');
     fprintf('%.3f ', param)
-    fid = fopen('/cs/stud/boogalla/projects/CompGenetics/mm9Genome/data/peaksOutput.csv', 'a');
     seqsLength = 500;
     N = length(peaks); %23
     overlaps = []; from = []; to = []; chr = {};
@@ -63,15 +62,24 @@ function err = readParam(param, peaks, genome, negSeqs)
     posSeqs(any(posSeqs > 4, 2), :) = [];
 
 
-    peaksPath = ['/cs/cbio/david/data/peaks_output/peaks_', num2str(j), '.mat'];
-%     save(peaksPath, 'posSeqs', 'overlaps', 'from', 'to', 'chr');
+    % peaksPath = ['/a/store-05/z/cbio/david/data/peaks_output/peaks.mat'];
+    % save(peaksPath, 'posSeqs', 'overlaps');
     fprintf('%d\t', size(posSeqs, 1));
-    [MMmean, amounts] = learn(posSeqs, negSeqs, overlaps);
-    err = MMmean(1);
-    fprintf('%.4f', err);
+    [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps);
+    hold on;
+    scatter(amounts(1), accuricy(1), [], 'b');
+    drawnow;
+    % writeToFile(param, accuricy, amounts)
+    err = 1 - accuricy(1);
+    fprintf('%.4f', accuricy(1));
+    
+end
+
+function writeToFile(param, accuricy, amounts)
+    fid = fopen('/cs/stud/boogalla/projects/CompGenetics/mm9Genome/data/peaksOutput.csv', 'a');
     fprintf(fid, '%2.3f, ', param);
     for i = 1:length(amounts)
-        fprintf(fid, '%.3f, ', MMmean(i));
+        fprintf(fid, '%.3f, ', accuricy(i));
         fprintf(fid, '%d, ', amounts(i));
     end
     fprintf(fid, '\n');
