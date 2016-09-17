@@ -4,11 +4,8 @@
 % subscripts - k x n
 % indices - 1 x n
 function indices = matSub2ind(matSize, subscripts)
-    subtractedSub = subscripts;
-    % subtractedSub(2:end, :) = subtractedSub(2:end, :) - 1;
-    % subtractedSub
     cumMatSize = cumprod([1, matSize]);
     cumMatSize = cumMatSize(1, 1:end - 1);
-    indices = double(cumMatSize) * double(subtractedSub);
+    indices = double(cumMatSize) * double(subscripts);
     indices = indices - sum(cumMatSize(2:end), 2);
 end
