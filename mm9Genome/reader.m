@@ -3,35 +3,31 @@
 % load('/cs/stud/boogalla/Work/data/mat/peaks_raw.mat');
 % negSeqs = readSeq('/cs/cbio/tommy/Enhancers/Data/NEnhancers.seq', 500);
 % negSeqs = sortBaseContent(negSeqs);
+% load('/cs/stud/boogalla/projects/CompGenetics/mm9Genome/data/posSeqs.mat')
+
+% learn(posSeqs, negSeqs, overlaps); 
 % reader(T, genome, negSeqs);
 % while 1; reader(T, genome, negSeqs); end;
-function reader(peaks, genome, negSeqs)
+
+function [posSeqs, overlaps] = reader(peaks, genome, negSeqs)
     close all;
     % profile on
     format compact
 
-    params = [...
-              % 0.005, 1, 0.05, 1, 0.05, 1, 3000;...
-              0.03, 1, 0.05, 1, 0.05, 1, 3000;...
-              % 0.02, 1, 0.05, 1, 0.05, 1, 3000;...
-              % 0.1, 1, 0.05, 1, 0.05, 1, 3000;...
-              % 15000, 2, -1, 3, 0.05, 3, 3000;...
-              % 10000, 2, -1, 3, 0.05, 3, 3000;...
-              % 1000.1, 2, -1, 3, 0.05, 3, 3000;...
-             ];
-    ga(@(x) readParam(x, peaks, genome, negSeqs), 7,[], [], [], [],...
-         [0,0,0,0,0,0,2000], [0.07,1,0.08,1,0.08,1,4000] )
-    % for j = 1:size(params, 1)
-    %     tic
-    %     fprintf('Params #%d\n', j);
-    %     readParam(params(j,:), peaks, genome, negSeqs);
-    %     toc
-    % end
+    params = [0.03, 1, 0.05, 1, 0.05, 1, 3000];
+
+    % todo: instead of GA, use random values with ranges in an infinite loop
+    % ga(@(x) readParam(x, peaks, genome, negSeqs), 7,[], [], [], [],...
+    %      [0,0,0,0,0,0,2000], [0.07,1,0.08,1,0.08,1,4000] )
+    
+    tic
+    [posSeqs, overlaps] = readParam(params, peaks, genome, negSeqs);
+    toc
 end
 
-function err = readParam(param, peaks, genome, negSeqs)
+function [posSeqs, overlaps] = readParam(param, peaks, genome, negSeqs)
     fprintf('\n');
-    fprintf('%.3f ', param)
+    fprintf('%.3f ', param);
     seqsLength = 500;
     N = length(peaks); %23
     overlaps = []; from = []; to = []; chr = {};
@@ -40,7 +36,7 @@ function err = readParam(param, peaks, genome, negSeqs)
 
         M = length(enhancers.height);
         overlapsAdd = zeros(M, N);
-        overlapsAdd(:, i) = 1;
+        overlapsAdd(:, i) = enhancers.height;
 
         overlaps = cat(1, overlaps, overlapsAdd);
         from = cat(1, from, enhancers.from.');
@@ -60,7 +56,6 @@ function err = readParam(param, peaks, genome, negSeqs)
     % chr(any(posSeqs > 4, 2)) = [];
     overlaps(any(posSeqs > 4, 2), :) = [];
     posSeqs(any(posSeqs > 4, 2), :) = [];
-
 
     % peaksPath = ['/a/store-05/z/cbio/david/data/peaks_output/peaks.mat'];
     % save(peaksPath, 'posSeqs', 'overlaps');
@@ -193,7 +188,7 @@ function [overlapsOut, fromOut, toOut, chrOut] = merge(overlaps, from, to, chr, 
         overlapsC = overlapsC(ord, :);
         
         M = 0;
-        while M ~= size(fromC, 1) & size(fromC, 1) > 1
+        while M ~= size(fromC, 1) && size(fromC, 1) > 1
             M = size(fromC, 1);
             % mark to merge
             toMerge = false(M, 1);
@@ -201,8 +196,8 @@ function [overlapsOut, fromOut, toOut, chrOut] = merge(overlaps, from, to, chr, 
             toMerge(2:end) = diff(toMerge) > 0;
 
             % merge 
-            overlapsC(1:end-1, :) = overlapsC(1:end-1, :) + ...
-                bsxfun(@times, overlapsC(2:end, :),toMerge(2:end));
+            overlapsC(1:end-1, :) = bsxfun(@max, overlapsC(1:end-1, :),...
+                bsxfun(@times, overlapsC(2:end, :),toMerge(2:end)));
             fromC([toMerge(2:end);false]) = min([fromC([toMerge(2:end); false]), fromC(toMerge)], [], 2);
             toC([toMerge(2:end);false]) = max([toC([toMerge(2:end); false]), toC(toMerge)], [], 2);
 
@@ -220,5 +215,4 @@ function [overlapsOut, fromOut, toOut, chrOut] = merge(overlaps, from, to, chr, 
     centers = ceil((fromOut + toOut) / 2);
     fromOut = centers - seqsLengthHalf;
     toOut = centers + seqsLengthHalf;
-    overlapsOut = overlapsOut > 0;
 end

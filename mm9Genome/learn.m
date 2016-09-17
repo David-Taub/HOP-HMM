@@ -14,7 +14,6 @@ function [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps)
     order = 6;
     negCGTrain = false;
     negCGTest = false;
-    reorderHeatMap = true;
     M = size(overlaps, 2); %23
     accuricy = zeros(1, M+1);
     amounts = zeros(1, M+1);
@@ -22,6 +21,9 @@ function [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps)
     Es = zeros(2 * 4 ^ order, M + 1);
     freqDiffs = zeros(4 ^ order, M + 1);
     datasets = loadSeqs(posSeqs, negSeqs, overlaps, negCGTrain, negCGTest);
+
+    % freqRegression(datasets, order);
+
     for overlapClass = 0:0%M
         j = overlapClass + 1;
         [MMResult, ~, freqDiffs(:, j), Es(:, j), thresholds(j), amounts(j)] = sampleAndLearnMulti(datasets{overlapClass + 1}, order);
@@ -29,12 +31,29 @@ function [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps)
     end
 
     % crossClassify(datasets, Es, thresholds, order);
-    % diffHistPlot(freqDiffs, M + 1, shuffleNeg, reorderHeatMap);
-    % crossLikelihood(datasets, Es, overlaps, order);
+    % diffHistPlot(freqDiffs, M + 1, shuffleNeg, overlaps);
+    crossLikelihood(datasets{1}.XTest(datasets{1}.YTest == 1, :), Es, datasets{1}.overlapsTest, order);
     % indicativeMotifsPlot(freqDiffs);
 end
 
 
+function freqRegression(datasets, order)
+    [N, L] = size(posSeqs);
+    posSeqs = [ datasets{1}.XTrain(datasets{1}.YTrain == 1, :); datasets{1}.XTest(datasets{1}.YTest == 1, :)];
+    overlaps = [datasets{1}.overlapsTrain; datasets{1}.overlapsTest];
+
+    indicesP = reshape(getIndeices1D(posSeqs, order), [N, L - order + 1]);
+    size(posSeqs)
+    size(indicesP)
+    indicesN = getIndeices1D(negSeqs, order);
+    posHist = histc(indicesP, 1 : 4 ^ order);
+    negHist = histc(indicesN, 1 : 4 ^ order);
+    diffHist = log(posHist/negHist);
+    % diffHist = posHist - negHist;
+    % diffHist(diffHist < 0) = 0;
+    diffHist = diffHist / size(posSeqs, 1);
+
+end
 
 function crossLikelihood(posSeqs, Es, overlaps, order)
     [N, M] = size(overlaps);
@@ -68,7 +87,7 @@ function crossLikelihood(posSeqs, Es, overlaps, order)
     ax.XTick = 1:M;
     ax.XTickLabel = tissues;
     ax.XTickLabelRotation=45;
-    title('diff');
+    title('likelihood - overlaps');
     subplot(1,3,2); imagesc(overlaps); colorbar;
     ax = gca;
     ax.XTick = 1:M;
@@ -212,15 +231,15 @@ end
 %     %         'YTickLabel', tissues, 'XTickLabel', tissues);
 % end
 
-function diffHist = freqFinder(seqsPos, seqsNeg, order)
-    indicesP = getIndeices1D(seqsPos, order);
-    indicesN = getIndeices1D(seqsNeg, order);
+function diffHist = freqFinder(posSeqs, negSeqs, order)
+    indicesP = getIndeices1D(posSeqs, order);
+    indicesN = getIndeices1D(negSeqs, order);
     posHist = histc(indicesP, 1 : 4 ^ order);
     negHist = histc(indicesN, 1 : 4 ^ order);
     diffHist = log(posHist/negHist);
     % diffHist = posHist - negHist;
     % diffHist(diffHist < 0) = 0;
-    diffHist = diffHist / size(seqsPos, 1);
+    diffHist = diffHist / size(posSeqs, 1);
     % plot(sort(diffHist))
     % hold on
 end
@@ -303,8 +322,8 @@ function datasets = loadSeqs(posSeqs, negSeqs, overlaps, negCGTrain, negCGTest)
     datasets{1}.overlapsTest = overlaps(posOrder(trainLabLength+1:N), :);
     
     for i = 1 : M
-        trainPos = datasets{1}.overlapsTrain(:, i) == 1;
-        testPos = datasets{1}.overlapsTest(:, i) == 1;
+        trainPos = datasets{1}.overlapsTrain(:, i) > 0;
+        testPos = datasets{1}.overlapsTest(:, i) > 0;
         datasets{i + 1}.XTrain = datasets{1}.XTrain([trainPos; trainPos], :);
         datasets{i + 1}.XTest = datasets{1}.XTest([testPos; testPos], :);
         datasets{i + 1}.YTrain = datasets{1}.YTrain([trainPos; trainPos]);
@@ -314,24 +333,6 @@ function datasets = loadSeqs(posSeqs, negSeqs, overlaps, negCGTrain, negCGTest)
     end
 
 end
-
-
-% L - sequence lengths
-% n - number of classes to get for the positive sequences, where class
-% means unique overlap between tissues, and if n is 1:3 then we take 
-% the sequences of the three most frequent class
-% function [posSeqs, negSeqs] = loadTommySeqs(L)
-%     posSeqsTrain = readSeq('Enhancers.train.seq', L);
-%     posSeqsTest = readSeq('Enhancers.test.seq', L);
-%     negSeqs = readSeq('NEnhancers.seq', L);
-%     % negSeqsTrain = readSeq('NEnhancers.train.seq', L);
-%     % negSeqsTest = readSeq('NEnhancers.test.seq', L);
-
-%     posSeqs = [posSeqsTest; posSeqsTrain];
-%     % negSeqs = [negSeqsTest; negSeqsTrain];
-%     [posSeqs, negSeqs] = suffleAndTrim(posSeqs, negSeqs);
-
-% end
 
 function [testErrMM, testErrHMM, freqDiff, E] = learnData(XTrain, YTrain, XTest, YTest, order)
     E = trainMarkov(XTrain, YTrain, order);
@@ -498,10 +499,10 @@ function E = getEFromSeqs(seqs, order)
 end
 
 
-function anaFreq(seqsPos, seqsNeg, order)
+function anaFreq(posSeqs, negSeqs, order)
     matSize = [4 * ones(1, order), 1];
-    indicesP = getIndeices1D(seqsPos, order);
-    indicesN = getIndeices1D(seqsNeg, order);
+    indicesP = getIndeices1D(posSeqs, order);
+    indicesN = getIndeices1D(negSeqs, order);
     posHist = histc(indicesP, 1 : 4 ^ order);
     negHist = histc(indicesN, 1 : 4 ^ order);
     diffHist = posHist - negHist;
