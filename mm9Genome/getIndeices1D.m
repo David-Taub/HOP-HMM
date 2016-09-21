@@ -9,7 +9,7 @@ function indices = getIndeices1D(seqs, order)
     for i = 1 : order
         k(:, :, i) = seqs(:, i : end - order + i);
     end
-    k = permute(k, [3, 1, 2]);
+    k = permute(k, [3, 2, 1]);
     indices = matSub2ind(matSize, k(:, :));
 end
 
