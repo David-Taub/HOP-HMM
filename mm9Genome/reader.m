@@ -1,15 +1,4 @@
-% cd /cs/stud/boogalla/projects/CompGenetics/mm9Genome
-% load('/cs/cbio/tommy/Enhancers/Data/genome_mm9.mat');
-% load('/cs/stud/boogalla/Work/data/mat/peaks_raw.mat');
-% negSeqs = readSeq('/cs/cbio/tommy/Enhancers/Data/NEnhancers.seq', 500);
-% negSeqs = sortBaseContent(negSeqs);
-% load('/cs/stud/boogalla/projects/CompGenetics/mm9Genome/data/posSeqs.mat')
-
-% learn(posSeqs, negSeqs, overlaps); 
-% reader(T, genome, negSeqs);
-% while 1; reader(T, genome, negSeqs); end;
-
-function [posSeqs, overlaps] = reader(peaks, genome, negSeqs)
+function [posSeqs, overlaps] = reader(peaks, genome, negSeqs, shouldLearn)
     close all;
     % profile on
     format compact
@@ -20,12 +9,10 @@ function [posSeqs, overlaps] = reader(peaks, genome, negSeqs)
     % ga(@(x) readParam(x, peaks, genome, negSeqs), 7,[], [], [], [],...
     %      [0,0,0,0,0,0,2000], [0.07,1,0.08,1,0.08,1,4000] )
     
-    tic
-    [posSeqs, overlaps] = readParam(params, peaks, genome, negSeqs);
-    toc
+    [posSeqs, overlaps] = readParam(params, peaks, genome, negSeqs, shouldLearn);
 end
 
-function [posSeqs, overlaps] = readParam(param, peaks, genome, negSeqs)
+function [posSeqs, overlaps] = readParam(param, peaks, genome, negSeqs, shouldLearn)
     fprintf('\n');
     fprintf('%.3f ', param);
     seqsLength = 500;
@@ -57,20 +44,27 @@ function [posSeqs, overlaps] = readParam(param, peaks, genome, negSeqs)
     overlaps(any(posSeqs > 4, 2), :) = [];
     posSeqs(any(posSeqs > 4, 2), :) = [];
 
-    % peaksPath = ['/a/store-05/z/cbio/david/data/peaks_output/peaks.mat'];
-    % save(peaksPath, 'posSeqs', 'overlaps');
-    fprintf('%d\t', size(posSeqs, 1));
-    [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps);
-    hold on;
-    scatter3(param(1), param(3), accuricy(1), 'b');
-    xlabel('H3K27ac')
-    ylabel('H3K4me1')
-    zlabel('Accuricy')
-    drawnow;
-    writeToFile(param, accuricy, amounts)
-    err = 1 - accuricy(1);
-    fprintf('%.4f', accuricy(1));
-    
+    if ~shouldLearn
+        savePosSeqs(posSeqs, overlaps);
+    else
+
+        fprintf('%d\t', size(posSeqs, 1));
+        [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps);
+        hold on;
+        scatter3(param(1), param(3), accuricy(1), 'b');
+        xlabel('H3K27ac')
+        ylabel('H3K4me1')
+        zlabel('Accuricy')
+        drawnow;
+        writeToFile(param, accuricy, amounts)
+        err = 1 - accuricy(1);
+        fprintf('%.4f', accuricy(1));
+    end
+end
+
+function savePosSeqs(posSeqs, overlaps)
+    peaksPath = '/cs/stud/boogalla/projects/CompGenetics/mm9Genome/data/posSeqs.mat';
+    save(peaksPath, 'posSeqs', 'overlaps');
 end
 
 function writeToFile(param, accuricy, amounts)

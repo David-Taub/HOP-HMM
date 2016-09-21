@@ -1,60 +1,117 @@
-
 function [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps)
     % get the n'st most frequent overlap
     % load('/cs/stud/boogalla/  projects/CompGenetics/BaumWelch/peaks.mat');
     % posSeqs = seqs;
     % negSeqs = readSeq('NEnhancers.seq', L);
-    tissues = {'all', 'BAT', 'BMDM', 'BoneMarrow',...
-               'CH12', 'Cerebellum', 'Cortex',...
-               'E14', 'Heart-E14.5', 'Heart',...
-               'Kidney', 'Limb-E14.5', 'Liver-E14.5',...
-               'Liver', 'MEF', 'MEL', 'OlfactBulb',...
-               'Placenta', 'SmIntestine', 'Spleen',...
-               'Testis', 'Thymus', 'WholeBrain-E14.5', 'mESC'};
-    order = 6;
-    negCGTrain = false;
-    negCGTest = false;
-    M = size(overlaps, 2); %23
-    accuricy = zeros(1, M+1);
-    amounts = zeros(1, M+1);
-    thresholds = zeros(1, M+1);
-    Es = zeros(2 * 4 ^ order, M + 1);
-    freqDiffs = zeros(4 ^ order, M + 1);
-    datasets = loadSeqs(posSeqs, negSeqs, overlaps, negCGTrain, negCGTest);
+    % order = 1;
+    for order = 1:7
+        order
+        negCGTrain = false;
+        negCGTest = false;
+        M = size(overlaps, 2); %23
+        accuricy = zeros(1, M + 1);
+        amounts = zeros(1, M + 1);
+        thresholds = zeros(1, M + 1);
+        Es = zeros(2 * 4 ^ order, M + 1);
+        freqDiffs = zeros(4 ^ order, M + 1);
+        datasets = loadSeqs(posSeqs, negSeqs, overlaps, negCGTrain, negCGTest);
 
-    % freqRegression(datasets, order);
+        % freqRegression(datasets, order);
 
-    for overlapClass = 0:0%M
-        j = overlapClass + 1;
-        [MMResult, ~, freqDiffs(:, j), Es(:, j), thresholds(j), amounts(j)] = sampleAndLearnMulti(datasets{overlapClass + 1}, order);
-        accuricy(j) = MMResult.ACC;
+        for overlapClass = 0:M
+            j = overlapClass + 1;
+            [MMResult, ~, freqDiffs(:, j), Es(:, j), thresholds(j), amounts(j)] = sampleAndLearnMulti(datasets{overlapClass + 1}, order);
+            accuricy(j) = MMResult.ACC;
+            MMResult
+        end
+        crossClassify(datasets, Es, thresholds, order);
+        % diffHistPlot(freqDiffs, M + 1, shuffleNeg, overlaps);
+        % crossLikelihood(datasets{1}.XTest(datasets{1}.YTest == 1, :), Es, datasets{1}.overlapsTest, order);
+        % indicativeMotifsPlot(freqDiffs);
     end
-
-    % crossClassify(datasets, Es, thresholds, order);
-    % diffHistPlot(freqDiffs, M + 1, shuffleNeg, overlaps);
-    crossLikelihood(datasets{1}.XTest(datasets{1}.YTest == 1, :), Es, datasets{1}.overlapsTest, order);
-    % indicativeMotifsPlot(freqDiffs);
 end
 
 
 function freqRegression(datasets, order)
-    [N, L] = size(posSeqs);
-    posSeqs = [ datasets{1}.XTrain(datasets{1}.YTrain == 1, :); datasets{1}.XTest(datasets{1}.YTest == 1, :)];
-    overlaps = [datasets{1}.overlapsTrain; datasets{1}.overlapsTest];
+    p = 1;
+    M = size(datasets{1}.overlapsTrain, 2);
+    Rsquare = zeros(1,M);
+    for tissue = 1 : M;
+        trainOverlaps = datasets{tissue + 1}.overlapsTrain(:, tissue);
+        testOverlaps = datasets{tissue + 1}.overlapsTest(:, tissue);
 
-    indicesP = reshape(getIndeices1D(posSeqs, order), [N, L - order + 1]);
-    size(posSeqs)
-    size(indicesP)
-    indicesN = getIndeices1D(negSeqs, order);
-    posHist = histc(indicesP, 1 : 4 ^ order);
-    negHist = histc(indicesN, 1 : 4 ^ order);
-    diffHist = log(posHist/negHist);
-    % diffHist = posHist - negHist;
-    % diffHist(diffHist < 0) = 0;
-    diffHist = diffHist / size(posSeqs, 1);
+        trainPos = datasets{tissue + 1}.XTrain(datasets{tissue + 1}.YTrain == 1, :);
+        trainNeg = datasets{tissue + 1}.XTrain(datasets{tissue + 1}.YTrain == 2, :);
+        testPos = datasets{tissue + 1}.XTrain(datasets{tissue + 1}.YTest == 1, :);
 
+        [NTrain, ~] = size(trainPos);
+        [NTest, L] = size(testPos);
+
+
+        trainPosI = reshape(getIndeices1D(trainPos, order), [L - order + 1, NTrain]).';
+        trainNegI = reshape(getIndeices1D(trainNeg, order), [L - order + 1, NTrain]).';
+        testPosI = reshape(getIndeices1D(testPos, order), [L - order + 1, NTest]).';
+
+        % regressors
+        k = 4 ^ order; %number of possible motifs with length 'order'
+        trainPosHist = histc(trainPosI, 1 : k, 2);
+        trainNegHist = histc(trainNegI, 1 : k, 2);
+        testPosHist = histc(testPosI, 1 : k, 2);
+
+        % feature selection:
+        newK = 100 ;
+        newK = min(newK, k) ;
+        bestMotifs = selectBestMotifs(trainNegHist, trainPosHist, newK);
+        trainPosHist = trainPosHist(:, bestMotifs);
+        testPosHist = testPosHist(:, bestMotifs);
+        
+        
+        trainRegressor = zeros(NTrain, p * newK  + 1);
+        testRegressor = zeros(NTest, p * newK  + 1);
+
+        % make polynomial
+        for j = 1:p
+            trainRegressor(:, newK  * (j-1) + 1 : newK  * j) = trainPosHist .^ j;
+            testRegressor(:, newK  * (j-1) + 1 : newK  * j) = testPosHist .^ j;
+        end
+        trainRegressor(:, end) = 1;
+        testRegressor(:, end) = 1;
+
+        
+        % linear regression
+        x = mvregress(trainRegressor, trainOverlaps);
+        % x = trainRegressor \ trainOverlaps;
+        % % least square (not working)
+        % x = (trainRegressor.' * trainRegressor) \ (trainRegressor.' * trainOverlaps);
+        % alpha = 100;
+        % x = (trainRegressor.' * trainRegressor + eye(size(trainRegressor, 2)) .* alpha) \ (trainRegressor.' * trainOverlaps);
+        estTestOverlaps = testRegressor * x;
+
+        [~, ord] = sortrows(testOverlaps);
+        testOverlaps = testOverlaps(ord, :);
+        estTestOverlaps = estTestOverlaps(ord, :);
+        % subplot(1,2,1); imagesc(testOverlaps); colorbar;
+        % subplot(1,2,2); imagesc(estTestOverlaps); colorbar;
+        % figure
+        % scatter(trainPosHist, trainOverlaps)
+        errors = testOverlaps - estTestOverlaps;
+        Rsquare(tissue) = 1 - (sum(errors.^2) / sum((testOverlaps(:) - mean(testOverlaps(:))).^2))
+        return
+    end
+    figure
+    plot(Rsquare)
 end
 
+
+% best motifs are the ones which are the most stably different from background
+function bestMotifs = selectBestMotifs(trainNegHist, trainPosHist, N)
+    diff = trainNegHist - trainPosHist;
+    diffMean = abs(mean(diff, 1));
+    diffVar = var(diff, [], 1);
+    diffMeanSubMax = max(diffMean) - diffMean;
+    [~,ord] = sort(diffMeanSubMax .^ 2 + diffVar .^ 2, 'ascend');
+    bestMotifs = ord(1:N);
+end
 function crossLikelihood(posSeqs, Es, overlaps, order)
     [N, M] = size(overlaps);
     logLikes = zeros(N, M);
@@ -72,9 +129,9 @@ function crossLikelihood(posSeqs, Es, overlaps, order)
     overlaps = overlaps(ord, :);
     logLikes = logLikes(ord, :);
 
-    diffLogLikes = logLikes - overlaps;
+    diffLogLikes = logLikes - (overlaps > 0);
 
-    figure
+    fig = figure();
     subplot(1,3,1); imagesc(diffLogLikes); colorbar;
     tissues = {'BAT', 'BMDM', 'BoneMarrow',...
                'CH12', 'Cerebellum', 'Cortex',...
@@ -100,26 +157,30 @@ function crossLikelihood(posSeqs, Es, overlaps, order)
     ax.XTickLabel = tissues;
     ax.XTickLabelRotation=45;
     title('likelihood');
-    
+    saveas(fig,sprintf('/cs/cbio/david/projects/CompGenetics/mm9Genome/graphs/likelihood/O%d_SH_SH.jpg', order));
 end
 
 % sample datasets, train and get test errors multiple times
 % also get motifs frequency analyzed
 function crossClassify(datasets, Es, thresholds, order)
+    fprintf('order %d\n', order);
     M = length(datasets);
-    crossClassMat = zeros(M, M, repeats);
-    for j = 1:M
-        E = reshape(Es(:, j + 1), [2,ones(1,order) * 4]);
+    crossClassMat = zeros(M, M);
+    parfor j = 1:M
+        E = reshape(Es(:, j), [2,ones(1,order) * 4]);
         threshold = thresholds(j);
         for i = 1:M
-            [result, ~] = classify(E, datasets{j}.XTest, datasets{j}.YTest, threshold);
+            [result, ~] = classify(E, datasets{i}.XTest, datasets{i}.YTest, threshold);
             crossClassMat(j, i) = result.ACC;
+            fprintf('order %d %d %d %f \n', order, j, i, result.ACC);
             
-            plotHeatMap(crossClassMat(:,:), true, false, true, 'Error Map');
-            drawnow
+            % plotHeatMap(crossClassMat(:,:), true, false, true, 'Error Map');
+            % drawnow
         end
     end
-    plotHeatMap(crossClassMat, true, true, true, 'Error Map: All Tissue Models vs. Tissue Datasets');
+    fig = plotHeatMap(crossClassMat, true, true, true, sprintf('Error Map: Models vs. Datasets (%d)', order));
+    saveas(fig,sprintf('/cs/cbio/david/projects/CompGenetics/mm9Genome/graphs/errorMap/O%d_SH_SH.jpg', order));
+    drawnow;
 end
 
 function f = plotHeatMap(tissueDat, reorder, dendro, isSquare, plotTitle)
@@ -155,10 +216,10 @@ function f = plotHeatMap(tissueDat, reorder, dendro, isSquare, plotTitle)
     end
 
     if isSquare
-        imagesc(tissueDat);colorbar;
+        imagesc(tissueDat, [0,1]);colorbar;
     else
         D = squareform(pdist(tissueDat));
-        imagesc(D);colorbar;
+        imagesc(D,[0,1]);colorbar;
     end
     title(plotTitle);
     ax = gca;
@@ -188,8 +249,6 @@ function [MMErr, HMMErr, freqDiff, E, threshold, amount] = sampleAndLearnMulti(d
 
     % post analyze
     freqDiff = freqFinder(dataset.XTrain(dataset.YTrain == 1, :), dataset.XTrain(dataset.YTrain == 2, :), order);
-    % [testErrMMs(i), testErrHMMs(i), freqDiffs(:, i), E] = learnData(dataset.XTrain, YTrain, dataset.XTest, dataset.YTest, order);
-    % freqDiffs(:, :, i) = spread(reshape(E(1, :), ones(1, order) * 4));
     HMMErr = 0;
     E = E(:);
 end
@@ -237,20 +296,16 @@ function diffHist = freqFinder(posSeqs, negSeqs, order)
     posHist = histc(indicesP, 1 : 4 ^ order);
     negHist = histc(indicesN, 1 : 4 ^ order);
     diffHist = log(posHist/negHist);
-    % diffHist = posHist - negHist;
-    % diffHist(diffHist < 0) = 0;
     diffHist = diffHist / size(posSeqs, 1);
     % plot(sort(diffHist))
     % hold on
 end
 function indicativeMotifsPlot(diffHist)
-    [~, s] = sort(diffHist, 1);
-    size(s)
-    N = length(diffHist);
-    Ps = 1:floor(N / 2);
+    [~, sortedDiff] = sort(diffHist, 1);
+    Ps = 1:floor(length(diffHist) / 2);
     vals = zeros(1, length(Ps));
     for i = 1:length(Ps)
-        curS = s;
+        curS = sortedDiff;
         curS(Ps(i):end - Ps(i), :) = [];
         vals(i) = length(unique(curS(:)));
     end
@@ -280,7 +335,7 @@ function diffHistPlot(diffHist, M, shuffleNeg, reorderHeatMap)
             end
         end
         
-        saveas(fig,filepath);%close all;
+        saveas(fig,filepath);
     end
 end
 
@@ -289,7 +344,7 @@ function datasets = loadSeqs(posSeqs, negSeqs, overlaps, negCGTrain, negCGTest)
     M = size(overlaps, 2);
     N = min(size(negSeqs, 1), size(posSeqs, 1));
     datasets = cell(M+1, 1);
-    trainTestRate = 0.9;
+    trainTestRate = 0.8;
     trainLabLength = ceil(N * trainTestRate);
 
     % shuffle pos
@@ -481,13 +536,13 @@ function [err, threshold] = classify(E, X, Y, thresholds)
     ratioNeg = getLikeRatio(E, X(Y == 2, :)); %low
     if length(thresholds) > 1
         [~, threshold] = findThreshold(ratioNeg.', ratioPos.', thresholds);
-        err = getLose(ratioPos.', ratioNeg.', threshold);
     else
         threshold = thresholds;
-        err = getLose(ratioPos.', ratioNeg.', threshold);
     end
-    
+    err = getLose(ratioPos.', ratioNeg.', threshold);
 end
+
+
 function E = getEFromSeqs(seqs, order)
     % ambient is a trick to avoid zero division for absent motifs
     ambient = 10 ^ -6;
