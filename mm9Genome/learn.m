@@ -4,7 +4,7 @@ function [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps)
     % posSeqs = seqs;
     % negSeqs = readSeq('NEnhancers.seq', L);
     % order = 1;
-    for order = 1:7
+    for order = 4:4
         order
         negCGTrain = false;
         negCGTest = false;
@@ -15,30 +15,69 @@ function [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps)
         Es = zeros(2 * 4 ^ order, M + 1);
         freqDiffs = zeros(4 ^ order, M + 1);
         datasets = loadSeqs(posSeqs, negSeqs, overlaps, negCGTrain, negCGTest);
-
+        plotLettersFreq(datasets);return;
         % freqRegression(datasets, order);
+        % for overlapClass = 0:M
+        %     j = overlapClass + 1;
+        %     [MMResult, ~, freqDiffs(:, j), Es(:, j), thresholds(j), amounts(j)] = sampleAndLearnMulti(datasets{overlapClass + 1}, order);
+        %     accuricy(j) = MMResult.ACC;
+        %     MMResult
+        % end
 
-        for overlapClass = 0:M
-            j = overlapClass + 1;
-            [MMResult, ~, freqDiffs(:, j), Es(:, j), thresholds(j), amounts(j)] = sampleAndLearnMulti(datasets{overlapClass + 1}, order);
-            accuricy(j) = MMResult.ACC;
-            MMResult
-        end
-        crossClassify(datasets, Es, thresholds, order);
+        % crossClassify(datasets, Es, thresholds, order);
         % diffHistPlot(freqDiffs, M + 1, shuffleNeg, overlaps);
-        % crossLikelihood(datasets{1}.XTest(datasets{1}.YTest == 1, :), Es, datasets{1}.overlapsTest, order);
+        % crossLikelihood(datasets{1}.XTest(datasets{1}.YTest == 1, :), Es, datasets{1}.testOverlaps, order);
         % indicativeMotifsPlot(freqDiffs);
     end
 end
 
+function plotLettersFreq(datasets)
+    figure
+    p = [];
+    M = length(datasets);
+    for overlapClass = 1:M
+        x = datasets{overlapClass}.XTrain(datasets{overlapClass}.YTrain == 1, :);
+        p(1, overlapClass) = sum(x(:) == 1) / length(x(:));
+        p(2, overlapClass) = sum(x(:) == 2) / length(x(:));
+        p(3, overlapClass) = sum(x(:) == 3) / length(x(:));
+        p(4, overlapClass) = sum(x(:) == 4) / length(x(:));
+    end
+
+    x = datasets{1}.XTrain(datasets{1}.YTrain == 2);
+    p(1, M + 1) = sum(x(:) == 1) / length(x(:));
+    p(2, M + 1) = sum(x(:) == 2) / length(x(:));
+    p(3, M + 1) = sum(x(:) == 3) / length(x(:));
+    p(4, M + 1) = sum(x(:) == 4) / length(x(:));
+    [~, ord] = sort(var(p,[],1));
+    
+    hold on
+    plot(p(1,ord))
+    plot(p(2,ord))
+    plot(p(3,ord))
+    plot(p(4,ord))
+    legend('A', 'C', 'G', 'T')
+    tissues = {'All', 'BAT', 'BMDM', 'BoneMarrow',...
+           'CH12', 'Cerebellum', 'Cortex',...
+           'E14', 'Heart-E14.5', 'Heart',...
+           'Kidney', 'Limb-E14.5', 'Liver-E14.5',...
+           'Liver', 'MEF', 'MEL', 'OlfactBulb',...
+           'Placenta', 'SmIntestine', 'Spleen',...
+           'Testis', 'Thymus', 'WholeBrain-E14.5', 'mESC', 'background'};
+    ax = gca;
+    ax.XTick = 1:M+1;
+    ax.XTickLabel = tissues(ord);
+    ax.XTickLabelRotation=45;
+
+    
+end 
 
 function freqRegression(datasets, order)
     p = 1;
-    M = size(datasets{1}.overlapsTrain, 2);
+    M = size(datasets{1}.trainOverlaps, 2);
     Rsquare = zeros(1,M);
     for tissue = 1 : M;
-        trainOverlaps = datasets{tissue + 1}.overlapsTrain(:, tissue);
-        testOverlaps = datasets{tissue + 1}.overlapsTest(:, tissue);
+        trainOverlaps = datasets{tissue + 1}.trainOverlaps(:, tissue);
+        testOverlaps = datasets{tissue + 1}.testOverlaps(:, tissue);
 
         trainPos = datasets{tissue + 1}.XTrain(datasets{tissue + 1}.YTrain == 1, :);
         trainNeg = datasets{tissue + 1}.XTrain(datasets{tissue + 1}.YTrain == 2, :);
@@ -117,7 +156,11 @@ function crossLikelihood(posSeqs, Es, overlaps, order)
     logLikes = zeros(N, M);
     for j = 1:M
         E = reshape(Es(:, j+1), [2, 4 .* ones(1, order)]);
-        posE = reshape(E(1, :), 4 .* ones(1, order));
+        if order > 1
+            posE = reshape(E(1, :), 4 .* ones(1, order));
+        else
+            posE = E(1, :);
+        end
         logLikes(:, j) = getLogLikes(posE, posSeqs);
     end
     maxLogLikes = max(logLikes, [], 2);
@@ -339,6 +382,10 @@ function diffHistPlot(diffHist, M, shuffleNeg, reorderHeatMap)
     end
 end
 
+function out = getReverseComplement(seqs)
+    out = fliplr(5 - seqs);
+end
+
 % negCGTest may be true only when negCGTrain is true
 function datasets = loadSeqs(posSeqs, negSeqs, overlaps, negCGTrain, negCGTest)
     M = size(overlaps, 2);
@@ -373,18 +420,18 @@ function datasets = loadSeqs(posSeqs, negSeqs, overlaps, negCGTrain, negCGTest)
     datasets{1}.XTest  = [posSeqs(trainLabLength + 1: N, :); negSeqs(trainLabLength + 1:N, :)];
     datasets{1}.YTrain = [ones(trainLabLength, 1); ones(trainLabLength, 1) .* 2];
     datasets{1}.YTest  = [ones(N - trainLabLength,1); ones(N - trainLabLength,1) .* 2];
-    datasets{1}.overlapsTrain = overlaps(posOrder(1:trainLabLength), :);
-    datasets{1}.overlapsTest = overlaps(posOrder(trainLabLength+1:N), :);
+    datasets{1}.trainOverlaps = overlaps(posOrder(1:trainLabLength), :);
+    datasets{1}.testOverlaps = overlaps(posOrder(trainLabLength+1:N), :);
     
     for i = 1 : M
-        trainPos = datasets{1}.overlapsTrain(:, i) > 0;
-        testPos = datasets{1}.overlapsTest(:, i) > 0;
+        trainPos = datasets{1}.trainOverlaps(:, i) > 0;
+        testPos = datasets{1}.testOverlaps(:, i) > 0;
         datasets{i + 1}.XTrain = datasets{1}.XTrain([trainPos; trainPos], :);
         datasets{i + 1}.XTest = datasets{1}.XTest([testPos; testPos], :);
         datasets{i + 1}.YTrain = datasets{1}.YTrain([trainPos; trainPos]);
         datasets{i + 1}.YTest = datasets{1}.YTest([testPos; testPos]);
-        datasets{i + 1}.overlapsTrain = datasets{1}.overlapsTrain(trainPos, :);
-        datasets{i + 1}.overlapsTest = datasets{1}.overlapsTest(testPos, :);
+        datasets{i + 1}.trainOverlaps = datasets{1}.trainOverlaps(trainPos, :);
+        datasets{i + 1}.testOverlaps = datasets{1}.testOverlaps(testPos, :);
     end
 
 end
@@ -502,18 +549,18 @@ end
 % seqs - S x L
 % N - number of sequences to calculate the postirior with
 % out - N x L
-% function out = getPostirior(seqs, startT, T, E)
-%     m = 2;
-%     [N, L] = size(seqs);
-%     postirior = zeros(m, L, N);
-%     [alpha, scale] = forwardAlg(seqs, startT, T, E);
-%     beta = backwardAlg(seqs, startT, T, E, scale);
-%     % S x m x L
-%     postirior = alpha .* beta;
-%     postirior = bsxfun(@times, postirior, 1 ./ sum(postirior, 2));
-%     % return postirior of the positive state, 
-%     out(:,:) = postirior(:, 1, :);
-% end
+function out = getPostirior(seqs, startT, T, E)
+    m = 2;
+    [N, L] = size(seqs);
+    postirior = zeros(m, L, N);
+    [alpha, scale] = forwardAlg(seqs, startT, T, E);
+    beta = backwardAlg(seqs, startT, T, E, scale);
+    % S x m x L
+    postirior = alpha .* beta;
+    postirior = bsxfun(@times, postirior, 1 ./ sum(postirior, 2));
+    % return postirior of the positive state, 
+    out(:,:) = postirior(:, 1, :);
+end
 
 % function [startT, T] = createHmmParams(neg2pos, pos2neg)
 %     T = [1 - pos2neg, pos2neg; neg2pos, 1 - neg2pos];
@@ -524,6 +571,7 @@ function E = trainMarkov(X, Y, order)
     E = [];
     % for i = [unique(Y)]
     for i = 1:max(Y, [], 1)
+        seqs = [X(Y == i, :); getReverseComplement(X(Y == i, :))];
         Ei = getEFromSeqs(X(Y == i, :), order);
         Ei = shiftdim(Ei, -1);
         E = cat(1, E, Ei);
