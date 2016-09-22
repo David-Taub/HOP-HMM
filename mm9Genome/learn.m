@@ -451,11 +451,11 @@ function [testErrMM, testErrHMM, freqDiff, E] = learnData(XTrain, YTrain, XTest,
     % [startT, T] = createHmmParams(neg2pos, pos2neg);
 
     % % N x 1
-    % posPostirior = getPostirior(XTrain(YTrain == 1, :), startT, T, E);
-    % negPostirior = getPostirior(XTrain(YTrain == 2, :), startT, T, E);
+    % posPosterior = getPosterior(XTrain(YTrain == 1, :), startT, T, E);
+    % negPosterior = getPosterior(XTrain(YTrain == 2, :), startT, T, E);
     % % N x 1
-    % posTops = getTopPart(posPostirior);
-    % negTops = getTopPart(negPostirior);
+    % posTops = getTopPart(posPosterior);
+    % negTops = getTopPart(negPosterior);
 
     % minTops = min(min(posTops), min(negTops));
     % maxTops = max(max(posTops), max(negTops));
@@ -463,11 +463,11 @@ function [testErrMM, testErrHMM, freqDiff, E] = learnData(XTrain, YTrain, XTest,
     % thresholds = minTops : 0.01 : maxTops;
     % [trainErr, threshold] = findThreshold(posTops, negTops, thresholds);
     % % N x 1
-    % posPostirior = getPostirior(XTest(YTest == 1, :), startT, T, E);
-    % negPostirior = getPostirior(XTest(YTest == 2, :), startT, T, E);
+    % posPosterior = getPosterior(XTest(YTest == 1, :), startT, T, E);
+    % negPosterior = getPosterior(XTest(YTest == 2, :), startT, T, E);
     % % N x 1
-    % posTops = getTopPart(posPostirior);
-    % negTops = getTopPart(negPostirior);
+    % posTops = getTopPart(posPosterior);
+    % negTops = getTopPart(negPosterior);
     % testErrHMM = getLose(posTops, negTops, threshold);
     % [order, trainErr, testErrHMM]
     % figure 
@@ -478,11 +478,11 @@ function [testErrMM, testErrHMM, freqDiff, E] = learnData(XTrain, YTrain, XTest,
     % legend('pos', 'neg')
     % figure
     % hold on;
-    % plot(mean(posPostirior, 1));
-    % plot(mean(negPostirior, 1));
+    % plot(mean(posPosterior, 1));
+    % plot(mean(negPosterior, 1));
     % ylim([0,1]);
-    % legend('positive postirior', 'negative postirior');
-    % title('postirior Probability of Being Enhancer');
+    % legend('positive posterior', 'negative posterior');
+    % title('posterior Probability of Being Enhancer');
     % hold off;
 end
 
@@ -547,19 +547,19 @@ function results = getLose(high, low, threshold)
 end
 
 % seqs - S x L
-% N - number of sequences to calculate the postirior with
+% N - number of sequences to calculate the posterior with
 % out - N x L
-function out = getPostirior(seqs, startT, T, E)
+function out = getPosterior(seqs, startT, T, E)
     m = 2;
     [N, L] = size(seqs);
-    postirior = zeros(m, L, N);
+    posterior = zeros(m, L, N);
     [alpha, scale] = forwardAlg(seqs, startT, T, E);
     beta = backwardAlg(seqs, startT, T, E, scale);
     % S x m x L
-    postirior = alpha .* beta;
-    postirior = bsxfun(@times, postirior, 1 ./ sum(postirior, 2));
-    % return postirior of the positive state, 
-    out(:,:) = postirior(:, 1, :);
+    posterior = alpha .* beta;
+    posterior = bsxfun(@times, posterior, 1 ./ sum(posterior, 2));
+    % return posterior of the positive state, 
+    out(:,:) = posterior(:, 1, :);
 end
 
 % function [startT, T] = createHmmParams(neg2pos, pos2neg)
