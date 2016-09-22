@@ -9,8 +9,13 @@ function likeRatio = getLikeRatio(E, X)
         posE = E(1,:);
         negE = E(2,:);
     end
-    likePos = getLogLikes(posE, X);
-    likeNeg = getLogLikes(negE, X);
+
+
+    likePos = max([getLogLikes(posE, X); getLogLikes(posE, getReverseComplement(X))], [], 1) ;
+    likeNeg = max([getLogLikes(negE, X); getLogLikes(negE, getReverseComplement(X))], [], 1) ;
     likeRatio = likePos - likeNeg; %high / low = high
 end
     
+function out = getReverseComplement(seqs)
+    out = fliplr(5 - seqs);
+end
