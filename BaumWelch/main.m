@@ -60,6 +60,7 @@ function [posSeqs, negSeqs] = loadTommySeqs(n, L)
 end
 
 function process(XTrain, YTrain, XTest, YTest)
+    size(XTrain)
     close all;
     m = 2;
     % order = 3;
