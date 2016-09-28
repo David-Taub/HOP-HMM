@@ -43,10 +43,10 @@ end
 % means unique overlap between tissues, and if n is 1:3 then we take 
 % the sequences of the three most frequent class
 function [posSeqs, negSeqs] = loadTommySeqs(n, L)
-    negSeqsTrain = readSeq('NEnhancers.train.seq', L);
-    posSeqsTrain = readSeq('Enhancers.train.seq', L);
-    negSeqsTest = readSeq('NEnhancers.test.seq', L);
-    posSeqsTest = readSeq('Enhancers.test.seq', L);
+    negSeqsTrain = readSeq('/cs/cbio/tommy/Enhancers/Data/NEnhancers.train.seq', L);
+    posSeqsTrain = readSeq('/cs/cbio/tommy/Enhancers/Data/Enhancers.train.seq', L);
+    negSeqsTest = readSeq('/cs/cbio/tommy/Enhancers/Data/NEnhancers.test.seq', L);
+    posSeqsTest = readSeq('/cs/cbio/tommy/Enhancers/Data/Enhancers.test.seq', L);
 
     posSeqs = [posSeqsTest; posSeqsTrain];
     negSeqs = [negSeqsTest; negSeqsTrain];
@@ -64,7 +64,7 @@ function process(XTrain, YTrain, XTest, YTest)
     close all;
     m = 2;
     % order = 3;
-    for order = 4:6
+    for order = 4:4
         % anaFreq(posSeqsTrain, negSeqsTrain, order);
         E = trainMarkov(XTrain, YTrain, order);
         thresholds = 0.0 : 0.005 : 1.01;
@@ -81,22 +81,22 @@ function process(XTrain, YTrain, XTest, YTest)
         posPosterior = getPosterior(XTrain(YTrain == 1, :), startT, T, E);
         negPosterior = getPosterior(XTrain(YTrain == 2, :), startT, T, E);
         % N x 1
-        posTops = getTopPart(posPosterior);
-        negTops = getTopPart(negPosterior);
+        % posTops = getTopPart(posPosterior);
+        % negTops = getTopPart(negPosterior);
 
-        minTops = min(min(posTops), min(negTops));
-        maxTops = max(max(posTops), max(negTops));
-        success = [];
-        thresholds = minTops : 0.01 : maxTops;
-        [trainErr, threshold] = findThreshold(posTops, negTops, thresholds);
+        % minTops = min(min(posTops), min(negTops));
+        % maxTops = max(max(posTops), max(negTops));
+        % success = [];
+        % thresholds = minTops : 0.01 : maxTops;
+        % [trainErr, threshold] = findThreshold(posTops, negTops, thresholds);
         % N x 1
-        posPosterior = getPosterior(XTest(YTest == 1, :), startT, T, E);
-        negPosterior = getPosterior(XTest(YTest == 2, :), startT, T, E);
+        % posPosterior = getPosterior(XTest(YTest == 1, :), startT, T, E);
+        % negPosterior = getPosterior(XTest(YTest == 2, :), startT, T, E);
         % N x 1
-        posTops = getTopPart(posPosterior);
-        negTops = getTopPart(negPosterior);
-        testErr = getLose(posTops, negTops, threshold);
-        [order, trainErr, testErr]
+        % posTops = getTopPart(posPosterior);
+        % negTops = getTopPart(negPosterior);
+        % testErr = getLose(posTops, negTops, threshold);
+        % [order, trainErr, testErr]
     end
     % figure 
     % hold on
@@ -104,14 +104,15 @@ function process(XTrain, YTrain, XTest, YTest)
     % plot(negTops)
     % hold off
     % legend('pos', 'neg')
-    % figure
-    % hold on;
-    % plot(mean(posPosterior, 1));
-    % plot(mean(negPosterior, 1));
-    % ylim([0,1]);
-    % legend('positive posterior', 'negative posterior');
-    % title('posterior Probability of Being Enhancer');
-    % hold off;
+    
+    figure
+    hold on;
+    plot(mean(posPosterior, 1));
+    plot(mean(negPosterior, 1));
+    ylim([0,1]);
+    legend('positive posterior', 'negative posterior');
+    title('posterior Probability of Being Enhancer');
+    hold off;
     save('data.mat')
 end
 
@@ -260,14 +261,8 @@ end
 % reads .seq format file (Tommy's format) and returns the sequence as numbers
 function out = readSeq(filePath, L)
     matPath = strcat(filePath, '.mat');
-    if exist(matPath, 'file') == 2
-        out = load(matPath);
-        out = out.out;
-        return;
-    end
     [~, seqsCells] = textread(filePath, '%s%s%*[^\n]','delimiter','\t','bufsize',20000);
     out = regularSeqs(seqsCells, L);
-    save(matPath, 'out');
 end
 
 % remove short seqs
