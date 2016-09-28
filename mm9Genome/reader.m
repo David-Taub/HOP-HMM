@@ -1,21 +1,20 @@
-function [posSeqs, overlaps] = reader(peaks, genome, negSeqs, shouldLearn)
+function [posSeqs, overlaps] = reader(peaks, genome, negSeqs, shouldLearn, seqsLength)
     close all;
     % profile on
     format compact
 
-    params = [0.03, 1, 0.05, 1, 0.05, 1, 3000];
+    params = [0.5, 1, 0.04, 1, 0.05, 1, 7000];
 
     % todo: instead of GA, use random values with ranges in an infinite loop
     % ga(@(x) readParam(x, peaks, genome, negSeqs), 7,[], [], [], [],...
     %      [0,0,0,0,0,0,2000], [0.07,1,0.08,1,0.08,1,4000] )
     
-    [posSeqs, overlaps] = readParam(params, peaks, genome, negSeqs, shouldLearn);
+    [posSeqs, overlaps] = readParam(params, peaks, genome, negSeqs, shouldLearn, seqsLength);
 end
 
-function [posSeqs, overlaps] = readParam(param, peaks, genome, negSeqs, shouldLearn)
+function [posSeqs, overlaps] = readParam(param, peaks, genome, negSeqs, shouldLearn, seqsLength)
     fprintf('\n');
     fprintf('%.3f ', param);
-    seqsLength = 500;
     N = length(peaks); %23
     overlaps = []; from = []; to = []; chr = {};
     for i = 1 : N
@@ -48,17 +47,17 @@ function [posSeqs, overlaps] = readParam(param, peaks, genome, negSeqs, shouldLe
         savePosSeqs(posSeqs, overlaps);
     else
 
-        fprintf('%d\t', size(posSeqs, 1));
+        % fprintf('%d\t', size(posSeqs, 1));
         [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps);
-        hold on;
-        scatter3(param(1), param(3), accuricy(1), 'b');
-        xlabel('H3K27ac')
-        ylabel('H3K4me1')
-        zlabel('Accuricy')
-        drawnow;
-        writeToFile(param, accuricy, amounts)
-        err = 1 - accuricy(1);
-        fprintf('%.4f', accuricy(1));
+        % hold on;
+        % scatter3(param(1), param(3), accuricy(1), 'b');
+        % xlabel('H3K27ac')
+        % ylabel('H3K4me1')
+        % zlabel('Accuricy')
+        % drawnow;
+        % writeToFile(param, accuricy, amounts)
+        % err = 1 - accuricy(1);
+        fprintf('%.4f\n', accuricy(1));
     end
 end
 

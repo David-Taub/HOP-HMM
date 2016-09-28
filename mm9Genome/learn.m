@@ -4,9 +4,9 @@ function [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps)
     % posSeqs = seqs;
     % negSeqs = readSeq('NEnhancers.seq', L);
     % order = 1;
-    for order = 4:4
-        order
-        negCGTrain = false;
+    for order = 2:5
+        % order
+        negCGTrain = true;
         negCGTest = false;
         M = size(overlaps, 2); %23
         accuricy = zeros(1, M + 1);
@@ -15,8 +15,8 @@ function [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps)
         Es = zeros(2 * 4 ^ order, M + 1);
         freqDiffs = zeros(4 ^ order, M + 1);
         datasets = loadSeqs(posSeqs, negSeqs, overlaps, negCGTrain, negCGTest);
-        plotLettersFreq(datasets);return;
-        % freqRegression(datasets, order);
+        % plotLettersFreq(datasets);
+        freqRegression(datasets, order);
         % for overlapClass = 0:M
         %     j = overlapClass + 1;
         %     [MMResult, ~, freqDiffs(:, j), Es(:, j), thresholds(j), amounts(j)] = sampleAndLearnMulti(datasets{overlapClass + 1}, order);
@@ -30,6 +30,7 @@ function [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps)
         % indicativeMotifsPlot(freqDiffs);
     end
 end
+
 
 function plotLettersFreq(datasets)
     figure
@@ -56,6 +57,12 @@ function plotLettersFreq(datasets)
     plot(p(3,ord))
     plot(p(4,ord))
     legend('A', 'C', 'G', 'T')
+    addTissuesTicks(true, true, ord, false);
+
+    
+end 
+
+function addTissuesTicks(withAll, withBackground, ord, withY)
     tissues = {'All', 'BAT', 'BMDM', 'BoneMarrow',...
            'CH12', 'Cerebellum', 'Cortex',...
            'E14', 'Heart-E14.5', 'Heart',...
@@ -63,82 +70,136 @@ function plotLettersFreq(datasets)
            'Liver', 'MEF', 'MEL', 'OlfactBulb',...
            'Placenta', 'SmIntestine', 'Spleen',...
            'Testis', 'Thymus', 'WholeBrain-E14.5', 'mESC', 'background'};
+    if ~withAll
+        tissues = tissues(2:end);
+    end
+    if ~withBackground
+        tissues = tissues(1:end-1);
+    end
+    M = length(tissues);
+    if ord == 0
+        ord = 1:M;
+    end
     ax = gca;
-    ax.XTick = 1:M+1;
+    ax.XTick = 1:M;
     ax.XTickLabel = tissues(ord);
     ax.XTickLabelRotation=45;
-
-    
-end 
+    if withY
+        ax.YTick = 1:M;
+        ax.YTickLabel = tissues(ord);
+    end
+end
 
 function freqRegression(datasets, order)
-    p = 1;
+    polynomialOrder = 1;
     M = size(datasets{1}.trainOverlaps, 2);
     Rsquare = zeros(1,M);
+    % for tissue = 1 : M;
     for tissue = 1 : M;
-        trainOverlaps = datasets{tissue + 1}.trainOverlaps(:, tissue);
-        testOverlaps = datasets{tissue + 1}.testOverlaps(:, tissue);
-
+        % N x 1
+        trainOverlaps = log(1 + datasets{tissue + 1}.trainOverlaps(:, tissue));
+        testOverlaps = log(1 + datasets{tissue + 1}.testOverlaps(:, tissue));
+        trainOverlaps = [trainOverlaps; testOverlaps];
+        % N x L
         trainPos = datasets{tissue + 1}.XTrain(datasets{tissue + 1}.YTrain == 1, :);
-        trainNeg = datasets{tissue + 1}.XTrain(datasets{tissue + 1}.YTrain == 2, :);
+        % trainNeg = datasets{tissue + 1}.XTrain(datasets{tissue + 1}.YTrain == 2, :);
         testPos = datasets{tissue + 1}.XTrain(datasets{tissue + 1}.YTest == 1, :);
-
+        trainPos = [trainPos; testPos];
         [NTrain, ~] = size(trainPos);
         [NTest, L] = size(testPos);
 
 
+        % N x (L - order + 1)
         trainPosI = reshape(getIndeices1D(trainPos, order), [L - order + 1, NTrain]).';
-        trainNegI = reshape(getIndeices1D(trainNeg, order), [L - order + 1, NTrain]).';
+        % trainNegI = reshape(getIndeices1D(trainNeg, order), [L - order + 1, NTrain]).';
         testPosI = reshape(getIndeices1D(testPos, order), [L - order + 1, NTest]).';
 
         % regressors
         k = 4 ^ order; %number of possible motifs with length 'order'
-        trainPosHist = histc(trainPosI, 1 : k, 2);
-        trainNegHist = histc(trainNegI, 1 : k, 2);
-        testPosHist = histc(testPosI, 1 : k, 2);
+        % N x k
+        trainPosHist = normr(histc(trainPosI, 1 : k, 2));
+        % trainNegHist = normr(histc(trainNegI, 1 : k, 2));
+        testPosHist = normr(histc(testPosI, 1 : k, 2));
 
-        % feature selection:
-        newK = 100 ;
-        newK = min(newK, k) ;
-        bestMotifs = selectBestMotifs(trainNegHist, trainPosHist, newK);
-        trainPosHist = trainPosHist(:, bestMotifs);
-        testPosHist = testPosHist(:, bestMotifs);
+
+        % % feature selection:
+        % newK = 100 ;
+        % newK = min(newK, k) ;
+        % bestMotifs = selectBestMotifs(trainNegHist, trainPosHist, newK);
+        % N x newK
+        % trainPosHist = trainPosHist(:, bestMotifs);
+        % testPosHist = testPosHist(:, bestMotifs);
         
         
-        trainRegressor = zeros(NTrain, p * newK  + 1);
-        testRegressor = zeros(NTest, p * newK  + 1);
+        % % N x newK * polynomialOrder + 1
+        % trainRegressor = zeros(NTrain, polynomialOrder * newK  + 1);
+        % testRegressor = zeros(NTest, polynomialOrder * newK  + 1);
 
-        % make polynomial
-        for j = 1:p
-            trainRegressor(:, newK  * (j-1) + 1 : newK  * j) = trainPosHist .^ j;
-            testRegressor(:, newK  * (j-1) + 1 : newK  * j) = testPosHist .^ j;
-        end
-        trainRegressor(:, end) = 1;
-        testRegressor(:, end) = 1;
+        % % make polynomial
+        % for j = 1:polynomialOrder
+        %     trainRegressor(:, newK  * (j-1) + 1 : newK  * j) = trainPosHist .^ j;
+        %     testRegressor(:, newK  * (j-1) + 1 : newK  * j) = testPosHist .^ j;
+        % end
+        % % N x newK * polynomialOrder + 1
+        % trainRegressor(:, end) = 1;
+        % testRegressor(:, end) = 1;
 
         
         % linear regression
-        x = mvregress(trainRegressor, trainOverlaps);
+        % newK * polynomialOrder + 1 x 1
+
+        model = 'linear';
+        size(trainPosHist)
+        if size(trainPosHist, 1) < size(trainPosHist, 2)
+            continue;
+        end
+        stats = regstats(trainOverlaps, trainPosHist, model);
+
+        Rsquare(tissue) = stats.rsquare
+        % figure;
+        % scatter(trainOverlaps, stats.yhat);
+
+        matSize = [4 * ones(1, order), 1];
+        N =4^order;
+
+        vec = 1:N;
+
+        a = zeros(N, length(matSize));
+        for i = 1:length(matSize)
+            a(:, i) = mod(vec, matSize(i));
+            vec = ceil(vec / matSize(i));
+        end
+
+        % [a(:, 1), a(:, 2), a(:, 3), a(:, 4), a(:, 5)] = ind2sub(matSize, 1:N);
+        for i = 1:N
+            let{i} = int2nt(a(i, :));
+        end
+        % figure;
+        % plot(stats.beta)
+        % grid on;
+        % ax = gca;
+        % ax.XTick = 1:N;
+        % ax.XTickLabel = let;
+        % ax.XTickLabelRotation=45;
+            
         % x = trainRegressor \ trainOverlaps;
         % % least square (not working)
         % x = (trainRegressor.' * trainRegressor) \ (trainRegressor.' * trainOverlaps);
         % alpha = 100;
         % x = (trainRegressor.' * trainRegressor + eye(size(trainRegressor, 2)) .* alpha) \ (trainRegressor.' * trainOverlaps);
-        estTestOverlaps = testRegressor * x;
 
-        [~, ord] = sortrows(testOverlaps);
-        testOverlaps = testOverlaps(ord, :);
-        estTestOverlaps = estTestOverlaps(ord, :);
+        % [~, ord] = sortrows(testOverlaps);
+        % testOverlaps = testOverlaps(ord, :);
+        % estTestOverlaps = estTestOverlaps(ord, :);
         % subplot(1,2,1); imagesc(testOverlaps); colorbar;
         % subplot(1,2,2); imagesc(estTestOverlaps); colorbar;
-        % figure
-        % scatter(trainPosHist, trainOverlaps)
-        errors = testOverlaps - estTestOverlaps;
-        Rsquare(tissue) = 1 - (sum(errors.^2) / sum((testOverlaps(:) - mean(testOverlaps(:))).^2))
-        return
+
+
     end
-    figure
+    hold on
+    Rsquare(Rsquare<0) = 0
     plot(Rsquare)
+    addTissuesTicks(false, false, 0, false)
 end
 
 
@@ -176,17 +237,7 @@ function crossLikelihood(posSeqs, Es, overlaps, order)
 
     fig = figure();
     subplot(1,3,1); imagesc(diffLogLikes); colorbar;
-    tissues = {'BAT', 'BMDM', 'BoneMarrow',...
-               'CH12', 'Cerebellum', 'Cortex',...
-               'E14', 'Heart-E14.5', 'Heart',...
-               'Kidney', 'Limb-E14.5', 'Liver-E14.5',...
-               'Liver', 'MEF', 'MEL', 'OlfactBulb',...
-               'Placenta', 'SmIntestine', 'Spleen',...
-               'Testis', 'Thymus', 'WholeBrain-E14.5', 'mESC'};
-    ax = gca;
-    ax.XTick = 1:M;
-    ax.XTickLabel = tissues;
-    ax.XTickLabelRotation=45;
+    addTissuesTicks(false, false, 0, false);
     title('likelihood - overlaps');
     subplot(1,3,2); imagesc(overlaps); colorbar;
     ax = gca;
@@ -228,20 +279,12 @@ end
 
 function f = plotHeatMap(tissueDat, reorder, dendro, isSquare, plotTitle)
     f = 0;
-    tissues = {'all', 'BAT', 'BMDM', 'BoneMarrow',...
-               'CH12', 'Cerebellum', 'Cortex',...
-               'E14', 'Heart-E14.5', 'Heart',...
-               'Kidney', 'Limb-E14.5', 'Liver-E14.5',...
-               'Liver', 'MEF', 'MEL', 'OlfactBulb',...
-               'Placenta', 'SmIntestine', 'Spleen',...
-               'Testis', 'Thymus', 'WholeBrain-E14.5', 'mESC'};
-    M = length(tissues);
+    M = size(tissueDat, 2);
     
     % reorder
     if reorder
         tree = linkage(tissueDat);
         leafOrd = optimalleaforder(tree, pdist(tissueDat));
-        tissues = tissues(leafOrd);
         tissueDat = tissueDat(leafOrd, :);
         if isSquare
             tissueDat = tissueDat(:, leafOrd);
@@ -249,10 +292,7 @@ function f = plotHeatMap(tissueDat, reorder, dendro, isSquare, plotTitle)
         if dendro
             figure;
             dendrogram(tree,'Reorder',leafOrd)
-            ax = gca;
-            ax.XTick = 1:M;
-            ax.XTickLabel = tissues;
-            ax.XTickLabelRotation=45;
+            addTissuesTicks(true, false, leafOrd, false);
             title(plotTitle);
             f = figure();
         end
@@ -265,15 +305,7 @@ function f = plotHeatMap(tissueDat, reorder, dendro, isSquare, plotTitle)
         imagesc(D,[0,1]);colorbar;
     end
     title(plotTitle);
-    ax = gca;
-    ax.XLim = [0.5 M+0.5];
-    ax.YLim = [0.5 M+0.5];
-    ax.XTick = 1:M;
-    ax.YTick = 1:M;
-    ax.YTickLabel = tissues;
-    ax.XTickLabel = tissues;
-    ax.XTickLabelRotation=45;
-    title(plotTitle);
+    addTissuesTicks(true, false, leafOrd, true);
 
 end 
 % sample datasets, train and get test errors multiple times
@@ -445,45 +477,6 @@ function [testErrMM, testErrHMM, freqDiff, E] = learnData(XTrain, YTrain, XTest,
     testErrHMM = 0;
     % testErrMM = 0;
 
-    % pos2neg = 1 / 250; % this values minimizes training error
-    % neg2pos = 1 / 50;
-    
-    % [startT, T] = createHmmParams(neg2pos, pos2neg);
-
-    % % N x 1
-    % posPosterior = getPosterior(XTrain(YTrain == 1, :), startT, T, E);
-    % negPosterior = getPosterior(XTrain(YTrain == 2, :), startT, T, E);
-    % % N x 1
-    % posTops = getTopPart(posPosterior);
-    % negTops = getTopPart(negPosterior);
-
-    % minTops = min(min(posTops), min(negTops));
-    % maxTops = max(max(posTops), max(negTops));
-    % success = [];
-    % thresholds = minTops : 0.01 : maxTops;
-    % [trainErr, threshold] = findThreshold(posTops, negTops, thresholds);
-    % % N x 1
-    % posPosterior = getPosterior(XTest(YTest == 1, :), startT, T, E);
-    % negPosterior = getPosterior(XTest(YTest == 2, :), startT, T, E);
-    % % N x 1
-    % posTops = getTopPart(posPosterior);
-    % negTops = getTopPart(negPosterior);
-    % testErrHMM = getLose(posTops, negTops, threshold);
-    % [order, trainErr, testErrHMM]
-    % figure 
-    % hold on
-    % plot(posTops)
-    % plot(negTops)
-    % hold off
-    % legend('pos', 'neg')
-    % figure
-    % hold on;
-    % plot(mean(posPosterior, 1));
-    % plot(mean(negPosterior, 1));
-    % ylim([0,1]);
-    % legend('positive posterior', 'negative posterior');
-    % title('posterior Probability of Being Enhancer');
-    % hold off;
 end
 
 
@@ -562,10 +555,10 @@ function out = getPosterior(seqs, startT, T, E)
     out(:,:) = posterior(:, 1, :);
 end
 
-% function [startT, T] = createHmmParams(neg2pos, pos2neg)
-%     T = [1 - pos2neg, pos2neg; neg2pos, 1 - neg2pos];
-%     startT = [0.5; 0.5];
-% end
+function [startT, T] = createHmmParams(neg2pos, pos2neg)
+    T = [1 - pos2neg, pos2neg; neg2pos, 1 - neg2pos];
+    startT = [0.5; 0.5];
+end
 
 function E = trainMarkov(X, Y, order)
     E = [];
