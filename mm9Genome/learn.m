@@ -4,7 +4,8 @@ function [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps)
     % posSeqs = seqs;
     % negSeqs = readSeq('NEnhancers.seq', L);
     % order = 1;
-    for order = 2:5
+    orders = 2:3
+    for order = orders
         % order
         negCGTrain = true;
         negCGTest = false;
@@ -29,8 +30,8 @@ function [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps)
         % crossLikelihood(datasets{1}.XTest(datasets{1}.YTest == 1, :), Es, datasets{1}.testOverlaps, order);
         % indicativeMotifsPlot(freqDiffs);
     end
+    legend(strsplit(num2str([orders]), ' '))
 end
-
 
 function plotLettersFreq(datasets)
     figure
@@ -62,34 +63,6 @@ function plotLettersFreq(datasets)
     
 end 
 
-function addTissuesTicks(withAll, withBackground, ord, withY)
-    tissues = {'All', 'BAT', 'BMDM', 'BoneMarrow',...
-           'CH12', 'Cerebellum', 'Cortex',...
-           'E14', 'Heart-E14.5', 'Heart',...
-           'Kidney', 'Limb-E14.5', 'Liver-E14.5',...
-           'Liver', 'MEF', 'MEL', 'OlfactBulb',...
-           'Placenta', 'SmIntestine', 'Spleen',...
-           'Testis', 'Thymus', 'WholeBrain-E14.5', 'mESC', 'background'};
-    if ~withAll
-        tissues = tissues(2:end);
-    end
-    if ~withBackground
-        tissues = tissues(1:end-1);
-    end
-    M = length(tissues);
-    if ord == 0
-        ord = 1:M;
-    end
-    ax = gca;
-    ax.XTick = 1:M;
-    ax.XTickLabel = tissues(ord);
-    ax.XTickLabelRotation=45;
-    if withY
-        ax.YTick = 1:M;
-        ax.YTickLabel = tissues(ord);
-    end
-end
-
 function freqRegression(datasets, order)
     polynomialOrder = 1;
     M = size(datasets{1}.trainOverlaps, 2);
@@ -99,12 +72,12 @@ function freqRegression(datasets, order)
         % N x 1
         trainOverlaps = log(1 + datasets{tissue + 1}.trainOverlaps(:, tissue));
         testOverlaps = log(1 + datasets{tissue + 1}.testOverlaps(:, tissue));
-        trainOverlaps = [trainOverlaps; testOverlaps];
+        % trainOverlaps = [trainOverlaps; testOverlaps];
         % N x L
         trainPos = datasets{tissue + 1}.XTrain(datasets{tissue + 1}.YTrain == 1, :);
         % trainNeg = datasets{tissue + 1}.XTrain(datasets{tissue + 1}.YTrain == 2, :);
         testPos = datasets{tissue + 1}.XTrain(datasets{tissue + 1}.YTest == 1, :);
-        trainPos = [trainPos; testPos];
+        % trainPos = [trainPos; testPos];
         [NTrain, ~] = size(trainPos);
         [NTest, L] = size(testPos);
 
@@ -148,15 +121,20 @@ function freqRegression(datasets, order)
         % linear regression
         % newK * polynomialOrder + 1 x 1
 
-        model = 'linear';
-        size(trainPosHist)
+        model = 'purequadratic';
         if size(trainPosHist, 1) < size(trainPosHist, 2)
             continue;
         end
         stats = regstats(trainOverlaps, trainPosHist, model);
+        B = stats.beta;
+        % Rsquare(tissue) = stats.rsquare;
+        Rsquare(tissue) = 1 - (sum((testOverlaps - x2fx(testPosHist, model) * B).^2, 1) / sum((testOverlaps - mean(testOverlaps, 1)).^2, 1))
+        % Rsquare(tissue) = 1 - (sum((trainOverlaps - x2fx(trainPosHist, model) * B).^2, 1) / sum((trainOverlaps - mean(trainOverlaps, 1)).^2, 1))
 
-        Rsquare(tissue) = stats.rsquare
-        % figure;
+
+        % [B, fitInfo] = lasso(x2fx(trainPosHist, model), trainOverlaps, 'Lambda', 0.0001);
+        % Rsquare(tissue) = 1 - (sum((testOverlaps - x2fx(testPosHist, model) * B).^2, 1) / sum((testOverlaps - mean(testOverlaps, 1)).^2, 1))
+        % Rsquare(tissue) = 1 - (sum((trainOverlaps - [ones(NTrain, 1), trainPosHist] * B).^2) / sum((trainOverlaps - mean(trainOverlaps)).^2))
         % scatter(trainOverlaps, stats.yhat);
 
         matSize = [4 * ones(1, order), 1];

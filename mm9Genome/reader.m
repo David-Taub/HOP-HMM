@@ -3,7 +3,7 @@ function [posSeqs, overlaps] = reader(peaks, genome, negSeqs, shouldLearn, seqsL
     % profile on
     format compact
 
-    params = [0.5, 1, 0.04, 1, 0.05, 1, 7000];
+    params = [0.02, 1, 0.04, 1, 0.05, 1, 7000];
 
     % todo: instead of GA, use random values with ranges in an infinite loop
     % ga(@(x) readParam(x, peaks, genome, negSeqs), 7,[], [], [], [],...
@@ -46,9 +46,9 @@ function [posSeqs, overlaps] = readParam(param, peaks, genome, negSeqs, shouldLe
     if ~shouldLearn
         savePosSeqs(posSeqs, overlaps);
     else
-
+        % plotOverlaps(from, to, overlaps);
         % fprintf('%d\t', size(posSeqs, 1));
-        [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps);
+        % [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps);
         % hold on;
         % scatter3(param(1), param(3), accuricy(1), 'b');
         % xlabel('H3K27ac')
@@ -60,7 +60,26 @@ function [posSeqs, overlaps] = readParam(param, peaks, genome, negSeqs, shouldLe
         fprintf('%.4f\n', accuricy(1));
     end
 end
-
+function plotOverlaps(from, to, overlaps)
+    m = size(overlaps, 2);
+    mat = zeros(m);
+    rangesPerTissue = cell(m, 1);
+    for i = 1:m
+        tissueSeqs = overlaps(:, i) > 0;
+        ranges = genRanges(from(tissueSeqs).', to(tissueSeqs).');
+        rangesPerTissue{i} = ranges(:);
+    end
+    for i = 1:m
+        for j = 1:m
+            mat(i,j) = length(intersect(rangesPerTissue{i}, rangesPerTissue{j})) / length(rangesPerTissue{i});
+        end
+    end
+    figure;
+    imagesc(mat - eye(m));
+    colorbar;
+    title('Enhancers Intersection')
+    addTissuesTicks(false, false, 0, true);
+end
 function savePosSeqs(posSeqs, overlaps)
     peaksPath = '/cs/stud/boogalla/projects/CompGenetics/mm9Genome/data/posSeqs.mat';
     save(peaksPath, 'posSeqs', 'overlaps');
@@ -89,14 +108,6 @@ function seqs = getSeqs(from, to, chr, genome)
     end
 end
 
-% assumes ranges are with same lengths
-function ranges = genRanges(lows, highs)
-    n = cumsum([1;highs(:) - lows(:)]);
-    z = ones(n(end)-1,1);
-    z(n(1:end-1)) = [lows(1),lows(2:end)-highs(1:end-1)];
-    rangesV = cumsum(z);
-    ranges = reshape(rangesV, [highs(1) - lows(1), length(lows)]).';
-end
 
 function peaks = filterPeaksAux(peaks, mask)
     if exist('peaks.gTSSdist', 'var')
