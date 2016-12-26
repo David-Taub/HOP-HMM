@@ -1,4 +1,4 @@
-function [model,log_like] = HMM_EM(O_all,N)
+    function [model,log_like] = HMM_EM(O_all,N)
 % learn HMM parameters using EM
 %
 % input:
