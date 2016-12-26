@@ -1,15 +1,16 @@
-function [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps)
+function [datasets] = learn(posSeqs, negSeqs, overlaps)
     % get the n'st most frequent overlap
     % load('/cs/stud/boogalla/  projects/CompGenetics/BaumWelch/peaks.mat');
     % posSeqs = seqs;
     % negSeqs = readSeq('NEnhancers.seq', L);
     % order = 1;
-    orders = 2:3
+    orders = 3:3;
     for order = orders
         % order
         negCGTrain = true;
         negCGTest = false;
         M = size(overlaps, 2); %23
+        m = 10; n = 4; maxIter = 300; tEpsilon = 0.01;
         accuricy = zeros(1, M + 1);
         amounts = zeros(1, M + 1);
         thresholds = zeros(1, M + 1);
@@ -17,21 +18,21 @@ function [accuricy, amounts] = learn(posSeqs, negSeqs, overlaps)
         freqDiffs = zeros(4 ^ order, M + 1);
         datasets = loadSeqs(posSeqs, negSeqs, overlaps, negCGTrain, negCGTest);
         % plotLettersFreq(datasets);
-        freqRegression(datasets, order);
-        % for overlapClass = 0:M
-        %     j = overlapClass + 1;
-        %     [MMResult, ~, freqDiffs(:, j), Es(:, j), thresholds(j), amounts(j)] = sampleAndLearnMulti(datasets{overlapClass + 1}, order);
-        %     accuricy(j) = MMResult.ACC;
-        %     MMResult
-        % end
+        % freqRegression(datasets, order);
+        for overlapClass = 1:1
+            % [MMResult, ~, freqDiffs(:, j), Es(:, j), thresholds(j), amounts(j)] = sampleAndLearnMulti(datasets{overlapClass + 1}, order);
+            % MMResult
+            EM(datasets{overlapClass}.XTrain, m, n, maxIter, tEpsilon, order);
+        end
 
         % crossClassify(datasets, Es, thresholds, order);
         % diffHistPlot(freqDiffs, M + 1, shuffleNeg, overlaps);
         % crossLikelihood(datasets{1}.XTest(datasets{1}.YTest == 1, :), Es, datasets{1}.testOverlaps, order);
         % indicativeMotifsPlot(freqDiffs);
     end
-    legend(strsplit(num2str([orders]), ' '))
+    % legend(strsplit(num2str([orders]), ' '))
 end
+
 
 function plotLettersFreq(datasets)
     figure
@@ -292,7 +293,7 @@ function [MMErr, HMMErr, freqDiff, E, threshold, amount] = sampleAndLearnMulti(d
 
 
     thresholdRange = 0.8 : 0.005 : 1.2;
-    amount = sum([dataset.YTrain == 1;dataset.YTest == 1], 1);
+    % amount = sum([dataset.YTrain == 1;dataset.YTest == 1], 1);
     % train
     E = trainMarkov(dataset.XTrain, dataset.YTrain, order);
     
@@ -301,7 +302,8 @@ function [MMErr, HMMErr, freqDiff, E, threshold, amount] = sampleAndLearnMulti(d
     [MMErr, ~] = classify(E, dataset.XTest, dataset.YTest, threshold);
 
     % post analyze
-    freqDiff = freqFinder(dataset.XTrain(dataset.YTrain == 1, :), dataset.XTrain(dataset.YTrain == 2, :), order);
+    % freqDiff = freqFinder(dataset.XTrain(dataset.YTrain == 1, :), dataset.XTrain(dataset.YTrain == 2, :), order);
+    freqDiff = 0; amount = 0;
     HMMErr = 0;
     E = E(:);
 end
@@ -443,17 +445,6 @@ function datasets = loadSeqs(posSeqs, negSeqs, overlaps, negCGTrain, negCGTest)
         datasets{i + 1}.trainOverlaps = datasets{1}.trainOverlaps(trainPos, :);
         datasets{i + 1}.testOverlaps = datasets{1}.testOverlaps(testPos, :);
     end
-
-end
-
-function [testErrMM, testErrHMM, freqDiff, E] = learnData(XTrain, YTrain, XTest, YTest, order)
-    E = trainMarkov(XTrain, YTrain, order);
-    thresholds = 0.8 : 0.005 : 1.2;
-    [~, threshold] = classify(E, XTrain, YTrain, thresholds);
-    [testErrMM, ~] = classify(E, XTest, YTest, threshold);
-    freqDiff = freqFinder(XTrain(YTrain == 1, :), XTrain(YTrain == 2, :), order);
-    testErrHMM = 0;
-    % testErrMM = 0;
 
 end
 

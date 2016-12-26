@@ -23,3 +23,10 @@ while 1; reader(T, genome, negSeqs, true, seqsLength); end;
 reader(T, genome, negSeqs, true, seqsLength);
 
 
+
+addpath('C:\Users\booga\Dropbox\bio\projects\CompGenetics\mm9Genome')
+addpath('C:\Users\booga\Dropbox\bio\projects\CompGenetics\BaumWelch')
+load('C:\Users\booga\Dropbox\bio\projects\CompGenetics\mm9Genome\data\posSeqs.mat')
+
+% [startT, T, E, ~, ~] = EM(posSeqs, m, 4, maxIter, tEpsilon, order);
+[startT, T, E, ~, ~] = EM(posSeqs, 5, 4, 400, 0.05, 3);
