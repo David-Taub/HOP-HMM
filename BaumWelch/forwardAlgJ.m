@@ -12,7 +12,7 @@
 % lengths - m x 1 length of each motif in the PWM matrix. J = max(lengths)
 % Xs - N x L emission variables
 
-function [alpha, scale] = forwardAlgJ(Xs, startT, T, PWMsRep, lengths)
+function [alpha, scale] = forwardAlgJ(Xs, startT, T, Y, E, PWMsRep, lengths)
     % alpha(N, i, j) P(y_s_j=i| x_s_1, ...x_s_j, startT, T, PWMs)
     % scale(N, i) = P(x_s_i| startT, T, PWMs)
     % m x L
@@ -28,13 +28,15 @@ function [alpha, scale] = forwardAlgJ(Xs, startT, T, PWMsRep, lengths)
     alpha(:, :, J+1) = (repmat(startT, [1, N]) .* startE(:, Xs(:, 1))).';
     scale(:, 1) = sum(alpha(:, :, J+1), 2);
     matSize = [m , n * ones(1, order)];
+
     for t = 2:L
-        % newAlphas = PWMs(:, X(t)) .* sum(repmat(alpha(:, t-1), [1, m]) .* T, 1).';
+        % N x m 
         Ep = getEp(E, Xs, t, m, kronMN, matSize, N, order);
-        newAlphas = (alpha(:, :, J+t-1) * T) .* Ep;
+        % N x m 
+        newAlphas = (alpha(:, :, t + J - 1) * T) .* Ep;
         % N x m x k
-        alphaSlice = alpha(:, :, t + J - lengths);
-        newAlphas = newAlphas + PWMstep(alphaSlice, PWMsRep, Xs1H, Y, J, t);
+        alphaSlice = alpha(:, :, t + J - lengths - 1);
+        newAlphas = newAlphas + PWMstep(alphaSlice, PWMsRep, Xs1H, Y, t);
         % N x 1
         scale(:, t) = sum(newAlphas, 2);
         alpha(:, :, J + t) = bsxfun(@times, newAlphas, 1 ./ scale(:, t));
