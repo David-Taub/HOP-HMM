@@ -35,9 +35,9 @@ function [startT, T, Y, E, likelihood, gamma] = EMJ(Xs, m, maxIter, tEpsilon, or
         for it = 1:maxIter;
             % N x m x L
             % m x L
-            [alpha, scale] = forwardAlgJ(Xs, startT, T, PWMsRep, lengths);
+            [alpha, scale] = forwardAlgJ(Xs, startT, T, Y, E, PWMsRep, lengths);
             % N x m x L
-            beta = backwardAlgJ(Xs, startT, T, E, scale, PWMsRep, lengths);
+            beta = backwardAlgJ(Xs, startT, T, Y, E, scale, PWMsRep, lengths);
 
             % N x m x L
             % gamma_t(i) = P(y_t = i|x_1:L)
@@ -99,19 +99,29 @@ function [startT, T, Y, E, likelihood, gamma] = EMJ(Xs, m, maxIter, tEpsilon, or
 end
 % TODO: get PWMs also
 function newT = updateT(E, T, Xs, alpha, beta, L, N, m, order)
-    xi = zeros(m, m);
+    TCorrection = zeros(m, m);
     % todo: remove slow loop
     matSize = [m , 4 * ones(1, order)];
     kronMN = kron(1:m, ones(1, N));
     for t = 2 : L
+        % for each letter in seqs we get more information about the transition matrix update
+        % N x k
+        PWMProb = getPWMp(PWMstep, Xs1H, t-1);
+        % N x m x k
+        M = repmat(alpha(:, :, t-1), [1,1,k]) .* (beta(:, :, t+lengths);
+        % N x k x m
+        M = bsxfun(@times, permute(M, [1,3,2]), PWMProb));
+        % m x k x N
+        M = bsxfun(@times, permute(M, [3,2,1]), Y));
+        % m x k x N -> m x k
+        YCorrectiont = sum(M, 3);
         % N x m
         Ep = getEp(E, Xs, t, m, kronMN, matSize, N, order);
-        % for each letter in seqs we get more information about the transition matrix update
         % (m x N * N x m) .* (m x m)
-        newXi = (alpha(:, :, t-1).' * (beta(:, :, t) .* Ep)) .* T;
-        xi = xi + (newXi / sum(sum(newXi)));
+        TCorrection = (alpha(:, :, t-1).' * (beta(:, :, t) .* Ep)) .* T;
+        TCorrection = TCorrection + (TCorrectiont / sum(sum(TCorrectiont)));
     end
-    newT = T + xi;
+    newT = T + TCorrection;
 end
 
 function newT = Tbound(T, tEpsilon, m)
