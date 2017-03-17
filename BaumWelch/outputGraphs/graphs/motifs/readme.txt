@@ -1,0 +1,2 @@
+comparison between shuffled background and high cg content background (_s files are shuffled)
+I chose the n'th most distinctive motifs for each tissue relative to the background, and for each tissue saw how different it is from the other tissues. the more similar the motif's frequency between the tissues, the bluer it's pixel is.

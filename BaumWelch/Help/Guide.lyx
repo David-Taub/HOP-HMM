@@ -1,0 +1,673 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+This should be some kind of log of the work with Tommy.
+ 
+\end_layout
+
+\begin_layout Standard
+Early work - EM (BaumWelch)
+\end_layout
+
+\begin_layout Standard
+We have data of size N:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $X=\{x_{1},...,x_{N}\}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $p(X|\Theta)=\Pi_{i=1}^{N}p(x_{i}|\Theta)=L(\Theta|X)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we are looking for 
+\begin_inset Formula $\Theta^{*}=argmax_{\Theta}\left\{ L(\Theta|X)\right\} $
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+HMM Input:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $A=\left\{ a_{ij}\right\} =p\left(Q_{t}=j|Q_{t-1}=i\right)$
+\end_inset
+
+ - Transfer matrix
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\pi_{i}=p\left(Q_{1}=i\right)$
+\end_inset
+
+ - start state??
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $b_{j}(o_{t})=p\left(O_{t}=o_{t}|Q_{t}=j\right)$
+\end_inset
+
+- Emmision matrix
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $B=\left\{ b_{j}(\cdot)\right\} $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\lambda=(A,B,\pi)$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\bar under
+Forward procedure
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\alpha_{i}(t)=p(O_{1\rightarrow t},q_{t}=i|\lambda)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+the probability to get a sequence and end at state 
+\begin_inset Formula $i$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+recursive:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\alpha_{i}(1)=\pi_{i}b_{i}(o_{1})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\alpha_{j}(t+1)=\left[\sum_{i=1}^{N}\alpha_{i}(t)a_{ij}\right]b_{j}(o_{t+1})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $p(O|\lambda)=\sum_{i=1}^{N}\alpha_{i}(T)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\bar under
+Backward procedure
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\beta_{i}(t)=p(O_{t+1}=o_{t+1},...,O_{T}=o_{T},|q_{t}=i,\lambda)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+the probability to get a sequence and end at state 
+\begin_inset Formula $i$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we define the porbability for a state given a sequence:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\gamma_{i}(t)=p(Q_{t}=i|O,\lambda)=\frac{\alpha_{i}(t)\beta_{i}(t)}{\sum_{j=1}^{N}\alpha_{j}(t)\beta_{j}(t)}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+and 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\xi_{ij}(t)=p(Q_{t}=i,Q_{t+1}=j|O,\lambda)=$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\frac{\gamma_{i}(t)a_{ij}b_{j}(o_{t+1})\beta_{j}(t+1)}{\beta_{i}(t)}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+EM:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $q=(q_{1},...,q_{T})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $O=(o_{1},...,o_{T})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\lambda$
+\end_inset
+
+' - initial estimate of parameters
+\end_layout
+
+\begin_layout Standard
+given q we say 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $P(O,q|\lambda)=\pi_{q_{0}}\Pi_{t=1}^{T}\left(a_{q_{t-1}q_{t}}b_{q_{t}}(o_{t})\right)$
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\backslash
+frac{
+\backslash
+gamma_{i}(t)a_{ij}b_{j}(a_{t+1})
+\backslash
+beta_{j}(t+1)}{
+\backslash
+beta_{i}(t)}
+\end_layout
+
+\begin_layout Standard
+and so
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $Q(\lambda,\lambda')=\sum_{q\in\mathbb{\mathbb{Q}}}log\left[P(O,q|\lambda)\right]P(O,q|\lambda')=$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\sum_{q\in\mathbb{\mathbb{Q}}}\log\pi_{q_{0}}P(O,q|\lambda')+\sum_{q\in\mathbb{\mathbb{Q}}}\left(\sum_{t=1}^{T}\log a_{q_{t-1}q_{t}}\right)P(O,q|\lambda')+\sum_{q\in\mathbb{\mathbb{Q}}}\left(\sum_{t=1}^{T}\log b_{q_{t}}(o_{t})\right)P(O,q|\lambda')$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\widetilde{\pi_{i}}=\frac{P(O,q_{0}=i|\lambda')}{P(O|\lambda')}=\frac{\alpha_{i}(0)}{\sum_{i=1}^{N}\alpha_{i}(T)}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\widetilde{a_{ij}}=\frac{\sum_{t=1}^{T}P(O,q_{t-1}=i,q_{t}=j|\lambda')}{\sum_{t=1}^{T}P(O,q_{t-1}=i|\lambda')}=\frac{\gamma_{i}(t)a_{ij}b_{j}(a_{t+1})\beta_{j}(t+1)}{\beta_{i}(t)}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\widetilde{b_{i}(k)}=\frac{\sum_{t=1}^{T}P(O,q_{t}=i|\lambda')\delta_{o_{t},v_{k}}}{\sum_{t=1}^{T}P(O,q_{t}=i|\lambda')}$
+\end_inset
+
+
+\begin_inset Newpage newpage
+\end_inset
+
+
+\begin_inset Newpage newpage
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+EM:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\widetilde{\pi}_{i}=\gamma_{i}(1)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\widetilde{a}_{ij}=\frac{\sum_{t=1}^{T-1}\xi_{ij}(t)}{\sum_{t=1}^{T-1}\gamma_{i}(t)}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\widetilde{b}_{i}(k)=\frac{\sum_{t=1}^{T}\delta_{o_{t},v_{k}}\gamma_{i}(t)}{\sum_{t=1}^{T}\gamma_{i}(t)}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\bar under
+talk with tommy (31/07/16)
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+- My task now is to build a 2nd order EM which is a special version of 2nd
+ order HMM, and its EM.
+ Only difference from before is the E is now 3D, m x n x n, 
+\begin_inset Formula $E_{ijk}=P(x_{t}=k|y_{t}=i,x_{t-1}=j$
+\end_inset
+
+)
+\begin_inset Newline linebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+some notes while converting the 1st order EM to 2nd order EM- trying to
+ understand deeply how postirior is calculated, what is the scale variable
+ role etc
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Forward Algorithm 1st order 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $T_{y_{t-1},y_{t}}=P(y_{t}|y_{t-1})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $E_{y_{t},x_{t}}=P(x_{t}|y_{t})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+chain: 
+\begin_inset Formula $\mathrm{P}(A_{n},\ldots,A_{1})=\mathrm{P}(A_{n}|A_{n-1},\ldots,A_{1})\cdot\mathrm{P}(A_{n-1},\ldots,A_{1})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we are using the markovian fact: 
+\begin_inset Formula $P(x_{t}|y_{t},y_{t-1},x_{1:t-1})=P(x_{t}|y_{t})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\alpha_{_{t}}(y)=P(y_{t}=y,x_{1:t})=\sum_{j}P(y_{t}=y,y_{t-1}=j,x_{1:t})=\sum_{y_{t-1}}P(x_{t}|y_{t},y_{t-1},x_{1:t-1})P(y_{t},y_{t-1},x_{1:t-1})=$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=\sum_{y_{t-1}}P(x_{t}|y_{t},y_{t-1},x_{1:t-1})P(y_{t}|y_{t-1},x_{1:t-1})P(y_{t-1},x_{1:t-1})=\sum_{y_{t-1}}P(x_{t}|y_{t})P(y_{t}|y_{t-1})\alpha_{t-1}(y_{t-1})=$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=P(x_{t}|y_{t})\sum_{y_{t-1}}P(y_{t}|y_{t-1})\alpha_{t-1}(y_{t-1})=P(x_{t}|y_{t})\sum_{y_{t-1}}T_{y_{t-1},y_{t}}\alpha_{t-1}(y_{t-1})=E_{y_{t},x_{t}}T^{'}\cdot\alpha_{t-1}(y_{t-1})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+I found in the internet a variation of the Baum Welch algorithm that overcomes
+ the calculation errors using a scale variable - but this changes the meaning
+ of the alpha cells
+\end_layout
+
+\begin_layout Standard
+I cannot fully understand why this gives proper results
+\end_layout
+
+\begin_layout Standard
+ours has a difference which I got from the internet, but I can't fully understan
+d why its working: we devide every new column in 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ by a 
+\begin_inset Quotes eld
+\end_inset
+
+scale
+\begin_inset Quotes erd
+\end_inset
+
+, which is the sum of the column
+\end_layout
+
+\begin_layout Standard
+we do this also to 
+\begin_inset Formula $\beta$
+\end_inset
+
+, but the scale we use there is also the sum of the column of 
+\begin_inset Formula $\alpha$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\alpha_{_{t}}(y_{t})=\frac{P(y_{t},x_{1:t})}{P(x_{1:t})}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\alpha_{_{t}}(y_{t})=\frac{P(y_{t},x_{1:t})}{P(x_{1:t})}=\sum_{y_{t-1}}P(x_{t}|y_{t},y_{t-1},x_{1:t-1})P(y_{t}|y_{t-1},x_{1:t-1})\frac{P(y_{t-1},x_{1:t-1})}{P(x_{1:t-1})}\frac{1}{P(x_{t})}=$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $=P(x_{t}|y_{t})\sum_{y_{t-1}}P(y_{t}|y_{t-1})\alpha_{t-1}(y_{t-1})\frac{1}{P(x_{t})}=P(x_{t}|y_{t})\sum_{y_{t-1}}T_{y_{t-1},y_{t}}\alpha_{t-1}(y_{t-1})\frac{1}{P(x_{t})}=E_{y_{t},x_{t}}T^{'}\cdot\alpha_{t-1}(y_{t-1})\frac{1}{P(x_{t})}$
+\end_inset
+
+ 
+\begin_inset space \space{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+backwards
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\beta_{t}(y)=P(x_{t+1:k}|y_{t}=y)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\beta_{k}(y_{t})=1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\beta_{k-1}(y)=T\cdot E(:,X(t+1))=\sum_{y_{j}}P(y_{j}|y)P(x_{t+1}|y_{j})=\sum_{y_{j}}P(y_{j}|y)P(x_{t+1}|y_{j})=P(x_{k}|y)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Updating the EM with BaumWelch temp variables:
+\end_layout
+
+\begin_layout Standard
+1st order: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\gamma_{t}(i)=P(y_{t}=i|x_{1:k})=\frac{\alpha_{t}(i)\beta_{t}(i)}{\sum_{j=1}^{m}\alpha_{t}(j)\beta_{t}(j)}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+2nd order:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\gamma_{i}(t)=P(X_{t}=i|Y,\theta)=\frac{\alpha_{i}(t)\beta_{i}(t)}{\sum_{j=1}^{N}\alpha_{j}(t)\beta_{j}(t)}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+8.8.16 - talk with Tommy
+\end_layout
+
+\begin_layout Standard
+Neyman–Pearson, find linear classifier with log of ratio between likelihoods
+ of enhancer and nonenhancer markovian model
+\end_layout
+
+\begin_layout Standard
+should be 
+\begin_inset Formula $\left\langle \omega,X\right\rangle $
+\end_inset
+
+ where we build these with the log likelihood ratio, and instances if X
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+14.08.16 - talk with tommy
+\end_layout
+
+\begin_layout Itemize
+fix bug in graph - right end in postirior goes up, probably bug in forward
+ 
+\backslash
+ backward alg.
+ check if happens in same size with lower order (FIXED)
+\end_layout
+
+\begin_layout Itemize
+use postirior of regions to classify them as pos 
+\backslash
+ neg.
+ avg of highest X% of the region threshold?
+\end_layout
+
+\begin_layout Itemize
+longer regions- re-extract from the big genome data file in Tommy's folder
+\end_layout
+
+\begin_layout Itemize
+long term - multi class.
+ we have peeks from different tissues.
+ we want
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+find other regions which are enhancers
+\end_layout
+
+\begin_layout Itemize
+find good classifications of enhancers.
+\end_layout
+
+\begin_layout Itemize
+find the edges of enhancers
+\end_layout
+
+\begin_layout Itemize
+for regions which have overlap between two or more tissues, use postirior
+ prob.
+ to find if they are half this and half that or a new and different class
+\end_layout
+
+\begin_layout Itemize
+get words (high order) which are more common in each class.
+ With these words we can find in Jaspar DB if there are known proteins that
+ bound to these motifs.
+\end_layout
+
+\end_deeper
+\end_body
+\end_document

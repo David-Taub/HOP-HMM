@@ -1,30 +1,31 @@
-function [decode_seq] = ViterbiDecode(O,A,B,P)
+function [Y] = ViterbiDecode(X,T,E,startT)
 % do Viterbi decoding
 %
 % input:
-%   O:          1 x T, sequence
-%   A:          N x N, transition matrix, a_ij = Prb(q_j|q_i)
-%   B:          N x M, emission matrix, b_ij = Prb(o_j|q_i)
-%   P:          N x 1, prior probabilities
+%   X:          1 x k, sequence
+%   T:          m x m, transition matrix, a_ij = Prb(q_j|q_i)
+%   E:          m x n, emission matrix, b_ij = Prb(o_j|q_i)
+%   startT:          m x 1, prior probabilities
 %
 % output:
-%   decode_seq: 1 x T, sequence
+%   Y: 1 x k, sequence
 
-[N M] = size(B);
-T = length(O);
+	[m, n] = size(E);
+	k = length(X);
 
-decode_seq = zeros(1,T);
-score = zeros(N,T);     % log-prob of sequences
-max_state = zeros(N,T); % records maximum state at each time stamp
+	Y = zeros(1, k);
+	V = zeros(m, k);     % log-prob of sequences
+	ind = zeros(m, k); % records maximum state at each time stamp
 
-score(:,1) = log(P) + log(B(:,O(1)));
-for t = 2:T
-    [score(:,t),max_state(:,t)] = max(bsxfun(@plus,A',score(:,t-1)'),[],2);
-    score(:,t) = score(:,t) + log(B(:,O(t)));
-end
+	V(:, 1) = log(startT) + log(E(:, X(1)));
+	for i = 2 : k
+	    [V(:, i), ind(:, i)] = max(bsxfun(@plus, T', V(:, i-1)'), [], 2);
+	    V(:, i) = V(:, i) + log(E(:, X(i)));
+	end
 
-% back tracking
-[~,decode_seq(T)] = max(score(:,T));
-for t = T-1:-1:1
-    decode_seq(t) = max_state(decode_seq(t+1),t+1);
+	% back tracking
+	[~, Y(k)] = max(V(:, k));
+	for i = k-1 : -1 : 1
+	    Y(i) = ind(Y(i+1), i+1);
+	end
 end
