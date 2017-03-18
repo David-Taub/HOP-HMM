@@ -29,7 +29,7 @@ function [startT, T, Y, E, likelihood, gamma] = EMJ(Xs, m, maxIter, tEpsilon, or
     indicesHotMap = mat23Dmat(indices, maxIndices);
     indicesHotMap = cat(2, false(N, order-1, maxIndices), indicesHotMap);
     for rep = 1:repeat
-        [startT, T, E, Y] = genRandParamsJ(m, n, order, k);
+        [startT, T, E, Y, y] = genRandParamsJ(m, n, order, k);
 
         iterLike = [];
         for it = 1:maxIter;
@@ -37,7 +37,7 @@ function [startT, T, Y, E, likelihood, gamma] = EMJ(Xs, m, maxIter, tEpsilon, or
             % m x L
             [alpha, scale] = forwardAlgJ(Xs, startT, T, Y, E, PWMsRep, lengths);
             % N x m x L
-            beta = backwardAlgJ(Xs, startT, T, Y, E, scale, PWMsRep, lengths);
+            beta = backwardAlgJ(Xs, startT, T, Y, y, E, scale, PWMsRep, lengths);
 
             % N x m x L
             % gamma_t(i) = P(y_t = i|x_1:L)
@@ -97,8 +97,8 @@ function [startT, T, Y, E, likelihood, gamma] = EMJ(Xs, m, maxIter, tEpsilon, or
     startT = bestStartT;
     likelihood = bestLikelihood;
 end
-% TODO: get PWMs also
-function newT = updateT(E, T, Xs, alpha, beta, L, N, m, order)
+
+function newT, newY = updateTY(E, T, Xs, alpha, beta, L, N, m, order)
     TCorrection = zeros(m, m);
     % todo: remove slow loop
     matSize = [m , 4 * ones(1, order)];
@@ -107,6 +107,7 @@ function newT = updateT(E, T, Xs, alpha, beta, L, N, m, order)
         % for each letter in seqs we get more information about the transition matrix update
         % N x k
         PWMProb = getPWMp(PWMstep, Xs1H, t-1);
+        % TODO: update y vector also
         % N x m x k
         M = repmat(alpha(:, :, t-1), [1,1,k]) .* (beta(:, :, t+lengths);
         % N x k x m
@@ -118,10 +119,11 @@ function newT = updateT(E, T, Xs, alpha, beta, L, N, m, order)
         % N x m
         Ep = getEp(E, Xs, t, m, kronMN, matSize, N, order);
         % (m x N * N x m) .* (m x m)
-        TCorrection = (alpha(:, :, t-1).' * (beta(:, :, t) .* Ep)) .* T;
+        TCorrectiont = (alpha(:, :, t-1).' * (beta(:, :, t) .* Ep)) .* T;
         TCorrection = TCorrection + (TCorrectiont / sum(sum(TCorrectiont)));
     end
     newT = T + TCorrection;
+    newT = Y + YCorrection;
 end
 
 function newT = Tbound(T, tEpsilon, m)

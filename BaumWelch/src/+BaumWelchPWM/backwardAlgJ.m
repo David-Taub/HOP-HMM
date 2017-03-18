@@ -5,7 +5,7 @@
 % E - m x n emission matrix E_ij means x_t = j | y_t = i
 % Xs - N x L emission variables
 % beta(N, i, t) P( x_s_t+1, ...x_s_k| y_s_t=i, startT, T, E)
-function beta = backwardAlgJ(Xs, startT, T, Y, E, scale, PWMsRep, lengths)
+function beta = backwardAlgJ(Xs, startT, T, Y, y, E, scale, PWMsRep, lengths)
     [N, L] = size(Xs);
     [m, k] = length(Y);
     [~, J, n, ~] = size(PWMsRep);
@@ -13,7 +13,8 @@ function beta = backwardAlgJ(Xs, startT, T, Y, E, scale, PWMsRep, lengths)
     order = matDim(E) - 1;
     matSize = [m , n * ones(1, order)];
     beta = ones(N, m, L);
-
+    Y = bsxfun(@times, Y, y);
+    E = bsxfun(@times, E, 1-y);
     Xs1H = cat(2, mat23Dmat(Xs, n), zeros(N, J, n));
 
     for t = L : -1 : 2
@@ -22,7 +23,7 @@ function beta = backwardAlgJ(Xs, startT, T, Y, E, scale, PWMsRep, lengths)
         % TODO: I should remove this note if everything goes well
         Ep = getEp(E, Xs, t, m, kronMN, matSize, N, order);
         % N x m 
-        newBeta = (Ep .* beta(:, :, t+1)) * T.';
+        newBeta = (Ep .* beta(:, :, t)) * T.';
 
         % beta is built by the base modes emission and the PWM submodes emission
         % N x m x k

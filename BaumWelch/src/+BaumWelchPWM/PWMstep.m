@@ -4,7 +4,7 @@
 %        true length of i'th PWM< J and given in lengths(i) if a PWM is 
 %        shorter than j, it is aligned to the end of the 3rd dimension.
 % res - N x m
-function res = PWMstep(slice, PWMsRep, Xs1H, Y, t)
+function res = PWMstep(slice, PWMsRep, Xs1H, Y, y, t)
     k = size(Y, 2);
 
     % N x m x k -> m x k x N
