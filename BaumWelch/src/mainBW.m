@@ -43,10 +43,10 @@ end
 % means unique overlap between tissues, and if n is 1:3 then we take 
 % the sequences of the three most frequent class
 function [posSeqs, negSeqs] = loadTommySeqs(n, L)
-    negSeqsTrain = readSeq('/cs/cbio/tommy/Enhancers/Data/NEnhancers.train.seq', L);
-    posSeqsTrain = readSeq('/cs/cbio/tommy/Enhancers/Data/Enhancers.train.seq', L);
-    negSeqsTest = readSeq('/cs/cbio/tommy/Enhancers/Data/NEnhancers.test.seq', L);
-    posSeqsTest = readSeq('/cs/cbio/tommy/Enhancers/Data/Enhancers.test.seq', L);
+    negSeqsTrain = readSeq(fullfile('Data', 'NEnhancers.train.seq'), L);
+    posSeqsTrain = readSeq(fullfile('Data', 'Enhancers.train.seq'), L);
+    negSeqsTest = readSeq(fullfile('Data', 'NEnhancers.test.seq'), L);
+    posSeqsTest = readSeq(fullfile('Data', 'Enhancers.test.seq'), L);
 
     posSeqs = [posSeqsTest; posSeqsTrain];
     negSeqs = [negSeqsTest; negSeqsTrain];
@@ -66,11 +66,12 @@ function process(XTrain, YTrain, XTest, YTest)
     % order = 3;
     for order = 4:4
         % anaFreq(posSeqsTrain, negSeqsTrain, order);
-        E = trainMarkov(XTrain, YTrain, order);
-        thresholds = 0.0 : 0.005 : 1.01;
-        [trainErr, threshold] = classify(E, XTrain, YTrain, thresholds);
-        [testErr, threshold] = classify(E, XTest, YTest, threshold);
-        [order, threshold, trainErr, testErr]
+        % simple Markovian model
+        % E = trainMarkov(XTrain, YTrain, order);
+        % thresholds = 0.0 : 0.005 : 1.01;
+        % [trainErr, threshold] = classify(E, XTrain, YTrain, thresholds);
+        % [testErr, threshold] = classify(E, XTest, YTest, threshold);
+        % [order, threshold, trainErr, testErr]
 
         pos2neg = 1 / 250; % this values minimizes training error
         neg2pos = 1 / 50;
