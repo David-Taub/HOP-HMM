@@ -3,7 +3,7 @@
 % m - sum of enhancer and background modes (not a parameter)
 % T - m x m transfer probability matrix between mode bases
 % Y - m x k transfer probability matrix between mode bases and their PWM modes
-% y - m x 1 probability to get into a PWM mode per state.
+% F - m x 1 probability to get into a PWM mode per state.
 % n - number of alphabet (4, i.e. ACGT)
 % startT - m x 1 probabilities of first states
 % E - m x n x n x ... x n (order times) alphabet emission probability matrix
@@ -13,7 +13,7 @@
 % lengths - m x 1 length of each motif in the PWM matrix. J = max(lengths)
 % Xs - N x L emission variables
 
-function [alpha, scale] = forwardAlgJ(Xs, startT, T, Y, y, E, PWMsRep, lengths)
+function [alpha, scale] = forwardAlgJ(Xs, startT, T, Y, F, E, PWMsRep, lengths)
     % alpha(N, i, j) P(y_s_j=i| x_s_1, ...x_s_j, startT, T, PWMs)
     % scale(N, i) = P(x_s_i| startT, T, PWMs)
     % m x L
@@ -28,8 +28,8 @@ function [alpha, scale] = forwardAlgJ(Xs, startT, T, Y, y, E, PWMsRep, lengths)
     Xs1H = cat(2, zeros(N, J, n), mat23Dmat(Xs, n));
     alpha(:, :, J+1) = (repmat(startT, [1, N]) .* startE(:, Xs(:, 1))).';
     scale(:, 1) = sum(alpha(:, :, J+1), 2);
-    Y = bsxfun(@times, Y, y);
-    E = bsxfun(@times, E, 1-y);
+    Y = bsxfun(@times, Y, F);
+    E = bsxfun(@times, E, 1-F);
 
     matSize = [m , n * ones(1, order)];
     % if length is 3, J = 4

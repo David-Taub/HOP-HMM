@@ -1,5 +1,5 @@
     
-function [startT, T, Y, E, likelihood, gamma] = EMJ(Xs, m, maxIter, tEpsilon, order, PWMs, lengths)
+function [startT, T, Y, E, F, likelihood, gamma] = EMJ(Xs, m, maxIter, tEpsilon, order, PWMs, lengths)
     % PWMs - k x n x J emission matrix of m Jaspar PWMs with length J 
     %        true length of i'th PWM< J and given in lengths(i) if a PWM is 
     %        shorter than j, it is aligned to the end of the 3rd dimension.
@@ -24,15 +24,15 @@ function [startT, T, Y, E, likelihood, gamma] = EMJ(Xs, m, maxIter, tEpsilon, or
     indicesHotMap = mat23Dmat(indices, maxIndices);
     indicesHotMap = cat(2, false(N, order-1, maxIndices), indicesHotMap);
     for rep = 1:repeat
-        [startT, T, E, Y, y] = genRandParamsJ(m, n, order, k);
+        [startT, T, E, Y, F] = genRandParamsJ(m, n, order, k);
 
         iterLike = [];
         for it = 1:maxIter;
             % N x m x L
             % m x L
-            [alpha, scale] = forwardAlgJ(Xs, startT, T, Y, E, PWMsRep, lengths);
+            [alpha, scale] = forwardAlgJ(Xs, startT, T, Y, F, E, PWMsRep, lengths);
             % N x m x L
-            beta = backwardAlgJ(Xs, startT, T, Y, y, E, scale, PWMsRep, lengths);
+            beta = backwardAlgJ(Xs, startT, T, Y, F, E, scale, PWMsRep, lengths);
 
             % N x m x L
             % gamma_t(i) = P(y_t = i|x_1:L)
@@ -89,10 +89,10 @@ function newStartT = updateStartT(gamma, startT)
     newStartT = startT / sum(startT);
 end
 
-function newT, newY = updateTY(E, T, Xs, alpha, beta, L, N, m, order)
+function [newT, newY, newF] = updateTY(E, T, Xs, alpha, beta, L, N, m, order)
     TCorrection = zeros(m, m);
     YCorrection = zeros(m, k);
-    yCorrection = zeros(m, 1);
+    FCorrection = zeros(m, 2);
     % todo: remove slow loop
     matSize = [m , 4 * ones(1, order)];
     kronMN = kron(1:m, ones(1, N));
@@ -109,16 +109,25 @@ function newT, newY = updateTY(E, T, Xs, alpha, beta, L, N, m, order)
         % m x k x N
         M = bsxfun(@times, permute(M, [3,2,1]), Y));
         % m x k x N -> m x k
-        YCorrectiont = sum(M, 3);
         % N x m
         Ep = getEp(E, Xs, t, m, kronMN, matSize, N, order);
         % (m x N * N x m) .* (m x m)
         TCorrectiont = (alpha(:, :, t - 1).' * (beta(:, :, t) .* Ep)) .* T;
         TCorrection = TCorrection + (TCorrectiont / sum(sum(TCorrectiont)));
+        
+        YCorrectiont = sum(M, 3);
+        YCorrection = YCorrection + (YCorrectiont / sum(sum(YCorrectiont)));
+        
+        FCorrectiont = [sumDim(M, [2, 3]), sum(TCorrectiont, 2)];
+        FCorrection = FCorrection + FCorrectiont;
     end
     newT = T + TCorrection;
-    newT = bsxfun(@times, newT, 1 ./ sum(newT, 2))
+    newT = bsxfun(@times, newT, 1 ./ sum(newT, 2));
     newY = Y + YCorrection;
+    newY = bsxfun(@times, newY, 1 ./ sum(newY, 2));
+    newF = F + FCorrection;
+    newF = bsxfun(@times, newF, 1 ./ sum(newF, 2));
+    newF = newF(:, 1);
 end
 
 function newT = Tbound(T, tEpsilon, m)
