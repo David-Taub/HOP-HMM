@@ -1,8 +1,8 @@
 % res - N x k
-function res = getPWMp(PWMstep, Xs1H, t)
-    J = size(PWMstep, 2);
+function res = getPWMp(PWMsRep, Xs1H, t)
+    J = size(PWMsRep, 2);
     % N x J x n
-    lastJXs1H = Xs1H(:, t+1:t+J, :);
+    lastJXs1H = Xs1H(:, t:t+J-1, :);
     % N x J x n x k, N x J x n
-    res =  sumDim(bsxfun(@times, PWMsRep, lastJXs1H), [2, 3]);
+    res =  matUtils.sumDim(bsxfun(@times, PWMsRep, lastJXs1H), [2, 3]);
 end

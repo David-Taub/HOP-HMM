@@ -213,7 +213,7 @@ function E = getEFromSeqs(seqs, order)
     % ambient is a trick to avoid zero division for absent motifs
     ambient = 10 ^ -6;
     matSize = [4 * ones(1, order), 1];
-    indices = getIndeices1D(seqs, order);
+    indices = getIndices1D(seqs, order);
     h = histc(indices, 1 : 4 ^ order);
     E = reshape(h, [matSize, 1]) + ambient;
     E = bsxfun(@times, E, 1 ./ sum(E, order));
@@ -221,8 +221,8 @@ end
 
 function anaFreq(seqsPos, seqsNeg, order)
     matSize = [4 * ones(1, order), 1];
-    indicesP = getIndeices1D(seqsPos, order);
-    indicesN = getIndeices1D(seqsNeg, order);
+    indicesP = getIndices1D(seqsPos, order);
+    indicesN = getIndices1D(seqsNeg, order);
     hP = histc(indicesP, 1 : 4 ^ order);
     hN = histc(indicesN, 1 : 4 ^ order);
     h = (hP - hN);
@@ -254,7 +254,7 @@ end
 function logLikes = getLogLikes(E, seqs)
     [N, L] = size(seqs);
     order = matDim(E);
-    indices = getIndeices1D(seqs, order);
+    indices = getIndices1D(seqs, order);
     indices = reshape(indices, [L - order + 1, N]);
     logLikes = sum(log(E(indices)), 1);
 end
@@ -282,18 +282,3 @@ function out = regularSeqs(seqsCells, L)
     % in some of the data we have NNN which can be any nucleotide
     out(out==15) = 1;
 end
-
-% seqs - N x L
-% indices - 1 x n (numbers from 1 to order)
-function indices = getIndeices1D(seqs, order)
-    [N, L] = size(seqs);
-    matSize = 4 * ones(1, order);
-
-    k = zeros(N, L - order + 1, order);
-    for i = 1 : order
-        k(:, :, i) = seqs(:, i : end - order + i);
-    end
-    k = permute(k, [3, 2, 1]);
-    indices = matSub2ind(matSize, k(:, :));
-end
-

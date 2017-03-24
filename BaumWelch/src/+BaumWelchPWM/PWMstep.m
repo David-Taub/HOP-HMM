@@ -1,19 +1,22 @@
 % slice - N x m x k
 % Y - m x k transfer probability matrix between mode bases and their PWM modes
-% PWMsRep - N x J x n x k: N replication of emission matrix of m Jaspar PWMs with length J 
-%        true length of i'th PWM< J and given in lengths(i) if a PWM is 
-%        shorter than j, it is aligned to the end of the 3rd dimension.
+% pcPWMp - N x k x L-1 - precomputed likelihood of the sequences and the PWM. 
+%            at place i, j , t we have the likelihood of seq_i at t+1, with PWM j
 % res - N x m
-function res = PWMstep(slice, PWMsRep, Xs1H, Y, y, t)
-    k = size(Y, 2);
-
+% 
+function res = PWMstep(slice, Y, ts, pcPWMp)
     % N x m x k -> m x k x N
+    [N, m, k] = size(slice);
     sliceRep = permute(slice, [2,3,1]);
-    % probability to get into the pwm submode
+    % probability to get into the PWM submode
     % N x k x m
     R = permute(bsxfun(@times, sliceRep, Y), [3,2,1]);
     % N x k
-    PWMProb = getPWMp(PWMstep, Xs1H, t);
+    % PWMProb = BaumWelchPWM.getPWMp(PWMsRep, Xs1H, t);
     % N x k x m, N x k
-    res = sumDim(bsxfun(@times, R, PWMProb), 2);
+    % in the forward algorithm we ask for t - lengths, and this is a fix for it to be 0
+    ts1 = max(ts, 1);
+    indices = matUtils.matSub2ind(size(pcPWMp), [repmat(1:N, [1, k]); kron([1:k; ts1'], ones(1, N))]);
+    res = matUtils.sumDim(bsxfun(@times, R, reshape(pcPWMp(indices), [N, k])), 2);
+    res(ts < 1) = 0;
 end

@@ -5,32 +5,38 @@
 % E - m x n emission matrix E_ij means x_t = j | y_t = i
 % Xs - N x L emission variables
 % beta(N, i, t) P( x_s_t+1, ...x_s_k| y_s_t=i, startT, T, E)
-function beta = backwardAlgJ(Xs, startT, T, Y, F, E, scale, PWMsRep, lengths)
+function beta = backwardAlgJ(Xs, T, Y, F, E, scale, lengths, pcPWMp, J)
     [N, L] = size(Xs);
-    [m, k] = length(Y);
-    [~, J, n, ~] = size(PWMsRep);
+    [m, k] = size(Y);
     % m x L
-    order = matDim(E) - 1;
+    order = matUtils.matDim(E) - 1;
+    n = size(E, order + 1);
+
+    kronMN = kron(1:m, ones(1, N));
     matSize = [m , n * ones(1, order)];
-    beta = ones(N, m, L);
+    beta = cat(3, ones(N, m, L), zeros(N, m, J));
     Y = bsxfun(@times, Y, F);
     E = bsxfun(@times, E, 1-F);
-    Xs1H = cat(2, mat23Dmat(Xs, n), zeros(N, J, n));
 
     for t = L : -1 : 2
+        fprintf('Backward algorithm %.2f%%\r', 100 * (L - t) / L);
         % N x m
         % note: this looks at part of the sequences before t, which might be problematic.
         % TODO: I should remove this note if everything goes well
-        Ep = getEp(E, Xs, t, m, kronMN, matSize, N, order);
-        % N x m 
+        Ep = BaumWelchPWM.getEp(E, Xs, t, m, kronMN, matSize, N, order);
+        % N x m
         newBeta = (Ep .* beta(:, :, t)) * T.';
 
         % beta is built by the base modes emission and the PWM submodes emission
         % N x m x k
-        betaSlice = beta(:, :, t + lengths);
-        newBeta = newBeta + PWMstep(betaSlice, PWMsRep, Xs1H, Y, J, t-1);
+        betaSlice = beta(:, :, t + lengths - 1);
+
+        % N x m
+        newBeta = newBeta + BaumWelchPWM.PWMstep(betaSlice, Y, repmat(t-1, [k, 1]), pcPWMp);
+        % m x L
         beta(:, :, t-1) = bsxfun(@times, newBeta, 1 ./ scale(:, t-1));
-        
     end
+    beta = beta(:, :, 1:L);
+    fprintf('\n')
 end
 
