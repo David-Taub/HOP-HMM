@@ -32,6 +32,9 @@ function [alpha, scale] = forwardAlgJ(Xs, startT, T, Y, F, E, lengths, pcPWMp, J
     Y = bsxfun(@times, Y, F);
     E = bsxfun(@times, E, 1-F);
 
+    % performance optimization
+    Ys = shiftdim(Y, -1);
+    Ys = repmat(Ys, [N, 1, 1]);
     matSize = [m , n * ones(1, order)];
     % if length is 3, J = 4
     % then B is the base mode, S is the submode (PWM mode)
@@ -46,7 +49,7 @@ function [alpha, scale] = forwardAlgJ(Xs, startT, T, Y, F, E, lengths, pcPWMp, J
         newAlphas = (alpha(:, :, t + J - 1) * T) .* Ep;
         % N x m x k
         alphaSlice = alpha(:, :, t + J - lengths);
-        newAlphas = newAlphas + BaumWelchPWM.PWMstep(alphaSlice, Y, t - lengths', pcPWMp, J);
+        newAlphas = newAlphas + BaumWelchPWM.PWMstep(alphaSlice, Ys, t - lengths', pcPWMp, J);
         % N x 1
         scale(:, t) = sum(newAlphas, 2);
         alpha(:, :, J + t) = bsxfun(@times, newAlphas, 1 ./ scale(:, t));
@@ -55,3 +58,4 @@ function [alpha, scale] = forwardAlgJ(Xs, startT, T, Y, F, E, lengths, pcPWMp, J
 
     alpha = alpha(:, :, J+1:end);
 end
+

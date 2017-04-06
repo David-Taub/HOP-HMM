@@ -14,7 +14,7 @@ function [startT, T, Y, E, F, likelihood, gamma] = EMJ(Xs, m, maxIter, tEpsilon,
     [N, L] = size(Xs);
     [k, n, J] = size(PWMs);
 
-    epsilon = 10 ^ -4;
+    EPSILON = 10 ^ -14;
     bestLikelihood = -Inf;
     repeat = 1;
 
@@ -34,32 +34,33 @@ function [startT, T, Y, E, F, likelihood, gamma] = EMJ(Xs, m, maxIter, tEpsilon,
             % N x L
             [alpha, scale] = BaumWelchPWM.forwardAlgJ(Xs, startT, T, Y, F, E, lengths, pcPWMp, J);
 
-            assert(not(any(isnan(alpha))))
-            assert(not(any(isnan(scale))))
+            assert(not(any(isnan(alpha(:)))))
+            assert(not(any(isnan(scale(:)))))
             % N x m x L
             beta = BaumWelchPWM.backwardAlgJ(Xs, T, Y, F, E, scale, lengths, pcPWMp, J);
             % beta = rand(N,m,L);
-            assert(not(any(isnan(beta))))
+            assert(not(any(isnan(beta(:)))))
             alpha = cat(3, alpha, zeros(N, m, J));
             beta = cat(3, beta, zeros(N, m, J));
             % N x m x L + J
             % gamma_t(i) = P(y_t = i|x_1:L)
-            gamma = alpha .* beta ./ repmat(sum(alpha .* beta, 2), [1, m, 1]);
-            assert(not(any(isnan(gamma))))
+            gamma = alpha .* beta ./ (repmat(sum(alpha .* beta, 2), [1, m, 1]) + EPSILON);
+
+            assert(not(any(isnan(gamma(:)))))
 
             % N x m x L -> m x N x L
             fprintf('Updating theta\n');
             [T, Y, F] = updateTYF(E, T, Y, F, Xs, alpha, beta, lengths, pcPWMp);
             E = updateE(gamma, E, maxEIndex, indicesHotMap);
             startT = updateStartT(gamma, startT);
+            assert(not(any(isnan(T(:)))))
+            assert(not(any(isnan(Y(:)))))
+            assert(not(any(isnan(F(:)))))
+            assert(not(any(isnan(E(:)))))
+            assert(not(any(isnan(startT(:)))))
 
             % T bound trick
             T = Tbound(T, tEpsilon, m);
-            assert(not(any(isnan(T))))
-            assert(not(any(isnan(Y))))
-            assert(not(any(isnan(F))))
-            assert(not(any(isnan(E))))
-            assert(not(any(isnan(startT))))
 
             iterLike(end + 1) = sum(log(scale(:)));
             fprintf('Likelihood last iteration is %.2f\n', iterLike(end));

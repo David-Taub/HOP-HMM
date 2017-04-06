@@ -17,6 +17,9 @@ function beta = backwardAlgJ(Xs, T, Y, F, E, scale, lengths, pcPWMp, J)
     beta = cat(3, ones(N, m, L), zeros(N, m, J));
     Y = bsxfun(@times, Y, F);
     E = bsxfun(@times, E, 1-F);
+    % performance optimization
+    Ys = shiftdim(Y, -1);
+    Ys = repmat(Ys, [N, 1, 1]);
 
     for t = L : -1 : 2
         fprintf('Backward algorithm %.2f%%\r', 100 * (L - t) / L);
@@ -32,7 +35,7 @@ function beta = backwardAlgJ(Xs, T, Y, F, E, scale, lengths, pcPWMp, J)
         betaSlice = beta(:, :, t + lengths - 1);
 
         % N x m
-        newBeta = newBeta + BaumWelchPWM.PWMstep(betaSlice, Y, repmat(t-1, [k, 1]), pcPWMp, J);
+        newBeta = newBeta + BaumWelchPWM.PWMstep(betaSlice, Ys, repmat(t-1, [k, 1]), pcPWMp, J);
         % m x L
         beta(:, :, t-1) = bsxfun(@times, newBeta, 1 ./ scale(:, t-1));
     end
