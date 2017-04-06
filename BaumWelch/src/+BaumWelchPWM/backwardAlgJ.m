@@ -22,7 +22,7 @@ function beta = backwardAlgJ(Xs, T, Y, F, E, scale, lengths, pcPWMp, J)
     Ys = repmat(Ys, [N, 1, 1]);
 
     for t = L : -1 : 2
-        fprintf('Backward algorithm %.2f%%\r', 100 * (L - t) / L);
+        fprintf('Backward algorithm %.2f%%\r', 100 * (L - t + 1) / L);
         % N x m
         % note: this looks at part of the sequences before t, which might be problematic.
         % TODO: I should remove this note if everything goes well

@@ -13,8 +13,7 @@ function [startT, T, Y, E, F, likelihood, gamma] = EMJ(Xs, m, maxIter, tEpsilon,
     % initial estimation parameters
     [N, L] = size(Xs);
     [k, n, J] = size(PWMs);
-
-    EPSILON = 10 ^ -14;
+    LIKELIHOOD_THRESHOLD = 10 ^ -4;
     bestLikelihood = -Inf;
     repeat = 1;
 
@@ -33,18 +32,19 @@ function [startT, T, Y, E, F, likelihood, gamma] = EMJ(Xs, m, maxIter, tEpsilon,
             % N x m x L
             % N x L
             [alpha, scale] = BaumWelchPWM.forwardAlgJ(Xs, startT, T, Y, F, E, lengths, pcPWMp, J);
-
+            % alpha = rand(N,m,L);
+            % scale = rand(N,L);
+            % beta = rand(N,m,L);
             assert(not(any(isnan(alpha(:)))))
             assert(not(any(isnan(scale(:)))))
             % N x m x L
             beta = BaumWelchPWM.backwardAlgJ(Xs, T, Y, F, E, scale, lengths, pcPWMp, J);
-            % beta = rand(N,m,L);
             assert(not(any(isnan(beta(:)))))
             alpha = cat(3, alpha, zeros(N, m, J));
             beta = cat(3, beta, zeros(N, m, J));
             % N x m x L + J
             % gamma_t(i) = P(y_t = i|x_1:L)
-            gamma = alpha .* beta ./ (repmat(sum(alpha .* beta, 2), [1, m, 1]) + EPSILON);
+            gamma = alpha .* beta ./ (repmat(sum(alpha .* beta, 2), [1, m, 1]) + eps);
 
             assert(not(any(isnan(gamma(:)))))
 
@@ -64,7 +64,7 @@ function [startT, T, Y, E, F, likelihood, gamma] = EMJ(Xs, m, maxIter, tEpsilon,
 
             iterLike(end + 1) = sum(log(scale(:)));
             fprintf('Likelihood last iteration is %.2f\n', iterLike(end));
-            if length(iterLike) > 1 && abs((iterLike(end) - iterLike(end-1)) / iterLike(end)) < epsilon
+            if length(iterLike) > 1 && abs((iterLike(end) - iterLike(end-1)) / iterLike(end)) < LIKELIHOOD_THRESHOLD
                 % likelihood converged
                 likelihood = iterLike(end);
                 % fprintf('EM converged after %d iterations: %f\n', it, likelihood);
@@ -124,6 +124,7 @@ end
 % beta - N x m x L + J
 % lengths - k x 1
 function [newT, newY, newF] = updateTYF(E, T, Y, F, Xs, alpha, beta, lengths, pcPWMp)
+
     order = getOrder(E);
     [m, k] = size(Y);
     [N, L] = size(Xs);
@@ -134,6 +135,7 @@ function [newT, newY, newF] = updateTYF(E, T, Y, F, Xs, alpha, beta, lengths, pc
     matSize = [m , 4 * ones(1, order)];
     kronMN = kron(1:m, ones(1, N));
 
+    Ys = repmat(permute(Y, [3, 1, 2]), [N, 1, 1]);
     for t = 2 : L
         fprintf('\rUpdate TYF %.2f%%', 100*t/L);
         % for each letter in seqs we get more information about the transition matrix update
@@ -141,33 +143,25 @@ function [newT, newY, newF] = updateTYF(E, T, Y, F, Xs, alpha, beta, lengths, pc
         PWMProb = pcPWMp(:, :, t);
         % N x m x k
         M = repmat(alpha(:, :, t-1), [1,1,k]) .* beta(:, :, t + lengths - 1);
-        % N x k x m
-        M = bsxfun(@times, permute(M, [1,3,2]), PWMProb);
+        % N x m x k
+        M = M .* repmat(permute(PWMProb, [1,3,2]), [1,m,1]);
+        % M = bsxfun(@times, permute(M, [1,3,2]), PWMProb);
 
-        perY = permute(Y, [3, 2, 1]);
-        for i = 1:N
-            M(i, :, :) = M(i, :, :) .* perY;
-        end
-
-        % todo,  delete:
-        % % N x k x m -> m x k x N
-        % M = permute(M, [3,2,1]);
-        % % Y - m x k
-        % M = bsxfun(@times, M, Y);
-        % YCorrectiont = sum(M, 3);
-
+        M = M .* Ys;
+        assert(not(any(isnan(M(:)))))
         % m x k x N -> m x k
         % N x m
         Ep = BaumWelchPWM.getEp(E, Xs, t, m, kronMN, matSize, N, order);
         % (m x N * N x m) .* (m x m)
         TCorrectiont = (alpha(:, :, t - 1)' * (beta(:, :, t) .* Ep)) .* T;
-        TCorrection = TCorrection + (TCorrectiont / sum(sum(TCorrectiont)));
+        TCorrection = TCorrection + (TCorrectiont / sum(sum(TCorrectiont)) + eps);
 
 
-        YCorrectiont = matUtils.sumDim(M, 1)';
-        YCorrection = YCorrection + (YCorrectiont / sum(sum(YCorrectiont)));
+        % N x m x k
+        YCorrectiont = shiftdim(sum(M, 1), 1);
+        YCorrection = YCorrection + (YCorrectiont / (sum(YCorrectiont(:)) + eps));
 
-        FCorrectiont = [matUtils.sumDim(M, [1, 2]), sum(TCorrectiont, 2)];
+        FCorrectiont = [matUtils.sumDim(M, [1, 3]), sum(TCorrectiont, 2)];
         FCorrection = FCorrection + FCorrectiont;
     end
     fprintf('\n');
