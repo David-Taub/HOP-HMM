@@ -32,7 +32,7 @@ function beta = backwardAlgJ(Xs, T, Y, F, E, scale, lengths, pcPWMp, J)
         betaSlice = beta(:, :, t + lengths - 1);
 
         % N x m
-        newBeta = newBeta + BaumWelchPWM.PWMstep(betaSlice, Y, repmat(t-1, [k, 1]), pcPWMp);
+        newBeta = newBeta + BaumWelchPWM.PWMstep(betaSlice, Y, repmat(t-1, [k, 1]), pcPWMp, J);
         % m x L
         beta(:, :, t-1) = bsxfun(@times, newBeta, 1 ./ scale(:, t-1));
     end

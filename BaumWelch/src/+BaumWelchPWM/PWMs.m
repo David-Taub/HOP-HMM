@@ -1025,5 +1025,11 @@ function [PWM, lengths] = PWMs()
 	0 0 94 0 465 0 136 71 107 0 0 8 162 407 150 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;...
 	150 370 109 36 0 14 177 81 109 19 465 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;...
 	67 25 55 28 0 66 0 79 0 338 0 410 183 58 255 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]);
-	PWM = permute(PWM, [3, 1, 2]);
+	% n x J x k -> k x J x n
+	PWM = permute(PWM, [3, 2, 1]);
+	emptyMap = repmat(sum(PWM, 3) == 0, [1,1,4]);
+	PWM = bsxfun(@times, PWM, 1 ./ sum(PWM, 3));
+	PWM(emptyMap) = 0;
+	% k x J x N -> k x n x J
+	PWM = permute(PWM, [1, 3, 2]);
 end

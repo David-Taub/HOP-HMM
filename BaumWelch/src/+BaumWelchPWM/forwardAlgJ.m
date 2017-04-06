@@ -29,7 +29,6 @@ function [alpha, scale] = forwardAlgJ(Xs, startT, T, Y, F, E, lengths, pcPWMp, J
 
     alpha(:, :, J+1) = (repmat(startT, [1, N]) .* startE(:, Xs(:, 1))).';
     scale(:, 1) = sum(alpha(:, :, J+1), 2);
-    size(Y)
     Y = bsxfun(@times, Y, F);
     E = bsxfun(@times, E, 1-F);
 
@@ -47,7 +46,7 @@ function [alpha, scale] = forwardAlgJ(Xs, startT, T, Y, F, E, lengths, pcPWMp, J
         newAlphas = (alpha(:, :, t + J - 1) * T) .* Ep;
         % N x m x k
         alphaSlice = alpha(:, :, t + J - lengths);
-        newAlphas = newAlphas + BaumWelchPWM.PWMstep(alphaSlice, Y, t - lengths, pcPWMp);
+        newAlphas = newAlphas + BaumWelchPWM.PWMstep(alphaSlice, Y, t - lengths', pcPWMp, J);
         % N x 1
         scale(:, t) = sum(newAlphas, 2);
         alpha(:, :, J + t) = bsxfun(@times, newAlphas, 1 ./ scale(:, t));
