@@ -5,10 +5,14 @@
 
 % pcPWMp - N x k x L-1
 function mainPWM(pcPWMp, Xs)
-    m = 5;order = 3;
-    [~, lengths] = BaumWelchPWM.PWMs();
-    learn(Xs, m, order, pcPWMp, lengths);
-
+    params.m = 5;
+    params.order = 3;
+    params.n = max(Xs(:));
+    [params.N, params.L] = size(Xs);
+    params.J = size(pcPWMp, 3) - params.L + 1;
+    params.k = size(pcPWMp, 2);
+    params.tEpsilon = 0.01;
+    learn(Xs, params, pcPWMp);
 end
 
 % L - sequence lengths
@@ -24,9 +28,9 @@ function [posSeqs, negSeqs] = loadTommySeqs(L)
     posSeqs = [posSeqsTest; posSeqsTrain];
     negSeqs = [negSeqsTest; negSeqsTrain];
 
-    N = min(size(negSeqs, 1), size(posSeqs, 1));
-    posSeqs = posSeqs(1:N, :);
-    negSeqs = negSeqs(1:N, :);
+    parmas.N = min(size(negSeqs, 1), size(posSeqs, 1));
+    posSeqs = posSeqs(1:parmas.N, :);
+    negSeqs = negSeqs(1:parmas.N, :);
     % shuffle
     negSeqs = negSeqs(randperm(size(negSeqs, 1)), :);
     posSeqs = posSeqs(randperm(size(posSeqs, 1)), :);
@@ -34,8 +38,8 @@ end
 
 % pcPWMp - N x k x L-1+J
 % XTrain - N x L
-function [startT, T, M, E, F, likelihood, gamma] = learn(Xs, m, order, pcPWMp, lengths)
-    maxIter = 20; tEpsilon = 0.01;
-    [startT, T, M, E, F, likelihood, gamma] = BaumWelchPWM.EMJ(Xs, m, order, pcPWMp, lengths, maxIter, tEpsilon);
+function [theta, likelihood] = learn(Xs, params, pcPWMp)
+    maxIter = 20;
+    [theta, likelihood] = BaumWelchPWM.EMJ(Xs, params, pcPWMp, maxIter);
 end
 

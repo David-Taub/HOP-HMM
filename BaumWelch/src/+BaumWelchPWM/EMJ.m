@@ -1,5 +1,5 @@
 
-function [startT, T, M, E, F, likelihood, gamma] = EMJ(Xs, m, order, pcPWMp, lengths, maxIter, tEpsilon)
+function [bestTheta, likelihood] = EMJ(Xs, params, pcPWMp, maxIter)
     % PWMs - k x n x J emission matrix of m Jaspar PWMs with length J
     %        true length of i'th PWM< J and given in lengths(i) if a PWM is
     %        shorter than j, it is aligned to the end of the 3rd dimension.
@@ -11,59 +11,32 @@ function [startT, T, M, E, F, likelihood, gamma] = EMJ(Xs, m, order, pcPWMp, len
     %            and m = 3 then the probability to stay in a state will not be less than 0.98)
     % order - the HMM order of the E matrix
     % initial estimation parameters
-    [N, L] = size(Xs);
-    n = max(Xs(:));
-    J = size(pcPWMp, 3) - L + 1;
-    k = length(lengths);
+
     LIKELIHOOD_THRESHOLD = 10 ^ -4;
     bestLikelihood = -Inf;
     repeat = 1;
 
     % N x L -order + 1
-    indices = reshape(matUtils.getIndices1D(Xs, order), [L-order+1, N]).';
-    maxEIndex = max(indices(:));
+    indices = reshape(matUtils.getIndices1D(Xs, params.order), [params.L-params.order+1, params.N]).';
     % N x L -order + 1 x maxEIndex
-    indicesHotMap = matUtils.mat23Dmat(indices, maxEIndex);
+    indicesHotMap = matUtils.mat23Dmat(indices, params.n ^ params.order);
     % N x L  x maxEIndex
-    indicesHotMap = cat(2, false(N, order-1+J, maxEIndex), indicesHotMap);
+    indicesHotMap = cat(2, false(params.N, params.order-1+params.J, params.n ^ params.order), indicesHotMap);
     for rep = 1:repeat
-        [startT, T, E, M, F] = BaumWelchPWM.genRandParamsJ(m, n, order, k);
+        theta = BaumWelchPWM.genThetaJ(params);
 
         iterLike = [];
         for it = 1:maxIter;
             % N x m x L
             % N x L
-            [alpha, scale] = BaumWelchPWM.forwardAlgJ(Xs, startT, T, M, F, E, lengths, pcPWMp, J);
-            % alpha = rand(N,m,L);
-            % scale = rand(N,L);
-            % beta = rand(N,m,L);
-            assert(not(any(isnan(alpha(:)))))
-            assert(not(any(isnan(scale(:)))))
+            [alpha, scale] = BaumWelchPWM.forwardAlgJ(Xs, theta, params, pcPWMp);
             % N x m x L
-            beta = BaumWelchPWM.backwardAlgJ(Xs, T, M, F, E, scale, lengths, pcPWMp, J);
-            assert(not(any(isnan(beta(:)))))
-            alpha = cat(3, alpha, zeros(N, m, J));
-            beta = cat(3, beta, zeros(N, m, J));
-            % N x m x L + J
-            % gamma_t(i) = P(y_t = i|x_1:L)
-            gamma = alpha .* beta ./ (repmat(sum(alpha .* beta, 2), [1, m, 1]) + eps);
+            beta = BaumWelchPWM.backwardAlgJ(Xs, theta, params, scale, pcPWMp);
+            alpha = cat(3, alpha, zeros(params.N, params.m, params.J));
+            beta = cat(3, beta, zeros(params.N, params.m, params.J));
 
-            assert(not(any(isnan(gamma(:)))))
 
-            % N x m x L -> m x N x L
-            fprintf('Updating theta\n');
-            [T, M, F] = updateTMF(E, T, M, F, Xs, alpha, beta, lengths, pcPWMp);
-            E = updateE(gamma, E, maxEIndex, indicesHotMap);
-            startT = updateStartT(gamma, startT);
-            assert(not(any(isnan(T(:)))))
-            assert(not(any(isnan(M(:)))))
-            assert(not(any(isnan(F(:)))))
-            assert(not(any(isnan(E(:)))))
-            assert(not(any(isnan(startT(:)))))
-
-            % T bound trick
-            T = Tbound(T, tEpsilon, m);
-
+            theta = updateTheta(theta, params, Xs, indicesHotMap, pcPWMp, alpha, beta);
             iterLike(end + 1) = sum(log(scale(:)));
             fprintf('Likelihood in iteration %d is %.2f\n', length(iterLike), iterLike(end));
             if length(iterLike) > 1 && abs((iterLike(end) - iterLike(end-1)) / iterLike(end)) < LIKELIHOOD_THRESHOLD
@@ -73,47 +46,47 @@ function [startT, T, M, E, F, likelihood, gamma] = EMJ(Xs, m, order, pcPWMp, len
 
             if bestLikelihood < iterLike(end)
                 bestLikelihood = iterLike(end);
-                bestE = E;
-                bestT = T;
-                bestGamma = gamma;
-                bestStartT = startT;
+                bestTheta = theta;
             end
         end % end of iterations loop
     end % end of repeat loop
 
     % return parameters with best likelihood
-    E = bestE;
-    T = bestT;
-    gamma = bestGamma;
-    startT = bestStartT;
     likelihood = bestLikelihood;
+end
+
+function theta = updateTheta(theta, params, Xs, indicesHotMap, pcPWMp, alpha, beta)
+    fprintf('Updating theta\n');
+    % N x m x L + J
+    % gamma_t(i) = P(y_t = i|x_1:L)
+    gamma = alpha .* beta ./ (repmat(sum(alpha .* beta, 2), [1, params.m, 1]) + eps);
+    [theta.T, theta.M, theta.F] = updateTMF(theta, params, Xs, alpha, beta, pcPWMp);
+    theta.E = updateE(gamma, theta, params, indicesHotMap);
+    theta.startT = updateStartT(gamma, theta);
+    % T bound trick
+    theta.T = Tbound(theta, params);
 end
 
 % indicesHotMap - N x L x maxEIndex
 % gamma - N x m x L + J
 % E - m x 4 x 4 x 4 x ... x 4 (order times)
-function newE = updateE(gamma, E, maxEIndex, indicesHotMap)
+function newE = updateE(gamma, theta, params, indicesHotMap)
     %  m x N x L + J
     fprintf('Update E\n');
-    order = getOrder(E);
     perGamma = permute(gamma, [2, 1, 3]);
-    for i = 1:maxEIndex
+    for i = 1: (params.n ^ params.order)
         % m x N x L -> m x 1
-        E(:, i) = E(:, i) + sum(perGamma(:, indicesHotMap(:, :, i)), 2);
+        theta.E(:, i) = theta.E(:, i) + sum(perGamma(:, indicesHotMap(:, :, i)), 2);
     end
 
-    newE = bsxfun(@times, E, 1 ./ sum(E, order+1));
+    newE = bsxfun(@times, theta.E, 1 ./ sum(theta.E, params.order+1));
 end
 
 % gamma - N x m x L + J
-function newStartT = updateStartT(gamma, startT)
-    startT = startT + mean(gamma(:, :, 1), 1).';
+function newStartT = updateStartT(gamma, theta)
+    theta.startT = theta.startT + mean(gamma(:, :, 1), 1).';
     % probability distribution normalization
-    newStartT = startT / sum(startT);
-end
-
-function order = getOrder(E)
-    order = length(size(E)) - 1;
+    newStartT = theta.startT / sum(theta.startT);
 end
 
 % M - m x k
@@ -123,37 +96,31 @@ end
 % alpha - N x m x L + J
 % beta - N x m x L + J
 % lengths - k x 1
-function [newT, newM, newF] = updateTMF(E, T, M, F, Xs, alpha, beta, lengths, pcPWMp)
+function [newT, newM, newF] = updateTMF(theta, params, Xs, alpha, beta, pcPWMp)
 
-    order = getOrder(E);
-    [m, k] = size(M);
-    [N, L] = size(Xs);
-    TCorrection = zeros(m, m);
-    MCorrection = zeros(m, k);
-    FCorrection = zeros(m, 2);
+    TCorrection = zeros(params.m, params.m);
+    MCorrection = zeros(params.m, params.k);
+    FCorrection = zeros(params.m, 2);
     % todo: remove slow loop
-    matSize = [m , 4 * ones(1, order)];
-    kronMN = kron(1:m, ones(1, N));
+    matSize = [params.m , 4 * ones(1, params.order)];
+    kronMN = kron(1:params.m, ones(1, params.N));
 
-    Ms = repmat(permute(M, [3, 1, 2]), [N, 1, 1]);
-    for t = 2 : L
-        fprintf('\rUpdate TMF %.2f%%', 100*t/L);
+    Ms = repmat(permute(theta.M, [3, 1, 2]), [params.N, 1, 1]);
+    for t = 2 : params.L
+        fprintf('\rUpdate TMF %.2f%%', 100*t/params.L);
         % for each letter in seqs we get more information about the transition matrix update
         % N x k
         PWMProb = pcPWMp(:, :, t);
         % N x m x k
-        R = repmat(alpha(:, :, t-1), [1,1,k]) .* beta(:, :, t + lengths - 1);
-        % N x m x k
-        R = R .* repmat(permute(PWMProb, [1,3,2]), [1,m,1]);
-        % M = bsxfun(@times, permute(M, [1,3,2]), PWMProb);
-
+        R = repmat(alpha(:, :, t-1), [1,1,params.k]) .* beta(:, :, t + theta.lengths - 1);
+        R = R .* repmat(permute(PWMProb, [1,3,2]), [1,params.m,1]);
         R = R .* Ms;
         assert(not(any(isnan(R(:)))))
         % m x k x N -> m x k
         % N x m
-        Ep = BaumWelchPWM.getEp(E, Xs, t, m, kronMN, matSize, N, order);
+        Ep = BaumWelchPWM.getEp(theta, params, Xs, t, kronMN, matSize);
         % (m x N * N x m) .* (m x m)
-        TCorrectiont = (alpha(:, :, t - 1)' * (beta(:, :, t) .* Ep)) .* T;
+        TCorrectiont = (alpha(:, :, t - 1)' * (beta(:, :, t) .* Ep)) .* theta.T;
         TCorrection = TCorrection + (TCorrectiont / sum(sum(TCorrectiont)) + eps);
 
 
@@ -165,24 +132,24 @@ function [newT, newM, newF] = updateTMF(E, T, M, F, Xs, alpha, beta, lengths, pc
         FCorrection = FCorrection + FCorrectiont;
     end
     fprintf('\n');
-    newT = T + TCorrection;
+    newT = theta.T + TCorrection;
     newT = bsxfun(@times, newT, 1 ./ sum(newT, 2));
-    newM = M + MCorrection;
+    newM = theta.M + MCorrection;
     newM = bsxfun(@times, newM, 1 ./ sum(newM, 2));
-    newF = [F, 1-F] + FCorrection;
+    newF = [theta.F, 1-theta.F] + FCorrection;
     newF = bsxfun(@times, newF, 1 ./ sum(newF, 2));
     newF = newF(:, 1);
 end
 
-function newT = Tbound(T, tEpsilon, m)
-    for i = 1 : m
-        for j = 1 : m
-            if i ~= j && T(i,j) > tEpsilon
-                T(i, i) = T(i, i) + (T(i, j) - tEpsilon);
-                T(i, j) = tEpsilon;
+function newT = Tbound(theta, params)
+    for i = 1 : params.m
+        for j = 1 : params.m
+            if i ~= j && theta.T(i,j) > params.tEpsilon
+                theta.T(i, i) = theta.T(i, i) + (theta.T(i, j) - params.tEpsilon);
+                theta.T(i, j) = params.tEpsilon;
             end
         end
     end
-    newT = T;
+    newT = theta.T;
 end
 
