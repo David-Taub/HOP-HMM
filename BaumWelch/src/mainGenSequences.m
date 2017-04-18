@@ -1,13 +1,15 @@
 function [X, Y] = mainGenSequences()
-    m = 5;
-    order = 3;
-    L = 500; N = 1000;
-    n = 4;
-    [PWMs, lengths] = BaumWelchPWM.PWMs();
-    k = size(PWMs, 1);
-    [startT, T, E, M, F] = BaumWelchPWM.genRandParamsJ(m, n, order, k);
-    [X, Y] = BaumWelchPWM.genSequencesJ(startT, T, E, M, F, L, N, PWMs, lengths);
+    params.m = 5;
+    params.order = 3;
+    params.N = 1000;
+    params.L = 500;
+    params.tEpsilon = 0.01;
+    [PWMs, ~] = BaumWelchPWM.PWMs();
+    [params.k, params.n, params.J] = size(PWMs);
 
-    clear PWMs lengths;
+    [theta] = BaumWelchPWM.genThetaJ(params);
+    [X, Y] = BaumWelchPWM.genSequencesJ(theta, params);
+
+    clear PWMs;
     save(fullfile('data', 'dummyDNA.mat'));
 end
