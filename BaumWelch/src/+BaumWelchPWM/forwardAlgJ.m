@@ -13,17 +13,19 @@
 % lengths - m x 1 length of each motif in the PWM matrix. J = max(lengths)
 % Xs - N x L emission variables
 
-function [alpha, scale] = forwardAlgJ(Xs, theta, params, pcPWMp)
+function [alpha, alphaT, scale] = forwardAlgJ(Xs, theta, params, pcPWMp)
     % alpha(N, i, j) P(y_s_j=i| x_s_1, ...x_s_j, startT, T, PWMs)
     % scale(N, i) = P(x_s_i| startT, T, PWMs)
     % m x L
 
     kronMN = kron(1:params.m, ones(1, params.N));
     alpha = zeros(params.N, params.m, params.L + params.J);
+    alphaT = zeros(params.N, params.m, params.L + params.J);
     scale = zeros(params.N, params.L);
     startE = matUtils.sumDim(theta.E, 2 : params.order);
 
     alpha(:, :, params.J+1) = (repmat(theta.startT, [1, params.N]) .* startE(:, Xs(:, 1))).';
+    alphaT(:, :, params.J+1) = alpha(:, :, params.J+1) * theta.T;
     scale(:, 1) = sum(alpha(:, :, params.J+1), 2);
     theta.M = bsxfun(@times, theta.M, theta.F);
     theta.E = bsxfun(@times, theta.E, 1-theta.F);
@@ -37,21 +39,26 @@ function [alpha, scale] = forwardAlgJ(Xs, theta, params, pcPWMp)
     % 654321t     - indices
     % BBBBSSS???? - hidden
     % XXXX123???? - emission
-    for t = 2:params.L
+    for t = 2:4%params.L
+        assert(not(any(isnan(alpha(:)))))
         fprintf('Forward algorithm %.2f%%\r', 100 * t / params.L);
-        % params.N x params.m
+        % N x m
         Ep = BaumWelchPWM.getEp(theta, params, Xs, t, kronMN, matSize);
-        % params.N x params.m
-        newAlphas = (alpha(:, :, t + params.J - 1) * theta.T) .* Ep;
-        % params.N x params.m x k
-        alphaSlice = alpha(:, :, t + params.J - theta.lengths);
-        newAlphas = newAlphas + BaumWelchPWM.PWMstep(alphaSlice, Ms, t - theta.lengths', pcPWMp, params.J);
-        % params.N x 1
+        % N x m
+        newAlphas = alphaT(:, :, t + params.J  - 1) .* Ep;
+        % N x m x k
+        alphaSlice = alphaT(:, :, t + params.J - theta.lengths);
+        PWMp = BaumWelchPWM.PWMstep(alphaSlice, Ms, t - theta.lengths' + 1, pcPWMp, params.J);
+        newAlphas = newAlphas + PWMp;
+
+        % N x 1
         scale(:, t) = sum(newAlphas, 2);
         alpha(:, :, params.J + t) = bsxfun(@times, newAlphas, 1 ./ scale(:, t));
+        alphaT(:, :, params.J + t) = alpha(:, :, params.J + t) * theta.T;
     end
     fprintf('\n');
 
     alpha = alpha(:, :, params.J+1:end);
+    alpha = cat(3, alpha, zeros(params.N, params.m, params.J));
 end
 

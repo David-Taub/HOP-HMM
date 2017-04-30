@@ -11,8 +11,8 @@ function e = calcError(Y, YEst)
         [v2, i2] = max(v1, [], 2);
         ct(:, i2) = -inf;
         ct(i1(i2), :) = -inf;
-        % match is the mapping between the orignal states numbers and the estimated states number
-        % the state number itself has no meaning, only the prob. and the states order is important 
+        % match is the mapping between the original states numbers and the estimated states number
+        % the state number itself has no meaning, only the prob. and the states order is important
         matches(:, end + 1) = [i1(i2), i2];
         correct = correct + v2;
     end

@@ -1,10 +1,10 @@
 % mainGenSequences();
 % load(fullfile('data', 'dummyDNA.mat'));
 % pcPWMp = BaumWelchPWM.preComputePWMp(X);
-% mainPWM(pcPWMp, X);
+% mainPWM(pcPWMp, X, Y);
 
 % pcPWMp - N x k x L-1
-function mainPWM(pcPWMp, Xs)
+function mainPWM(pcPWMp, Xs, Ys)
     params.m = 5;
     params.order = 3;
     params.n = max(Xs(:));
@@ -12,7 +12,12 @@ function mainPWM(pcPWMp, Xs)
     params.J = size(pcPWMp, 3) - params.L + 1;
     params.k = size(pcPWMp, 2);
     params.tEpsilon = 0.01;
-    learn(Xs, params, pcPWMp);
+    [theta, ~] = learn(Xs, params, pcPWMp);
+    % N x m x L + J
+    [~, YsEst] = max(theta.gamma(:,:,1:end-params.J), [], 10);
+    YsEst = permute(YsEst, [1,3,2]);
+    keyboard
+    calcError(Ys(:)', YsEst(:)')
 end
 
 % L - sequence lengths

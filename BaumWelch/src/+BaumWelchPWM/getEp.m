@@ -1,6 +1,6 @@
 function Ep = getEp(theta, params, Xs, t, kronMN, matSize)
     if t < params.order
-        theta.E = matUtils.sumDim(theta.E, [2 : 1 + params.order - t]);
+        theta.E = matUtils.sumDim(theta.E, 2 : 1 + params.order - t);
         subscripts = [kronMN; repmat(Xs(:, 1 : t).', [1, params.m])];
         indices = matUtils.matSub2ind(matSize(1 : t + 1), subscripts);
     else

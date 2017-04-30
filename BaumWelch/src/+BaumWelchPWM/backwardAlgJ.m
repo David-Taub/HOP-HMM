@@ -30,11 +30,12 @@ function beta = backwardAlgJ(Xs, theta, params, scale, pcPWMp)
         betaSlice = beta(:, :, t + theta.lengths - 1);
 
         % N x m
-        newBeta = newBeta + BaumWelchPWM.PWMstep(betaSlice, Ms, repmat(t-1, [params.k, 1]), pcPWMp, params.J);
+        PWMstepP = BaumWelchPWM.PWMstep(betaSlice, Ms, repmat(t, [params.k, 1]), pcPWMp, params.J);
+        newBeta = newBeta + PWMstepP * theta.T.';
         % m x L
         beta(:, :, t-1) = bsxfun(@times, newBeta, 1 ./ scale(:, t-1));
+
     end
-    beta = beta(:, :, 1:params.L);
     fprintf('\n')
 end
 

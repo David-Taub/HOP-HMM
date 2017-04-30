@@ -4,11 +4,13 @@ function pcPWMp = preComputePWMp(Xs)
     [PWMs, ~] = BaumWelchPWM.PWMs();
     [~, n, J] = size(PWMs);
     [N, ~] = size(Xs);
-    Xs1H = cat(2, zeros(N, J, n), matUtils.mat23Dmat(Xs, n));
+    %0 padding for handling the edges probability calculation
+    Xs1H = cat(2, matUtils.mat23Dmat(Xs, n), zeros(N, J, n));
     PWMsRep = permute(repmat(PWMs, [1, 1, 1, N]), [4, 3, 2, 1]);
     pcPWMp = preComputePWMpAux(PWMsRep, Xs1H);
 end
-
+% calculating the probability of each position in the sequences
+% to be emitted by each PWM
 function pcPWMp = preComputePWMpAux(PWMsRep, Xs1H)
     % pcPWMp - N x k x L-1
     [N, J, ~, k] = size(PWMsRep);
@@ -24,11 +26,9 @@ function pcPWMp = preComputePWMpAux(PWMsRep, Xs1H)
         % p_pcPWMp = pcPWMp;
     catch
         fprintf('Pre-computing PWM probability on %d sequences', size(Xs1H, 1));
-        pcPWMp = zeros(N, k, L-1);
-        for t = 2:L
-
-            pcPWMp(:, :, t - 1) = BaumWelchPWM.getPWMp(PWMsRep, Xs1H, t);
-            sum(pcPWMp(:, :, t - 1))
+        pcPWMp = zeros(N, k, L);
+        for t = 1:L
+            pcPWMp(:, :, t) = BaumWelchPWM.getPWMp(PWMsRep, Xs1H, t);
         end
         pcPWMp = cat(3, zeros(N, k, J), pcPWMp);
         fprintf('\n');
