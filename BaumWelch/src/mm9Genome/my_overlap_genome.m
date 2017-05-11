@@ -1,120 +1,82 @@
-function [] = my_overlap_genome(genome)
+% generates enhancer and non enhancer datasets with overlap table
+% uses ChIP-Seq from multiple tissues from MM9 genome
+% cd '/cs/stud/boogalla/projects/CompGenetics/BaumWelch/src/mm9Genome'
+% genomePath = fullfile('..', 'data', 'Tommy', 'genome_mm9.mat');
+% load(genomePath);
+% knownGenesPath = fullfile('..', 'data', 'Tommy', 'knownGene.txt');
+% [~,genesChr,~,genesStart,genesEnd] = textread(knownGenesPath,'%s%s%s%d%d%*[^\n]','headerlines',0,'delimiter','\t','bufsize',1e6);
+% [uniqueMapped.chr, uniqueMapped.start, uniqueMapped.end, uniqueMapped.isUnique] = textread('crgMapabilityAlign50mer100.bedGraph','%s%d%d%d%*[^\n]','headerlines',0,'delimiter','\t','bufsize',1e6);
+%  my_overlap_genome(genome, genesChr,genesStart,genesEnd, uniqueMapped)
 
-    % load('genome_mm9.mat');
+function my_overlap_genome(genome, genesChr, genesStart, genesEnd, uniqueMapped)
+
+    % knownGenesPath = fullfile('../data', 'knownGene.txt');
+    % [~,genesChr,~,genesStart,genesEnd] = textread(knownGenesPath,'%s%s%s%d%d%*[^\n]','headerlines',0,'delimiter','\t','bufsize',1e6);
+    % [uniqueMapped.chr, uniqueMapped.start, uniqueMapped.end, uniqueMapped.isUnique] = textread('crgMapabilityAlign50mer100.bedGraph','%s%d%d%d%*[^\n]','headerlines',0,'delimiter','\t','bufsize',1e6);
+
+
+    global N_BIT  GENE_MARGIN_BIT  P300_BIT  K27AC_BIT  UNIQUE_BIT
+    N_BIT = 1;
+    GENE_MARGIN_BIT = 2;
+    P300_BIT = 3;
+    K27AC_BIT = 4;
+    UNIQUE_BIT = 5;
+
+    basePath = '../data/Tommy';
+    chipDirs = getChipDirs(basePath);
+    p300FilePaths = getFilePathsByWord(chipDirs, 'P300', basePath);
+    K27FilePaths = getFilePathsByWord(chipDirs, 'K27AC', basePath);
+
     chrs = fieldnames(genome);
+    bitMap = buildBitMap(chrs, genome);1
+    % genome = upperLetters(genome, chrs);2
+    % bitMap = markN(genome, chrs, bitMap, N_BIT);3
+    % bitMap = genesMargins(genome, bitMap, genesChr, genesStart, genesEnd, GENE_MARGIN_BIT);4
+    bitMap = addPeaks(bitMap, p300FilePaths, P300_BIT);5
+    bitMap = addPeaks(bitMap, K27FilePaths, K27AC_BIT);6
+    bitMap = addUniqueMapped(bitMap, uniqueMapped, UNIQUE_BIT);7
 
-    fprintf('Upper casing chromosome names \n');
-    for i=1:length(chrs),
-        c=chrs{i};
-        genome.(c)=upper(genome.(c));
+    Enhancers = cell(0);
+    NEnhancers = cell(0);
+    for i=1:length(chrs)
+        chrName = chrs{i};
+        EnhancerMask = ~bitget(bitMap.(chrName),N_BIT) &...
+                       ~bitget(bitMap.(chrName),GENE_MARGIN_BIT) &...
+                        bitget(bitMap.(chrName),P300_BIT) &...
+                        bitget(bitMap.(chrName),K27AC_BIT) &...
+                        bitget(bitMap.(chrName),UNIQUE_BIT);
+
+        NEnhancerMask = ~bitget(bitMap.(chrName),N_BIT) &...
+                        ~bitget(bitMap.(chrName),GENE_MARGIN_BIT) &...
+                        ~bitget(bitMap.(chrName),P300_BIT) &...
+                        ~bitget(bitMap.(chrName),K27AC_BIT) &...
+                         bitget(bitMap.(chrName),UNIQUE_BIT);
+
+        Enhancers = buildSequences(EnhancerMask, minSeqLength, chrs, Enhancers);8
+        NEnhancers = buildSequences(NEnhancerMask, minSeqLength, chrs, NEnhancers);9
     end
 
-    fprintf('Building bitmap \n');
-    for i=1:length(chrs),
-        c=chrs{i}; 
-        len(i)=length(genome.(c)); 
-        bitMap.(c)=uint8(zeros(1,len(i)));
-    end
-    clear i c;
+    Enhancers = annotate_peaks(Enhancers);10
+    NEnhancers = annotate_peaks(NEnhancers);11
+
+    % save('-v7.3','Enhancer_map_mm9.mat','bitMap','chrs','p300','K27');
+    save('Enhancers.mat','Enhancers');12
+    save('NEnhancers.mat','NEnhancers');13
+    fprintf('%s, %f %f %f %f %f\n',  chrName,...
+                mean(bitget(bitMap.(chrName), N_BIT)),...
+                mean(bitget(bitMap.(chrName), GENE_MARGIN_BIT)),...
+                mean(bitget(bitMap.(chrName), P300_BIT)),...
+                mean(bitget(bitMap.(chrName), K27AC_BIT)),...
+                mean(bitget(bitMap.(chrName), UNIQUE_BIT)));
 
 
-    fprintf('N marking\n');
-    % mask out Ns
-    for i=1:length(chrs),
-        c = chrs{i}; 
-        bitMap.(c)(genome.(c)=='N') = 2^0;
-        fprintf('%s, %f %f %f %f %f\n',  c,...
-                mean(bitget(bitMap.(c), 1)),...
-                mean(bitget(bitMap.(c), 2)),...
-                mean(bitget(bitMap.(c), 3)),...
-                mean(bitget(bitMap.(c), 4)),...
-                mean(bitget(bitMap.(c), 5)));
-    end
-    clear i c;
-
-    fprintf('Gene with margins marking\n');
-    % mask out genes +/- 15000?
-    [~,chrName,~,genesStart,genesEnd] = textread('knownGene.txt','%s%s%s%d%d%*[^\n]','headerlines',0,'delimiter','\t','bufsize',1e6);
-    for i=1:length(chrName),
-        regionStart = max(1,genesStart(i)+1-15000); 
-        regionEnd = min(genesEnd(i)+15000,length(genome.(chrName{i})));
-        bitMap.(chrName{i})(regionStart:regionEnd) = bitset(bitMap.(chrName{i})(regionStart:regionEnd),2);
-    end
-    clear chrName genesStart genesEnd i;
-
-
-    % get all ChIP files
-    dirs = dir('G*'); 
-    ld=length(dirs); 
-    for i=ld:-1:1
-        if ~isdir(dirs(i).name)
-            dirs(i)=[];
-        end;
-        ld=length(dirs); 
-    end;
-
-
-    % mask p300 peaks
-    p300={};
-    for i=1:ld
-        d=dirs(i).name; 
-        f=dir([d '/*.mat']);
-        for j=1:length(f),
-            if isempty(strfind(upper(f(j).name),'P300'))
-                continue;
-            end;
-            p300{end+1}=[d '/' f(j).name];
-        end;
-    end;
-
-    fprintf('p300 peaks marking, %d files \n', length(p300));
-    for i = 1:length(p300)
-        A = load(p300{i});
-        fprintf('%s %d\n', p300{i}, length(A.S));
-        for j = 1:length(A.S)
-            peak = A.S{i};
-            bitMap.(peak.chr)(peak.from:peak.to) = bitset(bitMap.(peak.chr)(peak.from:peak.to),3);
-        end
-    end
-    clear i j d f A peak
 
 
     % mask H3K27ac peaks
-    K27={};
-    for i=1:ld,
-        d=dirs(i).name; 
-        f=dir([d '/*.mat']);
-        for j=1:length(f),
-            if isempty(strfind(upper(f(j).name),'K27AC'))
-                continue;
-            end;
-            K27{end+1}=[d '/' f(j).name];
-        end;
-    end;
 
-    fprintf('H3K27ac peaks marking, %d files \n', length(K27));
-    for i=1:length(K27),
-        A=load(K27{i});
-        if isfield(A, 'S')
-            fprintf('%s %d \n', K27{i}, length(A.S));
-            for i=1:length(A.S),
-                peak = A.S{i}; 
-                bitMap.(peak.chr)(peak.from:peak.to) = bitset(bitMap.(peak.chr)(peak.from:peak.to),4);
-            end
-        end
-    end
-    clear i j d f A peak
 
     % mark unique regions (100% unique, up to two mismatches, read length of 50)
-    [c,f,t,m] = textread('crgMapabilityAlign50mer100.bedGraph','%s%d%d%d%*[^\n]','headerlines',0,'delimiter','\t','bufsize',1e6);
-    I=find(m==1);
-    for i=1:length(I),
-        j=I(i); 
-        regionStart = f(j)+1; 
-        regionEnd = t(j); % uniquely-mapped block
-        bitMap.(c{j})(regionStart:regionEnd) = bitset(bitMap.(c{j})(regionStart:regionEnd),5);
-    end
-    clear c f t m i j I;
+
 
 
 
@@ -127,7 +89,7 @@ function [] = my_overlap_genome(genome)
     % 3 = p300 peak (within any condition)
     % 4 = H3K27ac peak (within any condition)
     % 5 = Unique region (100% unique, >=2 mismatches, read length of 50)
-    
+
     %                   N           gene15K     p300        H3K27ac     Unique
     %
     % chr1,             0.028997    0.497680    0.000021    0.191179    0.812995
@@ -181,72 +143,125 @@ function [] = my_overlap_genome(genome)
 
     % for example - this could serve as a negative control for enhancer regions
     % no N's, not near/in genes, no known enhancer marks, and unique (34% of genome?)
+
+end
+
+function bitMap = buildBitMap(chrs, genome)
+    fprintf('Building empty bitmap\n');
     for i=1:length(chrs),
-            c = chrs{i}; 
-        fprintf('%s, %f %f %f %f %f\n',  c,...
-                mean(bitget(bitMap.(c), 1)),...
-                mean(bitget(bitMap.(c), 2)),...
-                mean(bitget(bitMap.(c), 3)),...
-                mean(bitget(bitMap.(c), 4)),...
-                mean(bitget(bitMap.(c), 5)));
+        chrName=chrs{i};
+        len(i)=length(genome.(chrName));
+        bitMap.(chrName)=uint8(zeros(1,len(i)));
     end
-
-    mean(   ~bitget(bitMap.chr1, 1) &...
-            ~bitget(bitMap.chr1, 2) &...
-            ~bitget(bitMap.chr1, 3) &...
-            ~bitget(bitMap.chr1, 4) &...
-             bitget(bitMap.chr1, 5))
-
-    % Enhancers
-    % no N's, not near/in genes, known enhancer marks, unique, and at least 500bp long
-    segs = []; Enhancers = cell(0);
+end
+function genome = upperLetters(genome, chrs)
+    fprintf('Upper casing chromosome names \n');
     for i=1:length(chrs),
-        c=chrs{i};
-        A = ~bitget(bitMap.(c),1) &...
-            ~bitget(bitMap.(c),2) &...
-             bitget(bitMap.(c),3) &...
-             bitget(bitMap.(c),4) &...
-             bitget(bitMap.(c),5);
-        regionStart=2*A-1;
-        AA = conv(regionStart,[1 1 -1]); AA = AA(2:end-1); st = find(AA==3); if AA(1)==2, st = [1 st]; end;
-        AA = conv(regionStart,[1 -1 -1]); AA = AA(2:end-1); en = find(AA==-3'); 
-        segs.(c) = [st;en]';
+        chrName =chrs{i};
+        genome.(chrName)=upper(genome.(chrName));
+    end
+end
 
-        for j=1:length(st),
-    	if en(j)-st(j)<500, continue; end;
-    	clear s; s.chr=c; s.from=st(j); s.to=en(j);
-    	Enhancers{end+1}=s;
+function bitMap = markN(genome, chrs, bitMap, bitNum)
+    fprintf('N marking\n');
+    % mask out Ns
+    for i=1:length(chrs),
+        chrName = chrs{i};
+        bitMap.(chrName)(genome.(chrName)=='N') = bitNum;
+
+    end
+end
+
+function bitMap = genesMargins(genome, bitMap, genesChr, genesStart, genesEnd, bitNum)
+    fprintf('Gene with margins marking\n');
+    % mask out genes +/- 15000
+    % [~,chrName,~,genesStart,genesEnd = textread('knownGene.txt','%s%s%s%d%d%*[^\n]','headerlines',0,'delimiter','\t','bufsize',1e6);
+    for i=1:length(genesChr),
+        regionStart = max(1,genesStart(i)+1-15000);
+        regionEnd = min(genesEnd(i)+15000,length(genome.(genesChr{i})));
+        bitMap.(genesChr{i})(regionStart:regionEnd) = bitset(bitMap.(genesChr{i})(regionStart:regionEnd), bitNum);
+    end
+end
+
+function chipDirs = getChipDirs(basePath)
+    fprintf('get all ChIP dirs\n');
+    chipDirs = dir(fullfile(basePath, 'G*'));
+    for i=length(chipDirs):-1:1
+        if ~chipDirs(i).isdir
+            chipDirs(i)=[];
+        end;
+    end
+end
+
+function filePaths = getFilePathsByWord(chipDirs, word, basePath)
+    fprintf('get all ChIP files %s\n', word);
+    filePaths={};
+    for i=1:length(chipDirs)
+        dirName=chipDirs(i).name;
+        matFiles = dir(fullfile(basePath, dirName, '*.mat'));
+        for j=1:length(matFiles),
+            if isempty(strfind(upper(matFiles(j).name),word))
+                continue;
+            end;
+            filePaths{end+1}= fullfile(basePath, dirName, matFiles(j).name);
         end
     end
+    fprintf('found %d files\n', length(filePaths));
+end
 
-    % Non-Enhancers
-    % no N's, not near/in genes, no known enhancer marks, unique, and at least 500bp long
-    segs = []; NEnhancers = cell(0);
-    for i=1:length(chrs),
-        c=chrs{i};
-        A = ~bitget(bitMap.(c),1) & ~bitget(bitMap.(c),2) & ~bitget(bitMap.(c),3) & ~bitget(bitMap.(c),4) & bitget(bitMap.(c),5);
-        regionStart=2*A-1;
-        AA = conv(regionStart,[1 1 -1]); AA = AA(2:end-1); st = find(AA==3); if AA(1)==2, st = [1 st]; end;
-        AA = conv(regionStart,[1 -1 -1]); AA = AA(2:end-1); en = find(AA==-3'); 
-        segs.(c) = [st;en]';
+function bitMap = addPeaks(bitMap, filePaths, bitNum)
 
-        for j=1:length(st),
-    	if en(j)-st(j)<500, continue; end;
-    	clear s; s.chr=c; s.from=st(j); s.to=en(j);
-    	NEnhancers{end+1}=s;
+    fprintf('peaks marking, %d files \n', length(filePaths));
+    for i = 1:length(filePaths)
+        A = load(filePaths{i});
+        A
+        keyboard
+        fprintf('%s %d\n', filePaths{i}, length(A.S));
+        for j = 1:length(A.S)
+            peak = A.S{i};
+            bitMap.(peak.chr)(peak.from:peak.to) = bitset(bitMap.(peak.chr)(peak.from:peak.to),bitNum);
         end
     end
-    clear segs i c A regionStart j st en
+end
 
-    Enhancers = annotate_peaks(Enhancers);
-    NEnhancers = annotate_peaks(NEnhancers);
+function bitMap = addUniqueMapped(bitMap, uniqueMapped, bitNum)
+    fprintf('mark unique loci');
+    % [uniqueMapped.chr, uniqueMapped.start, uniqueMapped.end, uniqueMapped.isUnique] = textread('crgMapabilityAlign50mer100.bedGraph','%s%d%d%d%*[^\n]','headerlines',0,'delimiter','\t','bufsize',1e6);
+    indices=find(uniqueMapped.isUnique==1);
+    for i=1:length(indices),
+        j=indices(i);
+        regionStart = uniqueMapped.start(j)+1;
+        regionEnd = uniqueMapped.end(j); % uniquely-mapped block
+        bitMap.(uniqueMapped.chr{j})(regionStart:regionEnd) = bitset(bitMap.(uniqueMapped.chr{j})(regionStart:regionEnd),bitNum);
+    end
+end
 
-    % load('genome_mm9.mat');
-    for i=1:length(Enhancers), s=Enhancers{i}; c=s.chr; f=s.from; t=s.to; Enhancers{i}.seq=upper(genome.(c)(f:t)); end
-    for i=1:length(NEnhancers), s=NEnhancers{i}; c=s.chr; f=s.from; t=s.to; NEnhancers{i}.seq=upper(genome.(c)(f:t)); end
-    clear i s c f t seq
+function sequences = buildSequences(mask, genome, minSeqLength, chrs, sequences)
+    fprintf('building sequences structs');
+    for i=1:length(chrs)
+        chrName=chrs{i};
+        mask = 2*mask-1;
 
-    save('-v7.3','Enhancer_map_mm9.mat','bitMap','chrs','p300','K27');
-    save('Enhancer_map_mm9_Enhancers.mat','Enhancers');
-    save('Enhancer_map_mm9_NEnhancers.mat','NEnhancers');
+        startsTmp = conv(mask,[1 1 -1]);
+        startsTmp = startsTmp(2:end-1);
+        starts = find(startsTmp==3);
+        if startsTmp(1)==2
+            starts = [1 starts];
+        end
+
+        endsTmp = conv(mask,[1 -1 -1]);
+        endsTmp = endsTmp(2:end-1);
+        ends = find(endsTmp == -3');
+
+        for j=1:length(starts)
+            if ends(j)-starts(j)<minSeqLength
+                continue;
+            end
+            seq.chr = chrName;
+            seq.from = starts(j);
+            seq.to = ends(j);
+            seq.seq = upper(genome.(chrName)(starts(j):ends(j)))
+            sequences{end+1} = seq;
+        end
+    end
 end
