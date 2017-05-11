@@ -26,9 +26,10 @@ function pcPWMp = preComputePWMpAux(PWMsRep, Xs1H)
         % p_pcPWMp = pcPWMp;
     catch
         fprintf('Pre-computing PWM probability on %d sequences', size(Xs1H, 1));
+        mask = repmat(1:params.J, [params.N, 1, params.k]) > repmat(permute(params.lengths, [1,3,2]), [N,J,1]);
         pcPWMp = zeros(N, k, L);
         for t = 1:L
-            pcPWMp(:, :, t) = BaumWelchPWM.getPWMp(PWMsRep, Xs1H, t);
+            pcPWMp(:, :, t) = BaumWelchPWM.getPWMp(params, PWMsRep, Xs1H, t, mask);
         end
         pcPWMp = cat(3, zeros(N, k, J), pcPWMp);
         fprintf('\n');

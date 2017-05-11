@@ -293,6 +293,13 @@ The parameters
 \end_layout
 
 \begin_layout Standard
+\begin_inset Formula $T:m\times m$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset Formula $W:k\times J\times n$
 \end_inset
 
@@ -303,23 +310,30 @@ The parameters
 
 \series bold
 \bar under
-Forward
-\backslash
-Backwards Algorithm
+possible applications
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $\alpha:m\cdot(k+1)\times L$
+labeled enhancer seqs from multiple motifs-> EM to learn E M F per floor
+ + setting 
+\begin_inset Formula $T=\mathbb{I}_{m\times m}$
 \end_inset
 
- : forward algorithm
+ -> posterior of whole genome with sliding window -> classify whole genome
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $\beta:m\cdot(k+1)\times L$
-\end_inset
+learn E M F -> check correlation with TF expression
+\end_layout
 
- : backward algorithm
+\begin_layout Standard
+run EM on whole genome -> posterior of whole genome -> check correlation
+ of posterior to ChIP-Seq of histone modifications
+\end_layout
+
+\begin_layout Standard
+E M F T-> posterior of whole genome -> see if known critical SNPs are critical
+ in classification
 \end_layout
 
 \end_body

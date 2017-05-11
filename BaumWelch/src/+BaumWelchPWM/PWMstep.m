@@ -2,7 +2,7 @@
 % Y - m x k transfer probability matrix between mode bases and their PWM modes
 % pcPWMp - N x k x L-1 - precomputed likelihood of the sequences and the PWM.
 %            at place i, j , t we have the likelihood of seq_i at t+1, with PWM j
-% res - N x m
+% res - N x m x k
 %
 function res = PWMstep(slice, Ms, ts, pcPWMp, J)
     [N, m, k] = size(slice);
@@ -18,5 +18,5 @@ function res = PWMstep(slice, Ms, ts, pcPWMp, J)
     % N x 1 x k -> N x m x k
     tsPWMps = repmat(tsPWMp, [1, m, 1]);
     slice = slice .* tsPWMps;
-    res = sum(slice, 3);
+    % res = sum(slice, 3);
 end
