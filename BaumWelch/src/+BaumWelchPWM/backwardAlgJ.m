@@ -9,8 +9,8 @@ function beta = backwardAlgJ(Xs, theta, params, scale, pcPWMp)
 
     kronMN = kron(1:params.m, ones(1, params.N));
     matSize = [params.m , params.n * ones(1, params.order)];
-    betaBase = ones(params.N, params.m, params.L);
-    betaSub = cat(3, ones(params.N, params.m, params.L), zeros(params.N, params.m, params.J));
+    beta = ones(params.N, params.m, params.L);
+    % betaSub = cat(3, ones(params.N, params.m, params.L), zeros(params.N, params.m, params.J));
     if params.all2allMode
         theta.M = bsxfun(@times, theta.M, theta.F);
         theta.E = bsxfun(@times, theta.E, 1-theta.F);
@@ -26,31 +26,17 @@ function beta = backwardAlgJ(Xs, theta, params, scale, pcPWMp)
         % TODO: I should remove this note if everything goes well
         Ep = BaumWelchPWM.getEp(theta, params, Xs, t, kronMN, matSize);
         % N x m x k
-        betaSlice = betaSub(:,:,sub2ind([params.L, params.k], t+lengths-1, [1:params.k]));
+        betaSlice = beta(:,:,sub2ind([params.L, params.k], t+lengths-1));
         % N x m x k
         PWMstepP = BaumWelchPWM.PWMstep(betaSlice, Ms, repmat(t, [params.k, 1]), pcPWMp, params.J);
         if params.all2allMode
             % N x m x k
-            newBetaBase = (Ep .* betaBase(:,:,t) + sum(PWMstepP, 3)) * theta.T.';
+            newBeta = (Ep .* beta(:,:,t) + sum(PWMstepP, 3)) * theta.T.';
         else
             Tf = theta.T;
             Tf(eye(m)==1) = Tf(eye(m)==1) .* (1-theta.F);
-            newBetaBase = (Ep .* betaBase(:,:,t)) * Tf.' + sum(PWMstepP, 3) .* repmat((diag(theta.T) .* theta.F)', [N, 1]);
+            newBeta = (Ep .* beta(:,:,t)) * Tf.' + sum(PWMstepP, 3) .* repmat((diag(theta.T) .* theta.F)', [N, 1]);
         end
-
-        % beta is built by the base modes emission and the PWM submodes emission
-        % N x m x k
-        if params.all2allMode
-            betaSlice = betaBase(:,:,t+theta.lengths-1) + sum(betaSub(:,:,t+theta.lengths-1,:), 4)
-            beta(:,:,t+theta.lengths-1);
-            % #########################################################
-            % TODO: problem here, are all submodes equal?
-            newBetaBase = (Ep .* betaBase(:,:,t) + sum(PWMstepP, 3)) * theta.T.';
-        else
-            betaSlice = betaBase(:,:,t+theta.lengths-1) + sum(betaSub(:,:,t+theta.lengths-1,:), 4)
-            
-        end
-        1
         % N x m
         PWMstepP = BaumWelchPWM.PWMstep(betaSlice, Ms, repmat(t, [params.k, 1]), pcPWMp, params.J);
         newBeta = newBeta + PWMstepP * theta.T.';
