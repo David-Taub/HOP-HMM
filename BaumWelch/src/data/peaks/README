@@ -1,23 +1,100 @@
-http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE37151
-Expanding the Catalog of Enhancer Marks In Vivo
+Downloaded from roadmap site (2013):
+from page http://egg2.wustl.edu/roadmap/web_portal/processed_data.html
+http://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/
+downloaded E066 (Liver) and E077 (Brain Hippocampus Middle)
+H3K27ac, H3K27me3, H3K4me3, H3K4me1
 
-http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE52386
-Rapid and Pervasive Changes in Genome-Wide Enhancer Usage During Mammalian Development
 
-http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE49413
-Fine Tuning of Craniofacial Morphology by Distant-Acting in vivo Enhancers
+HG19 Genes (2009):
+https://genome.ucsc.edu/cgi-bin/hgTables?hgsid=597259395_zm48O4B23IAG8yLNYr5ekoweAIGe&boolshad.hgta_printCustomTrackHeaders=0&hgta_ctName=tb_knownGene&hgta_ctDesc=table+browser+query+on+knownGene&hgta_ctVis=pack&hgta_ctUrl=&fbQual=whole&fbUpBases=200&fbExonBases=0&fbIntronBases=0&fbDownBases=200&hgta_doGetBed=get+BED
 
-http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE42881
-A High-Resolution Enhancer Atlas of the Developing Telencephalon
+HG19 genome size:
+http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/hg19.chrom.sizes
 
-http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE32587
-Large-Scale Discovery of Enhancers from Human Heart Tissue
 
-http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE13845
-ChIP-seq Accurately Predicts Tissue-Specific Activity of Enhancers
 
-http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE36027
-Transcription Factor Binding Sites by ChIP-seq from ENCODE/LICR
+Data process
 
-http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE31039
-Histone Modifications by ChIP-seq from ENCODE/LICR
+
+cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src/data/peaks/raw/roadmap/BrainVsLiver/liver
+ls -la
+
+bedtools slop -i ../hg19.KnownGenes.bed -g ../hg19.chrom.sizes.txt -b 5000 > ../hg19.KnownGenes.slopped.bed
+ls -la ../..
+
+#take only H3k27ac peaks with H3k4me1 peaks
+bedtools intersect -a E066-H3K27ac.narrowPeak -b E066-H3K4me1.narrowPeak -wa >E066-H3K27ac.cleaned.narrowPeak
+ls -la
+
+#remove duplicates
+awk '!x[$0]++' E066-H3K27ac.cleaned.narrowPeak > E066-H3K27ac.tmp.narrowPeak
+mv E066-H3K27ac.tmp.narrowPeak E066-H3K27ac.cleaned.narrowPeak
+ls -la
+
+
+#remove H3k27me3 peaks
+bedtools subtract -a E066-H3K27ac.cleaned.narrowPeak -b E066-H3K27me3.narrowPeak -A > E066-H3K27ac.tmp.narrowPeak
+mv E066-H3K27ac.tmp.narrowPeak E066-H3K27ac.cleaned.narrowPeak
+ls -la
+
+#remove H3k4me3 peaks
+bedtools subtract -a E066-H3K27ac.cleaned.narrowPeak -b E066-H3K4me3.narrowPeak -A > E066-H3K27ac.tmp.narrowPeak
+mv E066-H3K27ac.tmp.narrowPeak E066-H3K27ac.cleaned.narrowPeak
+ls -la
+
+#remove padded known genes
+bedtools subtract -a E066-H3K27ac.cleaned.narrowPeak -b ../hg19.KnownGenes.slopped.bed -A > E066-H3K27ac.tmp.narrowPeak
+mv E066-H3K27ac.tmp.narrowPeak E066-H3K27ac.cleaned.narrowPeak
+ls -la
+mv E066-H3K27ac.cleaned.narrowPeak ../processed/E066-H3K27ac.cleaned.narrowPeak
+
+
+
+cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src/data/peaks/raw/roadmap/BrainVsLiver/brain_hippocampus_middle
+ls -la
+
+#take only H3k27ac peaks with H3k4me1 peaks
+bedtools intersect -a E071-H3K27ac.narrowPeak -b E071-H3K4me1.narrowPeak -wa > E071-H3K27ac.tmp.narrowPeak
+mv E071-H3K27ac.tmp.narrowPeak E071-H3K27ac.cleaned.narrowPeak
+ls -la
+
+#remove duplicates
+awk '!x[$0]++' E071-H3K27ac.cleaned.narrowPeak > E071-H3K27ac.tmp.narrowPeak
+mv E071-H3K27ac.tmp.narrowPeak E071-H3K27ac.cleaned.narrowPeak
+ls -la
+
+#remove H3k27me3 peaks
+bedtools subtract -a E071-H3K27ac.cleaned.narrowPeak -b E071-H3K27me3.narrowPeak -A > E071-H3K27ac.tmp.narrowPeak
+mv E071-H3K27ac.tmp.narrowPeak E071-H3K27ac.cleaned.narrowPeak
+ls -la
+
+#remove H3K4me3 peaks
+bedtools subtract -a E071-H3K27ac.cleaned.narrowPeak -b E071-H3K4me3.narrowPeak -A > E071-H3K27ac.tmp.narrowPeak
+mv E071-H3K27ac.tmp.narrowPeak E071-H3K27ac.cleaned.narrowPeak
+ls -la
+
+
+#remove padded known genes
+bedtools subtract -a E071-H3K27ac.cleaned.narrowPeak -b ../hg19.KnownGenes.slopped.bed -A > E071-H3K27ac.tmp.narrowPeak
+mv E071-H3K27ac.tmp.narrowPeak E071-H3K27ac.cleaned.narrowPeak
+ls -la
+mv E071-H3K27ac.cleaned.narrowPeak ../processed/E071-H3K27ac.cleaned.narrowPeak
+
+
+#then in matlab
+
+cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
+%creates weird mats each has a cell array of only the his sequence, and have overlap one hot map that is on only in it's position
+%hits also pad the sequence from the genome, to make the length of the sequence with minimal of 1000. The padding happens around the peak max location
+peaks.beds2mats()
+%merges this weird mats to one mat file that has struct array without overlapping sequences, since they were all joint together and the overlaps vectors became from one hot to a heat map of the height of the peak in each tissue
+peaks.mergePeakFiles()
+
+
+load('data/peaks/raw/roadmap/merged/mergedPeaks.mat');
+%this removes sequences that contains unknown letters, low peaks, and trims sequences to L size
+
+peaks.minimizeMergePeak(mergedPeaks);
+mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
+mergedPeaksMin = load('data/peaks/randGenerated/mergedPeaksMinimized.mat');
+mainPWMCor(mergedPeaksMin);

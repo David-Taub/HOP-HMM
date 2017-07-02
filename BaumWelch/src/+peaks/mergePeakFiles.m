@@ -1,16 +1,19 @@
-% merge all peaks.mat from /cs/cbio/tommy/Enhancers/Data/GSE29184_Bing_Ren
-% to a single mat file. These peaks thought to be enhancers, and are basically
-% P300 peaks in MM9
+%merges this weird mats to one mat file that has struct array without
+% overlapping sequences, since they were all joint together and the
+% overlaps vectors became from one hot to a heat map of the height of
+% the peak in each tissue
 
-function mergePeakFiles()
-    [totalpeaks, names] = genTotalPeaks();
+% peaks.mergePeakFiles()
+
+function mergedPeaks = mergePeakFiles()
+    [totalpeaks] = genTotalPeaks();
     mergedPeaks = genMergePeaks(totalpeaks);
-    save('-v7.3', './merged/mergedPeaks.mat', 'mergedPeaks', 'names');
+    save('-v7.3', 'data/peaks/raw/roadmap/merged/mergedPeaks.mat', 'mergedPeaks');
 end
 
-function [totalpeaks, names] = genTotalPeaks()
+function [totalpeaks] = genTotalPeaks()
     totalpeaks = [];
-    peaksBasePath = 'raw';
+    peaksBasePath = 'data/peaks/raw/roadmap/mat';
     peakFiles = dir(fullfile(peaksBasePath, '*.peaks.mat'));
     for i = 1:length(peakFiles)
         peakFiles(i).name
@@ -31,21 +34,27 @@ function mergedPeaks  = genMergePeaks(totalpeaks)
     for chrName = unique({totalpeaks.chr})
         chrMask = strcmp({totalpeaks.chr}, chrName{1});
         chrPeaks = totalpeaks(chrMask);
-        [~, ind] = sort([chrPeaks.from]);
+        [~, ind] = sort([chrPeaks.seqFrom]);
         mergedPeaks(j) = chrPeaks(ind(1));
         i = 2;
         while i <= length(ind)
             newPeak = chrPeaks(ind(i));
             oldPeak = mergedPeaks(j);
-            if oldPeak.to > newPeak.from
+            if oldPeak.seqTo > newPeak.seqFrom
                 fprintf('.')
+                % oldPeak.seq'
+                % newPeak.seq(end-(newPeak.seqTo-oldPeak.seqTo) + 1:end)'
                 % merge
-                oldPeak.seq = [oldPeak.seq, newPeak.seq(end-(newPeak.to-oldPeak.to) + 1:end)];
-                oldPeak.to = newPeak.to;
-                oldPeak.pos = round((oldPeak.from + newPeak.to)/2) ;
+                oldPeak.seq = [oldPeak.seq, newPeak.seq(end-(newPeak.seqTo-oldPeak.seqTo) + 1:end)];
+                oldPeak.seqTo = newPeak.seqTo;
+                oldPeak.peakTo = max(newPeak.peakTo, oldPeak.peakTo);
+                oldPeak.peakFrom = min(newPeak.peakFrom, oldPeak.peakFrom);
+                % oldPeak.pos = round((oldPeak.seqFrom + newPeak.seqTo)/2) ;
                 oldPeak.overlap = max(oldPeak.overlap, newPeak.overlap);
                 oldPeak.height = max(oldPeak.height, newPeak.height);
-                oldPeak.min = min(oldPeak.min, newPeak.min);
+                oldPeak.peakPos = mean([oldPeak.peakPos, newPeak.peakPos], 2);
+                % oldPeak.min = min(oldPeak.min, newPeak.min);
+
                 mergedPeaks(j) = oldPeak;
 
             else

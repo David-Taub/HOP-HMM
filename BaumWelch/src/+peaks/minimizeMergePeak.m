@@ -1,27 +1,31 @@
-% load('data/peaks/mergedPeaks.mat');
-% [seqs, overlaps] = minimizeMergePeak(mergedPeaks);
+% load('data/peaks/merged/mergedPeaks.mat');
+% peaks.minimizeMergePeak(mergedPeaks);
 function minimizeMergePeak(mergedPeaks)
     TOP_PEAKS_HEIGHT_PERCENT = 0.05;
     r = length(mergedPeaks(1).overlap); %19
-    L = 1000;
+    L = 300;
 
 
-    mergedPeaks = removeNonDistal(mergedPeaks);
-    overlaps = extractOverlaps(mergedPeaks, r);
-    [mergedPeaks, overlaps] = removeLowHeight(mergedPeaks, overlaps, r, TOP_PEAKS_HEIGHT_PERCENT);
+    % mergedPeaks = removeNonDistal(mergedPeaks);
+    [overlaps, lengths] = extractOverlaps(mergedPeaks, r);
+    size(overlaps)
+    [mergedPeaks, overlaps, lengths] = removeLowHeight(mergedPeaks, overlaps, lengths, r, TOP_PEAKS_HEIGHT_PERCENT);
+    size(overlaps)
     seqs = trimSeqs(mergedPeaks, L);
-    [seqs, overlaps] = removeNonLetters(seqs, overlaps);
+    [seqs, overlaps, lengths] = removeNonLetters(seqs, overlaps, lengths);
+    size(overlaps)
 
     fprintf('save\n');
-    save('mergedPeaksMinimized.mat', 'seqs', 'overlaps')
+    save('data/peaks/roadmap/mergedPeaksMinimized.mat', 'seqs', 'overlaps', 'lengths')
 end
 
 
-function [seqs, overlaps] = removeNonLetters(seqs, overlaps)
+function [seqs, overlaps, lengths] = removeNonLetters(seqs, overlaps, lengths)
     fprintf('non letters\n');
     mask = max(seqs, [], 2) <= 4;
     seqs = seqs(mask, :);
     overlaps = overlaps(mask, :);
+    lengths = lengths(mask);
 end
 
 function seqs = trimSeqs(mergedPeaks, L)
@@ -32,11 +36,12 @@ function seqs = trimSeqs(mergedPeaks, L)
     for i = 1:length(seqsCells)
         seq = seqsCells{i};
         center = round(length(seq)/2);
-        seqs(i, :) = nt2int(seq(center-L/2+1:center+L/2));
+        % seqs(i, :) = nt2int(seq(center-L/2+1:center+L/2));
+        seqs(i, :) = seq(center-L/2+1:center+L/2);
     end
 end
 
-function [mergedPeaks, overlaps] = removeLowHeight(mergedPeaks, overlaps, r, topPercent)
+function [mergedPeaks, overlaps, lengths] = removeLowHeight(mergedPeaks, overlaps, lengths, r, topPercent)
     fprintf('height\n');
     % remove low peaks
     mask = false(length(mergedPeaks), 1);
@@ -47,12 +52,14 @@ function [mergedPeaks, overlaps] = removeLowHeight(mergedPeaks, overlaps, r, top
     end
     overlaps = overlaps(mask, :);
     mergedPeaks = mergedPeaks(mask);
+    lengths = lengths(mask);
 end
 
-function overlaps = extractOverlaps(mergedPeaks, r)
+function [overlaps, lengths] = extractOverlaps(mergedPeaks, r)
 
     fprintf('overlaps\n');
     overlapsFlat = [mergedPeaks.overlap];
+    lengths = [mergedPeaks.peakLength]';
     % N x r
     overlaps = reshape(overlapsFlat, [r, length(mergedPeaks)])';
 end
