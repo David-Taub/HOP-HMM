@@ -1,7 +1,7 @@
 % peaks.beds2mats()
 % creates weird mats each has a cell array of only the his sequence, and have overlap one hot map that is on only in it's position
 function beds2mats()
-    BEDS_DIR = 'data/peaks/raw/roadmap/BrainVsLiver/processed';
+    BEDS_DIR = 'data/peaks/raw/roadmap/processed';
 
     dict = makeMMDict();
 

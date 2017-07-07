@@ -1,7 +1,7 @@
 % load('data/peaks/merged/mergedPeaks.mat');
 % peaks.minimizeMergePeak(mergedPeaks);
 function minimizeMergePeak(mergedPeaks)
-    TOP_PEAKS_HEIGHT_PERCENT = 0.05;
+    TOP_PEAKS_HEIGHT_PERCENT = 0.10;
     r = length(mergedPeaks(1).overlap); %19
     L = 300;
 

@@ -22,35 +22,27 @@
 % mainPWMCor(mergedPeaksMin);
 function [maxPeaks, overlaps] = mainPWMCor(mergedPeaksMin)
     close all;
-    tic
-    % N = size(mergedPeaksMin.seqs, 1);
-    fprintf('rearranging data\n')
-    % [overlaps, Xs] = genData(mergedPeaksMin);
-    [overlaps, Xs, maxPeaks] = genData(mergedPeaksMin);
-    % [N, L] = size(Xs);
-    % N x k x L
-    size(maxPeaks)
-    k = size(maxPeaks, 2); %205
-    r = size(overlaps, 2); %19
-    % N x k
-    % maxPeaks = max(pcPWMp, [], 3);
-    % maxPeaks = pcPWMp;
-    % maxPeaks = maxPeaks + nMax(pcPWMp, 2);
-    % assert(not(any(isnan(maxPeaks(:)))))
-    % maxPeaks = maxPeaks + mean(pcPWMp, 3);
-
-    % maxPeaks = maxPeaks + nMax(pcPWMp, 3);
-
-    % [meansDiff, ~] = getMeanDiff(maxPeaks, overlaps);
-    fprintf('separation tests\n')
-
-    % load(fullfile('data', 'outMainPWMCor.mat'));
-    ranks = getRanks(maxPeaks, overlaps, r, k);
     outputPath = fullfile('data', 'outMainPWMCor.mat');
+    tic
+
+    fprintf('rearranging data\n')
+    [overlaps, Xs, maxPeaks] = genData(mergedPeaksMin);
+    % N x k x L
+    k = size(maxPeaks, 2);
+    r = size(overlaps, 2);
+    % N x k
+    fprintf('separation tests\n')
+    ranks = getRanks(maxPeaks, overlaps, r, k);
+
+    % load(outputPath);
     fprintf('Saving processed data to file %s\n', outputPath)
     save(outputPath, 'ranks', 'maxPeaks', 'overlaps');
+
+
+
+    fprintf('Showing results:\n')
     showAllSep(ranks);
-    fprintf('showing results 1\n')
+    % printBest(ranks)
     showData(maxPeaks, ranks, overlaps);
     showBestSep2(ranks, maxPeaks, overlaps, r);
     fprintf('showing results 2\n')
@@ -65,16 +57,16 @@ end
 % ranks - r x k x M
 function [ranks] = getRanks(maxPeaks, overlaps, r, k)
     ranks = zeros(r, k, 2);
-    i = 1
+    i = 1;
     % 1 x k
     for j = 1:k
         peaksIndicatorTFPos = maxPeaks(overlaps(:, i) > 0, j);
         peaksIndicatorTFNeg = maxPeaks(overlaps(:, i) == 0, j);
 
         if mean(peaksIndicatorTFPos) > mean(peaksIndicatorTFNeg);
-            ranks(i, j ,2) = getAucRoc(peaksIndicatorTFPos, peaksIndicatorTFNeg, false);
+            ranks(i, j ,2) = matUtils.getAucRoc(peaksIndicatorTFPos, peaksIndicatorTFNeg, false);
         else
-            ranks(i, j, 2) = getAucRoc(peaksIndicatorTFNeg, peaksIndicatorTFPos, false);
+            ranks(i, j, 2) = matUtils.getAucRoc(peaksIndicatorTFNeg, peaksIndicatorTFPos, false);
         end
 
         [~, ranks(i, j, 1)] = kstest2(peaksIndicatorTFPos, peaksIndicatorTFNeg);
@@ -83,26 +75,16 @@ function [ranks] = getRanks(maxPeaks, overlaps, r, k)
         % [ranks(i, j), ~] = ranksum(peaksIndicatorTFPos, peaksIndicatorTFNeg);
         % ranks(i, j) = 1 - ranks(i, j);
         % ranks(i, j) = matUtils.emdTest(peaksIndicatorTFPos, peaksIndicatorTFNeg);
-        fprintf('%d / %d. %d / %d. %.2f\n', i, r, j, k, ranks(i, j));
+        fprintf('%d / %d. %d / %d. %.2f\n', i, r, j, k, ranks(i, j, 2));
     end
     fprintf('\n')
-end
-
-function auc = getAucRoc(pos, neg, shouldPlot)
-    scores = [pos;neg];
-    labels = [ones(length(pos), 1); zeros(length(neg), 1)];
-    [X, Y, ~, auc] = perfcurve(labels, scores, 1);
-    if shouldPlot
-        plot(X,Y)
-        xlabel('False positive rate')
-        ylabel('True positive rate')
-    end
 end
 
 % maxPeaks - N x k
 % ranks - r x k
 function showBestSep(ranks, maxPeaks, overlaps, r)
     [~,~,names] = BaumWelchPWM.PWMs();
+    k = length(names);
     i = 1;
     % for i =1:r
         % 1 x k
@@ -118,13 +100,13 @@ function showBestSep(ranks, maxPeaks, overlaps, r)
     h = histogram(peaksIndicatorTFPos, 50, 'Normalization', 'probability');
     hold on;
     histogram(peaksIndicatorTFNeg, h.BinEdges, 'Normalization', 'probability');
-    title(['PWM ', names{tissueIndicator}, ' LogLikes. Rate: ', num2str(bestRank)]);
-    legend('Enhancers from tissue', 'Enhancers from all other tissues')
+    title(['PWM ', names{mod(tissueIndicator-1, k)+1}, ' (',int2str(floor((tissueIndicator-1)/k)+1), ') LogLikes. Rate: ', num2str(bestRank)]);
+    legend('Enhancers of cell 1', 'Enhancers of cell 2')
     subplot(1,2,2);
     if mean(peaksIndicatorTFPos) > mean(peaksIndicatorTFNeg);
-        getAucRoc(peaksIndicatorTFPos, peaksIndicatorTFNeg, true);
+        matUtils.getAucRoc(peaksIndicatorTFPos, peaksIndicatorTFNeg, true);
     else
-        getAucRoc(peaksIndicatorTFNeg, peaksIndicatorTFPos, true);
+        matUtils.getAucRoc(peaksIndicatorTFNeg, peaksIndicatorTFPos, true);
     end
     % end
 end
@@ -132,19 +114,28 @@ end
 % maxPeaks - N x k
 % ranks - r x k
 function showBestSep2(ranks, maxPeaks, overlaps, r)
-    mask = ranks(1, :, 2) > 0.58;
-    maxPeaks2 = max(maxPeaks(:, mask), [], 2);
-    peaksIndicatorTFPos = maxPeaks2(overlaps(:, 1) > 0);
-    peaksIndicatorTFNeg = maxPeaks2(overlaps(:, 1) == 0);
+    T = 50;
+    % mask = ranks(1, :, 2) > 0.6;
+    [~,inds] = sort(ranks(1, :, 2));
+    inds = inds(end-T:end);
+    % N x T
+    % maxPeaksBest = max(maxPeaks(:, inds), [], 2);
+    X = maxPeaks(:, inds);
+    Y = (overlaps(:, 1) > 0) + 1;
+    [B,dev,stats] = mnrfit(X, Y);
+    pihat =mnrval(B, X);
+    pos = pihat(overlaps(:, 1) == 0, 1);
+    neg = pihat(overlaps(:, 1) > 0, 1);
+
     figure;
     subplot(1,2,2);
-    auc = getAucRoc(peaksIndicatorTFPos, peaksIndicatorTFNeg, true);
+    auc = matUtils.getAucRoc(pos, neg, true)
     subplot(1,2,1);
-    h = histogram(peaksIndicatorTFPos, 50, 'Normalization', 'probability');
+    h = histogram(pos, 50, 'Normalization', 'probability');
     hold on;
-    histogram(peaksIndicatorTFNeg, h.BinEdges, 'Normalization', 'probability');
-    title(['PWM (max of best) LogLikes. Rate: ', num2str(auc)]);
-    legend('Enhancers from tissue', 'Enhancers from all other tissues')
+    histogram(neg, h.BinEdges, 'Normalization', 'probability');
+    title(['PWM (Best combined) LogLikes. Rate: ', num2str(auc)]);
+    legend('Enhancers of cell 1', 'Enhancers of cell 2')
 
 
     % end
@@ -214,6 +205,23 @@ function showData(maxPeaks, ranks, overlaps)
     % subplot(2,2,4);imagesc(lengths); colorbar;
 end
 
+
+function printBest(ranks)
+    figure;
+    [~,~,names] = BaumWelchPWM.PWMs();
+    [~, ii] = sort(ranks(1, :, 1), 2, 'ascend');
+    T = 20;
+    kspval = ranks(1, ii(1:T), 1);
+    auc = ranks(1, ii(1:T), 2);
+    nn = names(ii(1:T));
+    fprintf('-Ln(pvalue) of KS2 test \n');
+    fprintf('%.2f \n', -log(kspval));
+    fprintf('Roc Auc \n');
+    fprintf('%.2f \n', auc);
+    fprintf('TF names \n');
+    fprintf('%s\n', nn{:});
+end
+
 % return the nth max of 3d matrix M
 % M  - a x b x c
 % maxs - a x b
@@ -261,7 +269,7 @@ function [overlaps, Xs, maxPeaks] = genData(mergedPeaksMin)
     % fprintf('Loading non-enhancers\n')
     % L = size(mergedPeaksMin.seqs, 2);
     % bgSeqs = matUtils.readSeq(fullfile('data', 'NEnhancers.train.seq'), L);
-    % % bgSeqs = cat(2, bgSeqs, fliplr(5-bgSeqs));
+    % bgSeqs = cat(2, bgSeqs, fliplr(5-bgSeqs));
     % Xs = cat(1, Xs, bgSeqs);
     % N = size(overlaps, 1);
     % overlaps = cat(1, overlaps, zeros(size(bgSeqs, 1), size(overlaps, 2)));
@@ -272,7 +280,16 @@ function [overlaps, Xs, maxPeaks] = genData(mergedPeaksMin)
     % pcPWMp = BaumWelchPWM.preComputePWMp(Xs);
     % maxPeaks = max(pcPWMp, [], 3);
     pcPWMp = BaumWelchPWM.preComputePWMpMax(Xs);
+    [N, k] = size(pcPWMp);
+    maxPeaks = zeros(N, k*k);
+    % for i = 1:k
+    %     for j = 1:k
+    %         maxPeaks(:, (i-1)*k + j) = pcPWMp(:, i) - pcPWMp(:, j);
+    %     end
+    % end
+
     maxPeaks = pcPWMp;
+
 
 
 end

@@ -24,6 +24,7 @@ function out = preComputePWMpAux(PWMsRep, Xs1H, lengths)
     PC_PWM_PROBABILITY_FILE = fullfile('data', 'precomputation', 'pcPWMpMax.mat');
     if ~isempty(pcPWMp) && length(size(pcPWMp)) == 2 && all(size(pcPWMp) == [N, k])
         % in memory
+        fprintf('Used memory cache\n');
         out = pcPWMp;
         return;
     end
@@ -32,6 +33,7 @@ function out = preComputePWMpAux(PWMsRep, Xs1H, lengths)
         load(PC_PWM_PROBABILITY_FILE, 'pcPWMp');
         if length(size(pcPWMp)) == 2 && all(size(pcPWMp) == [N, k])
             % loaded from file, same size
+            fprintf('Used file cache\n');
             out = pcPWMp;
             return;
         else
@@ -51,23 +53,28 @@ function pcPWMp = calculate(Xs1H, PWMsRep, lengths, N, k, J, n, L, filePath)
     fprintf('Pre-computing PWM probability on %d sequences\n', size(Xs1H, 1));
     % mask - J x L-J+1 x 1 x k
     mask = repmat([1:J]', [1, L-J+1, 1, k]) > repmat(permute(lengths, [4,3,1,2]), [J,L-J+1,1,1]);
-    pcPWMp = zeros(N, k);
+    pcPWMp = zeros(N, 3 * k);
     imask = repmat(1-mask, [1,1,n,1]);
     % N x J x n x k
-    bgPWMs = imask .* repmat(permute([0.2573, 0.2433, 0.2426, 0.2568],[1,3,2]), [J, L-J+1, 1, k]);
-    parfor t = 1:N
+    randBaseDist = permute(sum(sum(Xs1H, 2), 1) ./ (N * L), [1,3,2]);
+    % randBaseDist = [0.2573, 0.2433, 0.2426, 0.2568]
+    randBaseDist
+    T = 5;
+    bgPWMs = imask .* repmat(permute(randBaseDist,[1,3,2]), [J, L-J+1, 1, k]);
+    for t = 1:N
         % L-J+1 x k
         H1 = BaumWelchPWM.getPWMpMax(J, PWMsRep, Xs1H(t, :,:), t, mask);
         H0 = BaumWelchPWM.getPWMpMax(J, bgPWMs, Xs1H(t, :,:), t, mask);
         pssm = log(H1 ./ (H0 + eps));
-        % pssm(pssm<0) = 0;
-        % pcPWMp(t, :) = sum(pssm, 1);
-        pcPWMp(t, :) = max(pssm, [], 1);
+        [pcPWMp(t, 1:k), pcPWMp(t, k+1:2*k)] = max(pssm, [], 1);
+        pssm(pssm<0) = 0;
+        pssm = sort(pssm, 1);
+        pcPWMp(t, 2*k+1:3*k) = sum(pssm(end-T+1:end), 1);
 
         % pcPWMp(:, :, t) = BaumWelchPWM.getPWMp(J, PWMsRep, Xs1H, t, mask);
-        % fprintf('%d / %d ', t, N);
-        % fprintf('%d', pssm(1:100) > 0);
-        % fprintf('\n');
+        fprintf('%d / %d ', t, N);
+        fprintf('%d', pssm(1:100) > 0);
+        fprintf('\n');
     end
     % pcPWMp = cat(3, zeros(N, k, J), pcPWMp);
 
