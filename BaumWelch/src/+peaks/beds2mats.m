@@ -1,6 +1,6 @@
-% peaks.beds2mats()
+% peaks.beds2mats(500)
 % creates weird mats each has a cell array of only the his sequence, and have overlap one hot map that is on only in it's position
-function beds2mats()
+function beds2mats(L)
     BEDS_DIR = 'data/peaks/raw/roadmap/processed';
 
     dict = makeMMDict();
@@ -13,16 +13,16 @@ function beds2mats()
             bedPath = fullfile(BEDS_DIR, bedFiles(index).name);
             nameParts = strsplit(bedFiles(index).name, '-');
             name = nameParts{1};
-            bed2mat(index, name, bedPath, typesOfCells, dict);
+            bed2mat(index, name, bedPath, typesOfCells, dict, L);
         end
     end
 end
 
 % cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
 % peaks.bedder(1000);
-function bed2mat(index, name, bedPath, typesOfCells, dict)
+function bed2mat(index, name, bedPath, typesOfCells, dict, L)
     % bedPath = 'data/peaks/raw/roadmap/BrainMFLVsLiver/brain_mid_frontal_lobe/compressed/GSM773015_BI.Brain_Mid_Frontal_Lobe.H3K27ac.149.cleaned.bed';
-    L = 300;
+
     fprintf('Loading bed\n');
     fid = fopen(bedPath);
     data = textscan(fopen(bedPath), '%s%d%d%*s%d%*s%f%f%f%d', 'delimiter','\t');
@@ -43,7 +43,8 @@ function bed2mat(index, name, bedPath, typesOfCells, dict)
         S{i}.peakPos = data{2}(i)+data{8}(i);
         S{i}.overlap = zeros(1, typesOfCells);
         S{i}.overlap(index) = 1;
-        [S{i}.seqTo, S{i}.seqFrom] = fitToL(S{i}.peakPos, L);
+        chrLength = length(dict(S{i}.chr).Data);
+        [S{i}.seqTo, S{i}.seqFrom] = fitToL(S{i}.peakPos, L, chrLength);
         S{i}.seq = dict(S{i}.chr).Data(S{i}.seqFrom:S{i}.seqTo)';
         fprintf('%.2f\r%%', 100*i/N);
     end
@@ -56,10 +57,14 @@ function bed2mat(index, name, bedPath, typesOfCells, dict)
 end
 
 % function [newTo, newFrom] = fitToL(to, from, L)
-function [newTo, newFrom] = fitToL(peakPos, L)
+function [newTo, newFrom] = fitToL(peakPos, L, chrLength)
     center = peakPos;
-    newTo = center + floor(L / 2);
-    newFrom = center - floor(L / 2) + 1;
+    newTo = min(center + floor(L / 2), chrLength);
+    newFrom = newTo - L + 1;
+    if newFrom < 1
+        newFrom = 1;
+        newTo = L;
+    end
 end
 
 function dict = makeMMDict()

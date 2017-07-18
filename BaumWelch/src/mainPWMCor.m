@@ -1,4 +1,4 @@
-    % checks correlation between the existence of p300 peak and its TF binding sites
+% checks correlation between the existence of p300 peak and its TF binding sites
 % presence. the binding sights presence are evaluated with PWMs.
 
 % 10  TxEnh5 Transcribed 5' preferential and Enh
@@ -14,10 +14,9 @@
 % usage:
 % cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
 % mergedPeaksMin = load(fullfile('data', 'peaks', 'mergedPeaksMinimized.mat'));
-% delete(fullfile('data', 'precomputation', 'pcPWMp.mat'));
+% delete(fullfile('data', 'precomputation', 'pcPWMpMax.mat'));
 % mergedPeaksMin = load('data/RoadmapEnhancers.mat');
-
-
+% cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
 % mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
 % mainPWMCor(mergedPeaksMin);
 function [maxPeaks, overlaps] = mainPWMCor(mergedPeaksMin)
@@ -31,13 +30,19 @@ function [maxPeaks, overlaps] = mainPWMCor(mergedPeaksMin)
     k = size(maxPeaks, 2);
     r = size(overlaps, 2);
     % N x k
+    fprintf('Saving processed data to file %s\n', outputPath)
+    save(outputPath, 'maxPeaks', 'overlaps');
+    return;
+    checkRegression(overlaps, maxPeaks);
+
+
+
     fprintf('separation tests\n')
     ranks = getRanks(maxPeaks, overlaps, r, k);
 
     % load(outputPath);
     fprintf('Saving processed data to file %s\n', outputPath)
     save(outputPath, 'ranks', 'maxPeaks', 'overlaps');
-
 
 
     fprintf('Showing results:\n')
@@ -96,19 +101,9 @@ function showBestSep(ranks, maxPeaks, overlaps, r)
     peaksIndicatorTFNeg = maxPeaks(overlaps(:, i) == 0, tissueIndicator);
     % subplot(4,5,i);
     figure;
+    matUtils.getAucRoc(peaksIndicatorTFPos, peaksIndicatorTFNeg, true);
     subplot(1,2,1);
-    h = histogram(peaksIndicatorTFPos, 50, 'Normalization', 'probability');
-    hold on;
-    histogram(peaksIndicatorTFNeg, h.BinEdges, 'Normalization', 'probability');
     title(['PWM ', names{mod(tissueIndicator-1, k)+1}, ' (',int2str(floor((tissueIndicator-1)/k)+1), ') LogLikes. Rate: ', num2str(bestRank)]);
-    legend('Enhancers of cell 1', 'Enhancers of cell 2')
-    subplot(1,2,2);
-    if mean(peaksIndicatorTFPos) > mean(peaksIndicatorTFNeg);
-        matUtils.getAucRoc(peaksIndicatorTFPos, peaksIndicatorTFNeg, true);
-    else
-        matUtils.getAucRoc(peaksIndicatorTFNeg, peaksIndicatorTFPos, true);
-    end
-    % end
 end
 
 % maxPeaks - N x k
@@ -236,6 +231,39 @@ function res = getAbsDiffMean(maxPeaks, overlaps, tissueTypeInd)
     res = res - mean(maxPeaks(overlaps(:, tissueTypeInd) == 0, :), 1);
     res = abs(res);
 end
+function accuricy = trainPredict(XTrain, YTrain, XTest, YTest)
+    mdl = fitcecoc(XTrain, YTrain);
+    YTestEst = predict(mdl, XTest);
+    accuricy = sum(YTestEst == YTest) / length(YTest);
+end
+function checkRegression(overlaps, maxPeaks)
+    testRatio = 0.1;
+    [N, r] = size(overlaps);
+    Y = overlaps > 0;
+    Y = Y * [1:r]';
+    X = maxPeaks;
+    testMask = rand(N,1) < testRatio;
+    XTest = X(testMask, :);
+    XTrain = X(~testMask, :);
+    YTest = Y(testMask, :);
+    YTrain = Y(~testMask, :);
+    chosen = sequentialfs(@trainPredict, X, Y);
+    % trainPredict(, XTest(:, chosen), YTest)
+    mdl = fitcecoc(XTrain(:, chosen), YTrain);
+    [YTestEst, score, cost] = predict(mdl, XTest(:, chosen));
+
+    % [B,dev,stats] = mnrfit(XTrain, YTrain);
+    % pihat = mnrval(B, XTest);
+    figure
+    subplot(1,2,1);imagesc(overlaps(testMask, :)); colorbar;
+    xlabel('Cell Type'); ylabel('Sequences');
+    title('Overlaps (height of H3k27ac peak)');
+    subplot(1,2,2);imagesc(score); colorbar;
+    xlabel('Cell Type'); ylabel('Sequences');
+    title('Estimation');
+
+
+end
 function [overlaps, Xs, maxPeaks] = genData(mergedPeaksMin)
     % N = size(mergedPeaksMin.overlaps, 1);
     % N = 50;
@@ -244,26 +272,20 @@ function [overlaps, Xs, maxPeaks] = genData(mergedPeaksMin)
     % [overlaps, seqInd] = sortrows(mergedPeaksMin.overlaps(1:N,:));
     % overlaps = mergedPeaksMin.overlaps(:, [4, 12]);
 
-    overlaps = mergedPeaksMin.overlaps(:, [1, 2]);
-    % overlaps = overlaps==13;% | overlaps==14;
-    size(overlaps)
+    overlaps = mergedPeaksMin.overlaps(:, :);
     mask = mergedPeaksMin.lengths >= L;
-    size(mask)
     mask = mask & (sum(overlaps > 0, 2) == 1);
+    % mask = mask & rand(size(mask, 1), 1) < 0.005;
     overlaps = overlaps(mask, :);
     Xs = mergedPeaksMin.seqs(mask, :);
 
     [overlaps, seqInd] = sortrows(overlaps);
     Xs = Xs(seqInd, :);
-    size(Xs)
-    size(overlaps)
     % Xs - N x L
     % Xs = mergedPeaksMin.seqs(seqInd(1:N),:);
 
     Xs = cat(2, Xs, fliplr(5-Xs));
     r = size(overlaps, 2); %19
-
-    % mask = rand(size(overlaps, 1), 1)>0.50;
 
     % add background sequences
     % fprintf('Loading non-enhancers\n')
@@ -280,8 +302,8 @@ function [overlaps, Xs, maxPeaks] = genData(mergedPeaksMin)
     % pcPWMp = BaumWelchPWM.preComputePWMp(Xs);
     % maxPeaks = max(pcPWMp, [], 3);
     pcPWMp = BaumWelchPWM.preComputePWMpMax(Xs);
-    [N, k] = size(pcPWMp);
-    maxPeaks = zeros(N, k*k);
+    % [N, k] = size(pcPWMp);
+    % maxPeaks = zeros(N, k*k);
     % for i = 1:k
     %     for j = 1:k
     %         maxPeaks(:, (i-1)*k + j) = pcPWMp(:, i) - pcPWMp(:, j);
@@ -289,19 +311,7 @@ function [overlaps, Xs, maxPeaks] = genData(mergedPeaksMin)
     % end
 
     maxPeaks = pcPWMp;
-
-
-
 end
-
-% function [overlaps, Xs] = genData(mergedPeaksMin)
-%     mask = sum(mergedPeaksMin.overlaps, 2) == 1;
-%     % Xs - N x r
-%     [overlaps, seqInd] = sortrows(mergedPeaksMin.overlaps(mask,:));
-%     % Xs - N x L
-%     Xs = mergedPeaksMin.seqs(seqInd,:);
-% end
-
 
 function [mask] = removeLowHeight(overlaps, r, topPercent)
     fprintf('height\n');

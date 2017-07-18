@@ -96,15 +96,18 @@ mv -f E034-H3K27ac.cleaned.narrowPeak ../processed/E034-H3K27ac.cleaned.narrowPe
 #then in matlab
 
 cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
-peaks.beds2mats()
+peaks.beds2mats(500)
 peaks.mergePeakFiles()
 
 
 load('data/peaks/raw/roadmap/merged/mergedPeaks.mat');
-peaks.minimizeMergePeak(mergedPeaks);
+peaks.minimizeMergePeak(mergedPeaks, 500);
 mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
 %mergedPeaksMin = load('data/peaks/randGenerated/mergedPeaksMinimized.mat');
 mainPWMCor(mergedPeaksMin);
+outputPath = fullfile('data', 'outMainPWMCor.mat');
+load(outputPath)
+tempMain(overlaps, maxPeaks)
 
 
 033

@@ -53,23 +53,28 @@ function pcPWMp = calculate(Xs1H, PWMsRep, lengths, N, k, J, n, L, filePath)
     fprintf('Pre-computing PWM probability on %d sequences\n', size(Xs1H, 1));
     % mask - J x L-J+1 x 1 x k
     mask = repmat([1:J]', [1, L-J+1, 1, k]) > repmat(permute(lengths, [4,3,1,2]), [J,L-J+1,1,1]);
-    pcPWMp = zeros(N, 3 * k);
+    pcPWMp = zeros(N, 4 * k);
     imask = repmat(1-mask, [1,1,n,1]);
     % N x J x n x k
     randBaseDist = permute(sum(sum(Xs1H, 2), 1) ./ (N * L), [1,3,2]);
     % randBaseDist = [0.2573, 0.2433, 0.2426, 0.2568]
     randBaseDist
-    T = 5;
+    T1 = 3;
+    T2 = 5;
+    T3 = 10;
     bgPWMs = imask .* repmat(permute(randBaseDist,[1,3,2]), [J, L-J+1, 1, k]);
     for t = 1:N
         % L-J+1 x k
         H1 = BaumWelchPWM.getPWMpMax(J, PWMsRep, Xs1H(t, :,:), t, mask);
         H0 = BaumWelchPWM.getPWMpMax(J, bgPWMs, Xs1H(t, :,:), t, mask);
         pssm = log(H1 ./ (H0 + eps));
-        [pcPWMp(t, 1:k), pcPWMp(t, k+1:2*k)] = max(pssm, [], 1);
+        [pcPWMp(t, 1:k), ~] = max(pssm, [], 1);
+        % [pcPWMp(t, 1:k), pcPWMp(t, k+1:2*k)] = max(pssm, [], 1);
         pssm(pssm<0) = 0;
-        pssm = sort(pssm, 1);
-        pcPWMp(t, 2*k+1:3*k) = sum(pssm(end-T+1:end), 1);
+        pssmSorted = sort(pssm, 1);
+        pcPWMp(t, 1*k+1:2*k) = sum(pssmSorted(end-T1+1:end, :), 1);
+        pcPWMp(t, 2*k+1:3*k) = sum(pssmSorted(end-T2+1:end, :), 1);
+        pcPWMp(t, 3*k+1:4*k) = sum(pssmSorted(end-T3+1:end, :), 1);
 
         % pcPWMp(:, :, t) = BaumWelchPWM.getPWMp(J, PWMsRep, Xs1H, t, mask);
         fprintf('%d / %d ', t, N);

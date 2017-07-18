@@ -1,0 +1,6 @@
+I took only tissues that had DHS epigenome data from the roadmap data
+I took only single tissue unique enhancers, i.e that are active only at exactly one tissue type
+Then, I found the sum of the best 10 PSSM for each PWM from JASPAR. that is for every sequence I had a "score" per PWM that indicates how much enriched that sequence is with a specific motif.
+I choose the 10 best scores regarding the highest AUCROC, as a basic feature selection
+with these selected features I gave a test dataset "score" using a logistic regression output that was trained on a train dataset to classify if a sequence came from tissue A or B
+What you see is the AUCROC of that score between every two tissue sequences.
