@@ -93,13 +93,25 @@ ls -la
 mv -f E034-H3K27ac.cleaned.narrowPeak ../processed/E034-H3K27ac.cleaned.narrowPeak
 
 
+bed->bigbed
+for f in *.narrowPeak; do
+    ~/Progs/bedops/sort-bed $f>$f.sorted
+    awk '{ sub(/[0-9]{4}/ , "1000", $5) }1' $f.sorted>$f2.sorted
+    ~/Progs/bedToBigBed -type=bed6+4 $f2.sorted ../..//hg19.chrom.sizes ../processed_bigbed/$f.bigbed
+    rm -f $f.sorted
+    rm -f $f2.sorted
+done
+
+
 #then in matlab
 
 cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
 peaks.beds2mats(500)
 peaks.mergePeakFiles()
 
-
+cd ~/cbioDavid/projects/CompGenetics/BaumWelch/src/data/peaks/raw/roadmap/processed
+mkdir ../processed_bigbed
+bash
 load('data/peaks/raw/roadmap/merged/mergedPeaks.mat');
 peaks.minimizeMergePeak(mergedPeaks, 500);
 mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
@@ -108,7 +120,6 @@ mainPWMCor(mergedPeaksMin);
 outputPath = fullfile('data', 'outMainPWMCor.mat');
 load(outputPath)
 tempMain(overlaps, maxPeaks)
-
 
 033
 051
