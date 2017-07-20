@@ -1,7 +1,7 @@
 % load('data/peaks/merged/mergedPeaks.mat');
 % peaks.minimizeMergePeak(mergedPeaks, 500);
 function minimizeMergePeak(mergedPeaks, L)
-    TOP_PEAKS_HEIGHT_PERCENT = 0.25;
+    TOP_PEAKS_HEIGHT_PERCENT = 0.50;
     r = length(mergedPeaks(1).overlap); %19
 
 
@@ -36,8 +36,8 @@ function seqs = trimSeqs(mergedPeaks, L)
         seq = seqsCells{i};
         center = round(length(seq)/2);
         % seqs(i, :) = nt2int(seq(center-L/2+1:center+L/2));
-        start_pos = center- L / 2 +1;
-        end_pos = start_pos + L;
+        start_pos = center - L / 2 +1;
+        end_pos = start_pos + L - 1 ;
         seqs(i, :) = seq(start_pos:end_pos);
     end
 end
