@@ -21,6 +21,7 @@ function [X, Y] = genSequencesJ(theta, params)
                     assert(X(j, t) > 0)
                     t = t + 1;
                     if t > params.L
+                        % sequence too long
                         break
                     end
                 end
@@ -29,6 +30,7 @@ function [X, Y] = genSequencesJ(theta, params)
                 if t >= params.order
                     Etemp = theta.E;
                 else
+                    % first letters
                     Etemp = matUtils.sumDim(theta.E, 2 : 1 + params.order - t);
                 end
                 Xlast = X(j, max(t-params.order+1,1) : t-1);
