@@ -1,0 +1,130 @@
+Downloaded from roadmap site (2013):
+from page http://egg2.wustl.edu/roadmap/web_portal/processed_data.html
+http://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/
+downloaded E109 small intentine and E034 T cells
+H3K27ac, H3K27me3, H3K4me3, H3K4me1
+
+
+HG19 known Genes (2009):
+https://genome.ucsc.edu/cgi-bin/hgTables?hgsid=597259395_zm48O4B23IAG8yLNYr5ekoweAIGe&boolshad.hgta_printCustomTrackHeaders=0&hgta_ctName=tb_knownGene&hgta_ctDesc=table+browser+query+on+knownGene&hgta_ctVis=pack&hgta_ctUrl=&fbQual=whole&fbUpBases=200&fbExonBases=0&fbIntronBases=0&fbDownBases=200&hgta_doGetBed=get+BED
+
+
+Data process
+
+cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src/data/peaks/raw/roadmap
+#HG19 genome size:
+wget -O hg19.chrom.sizes http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/hg19.chrom.sizes
+
+#HG19 known Genes (2009):
+wget -O hg9.KnownGenes.bed "https://genome.ucsc.edu/cgi-bin/hgTables?hgsid=597259395_zm48O4B23IAG8yLNYr5ekoweAIGe&boolshad.hgta_printCustomTrackHeaders=0&hgta_ctName=tb_knownGene&hgta_ctDesc=table+browser+query+on+knownGene&hgta_ctVis=pack&hgta_ctUrl=&fbQual=whole&fbUpBases=200&fbExonBases=0&fbIntronBases=0&fbDownBases=200&hgta_doGetBed=get+BED"
+bedtools slop -i ../hg19.KnownGenes.bed -g ../hg19.chrom.sizes.txt -b 5000 > ../hg19.KnownGenes.slopped.bed
+ls -la ..
+
+
+mkdir bed
+cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src/data/peaks/raw/roadmap/bed
+ls -la
+wget -O E109-H3K27ac.narrowPeak.gz "http://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/E109-H3K27ac.narrowPeak.gz"
+wget -O E109-H3K4me3.narrowPeak.gz "http://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/E109-H3K4me3.narrowPeak.gz"
+wget -O E109-H3K4me1.narrowPeak.gz "http://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/E109-H3K4me1.narrowPeak.gz"
+wget -O E109-H3K27me3.narrowPeak.gz "http://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/E109-H3K27me3.narrowPeak.gz"
+
+wget -O E034-H3K27ac.narrowPeak.gz "http://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/E034-H3K27ac.narrowPeak.gz"
+wget -O E034-H3K4me3.narrowPeak.gz "http://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/E034-H3K4me3.narrowPeak.gz"
+wget -O E034-H3K4me1.narrowPeak.gz "http://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/E034-H3K4me1.narrowPeak.gz"
+wget -O E034-H3K27me3.narrowPeak.gz "http://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/E034-H3K27me3.narrowPeak.gz"
+
+gunzip *.gz
+
+
+#take only H3k27ac peaks with H3k4me1 peaks
+bedtools intersect -a E109-H3K27ac.narrowPeak -b E109-H3K4me1.narrowPeak -wa >E109-H3K27ac.cleaned.narrowPeak
+ls -la
+
+#remove duplicates
+awk '!x[$0]++' E109-H3K27ac.cleaned.narrowPeak > E109-H3K27ac.tmp.narrowPeak
+mv -f E109-H3K27ac.tmp.narrowPeak E109-H3K27ac.cleaned.narrowPeak
+ls -la
+
+
+#remove H3k27me3 peaks
+bedtools subtract -a E109-H3K27ac.cleaned.narrowPeak -b E109-H3K27me3.narrowPeak -A > E109-H3K27ac.tmp.narrowPeak
+mv -f E109-H3K27ac.tmp.narrowPeak E109-H3K27ac.cleaned.narrowPeak
+ls -la
+
+#remove H3k4me3 peaks
+bedtools subtract -a E109-H3K27ac.cleaned.narrowPeak -b E109-H3K4me3.narrowPeak -A > E109-H3K27ac.tmp.narrowPeak
+mv -f E109-H3K27ac.tmp.narrowPeak E109-H3K27ac.cleaned.narrowPeak
+ls -la
+
+#remove padded known genes
+bedtools subtract -a E109-H3K27ac.cleaned.narrowPeak -b ../hg19.KnownGenes.slopped.bed -A > E109-H3K27ac.tmp.narrowPeak
+mv -f E109-H3K27ac.tmp.narrowPeak E109-H3K27ac.cleaned.narrowPeak
+ls -la
+mv -f E109-H3K27ac.cleaned.narrowPeak ../processed/E109-H3K27ac.cleaned.narrowPeak
+
+
+
+#take only H3k27ac peaks with H3k4me1 peaks
+bedtools intersect -a E034-H3K27ac.narrowPeak -b E034-H3K4me1.narrowPeak -wa > E034-H3K27ac.tmp.narrowPeak
+mv -f E034-H3K27ac.tmp.narrowPeak E034-H3K27ac.cleaned.narrowPeak
+ls -la
+
+#remove duplicates
+awk '!x[$0]++' E034-H3K27ac.cleaned.narrowPeak > E034-H3K27ac.tmp.narrowPeak
+mv -f E034-H3K27ac.tmp.narrowPeak E034-H3K27ac.cleaned.narrowPeak
+ls -la
+
+#remove H3k27me3 peaks
+bedtools subtract -a E034-H3K27ac.cleaned.narrowPeak -b E034-H3K27me3.narrowPeak -A > E034-H3K27ac.tmp.narrowPeak
+mv -f E034-H3K27ac.tmp.narrowPeak E034-H3K27ac.cleaned.narrowPeak
+ls -la
+
+#remove H3K4me3 peaks
+bedtools subtract -a E034-H3K27ac.cleaned.narrowPeak -b E034-H3K4me3.narrowPeak -A > E034-H3K27ac.tmp.narrowPeak
+mv -f E034-H3K27ac.tmp.narrowPeak E034-H3K27ac.cleaned.narrowPeak
+ls -la
+
+
+#remove padded known genes
+bedtools subtract -a E034-H3K27ac.cleaned.narrowPeak -b ../hg19.KnownGenes.slopped.bed -A > E034-H3K27ac.tmp.narrowPeak
+mv -f E034-H3K27ac.tmp.narrowPeak E034-H3K27ac.cleaned.narrowPeak
+ls -la
+mv -f E034-H3K27ac.cleaned.narrowPeak ../processed/E034-H3K27ac.cleaned.narrowPeak
+
+
+bed->bigbed
+for f in *.narrowPeak; do
+    ~/Progs/bedops/sort-bed $f>$f.sorted
+    awk '{ sub(/[0-9]{4}/ , "1000", $5) }1' $f.sorted>$f2.sorted
+    ~/Progs/bedToBigBed -type=bed6+4 $f2.sorted ../..//hg19.chrom.sizes ../processed_bigbed/$f.bigbed
+    rm -f $f.sorted
+    rm -f $f2.sorted
+done
+
+
+#then in matlab
+
+cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
+peaks.beds2mats(500)
+peaks.mergePeakFiles()
+
+cd ~/cbioDavid/projects/CompGenetics/BaumWelch/src/data/peaks/raw/roadmap/processed
+mkdir ../processed_bigbed
+bash
+load('data/peaks/raw/roadmap/merged/mergedPeaks.mat');
+peaks.minimizeMergePeak(mergedPeaks, 500);
+mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
+%mergedPeaksMin = load('data/peaks/randGenerated/mergedPeaksMinimized.mat');
+mainPWMCor(mergedPeaksMin);
+outputPath = fullfile('data', 'outMainPWMCor.mat');
+load(outputPath)
+tempMain(overlaps, maxPeaks)
+
+033
+051
+057
+028
+081
+082
+083

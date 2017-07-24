@@ -30,7 +30,7 @@ function [bestTheta, bestLikelihood] = EMJ(Xs, params, pcPWMp, maxIter)
             tic
             % N x m x L
             % N x L
-            [alpha, alphaT, scale] = BaumWelchPWM.forwardAlgJ(Xs, theta, params, pcPWMp);
+            [alphaBase, alphaSub, scale] = BaumWelchPWM.forwardAlgJ(Xs, theta, params, pcPWMp);
             % N x m x L
             beta = BaumWelchPWM.backwardAlgJ(Xs, theta, params, scale, pcPWMp);
             assert(not(any(isnan(theta.T(:)))))
@@ -41,7 +41,7 @@ function [bestTheta, bestLikelihood] = EMJ(Xs, params, pcPWMp, maxIter)
             assert(not(any(isnan(scale(:)))))
             assert(not(any(isnan(beta(:)))))
 
-            [theta, gamma] = updateTheta(theta, params, Xs, indicesHotMap, pcPWMp, alpha, beta, alphaT);
+              [theta, gamma] = updateTheta(theta, params, Xs, indicesHotMap, pcPWMp, alpha, beta, alphaT);
             iterLike(end + 1) = sum(log(scale(:)));
 
             % DRAW
@@ -84,11 +84,12 @@ function drawStatus(theta, params, alpha, beta, gamma)
     % keyboard
 end
 
-function [theta, gamma] = updateTheta(theta, params, Xs, indicesHotMap, pcPWMp, alpha, beta, alphaT)
+function [theta, gamma] = updateTheta(theta, params, Xs, indicesHotMap, pcPWMp, alphaBase, alphaSub, beta, alphaT)
     fprintf('Updating theta\n');
     % N x m x L + J
     % gamma_t(i) = P(y_t = i|x_1:L)
-    gamma = alpha .* beta ./ (repmat(sum(alpha .* beta, 2), [1, params.m, 1]) + eps);
+    % gamma = alphaBase .* beta ./ (repmat(sum(alpha.Base .* beta, 2), [1, params.m, 1]) + eps);
+    gamma = alphaBase .* beta;
     [theta.T, theta.M, theta.F] = updateTMF(theta, params, Xs, alpha, beta, pcPWMp, alphaT);
     theta.E = updateE(gamma, theta, params, indicesHotMap);
     theta.startT = updateStartT(gamma, theta);

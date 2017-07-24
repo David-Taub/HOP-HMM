@@ -1,13 +1,13 @@
 % generates enhancer and non enhancer datasets with overlap table
 % uses ChIP-Seq from multiple tissues from MM9 genome
-% cd '/cs/stud/boogalla/projects/CompGenetics/BaumWelch/src/mm9Genome'
-% genomePath = fullfile('..', 'data', 'Tommy', 'genome_mm9.mat');
+% genomePath = '/cs/cbio/tommy/Enhancers/Data/genome_mm9.mat';
 % load(genomePath);
-% knownGenesPath = fullfile('..', 'data', 'Tommy', 'knownGene.txt');
+% knownGenesPath = '/cs/cbio/tommy/Enhancers/Data/knownGene.txt';
 % [~,genesChr,~,genesStart,genesEnd] = textread(knownGenesPath,'%s%s%s%d%d%*[^\n]','headerlines',0,'delimiter','\t','bufsize',1e6);
-% [uniqueMapped.chr, uniqueMapped.start, uniqueMapped.end, uniqueMapped.isUnique] = textread('crgMapabilityAlign50mer100.bedGraph','%s%d%d%d%*[^\n]','headerlines',0,'delimiter','\t','bufsize',1e6);
+% bedGraph = '/cs/cbio/tommy/Enhancers/Data/crgMapabilityAlign50mer100.bedGraph';
+% [uniqueMapped.chr, uniqueMapped.start, uniqueMapped.end, uniqueMapped.isUnique] = textread(bedGraph, '%s%d%d%d%*[^\n]','headerlines',0,'delimiter','\t','bufsize',1e6);
+% addpath('/cs/stud/boogalla/projects/CompGenetics/BaumWelch/src/data/peaks')
 %  my_overlap_genome(genome, genesChr,genesStart,genesEnd, uniqueMapped)
-
 function my_overlap_genome(genome, genesChr, genesStart, genesEnd, uniqueMapped)
 
     % knownGenesPath = fullfile('../data', 'knownGene.txt');
@@ -21,20 +21,20 @@ function my_overlap_genome(genome, genesChr, genesStart, genesEnd, uniqueMapped)
     P300_BIT = 3;
     K27AC_BIT = 4;
     UNIQUE_BIT = 5;
-
-    basePath = '../data/Tommy';
+    minSeqLength = 500;
+    basePath = '/cs/cbio/tommy/Enhancers/Data';
     chipDirs = getChipDirs(basePath);
     p300FilePaths = getFilePathsByWord(chipDirs, 'P300', basePath);
     K27FilePaths = getFilePathsByWord(chipDirs, 'K27AC', basePath);
 
     chrs = fieldnames(genome);
-    bitMap = buildBitMap(chrs, genome);1
-    % genome = upperLetters(genome, chrs);2
-    % bitMap = markN(genome, chrs, bitMap, N_BIT);3
-    % bitMap = genesMargins(genome, bitMap, genesChr, genesStart, genesEnd, GENE_MARGIN_BIT);4
-    bitMap = addPeaks(bitMap, p300FilePaths, P300_BIT);5
-    bitMap = addPeaks(bitMap, K27FilePaths, K27AC_BIT);6
-    bitMap = addUniqueMapped(bitMap, uniqueMapped, UNIQUE_BIT);7
+    bitMap = buildBitMap(chrs, genome);
+    genome = upperLetters(genome, chrs);
+    bitMap = markN(genome, chrs, bitMap, N_BIT);
+    bitMap = genesMargins(genome, bitMap, genesChr, genesStart, genesEnd, GENE_MARGIN_BIT);
+    bitMap = addPeaks(bitMap, p300FilePaths, P300_BIT);
+    bitMap = addPeaks(bitMap, K27FilePaths, K27AC_BIT);
+    bitMap = addUniqueMapped(bitMap, uniqueMapped, UNIQUE_BIT);
 
     Enhancers = cell(0);
     NEnhancers = cell(0);
@@ -51,23 +51,24 @@ function my_overlap_genome(genome, genesChr, genesStart, genesEnd, uniqueMapped)
                         ~bitget(bitMap.(chrName),P300_BIT) &...
                         ~bitget(bitMap.(chrName),K27AC_BIT) &...
                          bitget(bitMap.(chrName),UNIQUE_BIT);
-
-        Enhancers = buildSequences(EnhancerMask, minSeqLength, chrs, Enhancers);8
-        NEnhancers = buildSequences(NEnhancerMask, minSeqLength, chrs, NEnhancers);9
+        % Enhancers = buildSequences(EnhancerMask, minSeqLength, chrs, Enhancers);
+        % NEnhancers = buildSequences(NEnhancerMask, minSeqLength, chrs, NEnhancers);
+        fprintf('%s, %f %f %f %f %f %f %f \n',  chrName,...
+                    mean(bitget(bitMap.(chrName), N_BIT)),...
+                    mean(bitget(bitMap.(chrName), GENE_MARGIN_BIT)),...
+                    mean(bitget(bitMap.(chrName), P300_BIT)),...
+                    mean(bitget(bitMap.(chrName), K27AC_BIT)),...
+                    mean(bitget(bitMap.(chrName), UNIQUE_BIT)),...
+                    mean(NEnhancerMask),...
+                    mean(EnhancerMask));
     end
-
+    % keyboard
     Enhancers = annotate_peaks(Enhancers);10
     NEnhancers = annotate_peaks(NEnhancers);11
 
     % save('-v7.3','Enhancer_map_mm9.mat','bitMap','chrs','p300','K27');
     save('Enhancers.mat','Enhancers');12
     save('NEnhancers.mat','NEnhancers');13
-    fprintf('%s, %f %f %f %f %f\n',  chrName,...
-                mean(bitget(bitMap.(chrName), N_BIT)),...
-                mean(bitget(bitMap.(chrName), GENE_MARGIN_BIT)),...
-                mean(bitget(bitMap.(chrName), P300_BIT)),...
-                mean(bitget(bitMap.(chrName), K27AC_BIT)),...
-                mean(bitget(bitMap.(chrName), UNIQUE_BIT)));
 
 
 
@@ -154,6 +155,7 @@ function bitMap = buildBitMap(chrs, genome)
         bitMap.(chrName)=uint8(zeros(1,len(i)));
     end
 end
+
 function genome = upperLetters(genome, chrs)
     fprintf('Upper casing chromosome names \n');
     for i=1:length(chrs),
@@ -214,18 +216,15 @@ function bitMap = addPeaks(bitMap, filePaths, bitNum)
     fprintf('peaks marking, %d files \n', length(filePaths));
     for i = 1:length(filePaths)
         A = load(filePaths{i});
-        A
-        keyboard
         fprintf('%s %d\n', filePaths{i}, length(A.S));
         for j = 1:length(A.S)
-            peak = A.S{i};
+            peak = A.S{j};
             bitMap.(peak.chr)(peak.from:peak.to) = bitset(bitMap.(peak.chr)(peak.from:peak.to),bitNum);
         end
     end
 end
-
 function bitMap = addUniqueMapped(bitMap, uniqueMapped, bitNum)
-    fprintf('mark unique loci');
+    fprintf('mark unique loci\n');
     % [uniqueMapped.chr, uniqueMapped.start, uniqueMapped.end, uniqueMapped.isUnique] = textread('crgMapabilityAlign50mer100.bedGraph','%s%d%d%d%*[^\n]','headerlines',0,'delimiter','\t','bufsize',1e6);
     indices=find(uniqueMapped.isUnique==1);
     for i=1:length(indices),
@@ -237,7 +236,8 @@ function bitMap = addUniqueMapped(bitMap, uniqueMapped, bitNum)
 end
 
 function sequences = buildSequences(mask, genome, minSeqLength, chrs, sequences)
-    fprintf('building sequences structs');
+    fprintf('building sequences structs\n');
+    sequences = {};
     for i=1:length(chrs)
         chrName=chrs{i};
         mask = 2*mask-1;
