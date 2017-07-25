@@ -256,6 +256,41 @@ N - number of sequences
 
 \series bold
 \bar under
+Forward Algorithm
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\alpha_{b}-N\times m\times L$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\alpha_{b}(i,j,t)=P()$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\alpha_{s}-N\times m\times L\times k$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\bar under
+Backward Algorithm
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\bar under
 The parameters
 \end_layout
 

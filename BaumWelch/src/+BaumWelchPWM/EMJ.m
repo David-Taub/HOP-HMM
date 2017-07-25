@@ -28,8 +28,8 @@ function [bestTheta, bestLikelihood] = EMJ(Xs, params, pcPWMp, maxIter)
         iterLike = [];
         for it = 1:maxIter;
             tic
-            % N x m x L
-            % N x L
+            % alphaBase - N x m x L
+            % alphaSub - N x m x L+J x k
             [alphaBase, alphaSub, scale] = BaumWelchPWM.forwardAlgJ(Xs, theta, params, pcPWMp);
             % N x m x L
             beta = BaumWelchPWM.backwardAlgJ(Xs, theta, params, scale, pcPWMp);
@@ -37,11 +37,12 @@ function [bestTheta, bestLikelihood] = EMJ(Xs, params, pcPWMp, maxIter)
             assert(not(any(isnan(theta.E(:)))))
             assert(not(any(isnan(theta.M(:)))))
             assert(not(any(isnan(theta.F(:)))))
-            assert(not(any(isnan(alpha(:)))))
+            assert(not(any(isnan(alphaBase(:)))))
+            assert(not(any(isnan(alphaSub(:)))))
             assert(not(any(isnan(scale(:)))))
             assert(not(any(isnan(beta(:)))))
 
-              [theta, gamma] = updateTheta(theta, params, Xs, indicesHotMap, pcPWMp, alpha, beta, alphaT);
+            [theta, gamma] = updateTheta(theta, params, Xs, indicesHotMap, pcPWMp, alphaBase, alphaSub, beta);
             iterLike(end + 1) = sum(log(scale(:)));
 
             % DRAW
@@ -84,13 +85,13 @@ function drawStatus(theta, params, alpha, beta, gamma)
     % keyboard
 end
 
-function [theta, gamma] = updateTheta(theta, params, Xs, indicesHotMap, pcPWMp, alphaBase, alphaSub, beta, alphaT)
+function [theta, gamma] = updateTheta(theta, params, Xs, indicesHotMap, pcPWMp, alphaBase, alphaSub, beta)
     fprintf('Updating theta\n');
     % N x m x L + J
     % gamma_t(i) = P(y_t = i|x_1:L)
     % gamma = alphaBase .* beta ./ (repmat(sum(alpha.Base .* beta, 2), [1, params.m, 1]) + eps);
     gamma = alphaBase .* beta;
-    [theta.T, theta.M, theta.F] = updateTMF(theta, params, Xs, alpha, beta, pcPWMp, alphaT);
+    [theta.T, theta.M, theta.F] = updateTMF(theta, params, Xs, pcPWMp, alphaBase, alphaSub, beta);
     theta.E = updateE(gamma, theta, params, indicesHotMap);
     theta.startT = updateStartT(gamma, theta);
     % T bound trick
@@ -126,7 +127,7 @@ end
 % alpha - N x m x L + J
 % beta - N x m x L + J
 % lengths - k x 1
-function [newT, newM, newF] = updateTMF(theta, params, Xs, alpha, beta, pcPWMp, alphaT)
+function [newT, newM, newF] = updateTMF((theta, params, Xs, pcPWMp, alphaBase, alphaSub, beta)
 
     TCorrection = zeros(params.m, params.m);
     MCorrection = zeros(params.m, params.k);

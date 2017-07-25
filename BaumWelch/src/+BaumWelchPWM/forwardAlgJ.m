@@ -12,7 +12,8 @@
 %        shorter than j, it is aligned to the end of the 3rd dimension.
 % lengths - m x 1 length of each motif in the PWM matrix. J = max(lengths)
 % Xs - N x L emission variables
-
+% alphaBase - N x m x L
+% alphaSub - N x m x L+J x k
 function [alphaBase, alphaSub, scale] = forwardAlgJ(Xs, theta, params, pcPWMp)
     % alpha(N, i, j) P(y_s_j=i| x_s_1, ...x_s_j, startT, T, PWMs)
     % scale(N, i) = P(x_s_i| startT, T, PWMs)
@@ -55,7 +56,7 @@ function [alphaBase, alphaSub, scale] = forwardAlgJ(Xs, theta, params, pcPWMp)
         else
             Tf = theta.T;
             Tf(eye(m)==1) = Tf(eye(m)==1) .* (1-theta.F);
-            newAlphaBase = (alphaBase(:, :, t - 1) * Tf + sum(alphaSub(:,:,t-1,:), 4)) .* Ep;
+            newAlphaBase = (alphaBase(:, :, t-1) * Tf + sum(alphaSub(:,:,t-1,:), 4)) .* Ep;
         end
 
 
