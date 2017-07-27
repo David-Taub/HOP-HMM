@@ -1,6 +1,6 @@
-mainGenSequences();
-load(fullfile('data', 'dummyDNA.mat'));
-pcPWMp = BaumWelchPWM.preComputePWMp(X);
+% mainGenSequences();
+% load(fullfile('data', 'dummyDNA.mat'));
+% pcPWMp = BaumWelchPWM.preComputePWMp(X);
 % mainPWM(pcPWMp, X, Y);
 
 % pcPWMp - N x k x L-1

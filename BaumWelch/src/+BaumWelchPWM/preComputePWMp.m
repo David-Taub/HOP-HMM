@@ -55,6 +55,9 @@ function pcPWMp = calculate(Xs1H, PWMsRep, lengths, N, k, J, n, L)
     % N x J x n x k
     bgPWMs = imask .* repmat(permute([0.2573, 0.2433, 0.2426, 0.2568],[1,3,2]), [N, J, 1, k]);
     for t = 1:L
+        % TODO: I should remove the H0 thing. Also, this value should include the scale - and it might be hard
+        % Instead I should change the FA and BA to log scale.
+        % see http://bozeman.genome.washington.edu/compbio/mbt599_2006/hmm_scaling_revised.pdf
         H1 = BaumWelchPWM.getPWMp(J, PWMsRep, Xs1H, t, mask);
         H0 = BaumWelchPWM.getPWMp(J, bgPWMs, Xs1H, t, mask);
         pcPWMp(:, :, t) = log(H1 ./ (H0 + eps));
