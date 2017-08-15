@@ -15,6 +15,7 @@ function [theta] = genThetaJ(params)
     theta.E = rand([params.m, ones(1, params.order) .* params.n]);
     theta.E = bsxfun(@times, theta.E, 1 ./ sum(theta.E, params.order+1));
     [theta.PWMs, theta.lengths] = BaumWelchPWM.PWMs();
-    load(fullfile('data', 'dummyDNA.mat'));
+    % load(fullfile('data', 'dummyDNA.mat'));
 end
+
 

@@ -22,6 +22,8 @@ function out = preComputePWMpAux(PWMsRep, Xs1H, lengths)
     [~, L, ~] = size(Xs1H);
     L = L - J;
     PC_PWM_PROBABILITY_FILE = fullfile('data', 'precomputation', 'pcPWMp.mat');
+    size(pcPWMp)
+    [N, k, L]
     if ~isempty(pcPWMp) && all(size(pcPWMp) == [N, k, L])
         % in memory
         out = pcPWMp;
@@ -30,8 +32,10 @@ function out = preComputePWMpAux(PWMsRep, Xs1H, lengths)
     if exist(PC_PWM_PROBABILITY_FILE, 'file') == 2
         fprintf('Loading pre-computed PWM from %s...\n', PC_PWM_PROBABILITY_FILE);
         load(PC_PWM_PROBABILITY_FILE, 'pcPWMp');
+        size(pcPWMp)
+        [N, k, L]
         if all(size(pcPWMp) == [N, k, L])
-            fprintf('data size mismatch, recalculating\n');
+            fprintf('data size match\n');
             % loaded from file, same size
             out = pcPWMp;
             return;
@@ -40,9 +44,11 @@ function out = preComputePWMpAux(PWMsRep, Xs1H, lengths)
         end
     end
     pcPWMp = calculate(Xs1H, PWMsRep, lengths, N, k, J, n, L);
-    fprintf('Saving if file...\n');
+    fprintf('Saving data in file %s...\n', PC_PWM_PROBABILITY_FILE);
     save(PC_PWM_PROBABILITY_FILE, 'pcPWMp', '-v7.3');
     fprintf('Done saving.\n');
+    size(pcPWMp)
+
     out = pcPWMp;
 end
 

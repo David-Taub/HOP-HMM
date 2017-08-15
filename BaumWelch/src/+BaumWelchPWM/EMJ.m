@@ -1,63 +1,4 @@
-% psi - N x m x k x L
-% pcPWMp - N x k x L
-% alpha - N x m x L
-% beta - N x m x L
-function psi = makePsi(theta, params, alpha, beta, pcPWMpRep, Xs)
-    kronMN = kron(1:params.m, ones(1, params.N));
-    matSize = [params.m , params.n * ones(1, params.order)];
-    % Ret - N x m x L
-    Eps = BaumWelchPWM.getEp3d(theta, params, Xs, 1:params.L, kronMN, matSize);
 
-    psi = repmat(permute(alpha, [1, 2, 4, 3]), [1, 1, params.k, 1]);
-    psi  = psi + repmat(theta.F', [params.N, 1, params.k, params.L]);
-    psi  = psi + repmat(premute(theta.G, [3, 1, 2]), [params.N, 1, 1, params.L]);
-    psi  = psi + repmat(permute(Eps, [1, 2, 4, 3]), [1, 1, params.k, 1]);
-    for l = 1:params.k
-        psi(:, :, l, :) = psi(:, :, l, :) + cat(3, beta(:, :, params.lengths(l):end), -inf(params.N, params.m, params.lengths(l)));
-    end
-end
-
-
-% alpha - N x m x L
-% beta - N x m x L
-% psi - N x m x k x L
-% pX - N x 1
-% gamma - N x m x L
-function gamma = makeGamma(theta, params, alpha, beta, pX)
-    gamma = alpha + beta;
-    gamma = logMatSum(gamma, 2);
-    gamma = gamma - repmat(pX, [1, params.m, params.m, params.L]);
-end
-
-
-% alpha - N x m x L
-% beta - N x m x L
-% pX - N x 1
-% xi - N x m x m x L
-function xi = makeXi(theta, params, alpha, beta, Xs, pX)
-    kronMN = kron(1:params.m, ones(1, params.N));
-    matSize = [params.m , params.n * ones(1, params.order)];
-    % Eps - N x m x L
-    Eps = BaumWelchPWM.getEp3d(theta, params, Xs, 1:params.L, kronMN, matSize);
-    compF = log(1-exp(theta.F));
-    % xi - N x m x m x L
-    xi = repmat(permute(alpha, [1, 2, 4, 3]), [1, 1, params.m, 1]);
-    xi  = xi + repmat(compF, [params.N, 1, params.m, L]);
-    xi  = xi + repmat(permute(theta.T, [3, 1, 2]), [params.N, 1, 1, params.L]);
-    xi  = xi + repmat(premute(theta.G, [3, 1, 2]), [params.N, 1, 1, params.L]);
-    xi  = xi + repmat(premute(Eps, [1, 4, 2, 3]), [1, params.m, 1, 1]);
-    betaMoved = cat(3, beta(:, :, 2:end), -inf(params.N, params.m, 1))
-    xi  = xi + repmat(permute(betaMoved, [1, 4, 2, 3]), [1, params.m, 1, 1]);
-    xi  = xi - repmat(pX, [1, params.m, params.m, params.L]);
-end
-
-% pX - N x 1
-function pX = makePx(theta, params, alpha, beta)
-    % N x m x L
-    pX = alpha + beta;
-    pX = logMatSum(pX, 2);
-    pX = pX(:, 1, 1)
-end
 function [bestTheta, bestLikelihood] = EMJ(Xs, params, pcPWMp, maxIter)
     % PWMs - k x n x J emission matrix of m Jaspar PWMs with length J
     %        true length of i'th PWM< J and given in lengths(i) if a PWM is
@@ -74,7 +15,7 @@ function [bestTheta, bestLikelihood] = EMJ(Xs, params, pcPWMp, maxIter)
     LIKELIHOOD_THRESHOLD = 10 ^ -4;
     bestLikelihood = -Inf;
     repeat = 1;
-    pcPWMpRep = repmat(premute(pcPWMp, [1, 4, 2, 3]), [1, params.m, 1, 1]);
+    pcPWMpRep = repmat(permute(pcPWMp, [1, 4, 2, 3]), [1, params.m, 1, 1]);
 
     % N x L -order + 1
     indices = reshape(matUtils.getIndices1D(Xs, params.order), [params.L-params.order+1, params.N]).';
@@ -83,8 +24,8 @@ function [bestTheta, bestLikelihood] = EMJ(Xs, params, pcPWMp, maxIter)
     % N x L  x maxEIndex
     indicesHotMap = cat(2, false(params.N, params.order-1+params.J, params.n ^ params.order), indicesHotMap);
     theta = BaumWelchPWM.genThetaJ(params);
-    drawStatus(theta, params, 0,0,0);
-    iterLike = [];
+    % drawStatus(theta, params, 0,0,0);
+t    iterLike = [];
     for it = 1:maxIter;
         tic
         % alphaBase - N x m x L
@@ -126,6 +67,67 @@ function [bestTheta, bestLikelihood] = EMJ(Xs, params, pcPWMp, maxIter)
             bestTheta.gamma = gamma;
         end
     end % end of iterations loop
+end
+
+% psi - N x m x k x L
+% pcPWMp - N x k x L
+% alpha - N x m x L
+% beta - N x m x L
+function psi = makePsi(theta, params, alpha, beta, pcPWMpRep, Xs)
+    kronMN = kron(1:params.m, ones(1, params.N));
+    matSize = [params.m , params.n * ones(1, params.order)];
+    % Ret - N x m x L
+    Eps = BaumWelchPWM.getEp3d(theta, params, Xs, 1:params.L, kronMN, matSize);
+
+    psi = repmat(permute(alpha, [1, 2, 4, 3]), [1, 1, params.k, 1]);
+    psi  = psi + repmat(theta.F', [params.N, 1, params.k, params.L]);
+    psi  = psi + repmat(permute(theta.G, [3, 1, 2]), [params.N, 1, 1, params.L]);
+    psi  = psi + repmat(permute(Eps, [1, 2, 4, 3]), [1, 1, params.k, 1]);
+    for l = 1:params.k
+        psi(:, :, l, :) = psi(:, :, l, :) + cat(3, beta(:, :, params.lengths(l):end), -inf(params.N, params.m, params.lengths(l)));
+    end
+end
+
+
+% alpha - N x m x L
+% beta - N x m x L
+% psi - N x m x k x L
+% pX - N x 1
+% gamma - N x m x L
+function gamma = makeGamma(theta, params, alpha, beta, pX)
+    gamma = alpha + beta;
+    gamma = logMatSum(gamma, 2);
+    gamma = gamma - repmat(pX, [1, params.m, params.m, params.L]);
+end
+
+
+% alpha - N x m x L
+% beta - N x m x L
+% pX - N x 1
+% xi - N x m x m x L
+function xi = makeXi(theta, params, alpha, beta, Xs, pX)
+    kronMN = kron(1:params.m, ones(1, params.N));
+    matSize = [params.m , params.n * ones(1, params.order)];
+    % Eps - N x m x L
+    Eps = BaumWelchPWM.getEp3d(theta, params, Xs, 1:params.L, kronMN, matSize);
+    compF = log(1-exp(theta.F));
+    % xi - N x m x m x L
+    xi = repmat(permute(alpha, [1, 2, 4, 3]), [1, 1, params.m, 1]);
+    xi  = xi + repmat(compF, [params.N, 1, params.m, L]);
+    xi  = xi + repmat(permute(theta.T, [3, 1, 2]), [params.N, 1, 1, params.L]);
+    xi  = xi + repmat(permute(theta.G, [3, 1, 2]), [params.N, 1, 1, params.L]);
+    xi  = xi + repmat(permute(Eps, [1, 4, 2, 3]), [1, params.m, 1, 1]);
+    betaMoved = cat(3, beta(:, :, 2:end), -inf(params.N, params.m, 1))
+    xi  = xi + repmat(permute(betaMoved, [1, 4, 2, 3]), [1, params.m, 1, 1]);
+    xi  = xi - repmat(pX, [1, params.m, params.m, params.L]);
+end
+
+% pX - N x 1
+function pX = makePx(theta, params, alpha, beta)
+    % N x m x L
+    pX = alpha + beta;
+    pX = logMatSum(pX, 2);
+    pX = pX(:, 1, 1)
 end
 
 function drawStatus(theta, params, alpha, beta, gamma)
