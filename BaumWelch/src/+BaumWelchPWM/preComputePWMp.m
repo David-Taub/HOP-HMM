@@ -14,7 +14,7 @@ end
 
 % calculating the probability of each position in the sequences
 % to be emitted by each PWM
-% PWMsRep - NxJxnxk
+% PWMsRep - N x J x n x k
 function out = preComputePWMpAux(PWMsRep, Xs1H, lengths)
     % pcPWMp - N x k x L
     persistent pcPWMp
@@ -46,6 +46,10 @@ function out = preComputePWMpAux(PWMsRep, Xs1H, lengths)
     out = pcPWMp;
 end
 
+% PWMsRep - N x J x n x k
+% Xs1H - N x L + J x n
+% lengths - k x 1
+% pcPWMp - N x k x L
 function pcPWMp = calculate(Xs1H, PWMsRep, lengths, N, k, J, n, L)
     fprintf('Pre-computing PWM probability on %d sequences\n', size(Xs1H, 1));
     mask = repmat(1:J, [N, 1, k]) > repmat(permute(lengths, [1,3,2]), [N,J,1]);

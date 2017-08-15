@@ -6,8 +6,8 @@ function [theta] = genThetaJ(params)
     theta.T = eye(params.m) + params.tEpsilon * rand(params.m);
     theta.T = bsxfun(@times, theta.T, 1 ./ sum(theta.T, 2));
 
-    theta.M = rand(params.m, params.k);
-    theta.M = bsxfun(@times, theta.M, 1 ./ sum(theta.M, 2));
+    theta.G = rand(params.m, params.k);
+    theta.G = bsxfun(@times, theta.G, 1 ./ sum(theta.G, 2));
 
     theta.F = rand(params.m, 1);
 

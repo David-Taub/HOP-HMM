@@ -7,6 +7,7 @@ function res = getPWMp(J, PWMsRep, Xs1H, t, mask)
     res = PWMsRep .* repmat(lastJXs1H, [1,1,1,k]);
     res = sum(res, 3);
     res = res + mask;
-    res = prod(res, 2);
+    % res = prod(res, 2);
+    res = sum(log(res), 2);
     res = permute(res, [1,4,2,3]);
 end
