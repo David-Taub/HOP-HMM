@@ -11,16 +11,17 @@ function beta = backwardAlgJ(Xs, theta, params, pcPWMp)
     kronMN = kron(1:params.m, ones(1, params.N));
     matSize = [params.m , params.n * ones(1, params.order)];
     % zero appended to handle pwm steps in the end of the sequence (first iterations) which have probability 0
-    beta = cat(3, zero(params.N, params.m, params.L), -inf(params.N, params.m, params.J));
+    beta = cat(3, zeros(params.N, params.m, params.L), -inf(params.N, params.m, params.J));
     % performance optimization
     Gs = repmat(shiftdim(theta.G, -1), [params.N, 1, 1]);
-    compF = log(1-exp(theta.F));
+    Fs = repmat(theta.F.', [params.N, 1, params.k]);
+    compF = repmat(log(1-exp(theta.F))', [params.N, 1]);
     expT = exp(theta.T.');
     for t = params.L : -1 : 2
         fprintf('Backward algorithm %.2f%%\r', 100 * (params.L-t+2) / params.L);
-        % N x m
         % note: this peeks at part of the sequences before t, which might be problematic
         % note 25.07.17: Tommy thinks it is fine - and I see no reason it will affect non-margins areas.
+        % N x m
         Ep = BaumWelchPWM.getEp(theta, params, Xs, t, kronMN, matSize);
 
         % No  1 2 PWM2 PWM2 2 1
@@ -31,14 +32,15 @@ function beta = backwardAlgJ(Xs, theta, params, pcPWMp)
         % No  1 1 PWM2 PWM2 1 1
 
         % N x m x k
-        EpReturn = BaumWelchPWM.getEp3d(theta, params, Xs, t+params.lengths, kronMN, matSize);
+        EpReturn = BaumWelchPWM.getEp3d(theta, params, Xs, t+theta.lengths, kronMN, matSize);
         % N x m x k
-        betaSlice = beta(:, :, t+params.lengths);
+        betaSlice = beta(:, :, t+theta.lengths);
         % N x m x k
-        subStateStep = BaumWelchPWM.PWMstep(betaSlice, Gs, repmat(t, [params.k, 1]), pcPWMp, EpReturn, theta.F);
-        % N x m x k
+        subStateStep = BaumWelchPWM.PWMstep(betaSlice, Gs, repmat(t, [params.k, 1]), pcPWMp, EpReturn, Fs);
+        % N x m x k -> N x m
+        subStateStep = matUtils.logMatSum(subStateStep, 3);
+        % N x m
         baseStateStep = log(exp(Ep + beta(:, :, t)) * expT') + compF;
-        keyboard
         beta(:,:,t-1) = matUtils.logAdd(baseStateStep, subStateStep);
     end
     beta = beta(:, :, 1:params.L);

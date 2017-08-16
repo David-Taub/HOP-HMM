@@ -3,8 +3,11 @@
 % Ret - N x m x length(ts)
 function ret = getEp3d(theta, params, Xs, ts, kronMN, matSize)
     % N x m x length(ts)
-    ret = zeros(params.N, params.m, length(ts));
+    ret = -inf(params.N, params.m, length(ts));
     for i = 1:length(ts)
+        if ts(i)>params.L
+            continue;
+        end
         ret(:, :, i) = BaumWelchPWM.getEp(theta, params, Xs, ts(i), kronMN, matSize);
     end
 end
