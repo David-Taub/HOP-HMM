@@ -25,7 +25,7 @@ function [bestTheta, bestLikelihood] = EMJ(Xs, params, pcPWMp, maxIter)
     indicesHotMap = cat(2, false(params.N, params.order-1+params.J, params.n ^ params.order), indicesHotMap);
     theta = BaumWelchPWM.genThetaJ(params);
     % drawStatus(theta, params, 0,0,0);
-t    iterLike = [];
+    iterLike = [];
     for it = 1:maxIter;
         tic
         % alphaBase - N x m x L
@@ -50,7 +50,7 @@ t    iterLike = [];
         theta.G = updateG(psi);
         % [theta, gamma] = updateTheta(theta, params, Xs, indicesHotMap, pcPWMp, alphaBase, alphaSub, beta);
         % iterLike(end + 1) = sum(log(scale(:)));
-        iterLike(end+1) = sum(pX, 1)
+        iterLike(end+1) = sum(pX, 1);
         % DRAW
         drawStatus(theta, params, alpha, beta, gamma);
 

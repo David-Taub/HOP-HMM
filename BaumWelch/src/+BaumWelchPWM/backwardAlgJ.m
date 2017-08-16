@@ -34,9 +34,11 @@ function beta = backwardAlgJ(Xs, theta, params, pcPWMp)
         EpReturn = BaumWelchPWM.getEp3d(theta, params, Xs, t+params.lengths, kronMN, matSize);
         % N x m x k
         betaSlice = beta(:, :, t+params.lengths);
-        % N x m
+        % N x m x k
         subStateStep = BaumWelchPWM.PWMstep(betaSlice, Gs, repmat(t, [params.k, 1]), pcPWMp, EpReturn, theta.F);
+        % N x m x k
         baseStateStep = log(exp(Ep + beta(:, :, t)) * expT') + compF;
+        keyboard
         beta(:,:,t-1) = matUtils.logAdd(baseStateStep, subStateStep);
     end
     beta = beta(:, :, 1:params.L);

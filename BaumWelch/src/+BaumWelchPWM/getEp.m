@@ -1,3 +1,4 @@
+% Ep - N x m
 function Ep = getEp(theta, params, Xs, t, kronMN, matSize)
     if t < params.order
         E = matUtils.logMatSumDims(theta.E, 2 : 1 + params.order - t);
