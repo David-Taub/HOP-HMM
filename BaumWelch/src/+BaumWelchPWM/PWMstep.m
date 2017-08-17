@@ -10,7 +10,7 @@ function ret = PWMstep(slice, Gs, ts, pcPWMp, Eps, Fs)
     % probability to get into the PWM submode
     % N x m x k
     % in the forward algorithm we ask for t - lengths, and this is a fix for it to be 0
-    subZeroMask = ts<1;
+    subZeroMask = ts<1 | ts>size(pcPWMp, 3);
     ts(subZeroMask) = 1;
     subscripts = [repmat(1:N, [1, k]); kron([1:k; ts'], ones(1, N))];
     % subscripts has all Nxk indices in [1:N, 1:k, ts(1:k)]

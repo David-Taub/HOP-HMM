@@ -18,7 +18,7 @@ function beta = backwardAlgJ(Xs, theta, params, pcPWMp)
     compF = repmat(log(1-exp(theta.F))', [params.N, 1]);
     expT = exp(theta.T.');
     for t = params.L : -1 : 2
-        fprintf('Backward algorithm %.2f%%\r', 100 * (params.L-t+2) / params.L);
+        % fprintf('Backward algorithm %.2f%%\r', 100 * (params.L-t+2) / params.L);
         % note: this peeks at part of the sequences before t, which might be problematic
         % note 25.07.17: Tommy thinks it is fine - and I see no reason it will affect non-margins areas.
         % N x m

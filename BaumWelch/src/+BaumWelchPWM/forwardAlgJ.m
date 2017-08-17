@@ -24,6 +24,7 @@ function alpha = forwardAlgJ(Xs, theta, params, pcPWMp)
     % the k+1 index is for base modes, 1 to k are for sub modes
     alpha = -inf(params.N, params.m, params.L + params.J);
     % N x m
+    keyboard
     Ep = BaumWelchPWM.getEp(theta, params, Xs, 1, kronMN, matSize);
     alpha(:, :, params.J+1) = (repmat(theta.startT', [params.N, 1]) + Ep);
 
@@ -33,7 +34,7 @@ function alpha = forwardAlgJ(Xs, theta, params, pcPWMp)
     % BBBBSSS???? - hidden
     % XXXX123???? - emission
     for t = 2:params.L
-        fprintf('Forward algorithm %.2f%%\r', 100*t/params.L);
+        % fprintf('Forward algorithm %.2f%%\r', 100*t/params.L);
         % N x m
         Ep = BaumWelchPWM.getEp(theta, params, Xs, t, kronMN, matSize);
         % N x m
