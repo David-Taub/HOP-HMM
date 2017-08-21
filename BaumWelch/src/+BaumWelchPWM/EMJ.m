@@ -35,6 +35,7 @@ function [bestTheta, bestLikelihood] = EMJ(Xs, params, pcPWMp, maxIter)
         alpha = BaumWelchPWM.forwardAlgJ(Xs, theta, params, pcPWMp);
         fprintf('Calculating beta...\n')
         beta = BaumWelchPWM.backwardAlgJ(Xs, theta, params, pcPWMp);
+        % N x 1
         pX = makePx(alpha, beta);
         fprintf('Calculating Xi...\n')
         xi = makeXi(theta, params, alpha, beta, Xs, pX);
@@ -42,12 +43,6 @@ function [bestTheta, bestLikelihood] = EMJ(Xs, params, pcPWMp, maxIter)
         gamma = makeGamma(params, alpha, beta, pX);
         fprintf('Calculating Psi...\n')
         % psi = makePsi(theta, params, alpha, beta, Xs);
-        assert(not(any(isnan(theta.T(:)))))
-        assert(not(any(isnan(theta.E(:)))))
-        assert(not(any(isnan(theta.G(:)))))
-        assert(not(any(isnan(theta.F(:)))))
-        assert(not(any(isnan(alpha(:)))))
-        assert(not(any(isnan(beta(:)))))
 
         theta.E = updateE(gamma, params, indicesHotMap);
         theta.T = updateT(xi, gamma, params);
@@ -57,9 +52,15 @@ function [bestTheta, bestLikelihood] = EMJ(Xs, params, pcPWMp, maxIter)
         theta.G = updateG(alpha, beta, Xs, params, theta);
         % [theta, gamma] = updateTheta(theta, params, Xs, indicesHotMap, pcPWMp, alphaBase, alphaSub, beta);
         % iterLike(end + 1) = sum(log(scale(:)));
-        iterLike(end+1) = sum(pX, 1);
+        iterLike(end+1) = matUtils.logMatSum(pX, 1);
         % DRAW
         % drawStatus(theta, params, alpha, beta, gamma);
+        assert(not(any(isnan(theta.T(:)))))
+        assert(not(any(isnan(theta.E(:)))))
+        assert(not(any(isnan(theta.G(:)))))
+        assert(not(any(isnan(theta.F(:)))))
+        assert(not(any(isnan(alpha(:)))))
+        assert(not(any(isnan(beta(:)))))
 
 
         fprintf('Likelihood in iteration %d is %.2f (%.2f seconds)\n', length(iterLike), iterLike(end), toc());
@@ -124,8 +125,8 @@ function xi = makeXi(theta, params, alpha, beta, Xs, pX)
     xi  = xi + repmat(permute(Eps, [1, 4, 2, 3]), [1, params.m, 1, 1]);
     betaMoved = cat(3, beta(:, :, 2:end), -inf(params.N, params.m, 1));
     xi  = xi + repmat(permute(betaMoved, [1, 4, 2, 3]), [1, params.m, 1, 1]);
-    keyboard
     xi  = xi - repmat(pX, [1, params.m, params.m, params.L]);
+
 end
 
 % pX - N x 1
@@ -180,14 +181,15 @@ function newE = updateE(gamma, params, indicesHotMap)
     newE = -inf([params.m, params.n * ones(1, params.order)]);
     for i = 1:(params.n ^ params.order)
         % m x N x L -> m x 1
-        newE(:, i) = sum(exp(perGamma(:, indicesHotMap(:,:,i))), 2);
+        newE(:, i) = matUtils.logMatSum(perGamma(:, indicesHotMap(:,:,i)), 2);
     end
+    newE = exp(newE);
     newE = log(bsxfun(@times, newE, 1 ./ sum(newE, params.order+1)));
 end
 
 % gamma - N x m x L
 function newStartT = updateStartT(gamma)
-    newStartT = sum(exp(gamma(:,:,1)), 1);
+    newStartT = exp(matUtils.logMatSum(gamma(:,:,1), 1));
     % probability distribution normalization
     newStartT = log(newStartT / sum(newStartT, 2)).';
 end
@@ -196,30 +198,31 @@ end
 % gamma - N x m x L
 % newT - m x m
 function newT = updateT(xi, gamma, params)
-    newT = permute(sum(sum(exp(xi), 1), 4), [2,3,1]);
-    newT = newT ./ repmat(sum(sum(exp(gamma), 1), 3), [params.m,1]).';
-    newT = log(bsxfun(@times, newT, 1 ./ sum(newT, 2)));
-    newT = Tbound(params, newT);
+    newT = permute(matUtils.logMatSum(matUtils.logMatSum(xi, 1), 4), [2,3,1]);
+    newT = newT - repmat(matUtils.logMatSum(matUtils.logMatSum(gamma, 1), 3), [params.m,1]).';
+    newT = exp(newT);
+    newT = bsxfun(@times, newT, 1 ./ sum(newT, 2));
+    newT = log(Tbound(params, newT));
 end
 
 function newG = updateG(alpha, beta, Xs, params, theta)
     kronMN = kron(1:params.m, ones(1, params.N));
     matSize = [params.m , params.n * ones(1, params.order)];
     beta = cat(3, beta, -inf(params.N, params.m, params.J + 1));
-    newG = zeros(1, params.m, params.k);
+    newG = -infzeros(1, params.m, params.k);
     for t = 1:params.L
         % N x m x k
         Ep = BaumWelchPWM.getEp(theta, params, Xs, t, kronMN, matSize);
         newPsi = repmat(alpha(:,:,t), [1, 1, params.k]);
-        newPsi  = newPsi + repmat(theta.F', [params.N, 1, params.k]);
-        newPsi  = newPsi + repmat(permute(theta.G, [3, 1, 2]), [params.N, 1, 1]);
-        newPsi  = newPsi + repmat(Ep, [1, 1, params.k]);
+        newPsi = newPsi + repmat(theta.F', [params.N, 1, params.k]);
+        newPsi = newPsi + repmat(permute(theta.G, [3, 1, 2]), [params.N, 1, 1]);
+        newPsi = newPsi + repmat(Ep, [1, 1, params.k]);
         for l = 1:params.k
             newPsi(:, :, l) = newPsi(:, :, l) + beta(:, :, t+theta.lengths(l)+1);
         end
-        newG = sum(exp(newPsi), 1);
+        newG = matUtils.logAdd(newG, matUtils.logMatSum(newPsi, 1));
     end
-    newG = permute(newG, [2,3,1]);
+    newG = exp(permute(newG, [2,3,1]));
     newG = log(bsxfun(@times, newG, 1 ./ sum(newG, 2)));
 end
 % psi - N x m x k x L
@@ -232,16 +235,11 @@ end
 
 % newT - m x m
 function newT = Tbound(params, T)
-    x = 0.5 * params.tEpsilon * (params.m-1);
     for i = 1 : params.m
-        T(i, :) = (T(i, :) * x) / ((sum(T(i, :),2)-T(i, i)) * (1 + x));
-        T(i, i) = 1 / (x + 1);
-        % for j = 1 : params.m
-        %     if i ~= j && T(i,j) > params.tEpsilon
-        %         T(i, i) = T(i, i) + (T(i, j) - params.tEpsilon);
-        %         T(i, j) = params.tEpsilon;
-        %     end
-        % end
+        if T(i, i) < 1-params.tEpsilon;
+            T(i, :) = T(i, :) * (params.tEpsilon / (1-T(i, i)));
+            T(i, i) = 1-params.tEpsilon;
+        end
     end
     newT = T;
 end

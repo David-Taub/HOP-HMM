@@ -4,7 +4,7 @@
 % pcPWMp - N x k x L-1 - precomputed likelihood of the sequences and the PWM.
 %            at place i, j, t we have the likelihood of seq_i at t:t+J, with PWM j
 % Eps - N x m x k
-% res - N x m x k
+% res - N x m
 function ret = PWMstep(slice, Gs, ts, pcPWMp, Eps, Fs)
     [N, m, k] = size(slice);
     % probability to get into the PWM submode
@@ -25,6 +25,7 @@ function ret = PWMstep(slice, Gs, ts, pcPWMp, Eps, Fs)
     ret = ret + Fs;
     ret = ret + tsPWMps;
     ret = ret + Eps;
-    ret = matUtils.logMatSum(ret, 3);
     ret(:,:,subZeroMask) = -inf;
+    % N x m x k -> N x m
+    ret = matUtils.logMatSum(ret, 3);
 end
