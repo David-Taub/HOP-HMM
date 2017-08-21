@@ -22,7 +22,7 @@ function S = arraySlice(A, I, d)
     s1 = size(A); s2 = size(A); s3 = size(A);
     s1(d) = I-1;
     s2(d) = 1;
-    s3(d) = s3(d)-I-1;
+    s3(d) = s3(d)-I;
     S = zeros(s2);
-    dS(:) = A(cat(d, false(s1), true(s2), false(s3)));
+    S(:) = A(cat(d, false(s1), true(s2), false(s3)));
 end
