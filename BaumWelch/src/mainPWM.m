@@ -10,7 +10,7 @@
 % pcPWMp - N x k x L-1
 function mainPWM(mergedPeaksMin)
     [Ys, Xs, pcPWMp] = genData(mergedPeaksMin);
-    params.m = 5;
+    params.m = 2;
     params.order = 3;
     params.n = max(Xs(:));
     [params.N, params.L] = size(Xs);

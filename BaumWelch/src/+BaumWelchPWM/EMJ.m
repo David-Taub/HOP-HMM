@@ -54,7 +54,7 @@ function [bestTheta, bestLikelihood] = EMJ(Xs, params, pcPWMp, maxIter)
         % iterLike(end + 1) = sum(log(scale(:)));
         iterLike(end+1) = matUtils.logMatSum(pX, 1);
         % DRAW
-        % drawStatus(theta, params, alpha, beta, gamma);
+        drawStatus(theta, params, alpha, beta, gamma);
         assert(not(any(isnan(theta.T(:)))))
         assert(not(any(isnan(theta.E(:)))))
         assert(not(any(isnan(theta.G(:)))))
@@ -137,21 +137,25 @@ function pX = makePx(alpha, beta)
     pX = pX(:, 1, 1);
 end
 
+% psi - N x m x k x L
+% pX - N x 1
+% gamma - N x m x L
 function drawStatus(theta, params, alpha, beta, gamma)
-    [~, YsEst] = max(gamma(:,:,1:end), [], 2);
-    subplot(2,3,1);imagesc(permute(YsEst, [1,3,2])); colorbar;
+    YsEst = mean(gamma, 3);
+    YsEst = YsEst(:, 1);
+    subplot(2,2,1); scatter(1:params.N, YsEst); colorbar;
     title('gamma')
-    [~, YsEst] = max(alpha(:,:,1:end), [], 2);
-    subplot(2,3,2);imagesc(permute(YsEst, [1,3,2])); colorbar;
-    title('alpha')
-    [~, YsEst] = max(beta(:,:,1:end), [], 2);
-    subplot(2,3,3);imagesc(permute(YsEst, [1,3,2])); colorbar;
-    title('beta')
-    subplot(2,3,4);imagesc(theta.F); colorbar;
+    % [~, YsEst] = max(alpha, [], 2);
+    % subplot(2,3,2);imagesc(permute(YsEst, [1,3,2])); colorbar;
+    % % title('alpha')
+    % [~, YsEst] = max(beta(:,:,1:end), [], 2);
+    % subplot(2,3,3);imagesc(permute(YsEst, [1,3,2])); colorbar;
+    % title('beta')
+    subplot(2,2,2);imagesc(theta.F); colorbar;
     title('F')
-    subplot(2,3,5);imagesc(theta.T); colorbar;
+    subplot(2,2,3);imagesc(theta.T); colorbar;
     title('T')
-    subplot(2,3,6);imagesc(theta.G); colorbar;
+    subplot(2,2,4);imagesc(theta.G); colorbar;
     title('M')
     drawnow
 end
@@ -209,7 +213,7 @@ function newG = updateG(alpha, beta, Xs, params, theta)
     kronMN = kron(1:params.m, ones(1, params.N));
     matSize = [params.m , params.n * ones(1, params.order)];
     beta = cat(3, beta, -inf(params.N, params.m, params.J + 1));
-    newG = -infzeros(1, params.m, params.k);
+    newG = -inf(1, params.m, params.k);
     for t = 1:params.L
         % N x m x k
         Ep = BaumWelchPWM.getEp(theta, params, Xs, t, kronMN, matSize);
