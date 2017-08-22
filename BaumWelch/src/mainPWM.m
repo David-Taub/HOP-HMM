@@ -10,8 +10,8 @@
 % pcPWMp - N x k x L-1
 function mainPWM(mergedPeaksMin)
     [Ys, Xs, pcPWMp] = genData(mergedPeaksMin);
-    params.m = 2;
-    params.order = 3;
+    params.m = 1;
+    params.order = 2;
     params.n = max(Xs(:));
     [params.N, params.L] = size(Xs);
     params.J = size(BaumWelchPWM.PWMs(), 3);
@@ -28,7 +28,7 @@ end
 function [Ys, Xs, pcPWMp] = genData(mergedPeaksMin)
     L = size(mergedPeaksMin.seqs, 2);
     % overlaps = mergedPeaksMin.overlaps(:, :);
-    overlaps = mergedPeaksMin.overlaps(:, [1, 2]);
+    overlaps = mergedPeaksMin.overlaps(:, [1]);
     mask = mergedPeaksMin.lengths >= L;
     mask = mask & (sum(overlaps > 0, 2) == 1);
     mask = mask & mod(1:size(mask,1), 15).' == 0;
