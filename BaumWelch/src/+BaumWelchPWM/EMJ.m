@@ -43,12 +43,15 @@ function [bestTheta, bestLikelihood] = EMJ(Xs, params, pcPWMp, maxIter)
         gamma = makeGamma(params, alpha, beta, pX);
         fprintf('Calculating Psi...\n')
         % psi = makePsi(theta, params, alpha, beta, Xs);
-
+        fprintf('Update E\n');
         theta.E = updateE(gamma, params, indicesHotMap);
+        fprintf('Update T\n');
         theta.T = updateT(xi, gamma, params);
 
+        fprintf('Update startT\n');
         theta.startT = updateStartT(gamma);
         % theta.G = updateG(psi);
+        fprintf('Update G\n');
         theta.G = updateG(alpha, beta, Xs, params, theta);
         % [theta, gamma] = updateTheta(theta, params, Xs, indicesHotMap, pcPWMp, alphaBase, alphaSub, beta);
         % iterLike(end + 1) = sum(log(scale(:)));
@@ -179,7 +182,6 @@ end
 % E - m x 4 x 4 x 4 x ... x 4 (order times)
 function newE = updateE(gamma, params, indicesHotMap)
     %  m x N x L + J
-    fprintf('Update E\n');
     % m x N x L
     perGamma = permute(gamma, [2,1,3]);
     newE = -inf([params.m, params.n * ones(1, params.order)]);
