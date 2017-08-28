@@ -7,15 +7,16 @@ function [X, Y] = genSequencesJ(theta, params)
     E = exp(theta.E);
     T = exp(theta.T);
     G = exp(theta.G);
-    PWMs = theta.PWMs
-    lengths = theta.lengths
+    PWMs = theta.PWMs;
+    lengths = theta.lengths;
     startT = exp(theta.startT);
     F = exp(theta.F);
     for j = 1:params.N
         % first letter
-        Ep = matUtils.sumDim(E, 2 : params.order);
+        Etemp = matUtils.sumDim(E, 2 : params.order);
+        Etemp = bsxfun(@times, Etemp, 1 ./ sum(Etemp, length(size(Etemp))));
         Y(j, 1) = smrnd(startT);
-        X(j, 1) = smrnd(Ep(Y(j, 1), :)');
+        X(j, 1) = smrnd(Etemp(Y(j, 1), :)');
         t = 2;
         while t <= params.L
             yt = Y(j, t-1);
@@ -23,50 +24,55 @@ function [X, Y] = genSequencesJ(theta, params)
                 % PWM step
                 motif = smrnd(G(yt, :)');
                 for i=1:lengths(motif)
-                    X(j, t) = smrnd(PWMs(motif, :, i)');
+                    fprintf('.')
+                    X(j, t) = smrnd(exp(PWMs(motif, :, i))');
                     Y(j, t) = yt;
-                    assert(X(j, t) > 0)
+                    assert(X(j, t) > 0);
                     t = t + 1;
                     if t > params.L
                         % sequence too long
                         break
                     end
                     if t < params.L
-                        X(j, t) = emitBaseState(params, E, t, ty);
+                        X(j, t) = emitBaseState(X, params, E, t, yt);
+                        Y(j, t) = yt;
                     end
                     t = t + 1;
                 end
             else
+                fprintf('o');
                 ytNext = smrnd(T(yt, :)');
-                X(j, t) = emitBaseState(params, E, t, ytNext);
+                X(j, t) = emitBaseState(X, params, E, t, ytNext);
+                Y(j, t) = ytNext;
                 t = t + 1;
             end
         end
+        fprintf('\n');
     end
 end
 
 % emit one letter from base state
-function ret = emitBaseState(params, E, t, j)
+function ret = emitBaseState(X, params, E, t, j)
     % regular E step
     if t >= params.order
         Etemp = E;
     else
         % first letters
         Etemp = matUtils.sumDim(E, 2 : 1 + params.order - t);
+        Etemp = bsxfun(@times, Etemp, 1 ./ sum(Etemp, length(size(Etemp))));
     end
     Xlast = X(j, max(t-params.order+1,1) : t-1);
     % params.order x params.n
     subscripts = [repmat([j ; Xlast'], [1, params.n]); 1:params.n];
     indices = matUtils.matSub2ind(size(Etemp), subscripts);
-    ret = smrnd(Etemp(indices)')
+    ret = smrnd(Etemp(indices)');
 end
 
 
 % P - N x 1
 function ret = smrnd(P)
     assert(size(P, 2) == 1);
-    assert(abs(sum(P) - 1) < 0.01)
-    P = P ./ sum(P, 1);
+    assert(abs(sum(P,1) - 1) < 0.01);
     ret = find(mnrnd(1, P));
 end
 

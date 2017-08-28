@@ -53,7 +53,6 @@ end
 % lengths - k x 1
 % pcPWMp - N x k x L
 function pcPWMp = calculate(Xs1H, N, k, J, L)
-    % TODO 17.08.2017 ####### returns NAN
     fprintf('Pre-computing PWM probability on %d sequences\n', size(Xs1H, 1));
     [PWMs, lengths] = BaumWelchPWM.PWMs();
     PWMsRep = permute(repmat(PWMs, [1, 1, 1, N]), [4, 3, 2, 1]);
