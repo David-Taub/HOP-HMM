@@ -1,4 +1,4 @@
-% mainGenSequences(200, 300);
+% mainGenSequences(20, 50);
 function [X, Y] = mainGenSequences(N, L)
     params.m = 1;
     params.order = 3;
@@ -9,7 +9,7 @@ function [X, Y] = mainGenSequences(N, L)
     [params.k, params.n, params.J] = size(PWMs);
 
     [originalTheta] = BaumWelchPWM.genThetaJ(params);
-    originalTheta.G(1,:) = log([[0.5, 0.5], zeros(1, params.k-2)]);
+    originalTheta.G(1,:) = log([ones(1,3)/3, zeros(1, params.k-3)]);
     [X, Y] = BaumWelchPWM.genSequencesJ(originalTheta, params);
 
     overlaps = ones(params.N, 1);

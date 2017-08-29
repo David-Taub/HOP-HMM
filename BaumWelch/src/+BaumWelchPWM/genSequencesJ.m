@@ -7,7 +7,7 @@ function [X, Y] = genSequencesJ(theta, params)
     E = exp(theta.E);
     T = exp(theta.T);
     G = exp(theta.G);
-    PWMs = theta.PWMs;
+    PWMs = exp(theta.PWMs);
     lengths = theta.lengths;
     startT = exp(theta.startT);
     F = exp(theta.F);
@@ -25,7 +25,7 @@ function [X, Y] = genSequencesJ(theta, params)
                 motif = smrnd(G(yt, :)');
                 for i=1:lengths(motif)
                     fprintf('.')
-                    X(j, t) = smrnd(exp(PWMs(motif, :, i))');
+                    X(j, t) = smrnd(PWMs(motif, :, i)');
                     Y(j, t) = yt;
                     assert(X(j, t) > 0);
                     t = t + 1;
@@ -33,14 +33,14 @@ function [X, Y] = genSequencesJ(theta, params)
                         % sequence too long
                         break
                     end
-                    if t < params.L
-                        X(j, t) = emitBaseState(X, params, E, t, yt);
-                        Y(j, t) = yt;
-                    end
+                end
+                if t <= params.L
+                    X(j, t) = emitBaseState(X, params, E, t, yt);
+                    Y(j, t) = yt;
                     t = t + 1;
                 end
             else
-                fprintf('o');
+
                 ytNext = smrnd(T(yt, :)');
                 X(j, t) = emitBaseState(X, params, E, t, ytNext);
                 Y(j, t) = ytNext;
@@ -53,6 +53,7 @@ end
 
 % emit one letter from base state
 function ret = emitBaseState(X, params, E, t, j)
+    fprintf('o');
     % regular E step
     if t >= params.order
         Etemp = E;

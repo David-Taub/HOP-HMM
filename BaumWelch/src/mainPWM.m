@@ -3,13 +3,15 @@
 % pcPWMp = BaumWelchPWM.preComputePWMp(X);
 % mainPWM(pcPWMp, X, Y);
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
-% mergedPeaksMin = load('data/dummyDNA.mat');
 % mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
+% mainGenSequences(20, 50);
+% mergedPeaksMin = load('data/dummyDNA.mat');
 % mainPWM(mergedPeaksMin);
 
 
 function mainPWM(mergedPeaksMin)
-    [test, train] = genData(mergedPeaksMin);
+    close all;
+    [test, train] = preprocess(mergedPeaksMin);
     trainParams.m = 1;
     trainParams.order = 3;
     trainParams.n = max(train.X(:));
@@ -23,7 +25,7 @@ function mainPWM(mergedPeaksMin)
         X = train.X(train.Y==i, :);
         pcPWMp = train.pcPWMp(train.Y==i, :, :);
         trainParams.N = sum(train.Y==i, 1);
-        [theta, ~] = learn(X, trainParams, pcPWMp, mergedPeaksMin.originalTheta, 5);
+        [theta, ~] = learn(X, trainParams, pcPWMp, mergedPeaksMin.originalTheta, 3);
         thetas(i) = theta;
     end
     % merge thetas
@@ -39,7 +41,7 @@ function mainPWM(mergedPeaksMin)
     % test
     % N x m x L + J
     figure
-    subplot(1,2,1);
+    subplot(1, 2, 1);
     scatter(1:length(testTheta.E(:)), testTheta.E(:));
     hold on;
     scatter(1:length(mergedPeaksMin.originalTheta.E(:)), mergedPeaksMin.originalTheta.E(:))
@@ -56,34 +58,39 @@ function mainPWM(mergedPeaksMin)
     alpha2 = BaumWelchPWM.EM.forwardAlgJ(train.X, t2, trainParams, train.pcPWMp);
     beta2 = BaumWelchPWM.EM.backwardAlgJ(train.X, t2, trainParams, train.pcPWMp);
     pX2 = BaumWelchPWM.EM.makePx(alpha2, beta2);
-    t2.E = t1.E;
-    alpha3 = BaumWelchPWM.EM.forwardAlgJ(train.X, t2, trainParams, train.pcPWMp);
-    beta3 = BaumWelchPWM.EM.backwardAlgJ(train.X, t2, trainParams, train.pcPWMp);
-    pX3 = BaumWelchPWM.EM.makePx(alpha3, beta3);
+    % t2.E = t1.E;
+    % alpha3 = BaumWelchPWM.EM.forwardAlgJ(train.X, t2, trainParams, train.pcPWMp);
+    % beta3 = BaumWelchPWM.EM.backwardAlgJ(train.X, t2, trainParams, train.pcPWMp);
+    % pX3 = BaumWelchPWM.EM.makePx(alpha3, beta3);
     figure
-    subplot(1,3,1);
+    subplot(1,4,1);
     hold on
     plot(permute(alpha1(1,1,:), [3,2,1]))
     plot(permute(alpha2(1,1,:), [3,2,1]))
-    plot(permute(alpha3(1,1,:), [3,2,1]))
-    legend('1','2','3')
-    subplot(1,3,2);
+    % plot(permute(alpha3(1,1,:), [3,2,1]))
+    legend('Original Theta','Trained Theta')
+    subplot(1,4,2);
     hold on
     plot(permute(beta1(1,1,:), [3,2,1]))
     plot(permute(beta2(1,1,:), [3,2,1]))
-    plot(permute(beta3(1,1,:), [3,2,1]))
-    legend('1','2','3')
-    subplot(1,3,3);
+    % plot(permute(beta3(1,1,:), [3,2,1]))
+    legend('Original Theta','Trained Theta')
+    % legend('1','2','3')
+    subplot(1,4,3);
     hold on
-    scatter(1:length(pX1)*3, [pX1;pX2;pX3]);
-    keyboard
-
+    scatter(1:length(pX1), pX1);
+    scatter(length(pX1)+1:length(pX1)*2, pX2);
+    legend('Original Theta','Trained Theta')
+    subplot(1,4,4);
+    plot(permute(alpha1(1,1,:)+beta1(1,1,:), [3,2,1]))
+    plot(permute(alpha2(1,1,:)+beta2(1,1,:), [3,2,1]))
+    legend('Original Theta','Trained Theta')
     classify(testTheta, testParams, test.X, test.pcPWMp, test.Y);
-    BaumWelchPWM.EM.forwardAlgJ(X, theta, params, pcPWMp)
     % [~, YsEst] = max(theta.gamma(:,:,1:end-params.J), [], 10);
     % YsEst = permute(YsEst, [1,3,2]);
     % calcError(Y(:)', YsEst(:)');
 end
+
 function classify(theta, params, X, pcPWMp, Y)
     fprintf('Calculating alpha...\n')
     alpha = BaumWelchPWM.EM.forwardAlgJ(X, theta, params, pcPWMp);
@@ -94,16 +101,15 @@ function classify(theta, params, X, pcPWMp, Y)
     fprintf('Calculating Gamma...\n')
     % gamma - N x m x L
     gamma = BaumWelchPWM.EM.makeGamma(params, alpha, beta, pX);
-    keyboard
 end
 
-function [test, train] = genData(mergedPeaksMin)
+function [test, train] = preprocess(mergedPeaksMin)
     L = size(mergedPeaksMin.seqs, 2);
     overlaps = mergedPeaksMin.overlaps(:, :);
     % overlaps = mergedPeaksMin.overlaps(:, [1,2,3,4]);
     mask = mergedPeaksMin.lengths >= L;
     mask = mask & (sum(overlaps > 0, 2) == 1);
-    mask = mask & mod(1:size(mask,1), 15).' == 0;
+    % mask = mask & mod(1:size(mask,1), 15).' == 0;
     overlaps = overlaps(mask, :);
     X = mergedPeaksMin.seqs(mask, :);
     Y = (overlaps > 0) * (1:size(overlaps, 2))';

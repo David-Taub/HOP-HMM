@@ -10,6 +10,7 @@ function [theta] = genThetaJ(params)
     theta.G = log(bsxfun(@times, theta.G, 1 ./ sum(theta.G, 2)));
 
     theta.F = log(ones(params.m, 1) * 0.005);
+    % theta.F = log(ones(params.m, 1) * eps);
 
     % m x n
     theta.E = rand([params.m, ones(1, params.order) .* params.n]);

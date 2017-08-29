@@ -38,7 +38,7 @@ function alpha = forwardAlgJ(X, theta, params, pcPWMp)
         Ep = BaumWelchPWM.EM.getEp(theta, params, X, t, kronMN, matSize);
         % N x m
         % N x m * m x m
-        baseStateStep = matUtils.logMatProd(alpha(:, :, params.J+t-1) + compF, expT) + Ep;
+        baseStateStep = matUtils.logMatProd(alpha(:, :, params.J+t-1) + compF, theta.T) + Ep;
         % N x m x k
         alphaSlice = alpha(:, :, params.J+t-theta.lengths-1);
         % N x m

@@ -16,7 +16,6 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, initTheta, maxIter
     bestLikelihood = -Inf;
     repeat = 1;
     pcPWMpRep = repmat(permute(pcPWMp, [1, 4, 2, 3]), [1, params.m, 1, 1]);
-    keyboard
     % N x L -order + 1
     indices = reshape(matUtils.getIndices1D(X, params.order), [params.L-params.order+1, params.N]).';
     % N x L -order + 1 x maxEIndex
@@ -82,6 +81,7 @@ end
 % pX - N x 1
 % gamma - N x m x L
 function drawStatus(theta, params, alpha, beta, gamma)
+    figure
     YsEst = mean(gamma, 3);
     YsEst = YsEst(:, 1);
     subplot(2,2,1); scatter(1:params.N, YsEst); colorbar;
@@ -92,12 +92,14 @@ function drawStatus(theta, params, alpha, beta, gamma)
     % [~, YsEst] = max(beta(:,:,1:end), [], 2);
     % subplot(2,3,3);imagesc(permute(YsEst, [1,3,2])); colorbar;
     % title('beta')
+    subplot(2,2,1);imagesc(theta.E(:,:)); colorbar;
+    title('E')
     subplot(2,2,2);imagesc(theta.F); colorbar;
     title('F')
     subplot(2,2,3);imagesc(theta.T); colorbar;
     title('T')
     subplot(2,2,4);imagesc(theta.G); colorbar;
-    title('M')
+    title('G')
     drawnow
 end
 
@@ -136,6 +138,7 @@ function newStartT = updateStartT(gamma)
     newStartT = exp(matUtils.logMatSum(gamma(:,:,1), 1));
     % probability distribution normalization
     newStartT = log(newStartT / sum(newStartT, 2)).';
+    assert(size(newStartT, 1) >0)
 end
 
 % xi - N x m x m x L
