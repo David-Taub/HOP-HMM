@@ -16,9 +16,9 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, initTheta, maxIter
     bestLikelihood = -Inf;
     repeat = 1;
     pcPWMpRep = repmat(permute(pcPWMp, [1, 4, 2, 3]), [1, params.m, 1, 1]);
-    % N x L -order + 1
-    indices = reshape(matUtils.getIndices1D(X, params.order), [params.L-params.order+1, params.N]).';
-    % N x L -order + 1 x maxEIndex
+    % N x L - order + 1
+    indices = reshape(matUtils.getIndices1D(X, params.order, params.n), [params.L-params.order+1, params.N]).';
+    % N x L - order + 1 x maxEIndex
     indicesHotMap = matUtils.mat23Dmat(indices, params.n ^ params.order);
     % N x L  x maxEIndex
     indicesHotMap = cat(2, false(params.N, params.order-1, params.n ^ params.order), indicesHotMap);
@@ -52,7 +52,7 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, initTheta, maxIter
         theta.G = updateG(alpha, beta, X, params, theta);
         iterLike(end+1) = matUtils.logMatSum(pX, 1);
         % DRAW
-        drawStatus(theta, params, alpha, beta, gamma);
+        drawStatus(theta, params, alpha, beta, gamma, pX, xi);
         assert(not(any(isnan(theta.T(:)))))
         assert(not(any(isnan(theta.E(:)))))
         assert(not(any(isnan(theta.G(:)))))
@@ -80,7 +80,7 @@ end
 % psi - N x m x k x L
 % pX - N x 1
 % gamma - N x m x L
-function drawStatus(theta, params, alpha, beta, gamma)
+function drawStatus(theta, params, alpha, beta, gamma, pX, xi)
     figure
     YsEst = mean(gamma, 3);
     YsEst = YsEst(:, 1);
@@ -92,64 +92,57 @@ function drawStatus(theta, params, alpha, beta, gamma)
     % [~, YsEst] = max(beta(:,:,1:end), [], 2);
     % subplot(2,3,3);imagesc(permute(YsEst, [1,3,2])); colorbar;
     % title('beta')
-    subplot(2,2,1);imagesc(theta.E(:,:)); colorbar;
+    subplot(2,2,1);plot(theta.E(:));
     title('E')
-    subplot(2,2,2);imagesc(theta.F); colorbar;
-    title('F')
-    subplot(2,2,3);imagesc(theta.T); colorbar;
-    title('T')
-    subplot(2,2,4);imagesc(theta.G); colorbar;
+    subplot(2,2,2);
+    hold on;
+    plot(permute(alpha(1,1,:), [3,2,1]));
+    plot(permute(alpha(2,1,:), [3,2,1]));
+    plot(permute(alpha(3,1,:), [3,2,1]));
+    plot(permute(alpha(4,1,:), [3,2,1]));
+    plot(permute(beta(1,1,:), [3,2,1]));
+    plot(permute(beta(2,1,:), [3,2,1]));
+    plot(permute(beta(3,1,:), [3,2,1]));
+    plot(permute(beta(4,1,:), [3,2,1]));
+    title('alpha vs beta')
+    subplot(2,2,3);plot(pX);
+    title('px')
+    subplot(2,2,4);plot(theta.G);
     title('G')
     drawnow
 end
 
-% function [theta, gamma] = updateTheta(theta, params, X, indicesHotMap, pcPWMp, alphaBase, alphaSub, beta)
-%     fprintf('Updating theta\n');
-%     % N x m x L + J
-%     % gamma_t(i) = P(y_t = i|x_1:L)
-%     % gamma = alphaBase .* beta ./ (repmat(sum(alpha.Base .* beta, 2), [1, params.m, 1]) + eps);
-%     gamma = alphaBase .* beta;
-%     [theta.T, theta.G, theta.F] = updateTGF(theta, params, X, pcPWMp, alphaBase, alphaSub, beta);
-%     theta.E = updateE(gamma, params, indicesHotMap);
-%     theta.startT = updateStartT(gamma);
-%     theta.T = updateT(gamma, xi);
-%     % T bound trick
-%     theta.T = Tbound(theta, params);
-% end
-
-% indicesHotMap - N x L + J x maxEIndex
+% indicesHotMap - N x L x maxEIndex
 % gamma - N x m x L
 % E - m x 4 x 4 x 4 x ... x 4 (order times)
 function newE = updateE(gamma, params, indicesHotMap)
     %  m x N x L + J
     % m x N x L
-    perGamma = permute(gamma, [2,1,3]);
+    perGamma = permute(gamma, [2, 1, 3]);
     newE = -inf([params.m, params.n * ones(1, params.order)]);
     for i = 1:(params.n ^ params.order)
         % m x N x L -> m x 1
-        newE(:, i) = matUtils.logMatSum(perGamma(:, indicesHotMap(:,:,i)), 2);
+        newE(:, i) = matUtils.logMatSum(perGamma(:, indicesHotMap(:, :, i)), 2);
     end
-    newE = exp(newE);
-    newE = log(bsxfun(@times, newE, 1 ./ sum(newE, params.order+1)));
+    newE = matUtils.logMakeDistribution(newE);
 end
+
 
 % gamma - N x m x L
 function newStartT = updateStartT(gamma)
-    newStartT = exp(matUtils.logMatSum(gamma(:,:,1), 1));
+    newStartT = matUtils.logMakeDistribution(matUtils.logMatSum(gamma(:, :, 1), 1))';
     % probability distribution normalization
-    newStartT = log(newStartT / sum(newStartT, 2)).';
-    assert(size(newStartT, 1) >0)
+    assert(size(newStartT, 1) > 0)
 end
 
 % xi - N x m x m x L
 % gamma - N x m x L
 % newT - m x m
 function newT = updateT(xi, gamma, params)
-    newT = permute(matUtils.logMatSum(matUtils.logMatSum(xi, 1), 4), [2,3,1]);
+    newT = permute(matUtils.logMatSum(matUtils.logMatSum(xi, 1), 4), [2, 3, 1]);
     newT = newT - repmat(matUtils.logMatSum(matUtils.logMatSum(gamma, 1), 3), [params.m,1]).';
-    newT = exp(newT);
-    newT = bsxfun(@times, newT, 1 ./ sum(newT, 2));
-    newT = log(Tbound(params, newT));
+    newT = matUtils.logMakeDistribution(newT);
+    newT = log(Tbound(params, exp(newT)));
 end
 
 function newG = updateG(alpha, beta, X, params, theta)
@@ -169,8 +162,7 @@ function newG = updateG(alpha, beta, X, params, theta)
         end
         newG = matUtils.logAdd(newG, matUtils.logMatSum(newPsi, 1));
     end
-    newG = exp(permute(newG, [2,3,1]));
-    newG = log(bsxfun(@times, newG, 1 ./ sum(newG, 2)));
+    newG = matUtils.logMakeDistribution(permute(newG, [2,3,1]));
 end
 % psi - N x m x k x L
 % gamma - N x m x L

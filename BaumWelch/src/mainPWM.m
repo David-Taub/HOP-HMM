@@ -4,8 +4,7 @@
 % mainPWM(pcPWMp, X, Y);
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
 % mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
-% mainGenSequences(20, 50);
-% mergedPeaksMin = load('data/dummyDNA.mat');
+% mergedPeaksMin = mainGenSequences(20, 50);;
 % mainPWM(mergedPeaksMin);
 
 
@@ -25,7 +24,8 @@ function mainPWM(mergedPeaksMin)
         X = train.X(train.Y==i, :);
         pcPWMp = train.pcPWMp(train.Y==i, :, :);
         trainParams.N = sum(train.Y==i, 1);
-        [theta, ~] = learn(X, trainParams, pcPWMp, mergedPeaksMin.originalTheta, 3);
+        trainTheta = BaumWelchPWM.genThetaUni(trainParams);
+        [theta, ~] = learn(X, trainParams, pcPWMp, trainTheta, 3);
         thetas(i) = theta;
     end
     % merge thetas
@@ -83,8 +83,10 @@ function mainPWM(mergedPeaksMin)
     legend('Original Theta','Trained Theta')
     subplot(1,4,4);
     plot(permute(alpha1(1,1,:)+beta1(1,1,:), [3,2,1]))
+    hold on
     plot(permute(alpha2(1,1,:)+beta2(1,1,:), [3,2,1]))
-    legend('Original Theta','Trained Theta')
+    legend('Original Theta','Trained Theta');
+    keyboard
     classify(testTheta, testParams, test.X, test.pcPWMp, test.Y);
     % [~, YsEst] = max(theta.gamma(:,:,1:end-params.J), [], 10);
     % YsEst = permute(YsEst, [1,3,2]);

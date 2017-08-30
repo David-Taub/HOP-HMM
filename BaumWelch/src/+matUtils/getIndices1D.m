@@ -1,9 +1,9 @@
 
 % seqs - N x L
 % indices - (L - order + 1) * N  x 1 (numbers from 1 to order) the indices in E
-function indices = getIndices1D(seqs, order)
+function indices = getIndices1D(seqs, order, n)
     [N, L] = size(seqs);
-    matSize = 4 * ones(1, order);
+    matSize = n * ones(1, order);
 
     k = zeros(N, L - order + 1, order);
     for i = 1 : order
