@@ -7,9 +7,7 @@
 % n - number of alphabet (4, i.e. ACGT)
 % startT - m x 1 probabilities of first states
 % theta.E - m x n x n x ... x n (order times) alphabet emission probability matrix
-% PWMsRep - N x J x n x k: N replication of emission matrix of m Jaspar PWMs with length J
-%        true length of i'th PWM< J and given in lengths(i) if a PWM is
-%        shorter than j, it is aligned to the end of the 3rd dimension.
+% pcPWMp - N x k x L
 % lengths - m x 1 length of each motif in the PWM matrix. J = max(lengths)
 % X - N x L emission variables
 % alpha - N x m x L

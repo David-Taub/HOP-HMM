@@ -1,7 +1,7 @@
 % slice - N x m x k
 % Gs - m x k transfer probability matrix between mode bases and their PWM modes
 % ts - k x 1 indices from which the motifs starts in all N seqs and m states
-% pcPWMp - N x k x L-1 - precomputed likelihood of the sequences and the PWM.
+% pcPWMp - N x k x L - precomputed likelihood of the sequences and the PWM.
 %            at place i, j, t we have the likelihood of seq_i at t:t+J, with PWM j
 % Eps - N x m x k
 % res - N x m

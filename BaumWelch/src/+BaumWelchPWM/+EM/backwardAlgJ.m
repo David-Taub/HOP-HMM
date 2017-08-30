@@ -4,6 +4,7 @@
 % startT - m x 1 probabilities of first states
 % theta.E - m x n emission matrix E_ij means x_t = j | y_t = i
 % X - N x L emission variables
+% pcPWMp - N x k x L
 % beta - N x m x L
 % beta(N, i, t) P( x_s_t+1, ...x_s_k| y_s_t=i, startT, T, E)
 function beta = backwardAlgJ(X, theta, params, pcPWMp)

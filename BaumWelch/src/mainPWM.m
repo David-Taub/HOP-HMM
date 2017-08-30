@@ -4,14 +4,14 @@
 % mainPWM(pcPWMp, X, Y);
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
 % mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
-% mergedPeaksMin = mainGenSequences(20, 50);;
+% mergedPeaksMin = mainGenSequences(20, 50, 2);
 % mainPWM(mergedPeaksMin);
 
 
 function mainPWM(mergedPeaksMin)
     close all;
     [test, train] = preprocess(mergedPeaksMin);
-    trainParams.m = 1;
+    trainParams.m = 2;
     trainParams.order = 3;
     trainParams.n = max(train.X(:));
     [trainParams.N, trainParams.L] = size(train.X);
@@ -24,8 +24,9 @@ function mainPWM(mergedPeaksMin)
         X = train.X(train.Y==i, :);
         pcPWMp = train.pcPWMp(train.Y==i, :, :);
         trainParams.N = sum(train.Y==i, 1);
+        trainParams.m = 1;
         trainTheta = BaumWelchPWM.genThetaUni(trainParams);
-        [theta, ~] = learn(X, trainParams, pcPWMp, trainTheta, 3);
+        [theta, ~] = learn(X, trainParams, pcPWMp, trainTheta, 4);
         thetas(i) = theta;
     end
     % merge thetas
@@ -33,7 +34,7 @@ function mainPWM(mergedPeaksMin)
     testParams.m = length(unique(test.Y));
     testParams.N = size(test.X, 1);
     testTheta = BaumWelchPWM.genThetaJ(testParams);
-    for i=unique(train.Y);
+    for i=1:max(train.Y, [], 1);
         testTheta.E(i,:) = thetas(i).E(:);
         testTheta.G(i,:) = thetas(i).G(:);
         testTheta.F(i) = thetas(i).F;
@@ -50,50 +51,51 @@ function mainPWM(mergedPeaksMin)
     hold on;
     scatter(1:length(mergedPeaksMin.originalTheta.G(:)), mergedPeaksMin.originalTheta.G(:))
 
-    t1 = mergedPeaksMin.originalTheta;
-    t2 = testTheta;
-    alpha1 = BaumWelchPWM.EM.forwardAlgJ(train.X, t1, trainParams, train.pcPWMp);
-    beta1 = BaumWelchPWM.EM.backwardAlgJ(train.X, t1, trainParams, train.pcPWMp);
-    pX1 = BaumWelchPWM.EM.makePx(alpha1, beta1);
-    alpha2 = BaumWelchPWM.EM.forwardAlgJ(train.X, t2, trainParams, train.pcPWMp);
-    beta2 = BaumWelchPWM.EM.backwardAlgJ(train.X, t2, trainParams, train.pcPWMp);
-    pX2 = BaumWelchPWM.EM.makePx(alpha2, beta2);
-    % t2.E = t1.E;
-    % alpha3 = BaumWelchPWM.EM.forwardAlgJ(train.X, t2, trainParams, train.pcPWMp);
-    % beta3 = BaumWelchPWM.EM.backwardAlgJ(train.X, t2, trainParams, train.pcPWMp);
-    % pX3 = BaumWelchPWM.EM.makePx(alpha3, beta3);
-    figure
-    subplot(1,4,1);
-    hold on
-    plot(permute(alpha1(1,1,:), [3,2,1]))
-    plot(permute(alpha2(1,1,:), [3,2,1]))
-    % plot(permute(alpha3(1,1,:), [3,2,1]))
-    legend('Original Theta','Trained Theta')
-    subplot(1,4,2);
-    hold on
-    plot(permute(beta1(1,1,:), [3,2,1]))
-    plot(permute(beta2(1,1,:), [3,2,1]))
-    % plot(permute(beta3(1,1,:), [3,2,1]))
-    legend('Original Theta','Trained Theta')
-    % legend('1','2','3')
-    subplot(1,4,3);
-    hold on
-    scatter(1:length(pX1), pX1);
-    scatter(length(pX1)+1:length(pX1)*2, pX2);
-    legend('Original Theta','Trained Theta')
-    subplot(1,4,4);
-    plot(permute(alpha1(1,1,:)+beta1(1,1,:), [3,2,1]))
-    hold on
-    plot(permute(alpha2(1,1,:)+beta2(1,1,:), [3,2,1]))
-    legend('Original Theta','Trained Theta');
-    keyboard
-    classify(testTheta, testParams, test.X, test.pcPWMp, test.Y);
+    % t1 = mergedPeaksMin.originalTheta;
+    % t2 = testTheta;
+    % alpha1 = BaumWelchPWM.EM.forwardAlgJ(train.X, t1, testParams, train.pcPWMp);
+    % beta1 = BaumWelchPWM.EM.backwardAlgJ(train.X, t1, testParams, train.pcPWMp);
+    % pX1 = BaumWelchPWM.EM.makePx(alpha1, beta1);
+    % alpha2 = BaumWelchPWM.EM.forwardAlgJ(train.X, t2, testParams, train.pcPWMp);
+    % beta2 = BaumWelchPWM.EM.backwardAlgJ(train.X, t2, testParams, train.pcPWMp);
+    % pX2 = BaumWelchPWM.EM.makePx(alpha2, beta2);
+    % % t2.E = t1.E;
+    % % alpha3 = BaumWelchPWM.EM.forwardAlgJ(train.X, t2, trainParams, train.pcPWMp);
+    % % beta3 = BaumWelchPWM.EM.backwardAlgJ(train.X, t2, trainParams, train.pcPWMp);
+    % % pX3 = BaumWelchPWM.EM.makePx(alpha3, beta3);
+    % figure
+    % subplot(1,4,1);
+    % hold on
+    % plot(permute(alpha1(1,1,:), [3,2,1]))
+    % plot(permute(alpha2(1,1,:), [3,2,1]))
+    % % plot(permute(alpha3(1,1,:), [3,2,1]))
+    % legend('Original Theta','Trained Theta')
+    % subplot(1,4,2);
+    % hold on
+    % plot(permute(beta1(1,1,:), [3,2,1]))
+    % plot(permute(beta2(1,1,:), [3,2,1]))
+    % % plot(permute(beta3(1,1,:), [3,2,1]))
+    % legend('Original Theta','Trained Theta')
+    % % legend('1','2','3')
+    % subplot(1,4,3);
+    % hold on
+    % scatter(1:length(pX1), pX1);
+    % scatter(1:length(pX2), pX2);
+    % legend('Original Theta','Trained Theta')
+    % subplot(1,4,4);
+    % plot(permute(alpha1(1,1,:)+beta1(1,1,:), [3,2,1]))
+    % hold on
+    % plot(permute(alpha2(1,1,:)+beta2(1,1,:), [3,2,1]))
+    % legend('Original Theta','Trained Theta');
+    classify(testTheta, testParams, test.X, test.pcPWMp, test.Y)
+    testParams.N = size(train.X, 1);
+    classify(testTheta, testParams, train.X, train.pcPWMp, train.Y)
     % [~, YsEst] = max(theta.gamma(:,:,1:end-params.J), [], 10);
     % YsEst = permute(YsEst, [1,3,2]);
     % calcError(Y(:)', YsEst(:)');
 end
 
-function classify(theta, params, X, pcPWMp, Y)
+function accuracy = classify(theta, params, X, pcPWMp, Y)
     fprintf('Calculating alpha...\n')
     alpha = BaumWelchPWM.EM.forwardAlgJ(X, theta, params, pcPWMp);
     fprintf('Calculating beta...\n')
@@ -103,6 +105,10 @@ function classify(theta, params, X, pcPWMp, Y)
     fprintf('Calculating Gamma...\n')
     % gamma - N x m x L
     gamma = BaumWelchPWM.EM.makeGamma(params, alpha, beta, pX);
+    figure
+    hold on
+    [~, YEst] = max(gamma(:, :, 1), [], 2);
+    accuracy = sum(Y == YEst) / length(Y);
 end
 
 function [test, train] = preprocess(mergedPeaksMin)

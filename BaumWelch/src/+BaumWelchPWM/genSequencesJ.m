@@ -17,6 +17,7 @@ function [X, Y] = genSequencesJ(theta, params)
         Etemp = bsxfun(@times, Etemp, 1 ./ sum(Etemp, length(size(Etemp))));
         Y(j, 1) = smrnd(startT);
         X(j, 1) = smrnd(Etemp(Y(j, 1), :)');
+        fprintf('%d ', Y(j, 1));
         t = 2;
         while t <= params.L
             yt = Y(j, t-1);

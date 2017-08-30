@@ -1,21 +1,18 @@
 
 function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, initTheta, maxIter)
-    % PWMs - k x n x J emission matrix of m Jaspar PWMs with length J
-    %        true length of i'th PWM< J and given in lengths(i) if a PWM is
-    %        shorter than j, it is aligned to the end of the 3rd dimension.
     % X - N x L emission variables
     % m - amount of possible states (y)
     % n - amount of possible emissions (x)
     % maxIter - maximal iterations allowed
     % tEpsilon - probability to switch states will not exceed this number (if tEpsilon = 0.01,
     %            and m = 3 then the probability to stay in a state will not be less than 0.98)
+    % pcPWMp - N x k x L
     % order - the HMM order of the E matrix
     % initial estimation parameters
 
     LIKELIHOOD_THRESHOLD = 10 ^ -4;
     bestLikelihood = -Inf;
     repeat = 1;
-    pcPWMpRep = repmat(permute(pcPWMp, [1, 4, 2, 3]), [1, params.m, 1, 1]);
     % N x L - order + 1
     indices = reshape(matUtils.getIndices1D(X, params.order, params.n), [params.L-params.order+1, params.N]).';
     % N x L - order + 1 x maxEIndex
@@ -49,7 +46,7 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, initTheta, maxIter
         fprintf('Update startT\n');
         theta.startT = updateStartT(gamma);
         fprintf('Update G\n');
-        theta.G = updateG(alpha, beta, X, params, theta);
+        theta.G = updateG(alpha, beta, X, params, theta, pcPWMp);
         iterLike(end+1) = matUtils.logMatSum(pX, 1);
         % DRAW
         drawStatus(theta, params, alpha, beta, gamma, pX, xi);
@@ -107,7 +104,7 @@ function drawStatus(theta, params, alpha, beta, gamma, pX, xi)
     title('alpha vs beta')
     subplot(2,2,3);plot(pX);
     title('px')
-    subplot(2,2,4);plot(theta.G);
+    subplot(2,2,4);plot(theta.G(:));
     title('G')
     drawnow
 end
@@ -145,34 +142,35 @@ function newT = updateT(xi, gamma, params)
     newT = log(Tbound(params, exp(newT)));
 end
 
-function newG = updateG(alpha, beta, X, params, theta)
+% X - N x L
+% pcPWMp - N x k x L
+% alpha - N x m x L
+% beta - N x m x L
+function newG = updateG(alpha, beta, X, params, theta, pcPWMp)
     kronMN = kron(1:params.m, ones(1, params.N));
     matSize = [params.m , params.n * ones(1, params.order)];
     beta = cat(3, beta, -inf(params.N, params.m, params.J + 1));
     newG = -inf(1, params.m, params.k);
-    for t = 1:params.L
-        % N x m x k
+    for t = 1:params.L-params.J
+        % N x m
         Ep = BaumWelchPWM.EM.getEp(theta, params, X, t, kronMN, matSize);
+        % N x m x k
         newPsi = repmat(alpha(:,:,t), [1, 1, params.k]);
         newPsi = newPsi + repmat(theta.F', [params.N, 1, params.k]);
         newPsi = newPsi + repmat(permute(theta.G, [3, 1, 2]), [params.N, 1, 1]);
         newPsi = newPsi + repmat(Ep, [1, 1, params.k]);
         for l = 1:params.k
             newPsi(:, :, l) = newPsi(:, :, l) + beta(:, :, t+theta.lengths(l)+1);
+            % N x m x k
+            newPsi(:, :, l) = newPsi(:, :, l) + repmat(pcPWMp(:, l, t+1), [1, params.m]);
         end
         newG = matUtils.logAdd(newG, matUtils.logMatSum(newPsi, 1));
     end
     newG = matUtils.logMakeDistribution(permute(newG, [2,3,1]));
 end
-% psi - N x m x k x L
-% gamma - N x m x L
-% newG - m x k
-% function newG = updateG(psi)
-%     newG = permute(sum(sum(exp(psi), 1), 4), [2,3,1]);
-%     newG = log(bsxfun(@times, newG, 1 ./ sum(newG, 2)));
-% end
 
 % newT - m x m
+% T - m x m
 function newT = Tbound(params, T)
     for i = 1 : params.m
         if T(i, i) < 1-params.tEpsilon;

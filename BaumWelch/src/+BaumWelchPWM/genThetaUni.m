@@ -9,7 +9,7 @@ function [theta] = genThetaUni(params)
     theta.G = ones(params.m, params.k);
     theta.G = log(bsxfun(@times, theta.G, 1 ./ sum(theta.G, 2)));
 
-    theta.F = log(ones(params.m, 1) * 0.005);
+    theta.F = log(ones(params.m, 1) * 0.03);
     % theta.F = log(ones(params.m, 1) * eps);
 
     % m x n
