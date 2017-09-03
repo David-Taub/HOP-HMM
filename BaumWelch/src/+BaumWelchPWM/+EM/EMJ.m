@@ -154,7 +154,7 @@ function newG = updateG(alpha, beta, X, params, theta, pcPWMp)
     newG = -inf(1, params.m, params.k);
     % N x m x L
     Eps = BaumWelchPWM.EM.getEp3d(theta, params, X, 1:L, kronMN, matSize);
-    % aa = zeros(N, L-params.J-1, params.k);
+    aa = zeros(N, L-params.J-1, params.k);
     for t = 1:L-params.J-1
         % Ep = Eps(:, :, t);
         % N x m

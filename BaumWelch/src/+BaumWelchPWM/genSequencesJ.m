@@ -25,7 +25,7 @@ function [X, Y] = genSequencesJ(theta, params)
                 % PWM step
                 motif = smrnd(G(yt, :)');
                 for i=1:lengths(motif)
-                    fprintf('.')
+                    fprintf('%d',motif)
                     X(j, t) = smrnd(PWMs(motif, :, i)');
                     Y(j, t) = yt;
                     assert(X(j, t) > 0);
@@ -54,7 +54,7 @@ end
 
 % emit one letter from base state
 function ret = emitBaseState(X, params, E, t, yt, j)
-    fprintf('o');
+    fprintf('.');
     % regular E step
     if t >= params.order
         Etemp = E;
