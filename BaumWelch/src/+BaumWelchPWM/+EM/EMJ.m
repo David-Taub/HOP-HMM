@@ -9,16 +9,16 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, initTheta, maxIter
     % pcPWMp - N x k x L
     % order - the HMM order of the E matrix
     % initial estimation parameters
-
+    [N, L] = size(X);
     LIKELIHOOD_THRESHOLD = 10 ^ -4;
     bestLikelihood = -Inf;
     repeat = 1;
     % N x L - order + 1
-    indices = reshape(matUtils.getIndices1D(X, params.order, params.n), [params.L-params.order+1, params.N]).';
+    indices = reshape(matUtils.getIndices1D(X, params.order, params.n), [L-params.order+1, N]).';
     % N x L - order + 1 x maxEIndex
     indicesHotMap = matUtils.mat23Dmat(indices, params.n ^ params.order);
     % N x L  x maxEIndex
-    indicesHotMap = cat(2, false(params.N, params.order-1, params.n ^ params.order), indicesHotMap);
+    indicesHotMap = cat(2, false(N, params.order-1, params.n ^ params.order), indicesHotMap);
     theta = initTheta;
     iterLike = [];
     for it = 1:maxIter;
@@ -38,6 +38,8 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, initTheta, maxIter
         fprintf('Calculating Gamma...\n')
         % gamma - N x m x L
         gamma = BaumWelchPWM.EM.makeGamma(params, alpha, beta, pX);
+        fprintf('Update G\n');
+        theta.G = updateG(alpha, beta, X, params, theta, pcPWMp);
         fprintf('Update E\n');
         theta.E = updateE(gamma, params, indicesHotMap);
         fprintf('Update T\n');
@@ -45,8 +47,6 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, initTheta, maxIter
 
         fprintf('Update startT\n');
         theta.startT = updateStartT(gamma);
-        fprintf('Update G\n');
-        theta.G = updateG(alpha, beta, X, params, theta, pcPWMp);
         iterLike(end+1) = matUtils.logMatSum(pX, 1);
         % DRAW
         drawStatus(theta, params, alpha, beta, gamma, pX, xi);
@@ -81,7 +81,7 @@ function drawStatus(theta, params, alpha, beta, gamma, pX, xi)
     figure
     YsEst = mean(gamma, 3);
     YsEst = YsEst(:, 1);
-    subplot(2,2,1); scatter(1:params.N, YsEst); colorbar;
+    subplot(2,2,1); scatter(1:size(pX, 1), YsEst); colorbar;
     title('gamma')
     % [~, YsEst] = max(alpha, [], 2);
     % subplot(2,3,2);imagesc(permute(YsEst, [1,3,2])); colorbar;
@@ -94,13 +94,13 @@ function drawStatus(theta, params, alpha, beta, gamma, pX, xi)
     subplot(2,2,2);
     hold on;
     plot(permute(alpha(1,1,:), [3,2,1]));
-    plot(permute(alpha(2,1,:), [3,2,1]));
-    plot(permute(alpha(3,1,:), [3,2,1]));
-    plot(permute(alpha(4,1,:), [3,2,1]));
+    % plot(permute(alpha(2,1,:), [3,2,1]));
+    % plot(permute(alpha(3,1,:), [3,2,1]));
+    % plot(permute(alpha(4,1,:), [3,2,1]));
     plot(permute(beta(1,1,:), [3,2,1]));
-    plot(permute(beta(2,1,:), [3,2,1]));
-    plot(permute(beta(3,1,:), [3,2,1]));
-    plot(permute(beta(4,1,:), [3,2,1]));
+    % plot(permute(beta(2,1,:), [3,2,1]));
+    % plot(permute(beta(3,1,:), [3,2,1]));
+    % plot(permute(beta(4,1,:), [3,2,1]));
     title('alpha vs beta')
     subplot(2,2,3);plot(pX);
     title('px')
@@ -147,26 +147,43 @@ end
 % alpha - N x m x L
 % beta - N x m x L
 function newG = updateG(alpha, beta, X, params, theta, pcPWMp)
-    kronMN = kron(1:params.m, ones(1, params.N));
+    [N, L] = size(X);
+    kronMN = kron(1:params.m, ones(1, N));
     matSize = [params.m , params.n * ones(1, params.order)];
-    beta = cat(3, beta, -inf(params.N, params.m, params.J + 1));
+    beta = cat(3, beta, -inf(N, params.m, params.J + 1));
     newG = -inf(1, params.m, params.k);
-    for t = 1:params.L-params.J
+    % N x m x L
+    Eps = BaumWelchPWM.EM.getEp3d(theta, params, X, 1:L, kronMN, matSize);
+    % aa = zeros(N, L-params.J-1, params.k);
+    for t = 1:L-params.J-1
+        % Ep = Eps(:, :, t);
         % N x m
-        Ep = BaumWelchPWM.EM.getEp(theta, params, X, t, kronMN, matSize);
+        mask = log(eps * ones(N, params.m));
+        mask(beta(:,:,t+1) < beta(:,:,t)) = 0;
         % N x m x k
-        newPsi = repmat(alpha(:,:,t), [1, 1, params.k]);
-        newPsi = newPsi + repmat(theta.F', [params.N, 1, params.k]);
-        newPsi = newPsi + repmat(permute(theta.G, [3, 1, 2]), [params.N, 1, 1]);
-        newPsi = newPsi + repmat(Ep, [1, 1, params.k]);
+        newPsi = zeros(N, params.m, params.k);
+        newPsi = newPsi + repmat(alpha(:,:,t), [1, 1, params.k]);
+        newPsi = newPsi + repmat(theta.F', [N, 1, params.k]);
+        newPsi = newPsi + repmat(permute(theta.G, [3, 1, 2]), [N, 1, 1]);
         for l = 1:params.k
             newPsi(:, :, l) = newPsi(:, :, l) + beta(:, :, t+theta.lengths(l)+1);
             % N x m x k
             newPsi(:, :, l) = newPsi(:, :, l) + repmat(pcPWMp(:, l, t+1), [1, params.m]);
+            newPsi(:, :, l) = newPsi(:, :, l) + Eps(:, :, t+theta.lengths(l)+1);
+            newPsi(:, :, l) = newPsi(:, :, l) + mask;
+            % newPsi(:, :, l) = newPsi(:, :, l) - sum(Eps(:, :, t+1:t+theta.lengths(l)), 3);
+
         end
+        % aa(:, t, :) = newPsi(:, 1, :);
         newG = matUtils.logAdd(newG, matUtils.logMatSum(newPsi, 1));
     end
-    newG = matUtils.logMakeDistribution(permute(newG, [2,3,1]));
+    keyboard
+    figure
+    aa = permute(aa, [3,2,1]);
+    imagesc(aa(:,:)); colorbar;
+
+    newG = permute(newG, [2,3,1]);
+    newG = matUtils.logMakeDistribution(newG);
 end
 
 % newT - m x m

@@ -8,18 +8,18 @@
 % beta - N x m x L
 % beta(N, i, t) P( x_s_t+1, ...x_s_k| y_s_t=i, startT, T, E)
 function beta = backwardAlgJ(X, theta, params, pcPWMp)
-
-    kronMN = kron(1:params.m, ones(1, params.N));
+    [N, L] = size(X);
+    kronMN = kron(1:params.m, ones(1, N));
     matSize = [params.m , params.n * ones(1, params.order)];
     % zero appended to handle pwm steps in the end of the sequence (first iterations) which have probability 0
-    beta = cat(3, zeros(params.N, params.m, params.L), -inf(params.N, params.m, params.J));
+    beta = cat(3, zeros(N, params.m, L), -inf(N, params.m, params.J));
     % performance optimization
-    Gs = repmat(shiftdim(theta.G, -1), [params.N, 1, 1]);
-    Fs = repmat(theta.F.', [params.N, 1, params.k]);
-    compF = repmat(log(1-exp(theta.F))', [params.N, 1]);
+    Gs = repmat(shiftdim(theta.G, -1), [N, 1, 1]);
+    Fs = repmat(theta.F.', [N, 1, params.k]);
+    compF = repmat(log(1-exp(theta.F))', [N, 1]);
     expT = exp(theta.T.');
-    for t = params.L : -1 : 2
-        % fprintf('Backward algorithm %.2f%%\r', 100 * (params.L-t+2) / params.L);
+    for t = L : -1 : 2
+        % fprintf('Backward algorithm %.2f%%\r', 100 * (L-t+2) / L);
         % note: this peeks at part of the sequences before t, which might be problematic
         % note 25.07.17: Tommy thinks it is fine - and I see no reason it will affect non-margins areas.
         % N x m
@@ -42,6 +42,6 @@ function beta = backwardAlgJ(X, theta, params, pcPWMp)
         baseStateStep = matUtils.logMatProd(Ep + beta(:, :, t), theta.T') + compF;
         beta(:,:,t-1) = matUtils.logAdd(baseStateStep, subStateStep);
     end
-    beta = beta(:, :, 1:params.L);
+    beta = beta(:, :, 1:L);
     fprintf('\n');
 end

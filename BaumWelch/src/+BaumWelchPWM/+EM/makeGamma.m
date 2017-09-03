@@ -5,5 +5,5 @@
 % gamma - N x m x L
 function gamma = makeGamma(params, alpha, beta, pX)
     gamma = alpha + beta;
-    gamma = gamma - repmat(pX, [1, params.m, params.L]);
+    gamma = gamma - repmat(pX, [1, params.m, size(alpha, 3)]);
 end
