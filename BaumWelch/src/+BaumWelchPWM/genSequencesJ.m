@@ -24,9 +24,10 @@ function [X, Y] = genSequencesJ(theta, params)
             if rand(1) < F(yt)
                 % PWM step
                 motif = smrnd(G(yt, :)');
+                fprintf('%d',motif)
                 for i=1:lengths(motif)
-                    fprintf('%d',motif)
                     X(j, t) = smrnd(PWMs(motif, :, i)');
+                    fprintf('%d',X(j, t))
                     Y(j, t) = yt;
                     assert(X(j, t) > 0);
                     t = t + 1;

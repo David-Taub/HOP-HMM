@@ -3,7 +3,7 @@
 % mask - N x J x 1 x k
 % Xs1H - N x L x n
 function res = getPWMp(J, PWMsRep, Xs1H, t, mask)
-    
+
     % N x J x n
     lastJXs1H = Xs1H(:, t:t+J-1, :);
     k = size(PWMsRep, 4);

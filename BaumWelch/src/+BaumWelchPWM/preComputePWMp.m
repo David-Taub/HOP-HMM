@@ -27,16 +27,18 @@ function out = preComputePWMpAux(Xs1H)
         out = pcPWMp;
         return;
     end
-    if exist(PC_PWM_PROBABILITY_FILE, 'file') == 2
-        fprintf('Loading pre-computed PWM from %s...\n', PC_PWM_PROBABILITY_FILE);
-        load(PC_PWM_PROBABILITY_FILE, 'pcPWMp');
-        if all(size(pcPWMp) == [N, k, L])
-            fprintf('data size match\n');
-            % loaded from file, same size
-            out = pcPWMp;
-            return;
-        else
-            delete(PC_PWM_PROBABILITY_FILE);
+    try
+        if exist(PC_PWM_PROBABILITY_FILE, 'file') == 2
+            fprintf('Loading pre-computed PWM from %s...\n', PC_PWM_PROBABILITY_FILE);
+            load(PC_PWM_PROBABILITY_FILE, 'pcPWMp');
+            if all(size(pcPWMp) == [N, k, L])
+                fprintf('data size match\n');
+                % loaded from file, same size
+                out = pcPWMp;
+                return;
+            else
+                delete(PC_PWM_PROBABILITY_FILE);
+            end
         end
     end
     pcPWMp = calculate(Xs1H, N, k, J, L);

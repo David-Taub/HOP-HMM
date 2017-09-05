@@ -10,8 +10,8 @@ function mergedPeaksMin = mainGenSequences(N, L, m)
 
     [originalTheta] = BaumWelchPWM.genThetaJ(params);
     for i = 1:m
-        originalTheta.G(i, :) = matUtils.logMakeDistribution(log([ones(1, 3)/3, eps * ones(1, params.k-3)]));
-        % originalTheta.G(i, :) = originalTheta.G(i, randperm(params.k));
+        originalTheta.G(i, :) = matUtils.logMakeDistribution(log([1, 1, 1, eps * ones(1, params.k-3)]));
+        originalTheta.G(i, :) = originalTheta.G(i, randperm(params.k));
     end
     [seqs, Y] = BaumWelchPWM.genSequencesJ(originalTheta, params);
     overlaps = matUtils.vec2mat(Y(:, 1)', params.m)';
