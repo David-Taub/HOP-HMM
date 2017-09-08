@@ -4,7 +4,7 @@
 % mainPWM(pcPWMp, X, Y);
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
 % mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
-% mergedPeaksMin = mainGenSequences(70, 90, 1);
+% mergedPeaksMin = mainGenSequences(200, 100, 2);
 % mainPWM(mergedPeaksMin);
 
 
@@ -25,7 +25,8 @@ function mainPWM(mergedPeaksMin)
         trainParams.m = 1;
         trainTheta = BaumWelchPWM.genThetaUni(trainParams);
         % trainTheta.G = mergedPeaksMin.originalTheta.G;
-        [theta, ~] = learn(X, trainParams, pcPWMp, trainTheta, 2);
+        trainTheta.ot = mergedPeaksMin.originalTheta;
+        [theta, ~] = learn(X, trainParams, pcPWMp, trainTheta, 6);
         thetas(i) = theta;
     end
     % merge thetas
@@ -41,13 +42,15 @@ function mainPWM(mergedPeaksMin)
     % N x m x L + J
     figure
     subplot(1, 2, 1);
-    scatter(1:length(testTheta.E(:)), testTheta.E(:));
+    scatter(1:length(mergedPeaksMin.originalTheta.E(:)), exp(mergedPeaksMin.originalTheta.E(:)))
     hold on;
-    scatter(1:length(mergedPeaksMin.originalTheta.E(:)), mergedPeaksMin.originalTheta.E(:))
+    scatter(1:length(testTheta.E(:)), exp(testTheta.E(:)));
+    legend('Original Theta','Trained Theta')
     subplot(1, 2, 2);
-    scatter(1:length(testTheta.G(:)), testTheta.G(:));
+    scatter(1:length(mergedPeaksMin.originalTheta.G(:)), exp(mergedPeaksMin.originalTheta.G(:)))
     hold on;
-    scatter(1:length(mergedPeaksMin.originalTheta.G(:)), mergedPeaksMin.originalTheta.G(:))
+    scatter(1:length(testTheta.G(:)), exp(testTheta.G(:)));
+    legend('Original Theta','Trained Theta')
 
     t1 = mergedPeaksMin.originalTheta;
     t2 = testTheta;
@@ -79,9 +82,9 @@ function mainPWM(mergedPeaksMin)
     hold on
     plot(permute(alpha2(1,1,:)+beta2(1,1,:), [3,2,1]))
     legend('Original Theta','Trained Theta');
+    keyboard
     classify(testTheta, testParams, test.X, test.pcPWMp, test.Y)
     classify(testTheta, testParams, train.X, train.pcPWMp, train.Y)
-    keyboard
     % [~, YsEst] = max(theta.gamma(:,:,1:end-params.J), [], 10);
     % YsEst = permute(YsEst, [1,3,2]);
     % calcError(Y(:)', YsEst(:)');
@@ -97,8 +100,8 @@ function accuracy = classify(theta, params, X, pcPWMp, Y)
     fprintf('Calculating Gamma...\n')
     % gamma - N x m x L
     gamma = BaumWelchPWM.EM.makeGamma(params, alpha, beta, pX);
-    figure
-    hold on
+    % figure
+    % hold on
     [~, YEst] = max(gamma(:, :, 1), [], 2);
     accuracy = sum(Y == YEst) / length(Y);
 end

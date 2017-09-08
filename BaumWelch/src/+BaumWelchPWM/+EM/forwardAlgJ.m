@@ -45,7 +45,7 @@ function alpha = forwardAlgJ(X, theta, params, pcPWMp)
 
         alpha(:, :, params.J + t) = matUtils.logAdd(baseStateStep, subStateStep);
     end
-    fprintf('\n');
+    % fprintf('\n');
     alpha = alpha(:, :, params.J+1:end);
 end
 

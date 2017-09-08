@@ -1,6 +1,7 @@
 function [theta] = genThetaJ(params)
     % normalized random probabilities
-    theta.startT = rand(params.m, 1);
+    % theta.startT = rand(params.m, 1);
+    theta.startT = ones(params.m, 1);
     theta.startT = log(theta.startT / sum(theta.startT));
     % m x m
     theta.T = eye(params.m) + params.tEpsilon * rand(params.m);
@@ -9,7 +10,8 @@ function [theta] = genThetaJ(params)
     theta.G = rand(params.m, params.k);
     theta.G = log(bsxfun(@times, theta.G, 1 ./ sum(theta.G, 2)));
 
-    theta.F = log(ones(params.m, 1) * 0.03);
+    % theta.F = log(rand(params.m, 1) * 0.05);
+    theta.F = log(ones(params.m, 1) * 0.02);
     % theta.F = log(ones(params.m, 1) * eps);
 
     % m x n

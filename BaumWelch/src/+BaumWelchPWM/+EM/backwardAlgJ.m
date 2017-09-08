@@ -43,5 +43,5 @@ function beta = backwardAlgJ(X, theta, params, pcPWMp)
         beta(:,:,t-1) = matUtils.logAdd(baseStateStep, subStateStep);
     end
     beta = beta(:, :, 1:L);
-    fprintf('\n');
+    % fprintf('\n');
 end

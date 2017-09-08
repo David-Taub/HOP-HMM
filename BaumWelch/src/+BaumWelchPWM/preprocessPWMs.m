@@ -14,5 +14,8 @@ function preprocessPWMs()
 	PWM = permute(PWM, [1, 3, 2]);
 
 	[PWM, lengths, names] = BaumWelchPWM.removedPWMsDuplicates(PWM, lengths, names);
+	length(lengths)
+	[PWM, lengths, names] = BaumWelchPWM.removePWMsWeak(PWM, lengths, names);
+	length(lengths)
 	save('data/PWMs.mat', 'PWM', 'lengths', 'names');
 end

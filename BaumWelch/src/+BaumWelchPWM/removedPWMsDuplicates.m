@@ -1,7 +1,7 @@
-
+% PWMs - k x J x n
 function [PWMs, lengths, names] = removedPWMsDuplicates(PWMs, lengths, names)
-    % [PWMs, lengths, names] = BaumWelchPWM.PWMs();
-    REMOVE_RATIO = 1 / 20;
+    % PART_TO_REMOVE = 1 / 15;
+    PART_TO_REMOVE = 1 / 75;
     close all;
     k = size(PWMs, 1);
     dist = zeros(k, k);
@@ -10,41 +10,24 @@ function [PWMs, lengths, names] = removedPWMsDuplicates(PWMs, lengths, names)
             a = permute(PWMs(i, :, :), [2,3,1]);
             b = permute(PWMs(j, :, :), [2,3,1]);
             c = conv2(a, rot90(b, 2));
-            dist(i, j) = max(c(:));
+            dist(i, j) = max(c(4,:));
             dist(i, j) = dist(i, j) / min(lengths(i),lengths(j));
         end
-        i
     end
-    % dist = dist - diag(diag(dist));
-
-    % [distOrdered, order] = matUtils.clustMatRows(dist);
-    % distOrdered = distOrdered(:, order);
-
     d = sort(dist(:));
-    thresh = d(end - round(k*k*REMOVE_RATIO));
-    % distC = dist;
-    % distC() = nan;
+    thresh = d(end - round(k*k*PART_TO_REMOVE));
+    uniqueMask = all(dist <= thresh, 2);
 
-    % while any(isnan(distC(:)))
-    %     for i=1:size(distC, 1)
-    %         if any(isnan(distC(i, :)),2)
-    %             distC(i,:) = [];
-    %             distC(:,i) = [];
-    %             lengths(i) = [];
-    %             PWMs(i, :, :) = [];
-    %             names{i} = [];
-    %             break;
-    %         end
-    %     end
-    % end
-    similarMask = any(dist > thresh, 2);
-    PWMs = PWMs(~similarMask, :, :);
-    lengths = lengths(~similarMask);
-    names = names(~similarMask);
+    dd = dist(uniqueMask, :);
+    dd = dd(:, uniqueMask);
+    [vals, ind1] = max(dd, [], 1);
+    [~, j] = max(vals, [], 2);
+    i = ind1(j);
+    figure
+    subplot(1,2,1);imagesc(permute(exp(PWMs(i,:,:)), [2,3,1]))
+    subplot(1,2,2);imagesc(permute(exp(PWMs(j,:,:)), [2,3,1]))
 
-    % figure;
-    % imagesc(dist); colorbar;
-
-    % figure;
-    % imagesc(distC); colorbar;
+    PWMs = PWMs(uniqueMask, :, :);
+    lengths = lengths(uniqueMask);
+    names = names(uniqueMask);
 end

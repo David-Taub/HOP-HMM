@@ -24,7 +24,7 @@ function [X, Y] = genSequencesJ(theta, params)
             if rand(1) < F(yt)
                 % PWM step
                 motif = smrnd(G(yt, :)');
-                fprintf('%d',motif)
+                fprintf('%d-',motif)
                 for i=1:lengths(motif)
                     X(j, t) = smrnd(PWMs(motif, :, i)');
                     fprintf('%d',X(j, t))
@@ -42,7 +42,6 @@ function [X, Y] = genSequencesJ(theta, params)
                     t = t + 1;
                 end
             else
-
                 ytNext = smrnd(T(yt, :)');
                 X(j, t) = emitBaseState(X, params, E, t, ytNext, j);
                 Y(j, t) = ytNext;

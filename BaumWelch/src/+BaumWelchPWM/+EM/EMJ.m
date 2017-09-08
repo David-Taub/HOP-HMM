@@ -10,7 +10,7 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, initTheta, maxIter
     % order - the HMM order of the E matrix
     % initial estimation parameters
     [N, L] = size(X);
-    LIKELIHOOD_THRESHOLD = 10 ^ -4;
+    LIKELIHOOD_THRESHOLD = 10 ^ -2;
     bestLikelihood = -Inf;
     repeat = 1;
     % N x L - order + 1
@@ -90,6 +90,10 @@ function drawStatus(theta, params, alpha, beta, gamma, pX, xi)
     % subplot(2,3,3);imagesc(permute(YsEst, [1,3,2])); colorbar;
     % title('beta')
     subplot(2,2,1);plot(exp(theta.E(:)));
+    hold on;
+    plot(exp(theta.ot.E(:)));
+    legend('current', 'original')
+    ylim([0,1]);
     title('E')
     subplot(2,2,2);
     hold on;
@@ -105,6 +109,10 @@ function drawStatus(theta, params, alpha, beta, gamma, pX, xi)
     subplot(2,2,3);plot(pX);
     title('px')
     subplot(2,2,4);plot(exp(theta.G(:)));
+    hold on
+    plot(exp(theta.ot.G(:)));
+    legend('current', 'original')
+    ylim([0,1]);
     title('G')
     drawnow
 end
@@ -142,6 +150,8 @@ function newT = updateT(xi, gamma, params)
     newT = log(Tbound(params, exp(newT)));
 end
 
+% TODO: updateF?
+
 % X - N x L
 % pcPWMp - N x k x L
 % alpha - N x m x L
@@ -154,7 +164,7 @@ function newG = updateG(alpha, beta, X, params, theta, pcPWMp)
     newG = -inf(1, params.m, params.k);
     % N x m x L
     Eps = BaumWelchPWM.EM.getEp3d(theta, params, X, 1:L, kronMN, matSize);
-    % zz = zeros(N, L-params.J-1, params.k);
+    zz = zeros(L-params.J-1, N, params.m, params.k);
     for t = 1:L-params.J-1
         % Ep = Eps(:, :, t);
         % N x m
@@ -163,20 +173,44 @@ function newG = updateG(alpha, beta, X, params, theta, pcPWMp)
         % N x m x k
         newPsi = zeros(N, params.m, params.k);
         newPsi = newPsi + repmat(alpha(:,:,t), [1, 1, params.k]);
-        newPsi = newPsi + repmat(theta.F', [N, 1, params.k]);
-        newPsi = newPsi + repmat(permute(theta.G, [3, 1, 2]), [N, 1, 1]);
+        % newPsi = newPsi + repmat(theta.F', [N, 1, params.k]);
+        % newPsi = newPsi + repmat(permute(theta.G, [3, 1, 2]), [N, 1, 1]);
         for l = 1:params.k
             newPsi(:, :, l) = newPsi(:, :, l) + beta(:, :, t+theta.lengths(l)+1);
             % N x m x k
             newPsi(:, :, l) = newPsi(:, :, l) + repmat(pcPWMp(:, l, t+1), [1, params.m]);
             newPsi(:, :, l) = newPsi(:, :, l) + Eps(:, :, t+theta.lengths(l)+1);
-            newPsi(:, :, l) = newPsi(:, :, l) + mask;
+            % newPsi(:, :, l) = newPsi(:, :, l) + mask;
             % newPsi(:, :, l) = newPsi(:, :, l) - sum(Eps(:, :, t+1:t+theta.lengths(l)), 3);
         end
+
         % newPsi(newPsi < 0) = -inf;
-        % zz(:, t, :) = newPsi(:, 1, :);
+        zz(t, :) = newPsi(:);
         newG = matUtils.logAdd(newG, matUtils.logMatSum(newPsi, 1));
     end
+    newG = permute(newG, [2,3,1]);
+    newG = matUtils.logMakeDistribution(newG);
+
+    % figure
+    % ind = [1,3,5];
+    % a1 = permute(pcPWMp(:, ind(1), :), [1,3,2]);
+    % a2 = permute(pcPWMp(:, ind(2), :), [1,3,2]);
+    % a3 = permute(pcPWMp(:, ind(3), :), [1,3,2]);
+    % zz1 = zz(:,:,1,ind(1))';
+    % zz2 = zz(:,:,1,ind(2))';
+    % zz3 = zz(:,:,1,ind(3))';
+    % subplot(3,3,1);imagesc(a1); colorbar;
+    % title(ind(1))
+    % subplot(3,3,2);imagesc(a2); colorbar;
+    % title( ind(2))
+    % subplot(3,3,3);imagesc(a3); colorbar;
+    % title(ind(3))
+    % subplot(3,3,4);imagesc(zz1); colorbar;
+    % subplot(3,3,5);imagesc(zz2); colorbar;
+    % subplot(3,3,6);imagesc(zz3); colorbar;
+    % subplot(3,3,7);imagesc(permute(exp(theta.PWMs(ind(1),:,:)), [2,3,1]))
+    % subplot(3,3,8);imagesc(permute(exp(theta.PWMs(ind(2),:,:)), [2,3,1]))
+    % subplot(3,3,9);imagesc(permute(exp(theta.PWMs(ind(3),:,:)), [2,3,1]))
 
     % tt = [];
     % for t = 1:L-params.J-1
@@ -186,12 +220,6 @@ function newG = updateG(alpha, beta, X, params, theta, pcPWMp)
     % plot(tt);
     % hold on
     % plot(permute(pcPWMp(47, 3, :), [3,1,2]));
-    % % figure
-    % subplot(2,3,1);imagesc(permute(theta.PWMs(47,:,:), [2,3,1]))
-    % subplot(2,3,2);imagesc(permute(theta.PWMs(56,:,:), [2,3,1]))
-    % subplot(2,3,3);imagesc(permute(theta.PWMs(78,:,:), [2,3,1]))
-    % subplot(2,3,4);imagesc(permute(theta.PWMs(79,:,:), [2,3,1]))
-    % subplot(2,3,5);imagesc(permute(theta.PWMs(48,:,:), [2,3,1]))
     % subplot(2,3,6);imagesc(permute(theta.PWMs(31,:,:), [2,3,1]))
     % figure
 
@@ -219,9 +247,6 @@ function newG = updateG(alpha, beta, X, params, theta, pcPWMp)
     % figure
     % aa = permute(aa, [3,2,1]);
     % imagesc(aa(:,:)); colorbar;
-
-    newG = permute(newG, [2,3,1]);
-    newG = matUtils.logMakeDistribution(newG);
 end
 
 % newT - m x m
