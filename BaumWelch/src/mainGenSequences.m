@@ -34,4 +34,5 @@ function mergedPeaksMin = mainGenSequences(N, L, m)
     mergedPeaksMin.overlaps = overlaps;
     mergedPeaksMin.lengths = lengths;
     mergedPeaksMin.originalTheta = originalTheta;
+    mergedPeaksMin.Y = Y;
 end

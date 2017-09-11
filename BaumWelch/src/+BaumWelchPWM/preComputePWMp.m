@@ -6,7 +6,8 @@ function pcPWMp = preComputePWMp(Xs)
     [~, n, J] = size(PWMs);
     [N, ~] = size(Xs);
     %0 padding for handling the edges probability calculation
-    Xs1H = cat(2, matUtils.mat23Dmat(Xs, n), zeros(N, J, n));
+    % Xs1H = cat(2, matUtils.mat23Dmat(Xs, n), zeros(N, J, n));
+    Xs1H = matUtils.mat23Dmat(Xs, n);
     % NxJxnxk
     pcPWMp = preComputePWMpAux(Xs1H);
 end
@@ -20,7 +21,7 @@ function out = preComputePWMpAux(Xs1H)
     [PWMs, ~] = BaumWelchPWM.PWMs();
     [k, ~, J] = size(PWMs);
     [N, L, ~] = size(Xs1H);
-    L = L - J;
+    % L = L - fJ;
     PC_PWM_PROBABILITY_FILE = fullfile('data', 'precomputation', 'pcPWMp.mat');
     if ~isempty(pcPWMp) && all(size(pcPWMp) == [N, k, L])
         % in memory
