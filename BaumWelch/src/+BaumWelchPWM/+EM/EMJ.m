@@ -1,5 +1,5 @@
 
-function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, initTheta, maxIter)
+function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, maxIter)
     % X - N x L emission variables
     % m - amount of possible states (y)
     % n - amount of possible emissions (x)
@@ -11,7 +11,6 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, initTheta, maxIter
     % initial estimation parameters
     [N, L] = size(X);
     fprintf('Starting EM algorithm on %d x %d\n', N, L)
-    LIKELIHOOD_THRESHOLD = 10 ^ -2;
     bestLikelihood = -Inf;
     repeat = 1;
     % N x L - order + 1
@@ -20,9 +19,35 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, initTheta, maxIter
     indicesHotMap = matUtils.mat23Dmat(indices, params.n ^ params.order);
     % N x L  x maxEIndex
     indicesHotMap = cat(2, false(N, params.order-1, params.n ^ params.order), indicesHotMap);
+    % figure
+    for rep = 1:repeat
+        fprintf('Repeat %d / %d\n', rep, repeat);
+        X = X(randperm(N), :);
+        initTheta = BaumWelchPWM.genThetaJ(params);
+        [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, indicesHotMap, N, L);
+        % subplot(1,2,1);
+        % hold on;
+        % plot(iterLike);
+        % title('Log Likelihood')
+        % subplot(1,2,2);
+        % hold on;
+        % scatter(exp(theta.G(2)), exp(theta.G(4))', '*r');
+        % xlim([0,1]);ylim([0,1]);
+        % title('G')
+        % drawnow
+
+        if bestLikelihood < iterLike(end)
+            bestLikelihood = iterLike(end);
+            bestTheta = theta;
+        end
+    end
+end
+
+function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, indicesHotMap, N, L)
+    LIKELIHOOD_THRESHOLD = 10 ^ -4;
     theta = initTheta;
     iterLike = [];
-    for it = 1:maxIter;
+    for it = 1:maxIter
         tic
         % alphaBase - N x m x L
         % alphaSub - N x m x L+J x k
@@ -48,7 +73,7 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, initTheta, maxIter
 
         % fprintf('Update startT\n');
         theta.startT = updateStartT(gamma);
-        iterLike(end+1) = matUtils.logMatSum(pX, 1) - log(N);
+        iterLike(end+1) = matUtils.logMatSum(pX, 1);% / (N*L);
         % DRAW
         % drawStatus(theta, params, alpha, beta, gamma, pX, xi);
         assert(not(any(isnan(theta.T(:)))))
@@ -64,15 +89,8 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, initTheta, maxIter
             fprintf('Converged\n');
             break
         end
-
-        if bestLikelihood < iterLike(end)
-            bestLikelihood = iterLike(end);
-            bestTheta = theta;
-            bestTheta.gamma = gamma;
-        end
     end % end of iterations loop
-end
-
+ end
 
 
 % psi - N x m x k x L
@@ -162,112 +180,37 @@ function newG = updateG(alpha, beta, X, params, theta, pcPWMp)
     kronMN = kron(1:params.m, ones(1, N));
     matSize = [params.m , params.n * ones(1, params.order)];
     beta = cat(3, beta, -inf(N, params.m, params.J + 1));
-    newG = -inf(1, params.m, params.k);
+    batchAmount = round(N / params.batchSize);
+    newG = -inf(batchAmount, params.m, params.k);
     % N x m x L
     Eps = BaumWelchPWM.EM.getEp3d(theta, params, X, 1:L, kronMN, matSize);
-    zz = zeros(L-params.J-1, N, params.m, params.k);
+    newPsi = zeros(N, params.m, params.k, L-params.J-1);
     for t = 1:L-params.J-1
-        % Ep = Eps(:, :, t);
         % N x m
         mask = log(eps * ones(N, params.m));
         mask(beta(:,:,t+1) < beta(:,:,t)) = 0;
         % N x m x k
-        newPsi = zeros(N, params.m, params.k);
-        newPsi = newPsi + repmat(alpha(:,:,t), [1, 1,  params.k]);
-        newPsi = newPsi + repmat(theta.F', [N, 1, params.k]);
-        newPsi = newPsi + repmat(permute(theta.G, [3, 1, 2]), [N, 1, 1]);
+        newPsi(:, :, :, t) = newPsi(:, :, :, t) + repmat(alpha(:,:,t), [1, 1,  params.k]);
+        newPsi(:, :, :, t) = newPsi(:, :, :, t) + repmat(theta.F', [N, 1, params.k]);
+        newPsi(:, :, :, t) = newPsi(:, :, :, t) + repmat(permute(theta.G, [3, 1, 2]), [N, 1, 1]);
         for l = 1:params.k
-            newPsi(:, :, l) = newPsi(:, :, l) + beta(:, :, t+theta.lengths(l)+1);
+            newPsi(:, :, l, t) = newPsi(:, :, l, t) + beta(:, :, t+theta.lengths(l)+1);
             % N x m x k
 
-            newPsi(:, :, l) = newPsi(:, :, l) + repmat(pcPWMp(:, l, t+1), [1, params.m]);
-            newPsi(:, :, l) = newPsi(:, :, l) + Eps(:, :, t+theta.lengths(l)+1);
-            % newPsi(:, :, l) = newPsi(:, :, l) + mask;
-            % newPsi(:, :, l) = newPsi(:, :, l) - sum(Eps(:, :, t+1:t+theta.lengths(l)), 3);
+            newPsi(:, :, l, t) = newPsi(:, :, l, t) + repmat(pcPWMp(:, l, t+1), [1, params.m]);
+            newPsi(:, :, l, t) = newPsi(:, :, l, t) + Eps(:, :, t+theta.lengths(l)+1);
         end
-        % [~,ii] = sort(newPsi(:));
-        % newPsi(ii(1:round(0.9 * length(ii)))) = -inf;
-        % newPsi(newPsi < 0) = -inf;
-        zz(t, :) = newPsi(:);
-        newG = matUtils.logAdd(newG, matUtils.logMatSum(newPsi, 1));
     end
-    newG = permute(newG, [2,3,1]);
-
-    newG = matUtils.logMakeDistribution(newG);
-    % l1 = 2;
-    % Y = theta.Y;
-    % Yd = cat(2, zeros(size(Y, 1),1), diff(Y')') == 10*l1 - 1;
-    % p = cat(2, permute(zz(:,:,1,l1), [2,1,3,4]),-inf(N, params.J+1));
-    % % p = permute(pcPWMp(:,l1,:), [1,3,2]);
-    % s = sum(Yd(:));
-    % l2 = 20;
-    % M = zeros(s, l2);
-    % for i = 1 : l2
-    %     mask = circshift(Yd, -ceil(l2/2) + i ,2);
-    %     M(:,i) = p(mask);
-    % end
-    % figure
-    % subplot(1,4,1);imagesc(M)
-    % subplot(1,4,2);imagesc(Yd)
-    % subplot(1,4,3);imagesc(p)
-    % subplot(1,4,4);imagesc(permute(exp(theta.PWMs(l1,:,:)), [2,3,1]))
-    % keyboard
-    % figure
-    % ind = [1,3,5];
-    % a1 = permute(pcPWMp(:, ind(1), :), [1,3,2]);
-    % a2 = permute(pcPWMp(:, ind(2), :), [1,3,2]);
-    % a3 = permute(pcPWMp(:, ind(3), :), [1,3,2]);
-    % zz1 = zz(:,:,1,ind(1))';
-    % zz2 = zz(:,:,1,ind(2))';
-    % zz3 = zz(:,:,1,ind(3))';
-    % subplot(3,3,1);imagesc(a1); colorbar;
-    % title(ind(1))
-    % subplot(3,3,2);imagesc(a2); colorbar;
-    % title( ind(2))
-    % subplot(3,3,3);imagesc(a3); colorbar;
-    % title(ind(3))
-    % subplot(3,3,4);imagesc(zz1); colorbar;
-    % subplot(3,3,5);imagesc(zz2); colorbar;
-    % subplot(3,3,6);imagesc(zz3); colorbar;
-    % subplot(3,3,7);imagesc(permute(exp(theta.PWMs(ind(1),:,:)), [2,3,1]))
-    % subplot(3,3,8);imagesc(permute(exp(theta.PWMs(ind(2),:,:)), [2,3,1]))
-    % subplot(3,3,9);imagesc(permute(exp(theta.PWMs(ind(3),:,:)), [2,3,1]))
-
-    % tt = [];
-    % for t = 1:L-params.J-1
-    %     tt(end+1) = sum(Eps(2, 1, t+1:t+theta.lengths(47)), 3);
-    % end
-    % figure
-    % plot(tt);
-    % hold on
-    % plot(permute(pcPWMp(47, 3, :), [3,1,2]));
-    % subplot(2,3,6);imagesc(permute(theta.PWMs(31,:,:), [2,3,1]))
-    % figure
-
-    % imagesc(permute(theta.PWMs(221,:,:), [2,3,1]))
-    % %  N x k x L
-    % [ll, ii] = sort(theta.lengths, 2);
-    % ll = theta.lengths;
-    % oo = pcPWMp(:, ii, :);
-    % oo = pcPWMp;
-    % aa = oo - repmat(log(0.25 .^ ll), [N, 1, L]);
-    % dd = max(aa, [], 3);
-    % yy = max(zz, [], 2);
-    % [~, ee] = max(dd, [], 2);
-    % [~, xx] = max(yy, [], 3);
-    % qq = permute(xx, [3,2,1]);
-    % figure
-    % subplot(1,3,1); hist(xx, params.k);
-    % subplot(1,3,2); imagesc(permute(yy, [1,3,2])); colorbar;
-
-
-    % bb = permute(aa, [2,3,1]);
-    % cc = bb(:, :);
-    % subplot(1,3,3); imagesc(cc); colorbar
-    % keyboard
-    % figure
-    % aa = permute(aa, [3,2,1]);
-    % imagesc(aa(:,:)); colorbar;
+    % note: batch trick is used to reduce the
+    % calculation errors due to summing
+    % many very small numbers in log space
+    newPsi = matUtils.logMatSum(newPsi, 4);
+    for t = 1:N
+        modT = mod(t, batchAmount)+1;
+        newG(modT, :, :) = matUtils.logAdd(newG(modT, :, :), newPsi(t, :, :));
+    end
+    newG = exp(matUtils.logMakeDistribution(newG));
+    newG = permute(log(mean(newG, 1)), [2,3,1]);
 end
 
 % newT - m x m

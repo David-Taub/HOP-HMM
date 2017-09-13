@@ -4,33 +4,57 @@
 % mainPWM(pcPWMp, X, Y);
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
 % mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
-% mergedPeaksMin = mainGenSequences(2000, 1000, 1);
+% mergedPeaksMin = mainGenSequences(500, 400, 2);
 % mainPWM(mergedPeaksMin);
 
 
 function mainPWM(mergedPeaksMin)
     close all;
-    trainParams.m = 1;
-    trainParams.order = 3;
-    [trainParams.k, trainParams.n, trainParams.J] = size(BaumWelchPWM.PWMs());
-    trainParams.tEpsilon = 0.0001;
+    params.m = 1;
+    params.order = 3;
+    [params.k, params.n, params.J] = size(BaumWelchPWM.PWMs());
+    params.tEpsilon = 0.0001;
+    params.batchSize = 5;
     testTrainRatio = 0.10;
+
     [test, train] = preprocess(mergedPeaksMin, testTrainRatio);
-    learnedThetas = {};
-    for i = 1:max(train.Y(:))
-        % train each base state
-        X = train.X(train.Y(:, 1)==i, :);
-        pcPWMp = train.pcPWMp(train.Y(:, 1)==i, :, :);
-        learnedThetas{i} = learnSingleMode(X, trainParams, pcPWMp, 3, 10, mergedPeaksMin);
+
+    dists = [];
+    for testTrainRatio = 0.95: -0.1: 0
+        [test, train] = preprocess(mergedPeaksMin, testTrainRatio);
+        theta = learnSingleMode(train.X, params, train.pcPWMp, 6, 5, mergedPeaksMin, 1);
+        dists(end + 1) = relativeEntropy(exp(mergedPeaksMin.originalTheta.G(1, :)'), exp(theta.G'));
+        figure
+        subplot(1,2,1); plot(dists)
+        subplot(1,2,2);
+        plot(exp(mergedPeaksMin.originalTheta.G(1, :)));ylim([0,1]);
+        hold on;
+        plot(exp(theta.G));ylim([0,1]);
+        legend('Original Theta','Trained Theta')
+        title('G')
+        drawnow;
     end
-    learnedTheta = catThetas(trainParams.params, learnedThetas);
-    classify(learnedTheta, testParams, test.X, test.pcPWMp, test.Y)
-    classify(learnedTheta, testParams, train.X, train.pcPWMp, train.Y)
+
+
+
+    learnedThetas = {};
+    realM = max(max(train.Y(:, :, 1), [] , 1), [], 2);
+    for i = 1:realM
+        % train each base state
+        X = train.X(train.Y(:, 1, 1)==i, :);
+        pcPWMp = train.pcPWMp(train.Y(:, 1, 1)==i, :, :);
+        learnedThetas{i} = learnSingleMode(X, params, pcPWMp, 3, 5, mergedPeaksMin, i);
+        theta = learnedThetas{i};
+    end
+    % learnedTheta = catThetas(params, learnedThetas);
+    % params.m = realM;
+    % classify(learnedTheta, params, test.X, test.pcPWMp, test.Y)
+    % classify(learnedTheta, params, train.X, train.pcPWMp, train.Y)
 
 
 
     % % merge thetas
-    % testParams = trainParams;
+    % testParams = params;
     % testParams.m = length(unique(test.Y));
     % testTheta = BaumWelchPWM.genThetaJ(testParams);
     % for i=1:max(train.Y, [], 1);
@@ -90,6 +114,7 @@ end
 
 function accuracy = classify(theta, params, X, pcPWMp, Y)
     fprintf('Calculating alpha...\n')
+    % N x m x L
     alpha = BaumWelchPWM.EM.forwardAlgJ(X, theta, params, pcPWMp);
     fprintf('Calculating beta...\n')
     beta = BaumWelchPWM.EM.backwardAlgJ(X, theta, params, pcPWMp);
@@ -98,10 +123,16 @@ function accuracy = classify(theta, params, X, pcPWMp, Y)
     fprintf('Calculating Gamma...\n')
     % gamma - N x m x L
     gamma = BaumWelchPWM.EM.makeGamma(params, alpha, beta, pX);
+    g = permute(gamma, [1,3,2]);
+    c = permute(beta + alpha, [1,3,2]);
+    figure;
+    subplot(1,3,1);imagesc(g(:,:)); colorbar
+    subplot(1,3,2);imagesc(Y); colorbar
+    subplot(1,3,3);imagesc(c(:,:)); colorbar
     % figure
     % hold on
     [~, YEst] = max(gamma(:, :, 1), [], 2);
-    accuracy = sum(Y == YEst) / length(Y);
+    accuracy = sum(Y(:, 1) == YEst) / size(Y, 1);
 end
 
 function [test, train] = preprocess(mergedPeaksMin, testTrainRatio)
@@ -113,11 +144,11 @@ function [test, train] = preprocess(mergedPeaksMin, testTrainRatio)
     % mask = mask & mod(1:size(mask,1), 15).' == 0;
     overlaps = overlaps(mask, :);
     X = mergedPeaksMin.seqs(mask, :);
-    Y = mergedPeaksMin.Y(mask, :);
+    Y = mergedPeaksMin.Y(mask, :, :);
     % Y = (overlaps > 0) * (1:size(overlaps, 2))';
     [overlaps, seqInd] = sortrows(overlaps);
     X = X(seqInd, :);
-    Y = Y(seqInd, :);
+    Y = Y(seqInd, :, :);
 
     % X = cat(2, X, fliplr(5-X));
     % N x k x L
@@ -125,7 +156,7 @@ function [test, train] = preprocess(mergedPeaksMin, testTrainRatio)
     N = size(X, 1);
     trainMask = rand(N, 1) > testTrainRatio;
     train.X = X(trainMask, :);
-    train.Y = Y(trainMask, :);
+    train.Y = Y(trainMask, :, :);
     train.pcPWMp = pcPWMp(trainMask, :, :);
     test.X = X(~trainMask, :);
     test.Y = Y(~trainMask, :);
@@ -135,40 +166,48 @@ end
 
 % pcPWMp - N x k x L-1+J
 % X - N x L
-function [theta] = learnSingleMode(X, params, pcPWMp, maxIter, parts, mergedPeaksMin)
+function [theta] = learnSingleMode(X, params, pcPWMp, maxIter, parts, mergedPeaksMin, Ymode)
     thetas = {};
     N = size(X,1);
     dists = [];
-    for i = 1:parts
-        partMask = mod(1:N, parts) == i-1;
-        % [test, train] = preprocess(mergedPeaksMin, testTrainRatio);
-        initTheta = BaumWelchPWM.genThetaUni(params);
-        initTheta.ot = mergedPeaksMin.originalTheta;
-        % theta.Y = train.Y;
-        [thetas{i}, ~] = BaumWelchPWM.EM.EMJ(X(partMask, :), params, pcPWMp(partMask, :, :), initTheta, maxIter);
+    [theta, ~] = BaumWelchPWM.EM.EMJ(X, params, pcPWMp, maxIter);
 
-        theta = meanMergeTheta(params, thetas);
-        dists(i) = relativeEntropy(exp(mergedPeaksMin.originalTheta.G'), exp(theta.G'));
-        dists(i) = dists(i) + relativeEntropy(exp(mergedPeaksMin.originalTheta.E(:)), exp(theta.E(:)));
-        figure
-        subplot(1,3,1);
-        plot(dists);
-        title('KLdiv over iterations')
-        subplot(1,3,2);
-        title('G')
-        plot(exp(mergedPeaksMin.originalTheta.G));ylim([0,1]);
-        hold on;
-        plot(exp(theta.G));ylim([0,1]);
-        legend('Original Theta','Trained Theta')
-        subplot(1,3,3);
-        title('E')
-        plot(exp(mergedPeaksMin.originalTheta.E(:)));ylim([0,1]);
-        hold on;
-        plot(exp(theta.E(:)));ylim([0,1]);
-        legend('Original Theta','Trained Theta')
-        drawnow
-    end
-    theta = meanMergeTheta(params, thetas);
+    % subplot(1,2,2);
+    % hold on;
+    % scatter(exp(mergedPeaksMin.originalTheta.G(2)), exp(mergedPeaksMin.originalTheta.G(4)), 'ob');
+    % xlim([0,1]);ylim([0,1]);
+    % title('G')
+    drawnow
+    % for i = 1:parts
+    %     partMask = mod(1:N, parts) == (i-1);
+    %     % initTheta = BaumWelchPWM.genThetaUni(params);
+    %     % initTheta.ot = mergedPeaksMin.originalTheta;
+    %     [thetas{i}, ~] = BaumWelchPWM.EM.EMJ(X(partMask, :), params, pcPWMp(partMask, :, :), maxIter);
+    %     % initTheta = thetas{i};
+    %     theta = meanMergeTheta(params, thetas);
+    %     dists(i) = relativeEntropy(exp(mergedPeaksMin.originalTheta.G(Ymode, :)'), exp(theta.G'));
+    %     dists(i) = dists(i) + relativeEntropy(exp(mergedPeaksMin.originalTheta.E(Ymode, :)'), exp(theta.E(:)));
+    %     % figure
+    %     % subplot(1,3,1);
+    %     % plot(dists);
+    %     % title('KLdiv over iterations')
+
+    %     % subplot(1,3,2);
+    %     % plot(exp(mergedPeaksMin.originalTheta.G(Ymode, :)));ylim([0,1]);
+    %     % hold on;
+    %     % plot(exp(theta.G));ylim([0,1]);
+    %     % legend('Original Theta','Trained Theta')
+    %     % title('G')
+
+    %     % subplot(1,3,3);
+    %     % plot(exp(mergedPeaksMin.originalTheta.E(Ymode, :)));ylim([0,1]);
+    %     % hold on;
+    %     % plot(exp(theta.E(:)));ylim([0,1]);
+    %     % legend('Original Theta','Trained Theta')
+    %     % title('E')
+    %     % drawnow
+    % end
+    % theta = meanMergeTheta(params, thetas);
 end
 
 function theta = meanMergeTheta(params, thetas)
@@ -191,10 +230,10 @@ function theta = catThetas(params, thetas)
     theta = BaumWelchPWM.genThetaUni(params);
     theta.G = reshape([thetas.G], [params.k, params.m])';
     theta.F = [thetas.F]';
-    theta.T = reshape([thetas.T], [params.m, params.m])';
-    theta.E = zeros([params.m, ones(1,order) * params.n]);
+    theta.T = eye(params.m);% * (1 - (params.m * params.tEpsilon)) + params.tEpsilon;
+    theta.E = zeros([params.m, ones(1, params.order) * params.n]);
     for i = 1:params.m
-        theta.E(1, :) = thetas(i).E(:);
+        theta.E(i, :) = thetas(i).E(:);
     end
 end
 

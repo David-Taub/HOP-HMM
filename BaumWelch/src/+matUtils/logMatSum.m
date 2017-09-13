@@ -1,4 +1,12 @@
 function ret = logMatSum(A, dim)
+    ret = logMatSum2(A, dim, 1, size(A, dim));
+    % ret = logMatSum1(A, dim);
+
+
+end
+
+% faster, but calculation error should be bigger
+function ret = logMatSum1(A, dim)
     sizeA = size(A);
     sizeRet = sizeA;
     sizeRet(dim) = 1;
@@ -6,6 +14,18 @@ function ret = logMatSum(A, dim)
     for i = 1:size(A, dim)
         ret = matUtils.logAdd(ret, arraySlice(A, i, dim));
     end
+end
+
+% slower, but calculation error should be smaller
+function ret = logMatSum2(A, dim, startIndex, endIndex)
+    if startIndex == endIndex
+        ret = arraySlice(A, startIndex, dim);
+        return
+    end
+    diff = endIndex - startIndex;
+    right = logMatSum2(A, dim, startIndex, startIndex + floor(diff/2));
+    left = logMatSum2(A, dim, startIndex + floor(diff/2) + 1, endIndex);
+    ret = matUtils.logAdd(right, left);
 end
 
 function S = arraySlice(A, I, d)
