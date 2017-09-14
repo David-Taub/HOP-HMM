@@ -27,12 +27,12 @@ function mergedPeaksMin = mainGenSequences(N, L, m)
     theta.E = log(bsxfun(@times, theta.E, 1./sum(theta.E, length(size(theta.E)))));
 
     for i = 1:m
-        theta.G(i, :) = matUtils.logMakeDistribution(log((mod(1:params.k, m) == (i-1)) .* rand(1, params.k)));
+        theta.G(i, :) = matUtils.logMakeDistribution(log(((mod(1:params.k, m) == (i-1)) + eps) .* rand(1, params.k)));
     end
     [seqs, Y] = BaumWelchPWM.genSequencesJ(theta, params);
     overlaps = matUtils.vec2mat(Y(:, 1)', params.m)';
     lengths = ones(params.N, 1) * params.L;
-    save(fullfile('data', 'dummyDNA.mat'), 'seqs', 'lengths', 'overlaps', 'theta');
+    save(fullfile('data', 'dummyDNA.mat'), 'seqs', 'lengths', 'overlaps', 'theta', 'Y');
     mergedPeaksMin.seqs = seqs;
     mergedPeaksMin.overlaps = overlaps;
     mergedPeaksMin.lengths = lengths;

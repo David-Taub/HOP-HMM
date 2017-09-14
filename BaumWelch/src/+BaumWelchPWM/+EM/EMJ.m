@@ -70,7 +70,7 @@ function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, 
         theta.G = updateG(alpha, beta, X, params, theta, pcPWMp);
         % fprintf('Update T\n');
         theta.T = updateT(xi, gamma, params);
-
+        theta.F = updateF(xi, gamma, params);
         % fprintf('Update startT\n');
         theta.startT = updateStartT(gamma);
         iterLike(end+1) = matUtils.logMatSum(pX, 1);% / (N*L);
@@ -152,6 +152,17 @@ function newE = updateE(gamma, params, indicesHotMap)
 end
 
 
+% indicesHotMap - N x L x maxEIndex
+% gamma - N x m x L
+% E - m x 4 x 4 x 4 x ... x 4 (order times)
+function newF = updateF(xi, gamma, params)
+    newF = matUtils.logMatSum(matUtils.logMatSum(matUtils.logMatSum(xi(:,:,:,1:end-params.J-1), 3), 1), 4);
+    newF = newF - matUtils.logMatSum(matUtils.logMatSum(gamma(:,:,1:end-params.J-1), 3), 1);
+    exp(newF)
+    newF = log(1-exp(newF));
+end
+
+
 % gamma - N x m x L
 function newStartT = updateStartT(gamma)
     newStartT = matUtils.logMakeDistribution(matUtils.logMatSum(gamma(:, :, 1), 1))';
@@ -169,8 +180,6 @@ function newT = updateT(xi, gamma, params)
     newT = log(Tbound(params, exp(newT)));
 end
 
-% TODO: updateF?
-
 % X - N x L
 % pcPWMp - N x k x L
 % alpha - N x m x L
@@ -186,17 +195,13 @@ function newG = updateG(alpha, beta, X, params, theta, pcPWMp)
     Eps = BaumWelchPWM.EM.getEp3d(theta, params, X, 1:L, kronMN, matSize);
     newPsi = zeros(N, params.m, params.k, L-params.J-1);
     for t = 1:L-params.J-1
-        % N x m
-        mask = log(eps * ones(N, params.m));
-        mask(beta(:,:,t+1) < beta(:,:,t)) = 0;
-        % N x m x k
-        newPsi(:, :, :, t) = newPsi(:, :, :, t) + repmat(alpha(:,:,t), [1, 1,  params.k]);
+        % N x m x k x L - J - 1
+        newPsi(:, :, :, t) = newPsi(:, :, :, t) + repmat(alpha(:, :, t), [1, 1, params.k]);
         newPsi(:, :, :, t) = newPsi(:, :, :, t) + repmat(theta.F', [N, 1, params.k]);
         newPsi(:, :, :, t) = newPsi(:, :, :, t) + repmat(permute(theta.G, [3, 1, 2]), [N, 1, 1]);
         for l = 1:params.k
             newPsi(:, :, l, t) = newPsi(:, :, l, t) + beta(:, :, t+theta.lengths(l)+1);
             % N x m x k
-
             newPsi(:, :, l, t) = newPsi(:, :, l, t) + repmat(pcPWMp(:, l, t+1), [1, params.m]);
             newPsi(:, :, l, t) = newPsi(:, :, l, t) + Eps(:, :, t+theta.lengths(l)+1);
         end

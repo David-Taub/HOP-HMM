@@ -13,27 +13,27 @@ function mainPWM(mergedPeaksMin)
     params.m = 1;
     params.order = 3;
     [params.k, params.n, params.J] = size(BaumWelchPWM.PWMs());
-    params.tEpsilon = 0.0001;
+    params.tEpsilon = 1 / mergedPeaksMin.lengths(1);
     params.batchSize = 5;
     testTrainRatio = 0.10;
 
     [test, train] = preprocess(mergedPeaksMin, testTrainRatio);
 
-    dists = [];
-    for testTrainRatio = 0.95: -0.1: 0
-        [test, train] = preprocess(mergedPeaksMin, testTrainRatio);
-        theta = learnSingleMode(train.X, params, train.pcPWMp, 6, 5, mergedPeaksMin, 1);
-        dists(end + 1) = relativeEntropy(exp(mergedPeaksMin.originalTheta.G(1, :)'), exp(theta.G'));
-        figure
-        subplot(1,2,1); plot(dists)
-        subplot(1,2,2);
-        plot(exp(mergedPeaksMin.originalTheta.G(1, :)));ylim([0,1]);
-        hold on;
-        plot(exp(theta.G));ylim([0,1]);
-        legend('Original Theta','Trained Theta')
-        title('G')
-        drawnow;
-    end
+    % dists = [];
+    % for testTrainRatio = 0.95: -0.1: 0
+    %     [test, train] = preprocess(mergedPeaksMin, testTrainRatio);
+    %     theta = learnSingleMode(train.X, params, train.pcPWMp, 6, 5, mergedPeaksMin, 1);
+    %     dists(end + 1) = relativeEntropy(exp(mergedPeaksMin.originalTheta.G(1, :)'), exp(theta.G'));
+    %     figure
+    %     subplot(1,2,1); plot(dists)
+    %     subplot(1,2,2);
+    %     plot(exp(mergedPeaksMin.originalTheta.G(1, :)));ylim([0,1]);
+    %     hold on;
+    %     plot(exp(theta.G));ylim([0,1]);
+    %     legend('Original Theta','Trained Theta')
+    %     title('G')
+    %     drawnow;
+    % end
 
 
 
@@ -43,13 +43,13 @@ function mainPWM(mergedPeaksMin)
         % train each base state
         X = train.X(train.Y(:, 1, 1)==i, :);
         pcPWMp = train.pcPWMp(train.Y(:, 1, 1)==i, :, :);
-        learnedThetas{i} = learnSingleMode(X, params, pcPWMp, 3, 5, mergedPeaksMin, i);
+        learnedThetas{i} = learnSingleMode(X, params, pcPWMp, 6, 5, mergedPeaksMin, i);
         theta = learnedThetas{i};
     end
-    % learnedTheta = catThetas(params, learnedThetas);
-    % params.m = realM;
-    % classify(learnedTheta, params, test.X, test.pcPWMp, test.Y)
-    % classify(learnedTheta, params, train.X, train.pcPWMp, train.Y)
+    learnedTheta = catThetas(params, learnedThetas);
+    params.m = realM;
+    classify(learnedTheta, params, test.X, test.pcPWMp, test.Y)
+    classify(learnedTheta, params, train.X, train.pcPWMp, train.Y)
 
 
 
@@ -124,15 +124,28 @@ function accuracy = classify(theta, params, X, pcPWMp, Y)
     % gamma - N x m x L
     gamma = BaumWelchPWM.EM.makeGamma(params, alpha, beta, pX);
     g = permute(gamma, [1,3,2]);
-    c = permute(beta + alpha, [1,3,2]);
     figure;
-    subplot(1,3,1);imagesc(g(:,:)); colorbar
-    subplot(1,3,2);imagesc(Y); colorbar
-    subplot(1,3,3);imagesc(c(:,:)); colorbar
+    subplot(1,2,1);imagesc(g(:,:)); colorbar
+    title('gamma')
+    subplot(1,2,2);imagesc(sum(Y, 3)); colorbar
+    title('Y')
+
+    figure;
+    % subplot(1,2,1);
+    plot(g(1, :, 1));
+    hold on;
+    plot(g(1, :, 2));
+    % title('gamma')
+    % subplot(1,2,2);
+    plot(sum(Y(1, :, :), 3));
+    legend('1', '2', 'Y')
+    % title('Y')
+
+    keyboard
     % figure
     % hold on
     [~, YEst] = max(gamma(:, :, 1), [], 2);
-    accuracy = sum(Y(:, 1) == YEst) / size(Y, 1);
+    accuracy = sum(Y(:, 1, 1) == YEst) / size(Y, 1);
 end
 
 function [test, train] = preprocess(mergedPeaksMin, testTrainRatio)
@@ -154,12 +167,13 @@ function [test, train] = preprocess(mergedPeaksMin, testTrainRatio)
     % N x k x L
     pcPWMp = BaumWelchPWM.preComputePWMp(X);
     N = size(X, 1);
-    trainMask = rand(N, 1) > testTrainRatio;
+    % trainMask = rand(N, 1) > testTrainRatio;
+    trainMask = var(Y(:, :, 1), 0, 2) == 0;
     train.X = X(trainMask, :);
     train.Y = Y(trainMask, :, :);
     train.pcPWMp = pcPWMp(trainMask, :, :);
     test.X = X(~trainMask, :);
-    test.Y = Y(~trainMask, :);
+    test.Y = Y(~trainMask, :, :);
     test.pcPWMp = pcPWMp(~trainMask, :, :);
 end
 
@@ -230,7 +244,7 @@ function theta = catThetas(params, thetas)
     theta = BaumWelchPWM.genThetaUni(params);
     theta.G = reshape([thetas.G], [params.k, params.m])';
     theta.F = [thetas.F]';
-    theta.T = eye(params.m);% * (1 - (params.m * params.tEpsilon)) + params.tEpsilon;
+    theta.T = log(eye(params.m) * (1 - (params.m * params.tEpsilon)) + params.tEpsilon);
     theta.E = zeros([params.m, ones(1, params.order) * params.n]);
     for i = 1:params.m
         theta.E(i, :) = thetas(i).E(:);
