@@ -1,6 +1,7 @@
 function ret = logMatSum(A, dim)
-    ret = logMatSum2(A, dim, 1, size(A, dim));
+    % ret = logMatSum2(A, dim, 1, size(A, dim));
     % ret = logMatSum1(A, dim);
+    ret = logMatSum3(A, dim);
 
 
 end
@@ -14,6 +15,17 @@ function ret = logMatSum1(A, dim)
     for i = 1:size(A, dim)
         ret = matUtils.logAdd(ret, arraySlice(A, i, dim));
     end
+end
+
+% faster, but calculation error should be bigger
+function ret = logMatSum3(A, dim)
+    Amax = max(A, [], dim);
+    repSize = ones(1, length(size(A)));
+    repSize(dim) = size(A, dim);
+    Asub = A - repmat(Amax, repSize);
+    ret = Amax + log(sum(exp(Asub), dim));
+    ret(Amax == -inf) = -inf;
+    assert(not(any(isnan(ret(:)))))
 end
 
 % slower, but calculation error should be smaller
