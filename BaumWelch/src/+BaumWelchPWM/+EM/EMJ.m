@@ -25,17 +25,6 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, maxIter)
         X = X(randperm(N), :);
         initTheta = BaumWelchPWM.genThetaJ(params);
         [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, indicesHotMap, N, L);
-        % subplot(1,2,1);
-        % hold on;
-        % plot(iterLike);
-        % title('Log Likelihood')
-        % subplot(1,2,2);
-        % hold on;
-        % scatter(exp(theta.G(2)), exp(theta.G(4))', '*r');
-        % xlim([0,1]);ylim([0,1]);
-        % title('G')
-        % drawnow
-
         if bestLikelihood < iterLike(end)
             bestLikelihood = iterLike(end);
             bestTheta = theta;
@@ -158,7 +147,6 @@ end
 function newF = updateF(xi, gamma, params)
     newF = matUtils.logMatSum(matUtils.logMatSum(matUtils.logMatSum(xi(:,:,:,1:end-params.J-1), 3), 1), 4);
     newF = newF - matUtils.logMatSum(matUtils.logMatSum(gamma(:,:,1:end-params.J-1), 3), 1);
-    exp(newF)
     newF = log(1-exp(newF));
 end
 
@@ -179,40 +167,26 @@ function newT = updateT(xi, gamma, params)
     newT = matUtils.logMakeDistribution(newT);
     newT = log(Tbound(params, exp(newT)));
 end
-
 % X - N x L
 % pcPWMp - N x k x L
 % alpha - N x m x L
 % beta - N x m x L
 function newG = updateG(alpha, beta, X, params, theta, pcPWMp)
     [N, L] = size(X);
-    kronMN = kron(1:params.m, ones(1, N));
-    matSize = [params.m , params.n * ones(1, params.order)];
-    beta = cat(3, beta, -inf(N, params.m, params.J + 1));
-    batchAmount = round(N / params.batchSize);
-    newG = -inf(batchAmount, params.m, params.k);
     % N x m x L
-    Eps = BaumWelchPWM.EM.getEp3d(theta, params, X, 1:L, kronMN, matSize);
-    newPsi = zeros(N, params.m, params.k, L-params.J-1);
-    for t = 1:L-params.J-1
-        % N x m x k x L - J - 1
-        newPsi(:, :, :, t) = newPsi(:, :, :, t) + repmat(alpha(:, :, t), [1, 1, params.k]);
-        newPsi(:, :, :, t) = newPsi(:, :, :, t) + repmat(theta.F', [N, 1, params.k]);
-        newPsi(:, :, :, t) = newPsi(:, :, :, t) + repmat(permute(theta.G, [3, 1, 2]), [N, 1, 1]);
-        for l = 1:params.k
-            newPsi(:, :, l, t) = newPsi(:, :, l, t) + beta(:, :, t+theta.lengths(l)+1);
-            % N x m x k
-            newPsi(:, :, l, t) = newPsi(:, :, l, t) + repmat(pcPWMp(:, l, t+1), [1, params.m]);
-            newPsi(:, :, l, t) = newPsi(:, :, l, t) + Eps(:, :, t+theta.lengths(l)+1);
-        end
-    end
+    psi = BaumWelchPWM.EM.makePsi(alpha, beta, X, params, theta, pcPWMp);
     % note: batch trick is used to reduce the
     % calculation errors due to summing
     % many very small numbers in log space
-    newPsi = matUtils.logMatSum(newPsi, 4);
+
+    batchAmount = ceil(N / params.batchSize);
+    % batchAmount = 1;
+
+    newG = -inf(batchAmount, params.m, params.k);
+    psi = matUtils.logMatSum(psi, 4);
     for t = 1:N
         modT = mod(t, batchAmount)+1;
-        newG(modT, :, :) = matUtils.logAdd(newG(modT, :, :), newPsi(t, :, :));
+        newG(modT, :, :) = matUtils.logAdd(newG(modT, :, :), psi(t, :, :));
     end
     newG = exp(matUtils.logMakeDistribution(newG));
     newG = permute(log(mean(newG, 1)), [2,3,1]);

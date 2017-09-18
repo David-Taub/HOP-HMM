@@ -25,6 +25,7 @@ function out = preComputePWMpAux(Xs1H)
     PC_PWM_PROBABILITY_FILE = fullfile('data', 'precomputation', 'pcPWMp.mat');
     if ~isempty(pcPWMp) && all(size(pcPWMp) == [N, k, L])
         % in memory
+        fprintf('Pre-computed PWM probability from memory cache\n');
         out = pcPWMp;
         return;
     end
@@ -42,6 +43,7 @@ function out = preComputePWMpAux(Xs1H)
             end
         end
     end
+    fprintf('Calculating pre-computed PWM probability\n');
     pcPWMp = calculate(Xs1H, N, k, J, L);
     assert(not(any(isnan(pcPWMp(:)))))
     fprintf('Saving data in file %s...\n', PC_PWM_PROBABILITY_FILE);
