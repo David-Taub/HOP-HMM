@@ -8,9 +8,9 @@ function psi = makePsi(alpha, beta, X, params, theta, pcPWMp)
     kronMN = kron(1:params.m, ones(1, N));
     matSize = [params.m , params.n * ones(1, params.order)];
     Eps = BaumWelchPWM.EM.getEp3d(theta, params, X, 1:L, kronMN, matSize);
-    Eps = cat(3, Eps, -inf(N, params.m, params.J + 1));
-    pcPWMp = cat(3, pcPWMp, -inf(N, params.k, 1));
-    beta = cat(3, beta, -inf(N, params.m, params.J + 1));
+    Eps = cat(3, Eps, zeros(N, params.m, params.J + 1));
+    pcPWMp = cat(3, pcPWMp, zeros(N, params.k, 1));
+    beta = cat(3, beta, zeros(N, params.m, params.J + 1));
     % N x m x L
     psi = zeros(N, params.m, params.k, L);
     for t = 1:L

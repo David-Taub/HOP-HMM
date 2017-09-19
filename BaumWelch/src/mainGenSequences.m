@@ -1,14 +1,13 @@
 
 % mainGenSequences(20, 50);
-function mergedPeaksMin = mainGenSequences(N, L, m)
+function mergedPeaksMin = mainGenSequences(N, L, m, isMixed)
     clear pcPWMp
     delete(fullfile('data', 'precomputation', 'pcPWMp.mat'));
     params.m = m;
     params.order = 3;
     params.N = N;
     params.L = L;
-    params.tEpsilon = 1 / L;
-    params.tEpsilon = 0;
+    params.tEpsilon = isMixed * (1 / L);
     [PWMs, ~] = BaumWelchPWM.PWMs();
     [params.k, params.n, params.J] = size(PWMs);
 

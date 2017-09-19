@@ -5,7 +5,7 @@
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
 % mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
 % mergedPeaksMin = load(fullfile('data', 'dummyDNA.mat'));
-% mergedPeaksMin = mainGenSequences(500, 400, 2);
+% mergedPeaksMin = mainGenSequences(1000, 600, 2, true);
 % mainPWM(mergedPeaksMin);
 
 
@@ -15,8 +15,8 @@ function mainPWM(mergedPeaksMin)
     params.m = 1;
     params.order = 3;
     [params.k, params.n, params.J] = size(BaumWelchPWM.PWMs());
-    % params.tEpsilon = 1 / mergedPeaksMin.lengths(1);
-    params.tEpsilon = 0;
+    params.tEpsilon = 1 / mergedPeaksMin.lengths(1);
+    % params.tEpsilon = 0;
     params.batchSize = 2;
     testTrainRatio = 0.10;
 
@@ -52,8 +52,10 @@ function mainPWM(mergedPeaksMin)
     end
     learnedTheta = catThetas(params, learnedThetas);
     params.m = realM;
-    [accuricy1, accuricy2] = classify(learnedTheta, params, test.X, test.pcPWMp, test.Y)
-    [accuricy1, accuricy2] = classify(learnedTheta, params, train.X, train.pcPWMp, train.Y)
+    accuricy = classify(learnedTheta, params, test.X, test.pcPWMp, test.Y)
+    title('Test Dataset')
+    accuricy = classify(learnedTheta, params, train.X, train.pcPWMp, train.Y)
+    title('Train Dataset')
 
 
     % % merge thetas
@@ -139,18 +141,10 @@ function Yest = genEstimation(params, theta, gamma, psi)
     Y2Est = zeros(N, L);
     Y2Est(subModeMask) = subModes(subModeMask);
     Yest = cat(3, Y1Est, Y2Est);
-    % mean(subModeMask(:))
 
-    figure
-    plot(skewedPsi(4,:, 2, 1));
-    hold on
-    plot(skewedPsi(4,:, 2, 2));
-    plot(skewedPsi(4,:, 1, 1));
-    plot(skewedPsi(4,:, 1, 2));
-    legend('2,1', '2,2', '1,1', '1,2')
 end
 
-function [accuricy1, accuricy2] = classify(theta, params, X, pcPWMp, Y)
+function accuricy = classify(theta, params, X, pcPWMp, Y)
     [N, L] = size(X);
     fprintf('Calculating alpha...\n')
     % N x m x L
@@ -165,7 +159,7 @@ function [accuricy1, accuricy2] = classify(theta, params, X, pcPWMp, Y)
     % N x m x k x L
     psi = BaumWelchPWM.EM.makePsi(alpha, beta, X, params, theta, pcPWMp);
 
-    g = permute(gamma, [1, 3, 2]);
+    % g = permute(gamma, [1, 3, 2]);
     % figure;
     % plot(g(1, :, 1));
     % hold on;
@@ -183,17 +177,15 @@ function [accuricy1, accuricy2] = classify(theta, params, X, pcPWMp, Y)
 
     psiSub = psi - repmat(pX, [1, params.m, params.k, L]);
     Yest = genEstimation(params, theta, gamma, psiSub);
-    Ymatch = Y == Yest;
+    Ymatch = all(Y == Yest, 3);
 
     figure;
     Ypresent = Y(:, :, 1);
-    Ypresent(Y(:, :, 1) ~= Yest(:, :, 1)) = params.m + 1;
+    Ypresent(~Ymatch) = params.m + 1;
     imagesc(Ypresent);
     colormap([1,0,0; 1,1,1; 1,0.5,0.5]);
     caxis([1,3])
-
-    accuricy1 = mean(mean(Ymatch(:, :, 1), 2), 1);
-    accuricy2 = mean(mean(Ymatch(:, :, 2), 2), 1);
+    accuricy = mean(Ymatch(:), 1);
 end
 
 function [test, train] = preprocess(mergedPeaksMin, testTrainRatio)
@@ -216,8 +208,11 @@ function [test, train] = preprocess(mergedPeaksMin, testTrainRatio)
     % N x k x L
     pcPWMp = BaumWelchPWM.preComputePWMp(X);
     N = size(X, 1);
-    trainMask = rand(N, 1) > testTrainRatio;
-    % trainMask = var(Y(:, :, 1), 0, 2) == 0;
+    if size(overlaps, 2) > 1
+        trainMask = var(Y(:, :, 1), 0, 2) == 0;
+    else
+        trainMask = rand(N, 1) > testTrainRatio;
+    end
     train.X = X(trainMask, :);
     train.Y = Y(trainMask, :, :);
     train.pcPWMp = pcPWMp(trainMask, :, :);

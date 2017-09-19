@@ -18,12 +18,14 @@ end
 function out = preComputePWMpAux(Xs1H)
     % pcPWMp - N x k x L
     persistent pcPWMp
+    persistent sample
     [PWMs, ~] = BaumWelchPWM.PWMs();
     [k, ~, J] = size(PWMs);
     [N, L, ~] = size(Xs1H);
     % L = L - fJ;
     PC_PWM_PROBABILITY_FILE = fullfile('data', 'precomputation', 'pcPWMp.mat');
-    if ~isempty(pcPWMp) && all(size(pcPWMp) == [N, k, L])
+    newSample = Xs1H(1:400);
+    if ~isempty(pcPWMp) && all(newSample == sample)
         % in memory
         fprintf('Pre-computed PWM probability from memory cache\n');
         out = pcPWMp;
@@ -33,8 +35,8 @@ function out = preComputePWMpAux(Xs1H)
         if exist(PC_PWM_PROBABILITY_FILE, 'file') == 2
             fprintf('Loading pre-computed PWM from %s...\n', PC_PWM_PROBABILITY_FILE);
             load(PC_PWM_PROBABILITY_FILE, 'pcPWMp');
-            if all(size(pcPWMp) == [N, k, L])
-                fprintf('data size match\n');
+            if all(newSample == sample)
+                fprintf('data match\n');
                 % loaded from file, same size
                 out = pcPWMp;
                 return;
@@ -45,9 +47,10 @@ function out = preComputePWMpAux(Xs1H)
     end
     fprintf('Calculating pre-computed PWM probability\n');
     pcPWMp = calculate(Xs1H, N, k, J, L);
+    sample = newSample;
     assert(not(any(isnan(pcPWMp(:)))))
     fprintf('Saving data in file %s...\n', PC_PWM_PROBABILITY_FILE);
-    save(PC_PWM_PROBABILITY_FILE, 'pcPWMp', '-v7.3');
+    save(PC_PWM_PROBABILITY_FILE, 'pcPWMp', 'sample', '-v7.3');
     fprintf('Done saving.\n');
 
     out = pcPWMp;
