@@ -47,7 +47,7 @@ function mainPWM(mergedPeaksMin)
         X = train.X(train.Y(:, 1, 1)==i, :);
         pcPWMp = train.pcPWMp(train.Y(:, 1, 1)==i, :, :);
         params.m = 1;
-        learnedThetas{i} = learnSingleMode(X, params, pcPWMp, 6, 5, mergedPeaksMin, i);
+        learnedThetas{i} = learnSingleMode(X, params, pcPWMp, 3, mergedPeaksMin, i);
         theta = learnedThetas{i};
     end
     learnedTheta = catThetas(params, learnedThetas);
@@ -120,8 +120,9 @@ end
 % psi - N x m x k x L
 function Yest = genEstimation(params, theta, gamma, psi)
     [N, ~, L] = size(gamma);
-
-    [gammaMaxVals, Y1Est] = max(permute(gamma, [1, 3, 2]), [], 3);
+    % N x L x m
+    gammaPer = permute(gamma, [1, 3, 2]);
+    [gammaMaxVals, YestBaseStates] = max(gammaPer, [], 3);
 
     % N x m x k x L -> N x L x m x k
     psiPer = cat(2, -inf(N, params.J, params.m, params.k), permute(psi, [1, 4, 2, 3]));
@@ -133,14 +134,16 @@ function Yest = genEstimation(params, theta, gamma, psi)
     end
     % N x L x m x k -> N x L
     [psiMaxVals, psiMaxInd] = max(skewedPsi(:,:,:), [], 3);
-    subModes = floor((psiMaxInd - 1) / params.m) + 1;
-    baseModes = mod(psiMaxInd - 1, params.m) + 1;
-    subModeMask = psiMaxVals > gammaMaxVals;
+    subStates = floor((psiMaxInd - 1) / params.m) + 1;
+    baseStates = mod(psiMaxInd - 1, params.m) + 1;
+    subStateMask = psiMaxVals > gammaMaxVals;
     % N x L
-    Y1Est(subModeMask) = baseModes(subModeMask);
-    Y2Est = zeros(N, L);
-    Y2Est(subModeMask) = subModes(subModeMask);
-    Yest = cat(3, Y1Est, Y2Est);
+    YestBaseStates(subStateMask) = baseStates(subStateMask);
+    YestSubStates = zeros(N, L);
+    YestSubStates(subStateMask) = subStates(subStateMask);
+    Yest = cat(3, YestBaseStates, YestSubStates);
+
+    % Yest1 = max(matUtils.logAdd(matUtils.logMatSum(skewedPsi, 4), gammaPer), [], 3);
 
 end
 
@@ -177,15 +180,52 @@ function accuricy = classify(theta, params, X, pcPWMp, Y)
 
     psiSub = psi - repmat(pX, [1, params.m, params.k, L]);
     Yest = genEstimation(params, theta, gamma, psiSub);
-    Ymatch = all(Y == Yest, 3);
+    YmatchBoth = all(Y == Yest, 3);
+    YmatchBase = Y(:, :, 1) == Yest(:, :, 1);
 
     figure;
+    subplot(1,3,1);
     Ypresent = Y(:, :, 1);
-    Ypresent(~Ymatch) = params.m + 1;
+    Ypresent(~YmatchBoth) = params.m + 1;
     imagesc(Ypresent);
     colormap([1,0,0; 1,1,1; 1,0.5,0.5]);
     caxis([1,3])
-    accuricy = mean(Ymatch(:), 1);
+    title('State Estimation')
+    drawnow;
+
+    subplot(1,3,2);
+    Ypresent = Y(:, :, 1);
+    Ypresent(~YmatchBase) = params.m + 1;
+    imagesc(Ypresent);
+    colormap([1,0,0; 1,1,1; 1,0.5,0.5]);
+    caxis([1,3])
+    drawnow;
+    title('Floor Estimation')
+
+    errorLengths = [];
+    isInError = false;
+    for i = 1:N
+        for j = 1:L
+            if YmatchBase(i, j) == true
+                isInError = false;
+            else
+                if isInError
+                    errorLengths(end) = errorLengths(end) + 1;
+                else
+                    errorLengths(end + 1) = 1;
+                end
+                isInError = true;
+            end
+        end
+        isInError = false;
+    end
+    subplot(1,3,3);
+    histogram(errorLengths, 100, 'Normalization', 'probability');
+    title('Floor Errors Lengths Distribution')
+    mean(errorLengths)
+
+    accuricy = mean(YmatchBoth(:), 1)
+    accuricy = mean(YmatchBase(:), 1)
 end
 
 function [test, train] = preprocess(mergedPeaksMin, testTrainRatio)
@@ -224,7 +264,7 @@ end
 
 % pcPWMp - N x k x L-1+J
 % X - N x L
-function [theta] = learnSingleMode(X, params, pcPWMp, maxIter, parts, mergedPeaksMin, Ymode)
+function [theta] = learnSingleMode(X, params, pcPWMp, maxIter, mergedPeaksMin, Ymode)
     [theta, ~] = BaumWelchPWM.EM.EMJ(X, params, pcPWMp, maxIter);
     figure
     subplot(1,3,2);
