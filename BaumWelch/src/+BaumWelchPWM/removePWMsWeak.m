@@ -1,6 +1,5 @@
 % PWMs - k x n x J
-function [PWMs, lengths, names] = removePWMsWeak(PWMs, lengths, names)
-    PART_TO_REMOVE = 0.97;
+function [PWMs, lengths, names] = removePWMsWeak(PWMs, lengths, names, partsToRemove)
     % k x J
     vars = var(exp(PWMs), 0, 2);
     % k x 1
@@ -10,10 +9,10 @@ function [PWMs, lengths, names] = removePWMsWeak(PWMs, lengths, names)
     varMeans = varSums;
 
     [~, inds] = sort(varMeans, 1);
-    strongMap = inds(round(length(inds)*PART_TO_REMOVE):end);
+    strongMap = inds(round(length(inds)*partsToRemove):end);
 
     figure
-    i = inds(round(length(inds)*PART_TO_REMOVE));
+    i = inds(round(length(inds)*partsToRemove));
     imagesc(permute(exp(PWMs(i,:,:)), [2,3,1]));
 
     PWMs = PWMs(strongMap, :, :);

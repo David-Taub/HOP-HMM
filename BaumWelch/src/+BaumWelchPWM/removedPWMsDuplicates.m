@@ -1,7 +1,6 @@
 % PWMs - k x J x n
-function [PWMs, lengths, names] = removedPWMsDuplicates(PWMs, lengths, names)
-    % PART_TO_REMOVE = 1 / 15;
-    PART_TO_REMOVE = 1 / 75;
+function [PWMs, lengths, names] = removedPWMsDuplicates(PWMs, lengths, names, partToRemove)
+
     close all;
     k = size(PWMs, 1);
     dist = zeros(k, k);
@@ -15,7 +14,7 @@ function [PWMs, lengths, names] = removedPWMsDuplicates(PWMs, lengths, names)
         end
     end
     d = sort(dist(:));
-    thresh = d(end - round(k*k*PART_TO_REMOVE));
+    thresh = d(round(k*k*partToRemove));
     uniqueMask = all(dist <= thresh, 2);
 
     dd = dist(uniqueMask, :);
