@@ -1,4 +1,5 @@
-% load('data/peaks/merged/mergedPeaks.mat');
+% cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
+% load('data/peaks/raw/roadmap/merged/mergedPeaks.mat');
 % peaks.minimizeMergePeak(mergedPeaks, 500);
 function minimizeMergePeak(mergedPeaks, L)
     TOP_PEAKS_HEIGHT_PERCENT = 0.50;
@@ -13,6 +14,7 @@ function minimizeMergePeak(mergedPeaks, L)
     seqs = trimSeqs(mergedPeaks, L);
     [seqs, overlaps, lengths] = removeNonLetters(seqs, overlaps, lengths);
     size(overlaps)
+    lengths = double(lengths);
 
     fprintf('save\n');
     save('data/peaks/roadmap/mergedPeaksMinimized.mat', 'seqs', 'overlaps', 'lengths')

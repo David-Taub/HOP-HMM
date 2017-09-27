@@ -12,7 +12,7 @@ function [PWMs, lengths, names] = removePWMsWeak(PWMs, lengths, names, partsToRe
     strongMap = inds(round(length(inds)*partsToRemove):end);
 
     figure
-    i = inds(round(length(inds)*partsToRemove));
+    i = inds(ceil(length(inds)*partsToRemove));
     imagesc(permute(exp(PWMs(i,:,:)), [2,3,1]));
 
     PWMs = PWMs(strongMap, :, :);

@@ -6,16 +6,16 @@ function [PWMs, lengths, names] = removedPWMsDuplicates(PWMs, lengths, names, pa
     dist = zeros(k, k);
     for i=1:k
         for j=i+1:k
-            a = permute(PWMs(i, :, :), [2,3,1]);
-            b = permute(PWMs(j, :, :), [2,3,1]);
+            a = permute(PWMs(i, :, :), [2, 3, 1]);
+            b = permute(PWMs(j, :, :), [2, 3, 1]);
             c = conv2(a, rot90(b, 2));
             dist(i, j) = max(c(4,:));
-            dist(i, j) = dist(i, j) / min(lengths(i),lengths(j));
+            dist(i, j) = dist(i, j) / min(lengths(i), lengths(j));
         end
     end
     d = sort(dist(:));
-    thresh = d(round(k*k*partToRemove));
-    uniqueMask = all(dist <= thresh, 2);
+    thresh = d(ceil(k*k*partToRemove));
+    uniqueMask = all(thresh <= dist, 2);
 
     dd = dist(uniqueMask, :);
     dd = dd(:, uniqueMask);

@@ -4,7 +4,8 @@ function preprocessPWMs()
 	S = load('data/PWMsRaw.mat');
 	PWM = S.PWMs;
 	names = S.names;
-	DUPLICATES_FACTOR = 0.97; STRENGTH_FACTOR = 0.50; % 519 -> 26
+	% DUPLICATES_FACTOR = 0.97; STRENGTH_FACTOR = 0.50; % 519 -> 26
+	DUPLICATES_FACTOR = 0.1; STRENGTH_FACTOR = 0.1; % 519 -> 446
 	% DUPLICATES_FACTOR = 0.97; STRENGTH_FACTOR = 0.97; % 519 -> 2
 	% DUPLICATES_FACTOR = 0.97; STRENGTH_FACTOR = 0.95; % 519 -> 3
 	% DUPLICATES_FACTOR = 0.97; STRENGTH_FACTOR = 0.91; % 519 -> 5
@@ -21,7 +22,6 @@ function preprocessPWMs()
 	length(lengths)
 	[PWM, lengths, names] = BaumWelchPWM.removedPWMsDuplicates(PWM, lengths, names, DUPLICATES_FACTOR);
 	length(lengths)
-	% [PWM, lengths, names] = BaumWelchPWM.removePWMsWeak(PWM, lengths, names, 0.50);
 	[PWM, lengths, names] = BaumWelchPWM.removePWMsWeak(PWM, lengths, names, STRENGTH_FACTOR);
 	length(lengths)
 	save('data/PWMs.mat', 'PWM', 'lengths', 'names');
