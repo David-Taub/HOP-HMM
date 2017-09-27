@@ -1,7 +1,10 @@
-
-function auc = getAucRoc(pos, neg, shouldPlot)
-    if mean(pos, 1) < mean(neg, 1)
+% pos - N1 x 1
+% neg - N2 x 1
+function [auc, wasSwitched] = getAucRoc(pos, neg, shouldPlot, shouldSwitch)
+    wasSwitched = false;
+    if mean(pos, 1) < mean(neg, 1) & shouldSwitch
         [pos, neg] = deal(neg, pos);
+        wasSwitched = true;
     end
     scores = [pos;neg];
     labels = [ones(length(pos), 1); zeros(length(neg), 1)];
