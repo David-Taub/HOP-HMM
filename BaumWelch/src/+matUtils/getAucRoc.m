@@ -1,5 +1,10 @@
 
 function auc = getAucRoc(pos, neg, shouldPlot)
+    if length(pos) == 0 || length(neg) == 0
+        auc = 0;
+        return
+    end
+
     if mean(pos, 1) < mean(neg, 1)
         [pos, neg] = deal(neg, pos);
     end

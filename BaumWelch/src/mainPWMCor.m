@@ -275,7 +275,7 @@ function [overlaps, Xs, maxPeaks] = genData(mergedPeaksMin)
     overlaps = mergedPeaksMin.overlaps(:, :);
     mask = mergedPeaksMin.lengths >= L;
     mask = mask & (sum(overlaps > 0, 2) == 1);
-    % mask = mask & rand(size(mask, 1), 1) < 0.005;
+    mask = mask & rand(size(mask, 1), 1) < 0.05;
     overlaps = overlaps(mask, :);
     Xs = mergedPeaksMin.seqs(mask, :);
 
