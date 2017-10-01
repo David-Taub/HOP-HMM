@@ -17,38 +17,13 @@ function mainRealData(mergedPeaksMin)
     params.m = 1;
     params.order = 3;
     [params.k, params.n, params.J] = size(BaumWelchPWM.PWMs());
-    params.tEpsilon = 1 ./ mergedPeaksMin.lengths(1)
+    params.tEpsilon = 1 ./ mergedPeaksMin.lengths(1);
     % params.tEpsilon = 0;
     params.batchSize = 2;
     testTrainRatio = 0.10;
 
     [test, train] = preprocess(mergedPeaksMin, testTrainRatio);
-    % N x k x L -> N x k
-    % keyboard
-    sortedPWMs = sort(train.pcPWMp, 3);
-    PWMmax = sum(sortedPWMs(:, :, end-10: end), 3);
-    pos = PWMmax(train.Y == 1, :);
-    neg = PWMmax(train.Y ~= 1, :);
-    aucRocs = zeros(params.k, 1);
-    aucRocsSign = false(params.k, 1);
-    for i = 1 : params.k
-        [aucRocs(i),aucRocsSign(i)] = matUtils.getAucRoc(pos(:, i), neg(:, i), false, true);
-        fprintf('%d - %.2f\n', i, aucRocs(i))
-    end
-    [PWM, lengths, names] = BaumWelchPWM.PWMs();
-    [b, i] = max(aucRocs, [], 1);
-
-    fprintf('The best: %s - %.2f\n', names{i}, b)
-
-    [bests, is] = sort(aucRocs, 1);
-    sortedPWMs(:, aucRocsSign==1, :) = -sortedPWMs(:, aucRocsSign==1, :);
-    PWMmaxOfBest = sum(sum(sortedPWMs(:, is(end-2:end), end-10 : end), 3), 2);
-    pos = PWMmaxOfBest(train.Y == 1);
-    neg = PWMmaxOfBest(train.Y ~= 1);
-    fprintf('sum of best: %.2f\n', matUtils.getAucRoc(pos, neg, false, true))
-
-    return
-
+    rocAucTest(params, train.pcPWMp, train.Y);
 
     learnedThetas = {};
     realM = max(train.Y, [] , 1);
@@ -57,7 +32,7 @@ function mainRealData(mergedPeaksMin)
         X = train.X(train.Y(:, 1, 1)==i, :);
         pcPWMp = train.pcPWMp(train.Y(:, 1, 1)==i, :, :);
         params.m = 1;
-        learnedThetas{i} = learnSingleMode(X, params, pcPWMp, 3);
+        learnedThetas{i} = learnSingleMode(X, params, pcPWMp, 5);
         theta = learnedThetas{i};
     end
     learnedTheta = catThetas(params, learnedThetas);
@@ -125,6 +100,31 @@ function mainRealData(mergedPeaksMin)
     % [~, YsEst] = max(theta.gamma(:,:,1:end-params.J), [], 10);
     % YsEst = permute(YsEst, [1,3,2]);
     % calcError(Y(:)', YsEst(:)');
+end
+
+function rocAucTest(params, pcPWMp, Y)
+
+    sortedPWMs = sort(pcPWMp, 3);
+    PWMmax = sum(sortedPWMs(:, :, end-10: end), 3);
+    pos = PWMmax(Y == 1, :);
+    neg = PWMmax(Y ~= 1, :);
+    aucRocs = zeros(params.k, 1);
+    aucRocsSign = false(params.k, 1);
+    for i = 1 : params.k
+        [aucRocs(i),aucRocsSign(i)] = matUtils.getAucRoc(pos(:, i), neg(:, i), false, true);
+        fprintf('%d - %.2f\n', i, aucRocs(i))
+    end
+    [PWM, lengths, names] = BaumWelchPWM.PWMs();
+    [b, i] = max(aucRocs, [], 1);
+
+    fprintf('The best: %s - %.2f\n', names{i}, b)
+
+    [bests, is] = sort(aucRocs, 1);
+    sortedPWMs(:, aucRocsSign==1, :) = -sortedPWMs(:, aucRocsSign==1, :);
+    PWMmaxOfBest = sum(sum(sortedPWMs(:, is(end-2:end), end-10 : end), 3), 2);
+    pos = PWMmaxOfBest(Y == 1);
+    neg = PWMmaxOfBest(Y ~= 1);
+    fprintf('sum of best: %.2f\n', matUtils.getAucRoc(pos, neg, false, true))
 end
 % gamma - N x m x L
 % psi - N x m x k x L
@@ -239,14 +239,17 @@ end
 
 function [test, train] = preprocess(mergedPeaksMin, testTrainRatio)
     L = size(mergedPeaksMin.seqs, 2);
-    % overlaps = mergedPeaksMin.overlaps(:, :);
-    overlaps = mergedPeaksMin.overlaps(:, [1, 30]);
+    types = [14, 15];
+    overlaps = mergedPeaksMin.overlaps(:, :);
+    % overlaps = mergedPeaksMin.overlaps(:, [2, 30]);
     mask = true(size(overlaps, 1), 1);
     mask = mask & mergedPeaksMin.lengths <= L;
     mask = mask & (sum(overlaps > 0, 2) == 1);
+    mask = mask & (sum(overlaps(:, types) > 0, 2) == 1);
     % mask = mask & mergedPeaksMin.Y(:,1,1) == 1;
-    mask = mask & mod(1:size(mask,1), 20).' == 0;
+    mask = mask & mod(1:size(mask,1), 5).' == 0;
     overlaps = overlaps(mask, :);
+    overlaps = overlaps(:, types);
     X = mergedPeaksMin.seqs(mask, :);
     [overlaps, seqInd] = sortrows(overlaps);
     X = X(seqInd, :);
