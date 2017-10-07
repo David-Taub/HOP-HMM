@@ -5,7 +5,7 @@
 %            at place i, j, t we have the likelihood of seq_i at t:t+J, with PWM j
 % Eps - N x m x k
 % res - N x m
-function ret = PWMstep(slice, Gs, ts, pcPWMp, Eps, Fs)
+function ret = PWMstep(slice, Gs, ts, pcPWMp, Eps)
     [N, m, k] = size(slice);
     % probability to get into the PWM submode
     % N x m x k
@@ -22,7 +22,6 @@ function ret = PWMstep(slice, Gs, ts, pcPWMp, Eps, Fs)
     tsPWMps = repmat(tsPWMp, [1, m, 1]);
 
     ret = slice + Gs;
-    ret = ret + Fs;
     ret = ret + tsPWMps;
     ret = ret + Eps;
     ret(:,:,subZeroMask) = -inf;

@@ -54,12 +54,10 @@ function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, 
         % gamma - N x m x L
         gamma = BaumWelchPWM.EM.makeGamma(params, alpha, beta, pX);
         % fprintf('Update E\n');
+        psi = BaumWelchPWM.EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
         theta.E = updateE(gamma, params, indicesHotMap);
         % fprintf('Update G\n');
-        theta.G = updateG(alpha, beta, X, params, theta, pcPWMp);
-        % fprintf('Update T\n');
-        theta.T = updateT(xi, gamma, params);
-        theta.F = updateF(xi, gamma, params);
+        [theta.G, theta.T] = updateGT(params, theta, xi, gamma);
         % fprintf('Update startT\n');
         theta.startT = updateStartT(gamma);
         iterLike(end+1) = matUtils.logMatSum(pX, 1);% / (N*L);
@@ -68,7 +66,6 @@ function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, 
         assert(not(any(isnan(theta.T(:)))))
         assert(not(any(isnan(theta.E(:)))))
         assert(not(any(isnan(theta.G(:)))))
-        assert(not(any(isnan(theta.F(:)))))
         assert(not(any(isnan(alpha(:)))))
         assert(not(any(isnan(beta(:)))))
 
@@ -141,16 +138,6 @@ function newE = updateE(gamma, params, indicesHotMap)
 end
 
 
-% indicesHotMap - N x L x maxEIndex
-% gamma - N x m x L
-% E - m x 4 x 4 x 4 x ... x 4 (order times)
-function newF = updateF(xi, gamma, params)
-    newF = matUtils.logMatSum(matUtils.logMatSum(matUtils.logMatSum(xi(:,:,:,1:end-params.J-1), 3), 1), 4);
-    newF = newF - matUtils.logMatSum(matUtils.logMatSum(gamma(:,:,1:end-params.J-1), 3), 1);
-    newF = log(1-exp(newF));
-end
-
-
 % gamma - N x m x L
 function newStartT = updateStartT(gamma)
     newStartT = matUtils.logMakeDistribution(matUtils.logMatSum(gamma(:, :, 1), 1))';
@@ -158,48 +145,55 @@ function newStartT = updateStartT(gamma)
     assert(size(newStartT, 1) > 0)
 end
 
+
+
 % xi - N x m x m x L
-% gamma - N x m x L
-% newT - m x m
-function newT = updateT(xi, gamma, params)
-    newT = permute(matUtils.logMatSum(matUtils.logMatSum(xi, 1), 4), [2, 3, 1]);
-    newT = newT - repmat(matUtils.logMatSum(matUtils.logMatSum(gamma, 1), 3), [params.m,1]).';
-    newT = matUtils.logMakeDistribution(newT);
-    newT = log(Tbound(params, exp(newT)));
-end
-% X - N x L
-% pcPWMp - N x k x L
 % alpha - N x m x L
 % beta - N x m x L
-function newG = updateG(alpha, beta, X, params, theta, pcPWMp)
-    [N, L] = size(X);
-    % N x m x L
-    psi = BaumWelchPWM.EM.makePsi(alpha, beta, X, params, theta, pcPWMp);
+% gamma - N x m x L
+% newT - m x m
+function [newG, newT] = updateGT(params, theta, xi, gamma)
+    [N, ~, ~, L] = size(gamma);
+    % keyboard
+
     % note: batch trick is used to reduce the
     % calculation errors due to summing
     % many very small numbers in log space
 
+    % N x m x k x L
     batchAmount = ceil(N / params.batchSize);
-    % batchAmount = 1;
-
-    newG = -inf(batchAmount, params.m, params.k);
-    psi = matUtils.logMatSum(psi, 4);
-    for t = 1:N
-        modT = mod(t, batchAmount)+1;
-        newG(modT, :, :) = matUtils.logAdd(newG(modT, :, :), psi(t, :, :));
+    % % batchAmount = 1;
+    psiXiMerged = cat(3, psi, xi);
+    psiXiMerged = psiXiMerged(:, :, :, 1:end-params.J);
+    psiXiMerged = psiXiMerged - permute(repmat(gamma(:,:,1:end-params.J), [1, 1, 1, params.k+params.m]), [1,2,4,3]);
+    psiXiMerged = matUtils.logMatSum(psiXiMerged, 4);
+    mergedBatches = -inf(batchAmount, params.m, params.k+params.m);
+    for u = 1:batchAmount
+        batchMask = mod(1:N, batchAmount) == u-1;
+        batch = psiXiMerged(batchMask, :, :);
+        % batchSize x m x k+m x L-J
+        mergedBatches(u, :, :) = matUtils.logMatSum(batch, 1);
+        mergedBatches(u, :, :) = matUtils.logMakeDistribution(mergedBatches(u, :, :));
     end
-    newG = exp(matUtils.logMakeDistribution(newG));
-    newG = permute(log(mean(newG, 1)), [2,3,1]);
+    % batchSize x m x k+m -> m x k+m
+    mergedAveraged = matUtils.logMatSum(mergedBatches, 1);
+    mergedAveraged = matUtils.logMakeDistribution(mergedAveraged);
+    mergedAveraged = permute(mergedAveraged, [2,3,1]);
+    newG = mergedAveraged(:, 1:params.k);
+    newT = log(Tbound(params, exp(mergedAveraged(:, params.k+1:end))));
 end
+
 
 % newT - m x m
 % T - m x m
 function newT = Tbound(params, T)
-    for i = 1 : params.m
-        if T(i, i) < 1-params.tEpsilon;
-            T(i, :) = T(i, :) * (params.tEpsilon / (1-T(i, i)));
-            T(i, i) = 1-params.tEpsilon;
-        end
+    if params.m == 1
+        newT = T;
+        return;
     end
-    newT = T;
+    nonDiagSum = sum(T, 2) - diag(T);
+    overflows = nonDiagSum - params.tEpsilon;
+    overflows(overflows < 0) = 0;
+    newT = (T ./ repmat(nonDiagSum, [1, params.m])) .* params.tEpsilon;
+    newT = newT + diag(diag(T) + overflows);
 end

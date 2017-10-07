@@ -15,8 +15,6 @@ function beta = backwardAlgJ(X, theta, params, pcPWMp)
     beta = cat(3, zeros(N, params.m, L), -inf(N, params.m, params.J));
     % performance optimization
     Gs = repmat(shiftdim(theta.G, -1), [N, 1, 1]);
-    Fs = repmat(theta.F.', [N, 1, params.k]);
-    compF = repmat(log(1-exp(theta.F))', [N, 1]);
     expT = exp(theta.T.');
     for t = L : -1 : 2
         % fprintf('Backward algorithm %.2f%%\r', 100 * (L-t+2) / L);
@@ -25,21 +23,15 @@ function beta = backwardAlgJ(X, theta, params, pcPWMp)
         % N x m
         Ep = BaumWelchPWM.EM.getEp(theta, params, X, t, kronMN, matSize);
 
-        % No  1 2 PWM2 PWM2 2 1
-        % Yes 1 2 PWM2 2 1 <== in non all to all mode, only these hidden states is legal
-        % No  1 2 PWM2 1 1
-        % No  1 1 PWM2 2 1
-        % No  1 1 PWM2 1 1
-        % No  1 1 PWM2 PWM2 1 1
 
         % N x m x k
         EpReturn = BaumWelchPWM.EM.getEp3d(theta, params, X, t+theta.lengths, kronMN, matSize);
         % N x m x k
         betaSlice = beta(:, :, t+theta.lengths);
         % N x m
-        subStateStep = BaumWelchPWM.EM.PWMstep(betaSlice, Gs, repmat(t, [params.k, 1]), pcPWMp, EpReturn, Fs);
+        subStateStep = BaumWelchPWM.EM.PWMstep(betaSlice, Gs, repmat(t, [params.k, 1]), pcPWMp, EpReturn);
         % N x m
-        baseStateStep = matUtils.logMatProd(Ep + beta(:, :, t), theta.T') + compF;
+        baseStateStep = matUtils.logMatProd(Ep + beta(:, :, t), theta.T');
         beta(:,:,t-1) = matUtils.logAdd(baseStateStep, subStateStep);
     end
     beta = beta(:, :, 1:L);

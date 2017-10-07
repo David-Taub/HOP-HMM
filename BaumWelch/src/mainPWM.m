@@ -1,11 +1,10 @@
 % mainGenSequences();
-% load(fullfile('data', 'dummyDNA.mat'));
 % pcPWMp = BaumWelchPWM.preComputePWMp(X);
 % mainPWM(pcPWMp, X, Y);
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
 % mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
 % mergedPeaksMin = load(fullfile('data', 'dummyDNA.mat'));
-% mergedPeaksMin = mainGenSequences(1000, 600, 2, true);
+% mergedPeaksMin = mainGenSequences(500, 600, 2, true);
 % mainPWM(mergedPeaksMin);
 
 
@@ -47,15 +46,15 @@ function mainPWM(mergedPeaksMin)
         X = train.X(train.Y(:, 1, 1)==i, :);
         pcPWMp = train.pcPWMp(train.Y(:, 1, 1)==i, :, :);
         params.m = 1;
-        learnedThetas{i} = learnSingleMode(X, params, pcPWMp, 3, mergedPeaksMin, i);
+        learnedThetas{i} = learnSingleMode(X, params, pcPWMp, 5, mergedPeaksMin, i);
         theta = learnedThetas{i};
     end
     learnedTheta = catThetas(params, learnedThetas);
     params.m = realM;
+
+
     accuricy = classify(learnedTheta, params, test.X, test.pcPWMp, test.Y)
-    title('Test Dataset')
     accuricy = classify(learnedTheta, params, train.X, train.pcPWMp, train.Y)
-    title('Train Dataset')
 
 
     % % merge thetas
@@ -160,7 +159,7 @@ function accuricy = classify(theta, params, X, pcPWMp, Y)
     % N x m x L
     gamma = BaumWelchPWM.EM.makeGamma(params, alpha, beta, pX);
     % N x m x k x L
-    psi = BaumWelchPWM.EM.makePsi(alpha, beta, X, params, theta, pcPWMp);
+    psi = BaumWelchPWM.EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
 
     % g = permute(gamma, [1, 3, 2]);
     % figure;
@@ -178,8 +177,7 @@ function accuricy = classify(theta, params, X, pcPWMp, Y)
     % end
 
 
-    psiSub = psi - repmat(pX, [1, params.m, params.k, L]);
-    Yest = genEstimation(params, theta, gamma, psiSub);
+    Yest = genEstimation(params, theta, gamma, psi);
     YmatchBoth = all(Y == Yest, 3);
     YmatchBase = Y(:, :, 1) == Yest(:, :, 1);
 
@@ -270,7 +268,8 @@ function [theta] = learnSingleMode(X, params, pcPWMp, maxIter, mergedPeaksMin, Y
     subplot(1,3,2);
     plot(exp(mergedPeaksMin.originalTheta.G(Ymode, :)));ylim([0,1]);
     hold on;
-    plot(exp(theta.G));ylim([0,1]);
+    m = max([exp(mergedPeaksMin.originalTheta.G(Ymode, :)), exp(theta.G)], [], 2);
+    plot(exp(theta.G));ylim([0, m]);
     legend('Original Theta','Trained Theta')
     title('G')
 
@@ -304,7 +303,6 @@ function theta = meanMergeTheta(params, thetas)
     parts = length(thetas);
     theta = BaumWelchPWM.genThetaUni(params);
     theta.G = log(mean(reshape(exp([thetas.G]), [params.m, params.k, parts]), 3));
-    theta.F = log(mean(exp([thetas.F]), 2));
     theta.T = log(mean(reshape(exp([thetas.T]), [params.m, params.m, parts]), 3));
     theta.E = zeros([params.m, ones(1, params.order) * params.n]);
     for i = 1:parts
@@ -318,7 +316,6 @@ function theta = catThetas(params, thetas)
     params.m = length(thetas);
     theta = BaumWelchPWM.genThetaUni(params);
     theta.G = reshape([thetas.G], [params.k, params.m])';
-    theta.F = [thetas.F]';
     theta.T = log(eye(params.m) * (1 - (params.m * params.tEpsilon)) + params.tEpsilon);
     theta.E = zeros([params.m, ones(1, params.order) * params.n]);
     for i = 1:params.m

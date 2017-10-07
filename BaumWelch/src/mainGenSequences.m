@@ -3,7 +3,7 @@
 function mergedPeaksMin = mainGenSequences(N, L, m, isMixed)
     clear pcPWMp
     delete(fullfile('data', 'precomputation', 'pcPWMp.mat'));
-    PWM_NOISE_FACTOR = 0.1;
+    PWM_NOISE_FACTOR = 0.0;
     params.m = m;
     params.order = 3;
     params.N = N;
@@ -12,8 +12,7 @@ function mergedPeaksMin = mainGenSequences(N, L, m, isMixed)
     [PWMs, ~] = BaumWelchPWM.PWMs();
     [params.k, params.n, params.J] = size(PWMs);
 
-    [originalTheta] = BaumWelchPWM.genThetaJ(params);
-    originalTheta.F = log(ones(params.m, 1) * 0.02);
+    originalTheta = BaumWelchPWM.genThetaJ(params);
     for i=1:params.m
         originalTheta.E(i, :) = [ 9298, 6036, 7032, 4862, 7625, 7735, 6107, 6381, 8470,...
                                   1103, 7053, 6677, 4151, 4202, 3203, 4895, 4996, 6551,...
@@ -26,11 +25,12 @@ function mergedPeaksMin = mainGenSequences(N, L, m, isMixed)
         % originalTheta.E(i, :) = originalTheta.E(i, :) + (rand(1, params.n ^ params.order) * 3000);
     end
     originalTheta.E = log(bsxfun(@times, originalTheta.E, 1./sum(originalTheta.E, length(size(originalTheta.E)))));
-
+    F = sum(exp(originalTheta.G), 2);
     for i = 1:m
         originalTheta.G(i, :) = matUtils.logMakeDistribution(log(((mod(1:params.k, m) == (i-1)) + eps) .* rand(1, params.k)));
         originalTheta.G(i, :) = matUtils.logMakeDistribution(log(exp(originalTheta.G(i, :)) + (rand(1, params.k) .* PWM_NOISE_FACTOR)));
     end
+    originalTheta.G = originalTheta.G + repmat(log(F), [1, params.k]);
     [seqs, Y] = BaumWelchPWM.genSequencesJ(originalTheta, params);
     overlaps = matUtils.vec2mat(Y(:, 1)', params.m)';
     lengths = ones(params.N, 1) * params.L;

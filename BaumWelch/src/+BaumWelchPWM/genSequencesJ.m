@@ -10,7 +10,6 @@ function [X, Y] = genSequencesJ(theta, params)
     PWMs = exp(theta.PWMs);
     lengths = theta.lengths;
     startT = exp(theta.startT);
-    F = exp(theta.F);
     for j = 1:params.N
         % first letter
         Etemp = matUtils.sumDim(E, 2 : params.order);
@@ -22,9 +21,10 @@ function [X, Y] = genSequencesJ(theta, params)
         t = 2;
         while t <= params.L
             yt = Y(j, t-1, 1);
-            if rand(1) < F(yt)
+            state = smrnd([T(yt, :), G(yt, :)]');
+            if params.m < state
                 % PWM step
-                motif = smrnd(G(yt, :)');
+                motif = state - params.m;
                 for i=1:lengths(motif)
                     X(j, t) = smrnd(PWMs(motif, :, i)');
                     fprintf('%d',motif)
@@ -45,7 +45,7 @@ function [X, Y] = genSequencesJ(theta, params)
                     t = t + 1;
                 end
             else
-                ytNext = smrnd(T(yt, :)');
+                ytNext = state;
                 X(j, t) = emitBaseState(X, params, E, t, ytNext, j);
                 if ytNext ~= yt
                     fprintf('!')
