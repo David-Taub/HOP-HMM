@@ -17,13 +17,13 @@ function mainRealData(mergedPeaksMin)
     params.m = 1;
     params.order = 3;
     [params.k, params.n, params.J] = size(BaumWelchPWM.PWMs());
-    params.tEpsilon = 1 ./ mergedPeaksMin.lengths(1);
-    % params.tEpsilon = 0;
+    % params.tEpsilon = 1 ./ (mergedPeaksMin.lengths(1));
+    params.tEpsilon = 0;
     params.batchSize = 2;
     testTrainRatio = 0.10;
 
     [test, train] = preprocess(mergedPeaksMin, testTrainRatio);
-    rocAucTest(params, train.pcPWMp, train.Y);
+    % rocAucTest(params, train.pcPWMp, train.Y);
 
     learnedThetas = {};
     realM = max(train.Y, [] , 1);
@@ -32,15 +32,15 @@ function mainRealData(mergedPeaksMin)
         X = train.X(train.Y(:, 1, 1)==i, :);
         pcPWMp = train.pcPWMp(train.Y(:, 1, 1)==i, :, :);
         params.m = 1;
-        learnedThetas{i} = learnSingleMode(X, params, pcPWMp, 5);
+        learnedThetas{i} = learnSingleMode(X, params, pcPWMp, 2);
         theta = learnedThetas{i};
     end
     learnedTheta = catThetas(params, learnedThetas);
     params.m = realM;
-    accuricy = classify(learnedTheta, params, test.X, test.pcPWMp, test.Y)
-    title('Test Dataset')
     accuricy = classify(learnedTheta, params, train.X, train.pcPWMp, train.Y)
-    title('Train Dataset')
+    title('Train Dataset');
+    accuricy = classify(learnedTheta, params, test.X, test.pcPWMp, test.Y)
+    title('Test Dataset');
 
 
     % % merge thetas
@@ -171,7 +171,7 @@ function accuricy = classify(theta, params, X, pcPWMp, Y)
     gamma = BaumWelchPWM.EM.makeGamma(params, alpha, beta, pX);
     % N x m x k x L
     psi = BaumWelchPWM.EM.makePsi(alpha, beta, X, params, theta, pcPWMp);
-
+    BaumWelchPWM.EM.drawStatus(theta, params, gamma)
     % g = permute(gamma, [1, 3, 2]);
     % figure;
     % plot(g(1, :, 1));
