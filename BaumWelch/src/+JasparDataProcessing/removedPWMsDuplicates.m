@@ -13,9 +13,14 @@ function [PWMs, lengths, names] = removedPWMsDuplicates(PWMs, lengths, names, pa
             dist(i, j) = dist(i, j) / min(lengths(i), lengths(j));
         end
     end
+    % k * k x 1
     d = sort(dist(:));
-    thresh = d(ceil(k*k*partToRemove));
-    uniqueMask = all(thresh <= dist, 2);
+    % k x 1
+    mostSimilar = max(dist, [], 2);
+    % k x 1
+    [mostSimilarSorted, inds] = sort(mostSimilar, 1);
+    uniqueMask = true(k, 1);
+    uniqueMask(inds(end-ceil(k*partToRemove):end)) = false;
 
     dd = dist(uniqueMask, :);
     dd = dd(:, uniqueMask);
