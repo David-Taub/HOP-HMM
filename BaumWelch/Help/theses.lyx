@@ -468,7 +468,7 @@ An HOP-HMM
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\pi_{j}=P(y_{1}^{i}=j)
+\pi_{j}=P(y_{1}=j)
 \]
 
 \end_inset
@@ -486,7 +486,7 @@ An HOP-HMM
 \begin_layout Standard
 \begin_inset Formula 
 \[
-E_{j,b_{1},b_{2},...,b_{o}}=P\left(x_{t}^{i}=b_{o}|y_{t}^{i}=(j,0),x_{t-o+1}^{i}=b_{1},...,x_{t-1}^{i}=b_{o-1}\right)
+E_{j,x_{t-o+1},x_{t-o+2},...,x_{t}}=P\left(x_{t}|y_{t}=(j,0),x_{t-o+1},...,x_{t-1}\right)
 \]
 
 \end_inset
@@ -504,7 +504,7 @@ E_{j,b_{1},b_{2},...,b_{o}}=P\left(x_{t}^{i}=b_{o}|y_{t}^{i}=(j,0),x_{t-o+1}^{i}
 \begin_layout Standard
 \begin_inset Formula 
 \[
-T_{j_{1},j_{2}}=P\left(y_{t}^{i}=(j_{2},0)|y_{t-1}^{i}=(j_{1},0)\right)
+T_{j_{1},j_{2}}=P\left(y_{t+1}=(j_{2},0)|y_{t}=(j_{1},0)\right)
 \]
 
 \end_inset
@@ -522,7 +522,7 @@ T_{j_{1},j_{2}}=P\left(y_{t}^{i}=(j_{2},0)|y_{t-1}^{i}=(j_{1},0)\right)
 \begin_layout Standard
 \begin_inset Formula 
 \[
-G_{j,l}=P\left(y_{t}^{i}=(j,l)|y_{t-1}^{i}=(j,0),l>0\right)
+G_{j,l}=P\left(y_{t+1:t+|W_{l}|}=(j,l)|y_{t}=(j,0)\right)
 \]
 
 \end_inset
@@ -530,69 +530,16 @@ G_{j,l}=P\left(y_{t}^{i}=(j,l)|y_{t-1}^{i}=(j,0),l>0\right)
 
 \end_layout
 
-\begin_layout Itemize
-\begin_inset Formula $F:\text{ }m\times1$
-\end_inset
-
- the probability to enter one of the sub-states from a base state
+\begin_layout Part*
+HOP-EM Algorithm
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
-\[
-F_{j}=P\left(l>0|y_{t-1}^{i}=(j,0),y_{t}^{i}=(j,l)\right)
-\]
-
-\end_inset
-
- 
+(TODO: where should I put this?)
 \end_layout
 
 \begin_layout Standard
-note: since these describe distributions: 
-\begin_inset Formula $\underset{b\in\{1,...,n\}}{\sum}E_{i,b_{1},b_{2},...,b_{o-1},b}=1$
-\end_inset
-
- , 
-\begin_inset Formula $\underset{l\in\{1,...,k\}}{\sum}G_{j,l}=1$
-\end_inset
-
- and 
-\begin_inset Formula $\underset{j_{2}\in\{1,...,m\}}{\sum}T_{j_{1},j_{2}}=1$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-note 2: we marked here the index of the sequence by 
-\begin_inset Formula $i\in\{1,...,N\}$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection*
-EM Algorithm
-\end_layout
-
-\begin_layout Standard
-Our task 
-\end_layout
-
-\begin_layout Subsubsection*
-E-Step
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\bar under
-Forward Algorithm
-\end_layout
-
-\begin_layout Standard
-denote 
+Denote 
 \begin_inset Formula $L_{M}(\overline{x})$
 \end_inset
 
@@ -620,30 +567,75 @@ L_{M}(\overline{x})=P(\overline{x}|M)=\underset{i\in\{1,...,|\overline{x}|\}}{\p
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $\alpha-N\times m\times L$
+HMM problem:
+\end_layout
+
+\begin_layout Standard
+Given the observation sequence X, and a model 
+\begin_inset Formula $\theta=(\pi,E,T,G)$
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
-we generate 
-\begin_inset Formula $\alpha$
+How can we compute the probability of the hidden states at each position
+ 
+\begin_inset Formula $P(y_{t}|X,\theta)$
 \end_inset
 
- by iterating over 
+?
+\end_layout
+
+\begin_layout Standard
+How can we calculate 
+\begin_inset Formula $P(X|\theta)$
+\end_inset
+
+, and what model 
+\begin_inset Formula $\theta'$
+\end_inset
+
+ maximizes the 
+\begin_inset Formula $P(X|\theta)$
+\end_inset
+
+?
+\end_layout
+
+\begin_layout Section*
+
+\bar under
+E-Step:
+\bar default
+ Forward Algorithm
+\end_layout
+
+\begin_layout Standard
+As in the Forward Algorithm (Rabiner, 1989) we calculate the distribution
+ of the t'th hidden-state, considering the observations from the beginning
+ of the sequence until the t'th letter.
+ In this version, it is enough to calculate only the probability of being
+ in the base-states and not the sub-states, i.e.
+ 
+\begin_inset Formula $\alpha_{j,t}=P\left(y_{t}=(j,0),x_{1:t}\right)$
+\end_inset
+
+.
+ We calculate 
+\begin_inset Formula $\alpha_{j,t}$
+\end_inset
+
+ iterating over 
 \begin_inset Formula $t=1,2,...,L$
 \end_inset
 
- for 
-\begin_inset Formula $t=0$
+ where the initial for 
+\begin_inset Formula $t=1$
 \end_inset
 
 : 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $\alpha_{i,j,0}=P(y_{0}^{i}=j)=\pi_{j}$
+\begin_inset Formula $\alpha_{j,1}=P\left(y_{1}=(j,0),x_{1}\right)=\pi_{j}\cdot\underset{i_{1},...,i_{o-1}}{\sum}E_{j,i_{1},...,i_{o-1},x_{1}}$
 \end_inset
 
  
@@ -660,9 +652,9 @@ For
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-\alpha_{i,j,t}= & P(y_{t}^{i}=j,x_{1:t}^{i})=\\
-= & \underset{\text{base-state step}}{\underbrace{\sum_{j'\in\{1,...,m\}}\alpha_{i,j',t-1}\cdot\left(1-F_{j'}\right)\cdot T_{j',j}\cdot E_{j,x_{t-o+1}^{i},...,x_{t}^{i}}}}\\
-+ & \underset{\text{sub-state step}}{\underbrace{\sum_{l\in\{1,...,k\}}\alpha_{i,j,t-|W_{l}|-1}\cdot F_{j}\cdot G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|}^{i},...,x_{t-1}^{i}\right)\cdot E_{j,x_{t-o+1}^{i},...,x_{t}^{i}}}}
+\alpha_{j,t}= & P(y_{t}=(j,0),x_{1:t})=\\
+= & \underset{\text{base-state transitions}}{\underbrace{\sum_{j'\in\{1,...,m\}}\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1}^{i},...,x_{t}^{i}}}}\\
++ & \underset{\text{sub-state transitions}}{\underbrace{\sum_{l\in\{1,...,k\}}\alpha_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}}}
 \end{align*}
 
 \end_inset
@@ -671,8 +663,167 @@ For
 \end_layout
 
 \begin_layout Standard
-TODO: how out of range is handled for the PWMs and high-order emission.
+Explanation:
+\end_layout
+
+\begin_layout Standard
+From the law of total probability, the probability 
+\begin_inset Formula $\alpha_{j,t}$
+\end_inset
+
+ is the sum of probabilities of all the possible transition that ended in
+ the base-state 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+(j,0).
+ The possible transitions are base-state to base-state transitions and sub-state
+ to base-state transitions.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\alpha_{j,t}=P\left(y_{t}=(j,0),x_{1:t}\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\underset{\text{base-state transitions}}{\underbrace{\underset{j'\in\{1,...,m\}}{\sum}P\left(y_{t-1}=(j',0),y_{t}=(j,0),x_{1:t}\right)}}+\underset{\text{sub-state transitions}}{\underbrace{\underset{l\in\{1,...,k\}}{\sum}P\left(y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Develop of a sub-state transition using the chain rule:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+P\left(y_{t-|W_{l}|:t-1}=(j',l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)= & \,P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot\\
+ & \cdot P\left(y_{t-|W_{l}|:t-1}=(j,l)|y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\\
+ & \cdot P\left(x_{t-|W_{l}|:t-1}|y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\\
+ & \cdot P\left(x_{t}|y_{t}=(j,0),x_{1:t-1},y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0)\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Because of 
+\begin_inset Formula $x_{t}$
+\end_inset
+
+ is dependent on only 
+\begin_inset Formula $y_{t}$
+\end_inset
+
+ (and also 
+\begin_inset Formula $x_{t-o:t-1}$
+\end_inset
+
+ if 
+\begin_inset Formula $y_{t}$
+\end_inset
+
+ is a base-state) and 
+\begin_inset Formula $y_{t}$
+\end_inset
+
+ is dependent on only 
+\begin_inset Formula $y_{t-1}$
+\end_inset
+
+, we can simplify the probabilities:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+P\left(y_{t-|W_{l}|:t-1}=(j',l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)= & \,P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\\
+ & \cdot P\left(y_{t-|W_{l}|:t-1}=(j,l)|y_{t-|W_{l}|-1}=(j,0)\right)\\
+ & \cdot P\left(x_{t-|W_{l}|:t-1}|y_{t-|W_{l}|:t-1}=(j,l)\right)\\
+ & \cdot P\left(x_{t}|y_{t}=(j,0),x_{t-o:t-1}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can now replace the received terms with the components of 
+\begin_inset Formula $\theta$
+\end_inset
+
+ and with already filled 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ cells:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P\left(y_{t-|W_{l}|:t-1}^{i}=(j,l),y_{t-|W_{l}|-1}^{i}=(j,0),x_{1:t}^{i}\right)=\alpha_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}
+\]
+
+\end_inset
+
+
 \begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This process is similar to the base-state transition.
+ Using the chain rule:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P\left(y_{t-1}=(j',0),y_{t}=(j,0),x_{1:t}\right)=P\left(y_{t-1}=(j',0),x_{1:t-1}\right)\cdot P\left(y_{t}=(j,0)|y_{t-1}=(j',0),x_{1:t-1}\right)\cdot P\left(x_{t}|y_{t}=(j,0),y_{t-1}=(j',0),x_{1:t-1}\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Using the conditional independencies to simplify the probabilities:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=P(y_{t-1}=(j',0),x_{1:t-1})\cdot P\left(y_{t}=(j,0)|y_{t-1}=(j',0)\right)\cdot P\left(x_{t}|y_{t}=(j,0),x_{1:t-1}\right)=\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1},...,x_{t}}
+\]
+
 \end_inset
 
 
@@ -686,18 +837,11 @@ Backward Algorithm
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $\beta-N\times m\times L$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-\beta_{i,j,t}= & P(y_{t}^{i}=j,x_{t+1:L}^{i})=\\
-= & \underset{\text{base-state step}}{\underbrace{\sum_{u\in\{1,...,m\}}\left(1-F_{j}\right)\cdot T_{j,u}\cdot E_{u,x_{t-o+2}^{i},...,x_{t+1}^{i}}\cdot\beta_{i,u,t+1}}}\\
-+ & \underset{\text{sub-state step}}{\underbrace{\sum_{l\in\{1,...,k\}}F_{j}\cdot G_{j,l}\cdot L_{W_{l,}}\left(x_{t+1}^{i},...,x_{t+|W_{l}|}^{i}\right)\cdot E_{j,x_{t-o+|W_{l}|+2}^{i},...,x_{t+|W_{l}|+1}^{i}}\cdot\beta_{i,j,t+|W_{l}|+1}}}
+\beta_{j,t}= & P\left(x_{t+1:L}|y_{t}=(j,0)\right)=\\
+= & \underset{\text{base-state transitions}}{\underbrace{\sum_{j'\in\{1,...,m\}}\beta_{j',t+1}\cdot E_{u,x_{t-o+2},...,x_{t+1}}\cdot T_{j,j'}}}\\
++ & \underset{\text{sub-state transitions}}{\underbrace{\sum_{l\in\{1,...,k\}}\beta_{j,t+|W_{l}|+1}\cdot L_{W_{l}}\left(x_{t+1},...,x_{t+|W_{l}|}\right)\cdot E_{j,x_{t-o+|W_{l}|+2},...,x_{t+|W_{l}|+1}}\cdot G_{j,l}}}
 \end{align*}
 
 \end_inset
@@ -709,7 +853,114 @@ Backward Algorithm
 TODO: how out of range is handled for the PWMs.
  The problem of peaking before the t when doing a high-order emission of
  the base-states
-\begin_inset Newline newline
+\end_layout
+
+\begin_layout Standard
+Law of total probabilty:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P\left(x_{t+1:L}|y_{t}=(j,0)\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\underset{\text{base-state transition}}{\underbrace{\sum_{j'}P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0)\right)}}+\underset{\text{sub-state transition}}{\underbrace{\sum_{l}P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{t+1:L}|y_{t}=(j,0)\right)}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For the base-state transition term,using the chain rule:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0)\right)= & P\left(x_{t+2:L}|y_{t+1}=(j',0),y_{t}=(j,0),x_{t+1}\right)\\
+ & \cdot P\left(x_{t+1}|y_{t+1}=(j',0),y_{t}=(j,0)\right)\\
+ & \cdot P\left(y_{t+1}=(j',0)|y_{t}=(j,0)\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Using the conditional independencies to simplify the probabilities:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0)\right)= & P\left(x_{t+2:L}|y_{t+1}=(j',0)\right)\\
+ & \cdot P\left(x_{t+1}|y_{t+1}=(j',0),y_{t}=(j,0)\right)\\
+ & \cdot P\left(y_{t+1}=(j',0)|y_{t}=(j,0)\right)=\\
+= & \beta_{j',t+1}\cdot E_{u,x_{t-o+2},...,x_{t+1}}\cdot T_{j,j'}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $P\left(y_{t-|W_{l}|:t-1}=(j',l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)=\,P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot\cdot P\left(y_{t-|W_{l}|:t-1}=(j,l)|y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot P\left(x_{t-|W_{l}|:t-1}|y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot P\left(x_{t}|y_{t}=(j,0),x_{1:t-1},y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0)\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For the sub-state transition term, using the chain rule:
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\bar under
+\begin_inset Formula 
+\begin{align*}
+P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{t+1:L}|y_{t}=(j,0)\right)= & P\left(x_{t+\left|W_{l}\right|+2:L}|x_{t+1:t+\left|W_{l}\right|+1},y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),y_{t}=(j,0)\right)\\
+ & \cdot P\left(x_{t+\left|W_{l}\right|+1}|x_{t+1:t+\left|W_{l}\right|},y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),y_{t}=(j,0)\right)\\
+ & \cdot P\left(x_{t+1:t+\left|W_{l}\right|}|y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),y_{t}=(j,0)\right)\\
+ & \cdot P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0)|y_{t}=(j,0)\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Using the conditional independencies to simplify the probabilities:
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\bar under
+\begin_inset Formula 
+\begin{align*}
+P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{t+1:L}|y_{t}=(j,0)\right)= & P\left(x_{t+\left|W_{l}\right|+2:L}|y_{t+\left|W_{l}\right|+1}=(j,0)\right)\\
+ & \cdot P\left(x_{t+\left|W_{l}\right|+1}|y_{t+\left|W_{l}\right|+1}=(j,0)\right)\\
+ & \cdot P\left(x_{t+1:t+\left|W_{l}\right|}|y_{t+1:t+\left|W_{l}\right|}=(j,l)\right)\\
+ & \cdot P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0)|y_{t}=(j,0)\right)=\\
+= & \beta_{j,t+|W_{l}|+1}\cdot E_{j,x_{t-o+|W_{l}|+2},...,x_{t+|W_{l}|+1}}\cdot L_{W_{l}}\left(x_{t+1},...,x_{t+|W_{l}|}\right)\cdot G_{j,l}
+\end{align*}
+
 \end_inset
 
 
@@ -746,9 +997,51 @@ First we calculate auxiliary variables:
 \begin_inset Formula 
 \begin{align*}
 \gamma_{i,j,t}= & P\left(y_{t}^{i}=(j,0)|X_{i}\right)=\frac{P\left(y_{t}^{i}=(j,0),X_{i}\right)}{P\left(X_{i}\right)}\\
-= & \frac{\alpha_{i,j,t}\cdot\beta_{i,j,t}}{\underset{j'\in\{1,...,m\}}{\sum}\left(\alpha_{i,j',t}\cdot\beta_{i,j',t}+\underset{l\in\{1,...,k\}}{\sum}\underset{s\in\{1,...,|W_{l}|\}}{\sum}\psi_{i,j',l,t-s}\right)}\\
+= & \frac{\alpha_{i,j,t}\cdot\beta_{i,j,t}}{\underset{j'\in\{1,...,m\}}{\sum}\left(\alpha_{i,j',t}\cdot\beta_{i,j',t}+\underset{l\in\{1,...,k\}}{\sum}\underset{s\in\{1,...,|W_{l}|\}}{\sum}\psi_{i,j',l,t-s}\right)}
 \end{align*}
 
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+P\left(y_{t}=(j,0),x_{1:L}\right)=P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{1:t},y_{t}=(j,0)\right)\approx P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|y_{t}=(j,0)\right)=\alpha_{j.t}\cdot\beta_{j,t}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\approx=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $P\left(x_{1:L}\right)=\underset{j\in\{1,...,m\}}{\sum}\alpha_{j,1}\cdot\beta_{j,1}=\underset{j\in\{1,...,m\}}{\sum}P\left(y_{1}=(j,0)|x_{1}\right)\cdot P\left(x_{2:L}|y_{1}=(j,0)\right)=\underset{j\in\{1,...,m\}}{\sum}\frac{P\left(y_{1}=(j,0),x_{1}\right)}{P\left(x_{1}\right)}\cdot\frac{P\left(y_{1}=(j,0),x_{2:L}\right)}{P\left(y_{1}=(j,0)\right)}=$
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 
@@ -760,7 +1053,7 @@ First we calculate auxiliary variables:
 
 \begin_layout Standard
 TODO: does different t gives different 
-\begin_inset Formula $P\left(X_{i}\right)=\underset{j'\in\{1,...,m\}}{\sum}\alpha_{i,j',t}\cdot\beta_{i,j',t}$
+\begin_inset Formula $P\left(x_{1:L}\right)=\underset{j'\in\{1,...,m\}}{\sum}\alpha_{i,j',t}\cdot\beta_{i,j',t}$
 \end_inset
 
 ? Should it?
@@ -771,7 +1064,7 @@ TODO: does different t gives different
 \begin{align*}
 \xi_{i,j_{1},j_{2},t}= & P\left(y_{t}^{i}=(j_{1},0),y_{t+1}^{i}=(j_{2},0)|X_{i}\right)=\frac{P\left(y_{t}^{i}=(j_{1},0),y_{t+1}^{i}=(j_{2},0),X\right)}{P\left(X_{i}\right)}\\
 \\
-= & \frac{\alpha_{i,j_{1},t}\cdot\left(1-F_{j_{1}}\right)\cdot T_{j_{1},j_{2}}\cdot E_{j_{2},x_{t-o+2}^{i},...,x_{t+1}^{i}}\cdot\beta_{i,j_{2},t+1}}{\underset{j'_{1},j'_{2}\in\{1,...,N\}}{\sum}\alpha_{i,j'_{1},t}\cdot\left(1-F_{j'_{1}}\right)\cdot T_{j'_{1},j'_{2}}\cdot E_{j'_{2},x_{t-o+2}^{i},...,x_{t+1}^{i}}\cdot\beta_{i,j'_{2},t+1}+\underset{j',\in\{1,...,N\}\,l\in\{1,...,k\}}{\sum}\left(\underset{s\in\{0,...,|W_{l}|\}}{\sum}\psi_{i,j',l,t-s}\right)}
+= & \frac{\alpha_{i,j_{1},t}\cdot T_{j_{1},j_{2}}\cdot E_{j_{2},x_{t-o+2}^{i},...,x_{t+1}^{i}}\cdot\beta_{i,j_{2},t+1}}{\underset{j'_{1},j'_{2}\in\{1,...,N\}}{\sum}\alpha_{i,j'_{1},t}\cdot\left(1-F_{j'_{1}}\right)\cdot T_{j'_{1},j'_{2}}\cdot E_{j'_{2},x_{t-o+2}^{i},...,x_{t+1}^{i}}\cdot\beta_{i,j'_{2},t+1}+\underset{j',\in\{1,...,N\}\,l\in\{1,...,k\}}{\sum}\left(\underset{s\in\{0,...,|W_{l}|\}}{\sum}\psi_{i,j',l,t-s}\right)}
 \end{align*}
 
 \end_inset
