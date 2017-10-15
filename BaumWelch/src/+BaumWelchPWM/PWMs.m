@@ -1,3 +1,3 @@
 function [PWM, lengths, names] = PWMs()
-    load('data/PWMs.mat');
+    load('data/Jaspar/PWMs.mat');
 end
