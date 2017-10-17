@@ -34,7 +34,8 @@ function drawStatus(theta, params, gamma)%, alpha, beta, gamma, pX, xi)
         hold on;
         plot(exp(theta.G(i, :)));
     end
-    ylim([0,1]);
+
+    ylim([0,max(exp(theta.G(:)))]);
     legend(num2str([1:params.m]'))
     title('G');
     drawnow

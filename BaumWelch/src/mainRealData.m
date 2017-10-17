@@ -21,85 +21,40 @@ function mainRealData(mergedPeaksMin)
     params.tEpsilon = 0;
     params.batchSize = 2;
     testTrainRatio = 0.10;
+    r = size(mergedPeaksMin.overlaps, 2);
+    output = zeros(r, r, 2);
 
-    [test, train] = preprocess(mergedPeaksMin, testTrainRatio);
-    % rocAucTest(params, train.pcPWMp, train.Y);
+    % iterating over all 2 tissues pairs, each iteration around 500 sequences are picked from each tissue. then 90% of the
+    % sequences are trained, then the thetas are merged and the 10% are classified using the merged thetas (with 2 floors). for
+    % each classification, a rocAuc is calculated and shown in imagesc
+    for tissueId1 = 1:r
+        for tissueId2 = tissueId1+1:r
+            [test, train] = preprocess(mergedPeaksMin, testTrainRatio, tissueId1, tissueId2);
+            % rocAucTest(params, train.pcPWMp, train.Y);
 
-    learnedThetas = {};
-    realM = max(train.Y, [] , 1);
-    for i = 1:realM
-        % train each base state
-        X = train.X(train.Y(:, 1, 1)==i, :);
-        pcPWMp = train.pcPWMp(train.Y(:, 1, 1)==i, :, :);
-        params.m = 1;
-        learnedThetas{i} = learnSingleMode(X, params, pcPWMp, 2);
-        theta = learnedThetas{i};
+            learnedThetas = {};
+            realM = max(train.Y, [] , 1);
+            for i = 1:realM
+                % train each base state
+                X = train.X(train.Y(:, 1, 1)==i, :);
+                pcPWMp = train.pcPWMp(train.Y(:, 1, 1)==i, :, :);
+                params.m = 1;
+                learnedThetas{i} = learnSingleMode(X, params, pcPWMp, 3);
+                theta = learnedThetas{i};
+            end
+            learnedTheta = catThetas(params, learnedThetas);
+            params.m = realM;
+            testAccuricy = classify(learnedTheta, params, test.X, test.pcPWMp, test.Y)
+            trainAccuricy = classify(learnedTheta, params, train.X, train.pcPWMp, train.Y)
+            output(tissueId1, tissueId2, 1) = testAccuricy;
+            output(tissueId2, tissueId1, 1) = testAccuricy;
+            output(tissueId1, tissueId2, 2) = trainAccuricy;
+            output(tissueId2, tissueId1, 2) = trainAccuricy;
+            hold on;subplot(1,2,1); imagesc(output(:,:,1)); colorbar;title('Test')
+            hold on;subplot(1,2,2); imagesc(output(:,:,2)); colorbar;title('Train')
+            drawnow;
+        end
     end
-    learnedTheta = catThetas(params, learnedThetas);
-    params.m = realM;
-    accuricy = classify(learnedTheta, params, train.X, train.pcPWMp, train.Y)
-    title('Train Dataset');
-    accuricy = classify(learnedTheta, params, test.X, test.pcPWMp, test.Y)
-    title('Test Dataset');
-
-
-    % % merge thetas
-    % testParams = params;
-    % testParams.m = length(unique(test.Y));
-    % testTheta = misc.genThetaJ(testParams);
-    % for i=1:max(train.Y, [], 1);
-    %     testTheta.E(i,:) = thetas(i).E(:);
-    %     testTheta.G(i,:) = thetas(i).G(:);
-    %     testTheta.F(i) = thetas(i).F;
-    % end
-    % % test
-    % % N x m x L + J
-    % figure
-    % subplot(1, 2, 1);
-    % scatter(1:length(mergedPeaksMin.originalTheta.E(:)), exp(mergedPeaksMin.originalTheta.E(:)))
-    % hold on;
-    % scatter(1:length(testTheta.E(:)), exp(testTheta.E(:)));
-    % legend('Original Theta','Trained Theta')
-    % subplot(1, 2, 2);
-    % scatter(1:length(mergedPeaksMin.originalTheta.G(:)), exp(mergedPeaksMin.originalTheta.G(:)))
-    % hold on;
-    % scatter(1:length(testTheta.G(:)), exp(testTheta.G(:)));
-    % legend('Original Theta','Trained Theta')
-
-    % t1 = mergedPeaksMin.originalTheta;
-    % t2 = testTheta;
-    % alpha1 = EM.forwardAlgJ(train.X, t1, testParams, train.pcPWMp);
-    % beta1 = EM.backwardAlgJ(train.X, t1, testParams, train.pcPWMp);
-    % pX1 = EM.makePx(alpha1, beta1);
-    % alpha2 = EM.forwardAlgJ(train.X, t2, testParams, train.pcPWMp);
-    % beta2 = EM.backwardAlgJ(train.X, t2, testParams, train.pcPWMp);
-    % pX2 = EM.makePx(alpha2, beta2);
-    % % t2.E = t1.E;
-    % figure
-    % subplot(1,4,1);
-    % hold on
-    % plot(permute(alpha1(1,1,:), [3,2,1]))
-    % plot(permute(alpha2(1,1,:), [3,2,1]))
-    % legend('Original Theta','Trained Theta')
-    % subplot(1,4,2);
-    % hold on
-    % plot(permute(beta1(1,1,:), [3,2,1]))
-    % plot(permute(beta2(1,1,:), [3,2,1]))
-    % legend('Original Theta','Trained Theta')
-    % subplot(1,4,3);
-    % hold on
-    % scatter(1:length(pX1), pX1);
-    % scatter(1:length(pX2), pX2);
-    % legend('Original Theta','Trained Theta')
-    % subplot(1,4,4);
-    % plot(permute(alpha1(1,1,:)+beta1(1,1,:), [3,2,1]))
-    % hold on
-    % plot(permute(alpha2(1,1,:)+beta2(1,1,:), [3,2,1]))
-    % legend('Original Theta','Trained Theta');
-    % keyboard
-    % [~, YsEst] = max(theta.gamma(:,:,1:end-params.J), [], 10);
-    % YsEst = permute(YsEst, [1,3,2]);
-    % calcError(Y(:)', YsEst(:)');
 end
 
 function rocAucTest(params, pcPWMp, Y)
@@ -171,27 +126,23 @@ function accuricy = classify(theta, params, X, pcPWMp, Y)
     gamma = EM.makeGamma(params, alpha, beta, pX);
     % N x m x k x L
     psi = EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
-    EM.drawStatus(theta, params, gamma)
-    % g = permute(gamma, [1, 3, 2]);
+    % EM.drawStatus(theta, params, gamma);
+
     % figure;
-    % plot(g(1, :, 1));
-    % hold on;
-    % plot(g(1, :, 2));
-    % xlim([1,L])
-    % % YPer = permute(Y, [3,2,1]);
-    % % imagesc(YPer(:, :, 1)); colorbar;
-    % legend('1', '2')
-    % y=get(gca,'YLim');
-    % for i = find(Y(1, :, 1) == 1)
-    %     patch('XData', [i, i + 1, i + 1, i], 'YData',[y(1), y(1), y(2) y(2)],...
-    %      'FaceColor', 'r', 'FaceAlpha', 0.3, 'EdgeColor', 'none');
-    % end
-
-
-    psiSub = psi - repmat(pX, [1, params.m, params.k, L]);
-    Yest = genEstimation(params, theta, gamma, psiSub);
-    YestSingle = mode(Yest(:, :, 1), 2);
-    Ymatch = Y == YestSingle;
+    % subplot(1,3,1);
+    g = permute(gamma, [1, 3, 2]);
+    % [mm, ii] = max(g, [], 3);
+    % imagesc(ii);
+    % subplot(1,3,2);
+    % imagesc(g(:, :, 1) - g(:, :, 2));
+    % subplot(1,3,3);
+    % imagesc(repmat(Y, [1, L]));
+    % figure
+    auc = matUtils.getAucRoc(g(Y==1,1,1)-g(Y==1,1,2), g(Y==2,1,1)-g(Y==2,1,2), false, true);
+    accuricy = auc;
+    % Yest = genEstimation(params, theta, gamma, psi);
+    % YestSingle = mode(Yest(:, :, 1), 2);
+    % Ymatch = Y == YestSingle;
 
     % figure;
     % subplot(1,3,1);
@@ -234,14 +185,13 @@ function accuricy = classify(theta, params, X, pcPWMp, Y)
     % title('Floor Errors Lengths Distribution')
     % mean(errorLengths)
 
-    accuricy = mean(Ymatch(:), 1);
+    % accuricy = mean(Ymatch(:), 1);
 end
 
-function [test, train] = preprocess(mergedPeaksMin, testTrainRatio)
+function [test, train] = preprocess(mergedPeaksMin, testTrainRatio, tissueId1, tissueId2)
     L = size(mergedPeaksMin.seqs, 2);
-    types = [14, 15];
-    overlaps = mergedPeaksMin.overlaps(:, :);
-    % overlaps = mergedPeaksMin.overlaps(:, [2, 30]);
+    types = [tissueId1, tissueId2];
+    overlaps = mergedPeaksMin.overlaps;
     mask = true(size(overlaps, 1), 1);
     mask = mask & mergedPeaksMin.lengths <= L;
     mask = mask & (sum(overlaps > 0, 2) == 1);
