@@ -1,5 +1,5 @@
 % mainGenSequences();
-% pcPWMp = BaumWelchPWM.preComputePWMp(X);
+% pcPWMp = misc.preComputePWMp(X);
 % mainPWM(pcPWMp, X, Y);
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
 % mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
@@ -13,7 +13,7 @@ function mainPWM(mergedPeaksMin)
     close all;
     params.m = 1;
     params.order = 3;
-    [params.k, params.n, params.J] = size(BaumWelchPWM.PWMs());
+    [params.k, params.n, params.J] = size(misc.PWMs());
     params.tEpsilon = 1 / mergedPeaksMin.lengths(1);
     % params.tEpsilon = 0;
     params.batchSize = 2;
@@ -60,7 +60,7 @@ function mainPWM(mergedPeaksMin)
     % % merge thetas
     % testParams = params;
     % testParams.m = length(unique(test.Y));
-    % testTheta = BaumWelchPWM.genThetaJ(testParams);
+    % testTheta = misc.genThetaJ(testParams);
     % for i=1:max(train.Y, [], 1);
     %     testTheta.E(i,:) = thetas(i).E(:);
     %     testTheta.G(i,:) = thetas(i).G(:);
@@ -82,12 +82,12 @@ function mainPWM(mergedPeaksMin)
 
     % t1 = mergedPeaksMin.originalTheta;
     % t2 = testTheta;
-    % alpha1 = BaumWelchPWM.EM.forwardAlgJ(train.X, t1, testParams, train.pcPWMp);
-    % beta1 = BaumWelchPWM.EM.backwardAlgJ(train.X, t1, testParams, train.pcPWMp);
-    % pX1 = BaumWelchPWM.EM.makePx(alpha1, beta1);
-    % alpha2 = BaumWelchPWM.EM.forwardAlgJ(train.X, t2, testParams, train.pcPWMp);
-    % beta2 = BaumWelchPWM.EM.backwardAlgJ(train.X, t2, testParams, train.pcPWMp);
-    % pX2 = BaumWelchPWM.EM.makePx(alpha2, beta2);
+    % alpha1 = EM.forwardAlgJ(train.X, t1, testParams, train.pcPWMp);
+    % beta1 = EM.backwardAlgJ(train.X, t1, testParams, train.pcPWMp);
+    % pX1 = EM.makePx(alpha1, beta1);
+    % alpha2 = EM.forwardAlgJ(train.X, t2, testParams, train.pcPWMp);
+    % beta2 = EM.backwardAlgJ(train.X, t2, testParams, train.pcPWMp);
+    % pX2 = EM.makePx(alpha2, beta2);
     % % t2.E = t1.E;
     % figure
     % subplot(1,4,1);
@@ -150,16 +150,16 @@ function accuricy = classify(theta, params, X, pcPWMp, Y)
     [N, L] = size(X);
     fprintf('Calculating alpha...\n')
     % N x m x L
-    alpha = BaumWelchPWM.EM.forwardAlgJ(X, theta, params, pcPWMp);
+    alpha = EM.forwardAlgJ(X, theta, params, pcPWMp);
     fprintf('Calculating beta...\n')
-    beta = BaumWelchPWM.EM.backwardAlgJ(X, theta, params, pcPWMp);
+    beta = EM.backwardAlgJ(X, theta, params, pcPWMp);
     % N x 1
-    pX = BaumWelchPWM.EM.makePx(alpha, beta);
+    pX = EM.makePx(alpha, beta);
     fprintf('Calculating Gamma...\n')
     % N x m x L
-    gamma = BaumWelchPWM.EM.makeGamma(params, alpha, beta, pX);
+    gamma = EM.makeGamma(params, alpha, beta, pX);
     % N x m x k x L
-    psi = BaumWelchPWM.EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
+    psi = EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
 
     % g = permute(gamma, [1, 3, 2]);
     % figure;
@@ -244,7 +244,7 @@ function [test, train] = preprocess(mergedPeaksMin, testTrainRatio)
 
     % X = cat(2, X, fliplr(5-X));
     % N x k x L
-    pcPWMp = BaumWelchPWM.preComputePWMp(X);
+    pcPWMp = misc.preComputePWMp(X);
     N = size(X, 1);
     if size(overlaps, 2) > 1
         trainMask = var(Y(:, :, 1), 0, 2) == 0;
@@ -263,7 +263,7 @@ end
 % pcPWMp - N x k x L-1+J
 % X - N x L
 function [theta] = learnSingleMode(X, params, pcPWMp, maxIter, mergedPeaksMin, Ymode)
-    [theta, ~] = BaumWelchPWM.EM.EMJ(X, params, pcPWMp, maxIter);
+    [theta, ~] = EM.EMJ(X, params, pcPWMp, maxIter);
     figure
     subplot(1,3,2);
     plot(exp(mergedPeaksMin.originalTheta.G(Ymode, :)));ylim([0,1]);
@@ -282,9 +282,9 @@ function [theta] = learnSingleMode(X, params, pcPWMp, maxIter, mergedPeaksMin, Y
     drawnow
     % for i = 1:parts
     %     partMask = mod(1:N, parts) == (i-1);
-    %     % initTheta = BaumWelchPWM.genThetaUni(params);
+    %     % initTheta = misc.genThetaUni(params);
     %     % initTheta.ot = mergedPeaksMin.originalTheta;
-    %     [thetas{i}, ~] = BaumWelchPWM.EM.EMJ(X(partMask, :), params, pcPWMp(partMask, :, :), maxIter);
+    %     [thetas{i}, ~] = EM.EMJ(X(partMask, :), params, pcPWMp(partMask, :, :), maxIter);
     %     % initTheta = thetas{i};
     %     theta = meanMergeTheta(params, thetas);
     %     dists(i) = relativeEntropy(exp(mergedPeaksMin.originalTheta.G(Ymode, :)'), exp(theta.G'));
@@ -301,7 +301,7 @@ end
 function theta = meanMergeTheta(params, thetas)
     thetas = [thetas{:}];
     parts = length(thetas);
-    theta = BaumWelchPWM.genThetaUni(params);
+    theta = misc.genThetaUni(params);
     theta.G = log(mean(reshape(exp([thetas.G]), [params.m, params.k, parts]), 3));
     theta.T = log(mean(reshape(exp([thetas.T]), [params.m, params.m, parts]), 3));
     theta.E = zeros([params.m, ones(1, params.order) * params.n]);
@@ -314,7 +314,7 @@ end
 function theta = catThetas(params, thetas)
     thetas = [thetas{:}];
     params.m = length(thetas);
-    theta = BaumWelchPWM.genThetaUni(params);
+    theta = misc.genThetaUni(params);
     theta.G = reshape([thetas.G], [params.k, params.m])';
     theta.T = log(eye(params.m) * (1 - (params.m * params.tEpsilon)) + params.tEpsilon);
     theta.E = zeros([params.m, ones(1, params.order) * params.n]);

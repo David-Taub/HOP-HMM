@@ -21,15 +21,15 @@ function beta = backwardAlgJ(X, theta, params, pcPWMp)
         % note: this peeks at part of the sequences before t, which might be problematic
         % note 25.07.17: Tommy thinks it is fine - and I see no reason it will affect non-margins areas.
         % N x m
-        Ep = BaumWelchPWM.EM.getEp(theta, params, X, t, kronMN, matSize);
+        Ep = EM.getEp(theta, params, X, t, kronMN, matSize);
 
 
         % N x m x k
-        EpReturn = BaumWelchPWM.EM.getEp3d(theta, params, X, t+theta.lengths, kronMN, matSize);
+        EpReturn = EM.getEp3d(theta, params, X, t+theta.lengths, kronMN, matSize);
         % N x m x k
         betaSlice = beta(:, :, t+theta.lengths);
         % N x m
-        subStateStep = BaumWelchPWM.EM.PWMstep(betaSlice, Gs, repmat(t, [params.k, 1]), pcPWMp, EpReturn);
+        subStateStep = EM.PWMstep(betaSlice, Gs, repmat(t, [params.k, 1]), pcPWMp, EpReturn);
         % N x m
         baseStateStep = matUtils.logMatProd(Ep + beta(:, :, t), theta.T');
         beta(:,:,t-1) = matUtils.logAdd(baseStateStep, subStateStep);

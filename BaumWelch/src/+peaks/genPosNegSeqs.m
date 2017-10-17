@@ -1,6 +1,6 @@
 function genPosNegSeqs(N1, N2, L)
 
-    [PWMs, lengths, names] = BaumWelchPWM.PWMs();
+    [PWMs, lengths, names] = misc.PWMs();
     % [k, n, J] = size(PWMs);
     peakedPWM = 130;
     names(peakedPWM)

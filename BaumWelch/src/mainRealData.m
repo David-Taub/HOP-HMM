@@ -1,6 +1,6 @@
 % mainGenSequences();
 % load(fullfile('data', 'dummyDNA.mat'));
-% pcPWMp = BaumWelchPWM.preComputePWMp(X);
+% pcPWMp = misc.preComputePWMp(X);
 % mainPWM(pcPWMp, X, Y);
 % mergedPeaksMin = mainGenSequences(1000, 600, 2, true);
 % mergedPeaksMin = load(fullfile('data', 'dummyDNA.mat'));
@@ -16,7 +16,7 @@ function mainRealData(mergedPeaksMin)
     close all;
     params.m = 1;
     params.order = 3;
-    [params.k, params.n, params.J] = size(BaumWelchPWM.PWMs());
+    [params.k, params.n, params.J] = size(misc.PWMs());
     % params.tEpsilon = 1 ./ (mergedPeaksMin.lengths(1));
     params.tEpsilon = 0;
     params.batchSize = 2;
@@ -46,7 +46,7 @@ function mainRealData(mergedPeaksMin)
     % % merge thetas
     % testParams = params;
     % testParams.m = length(unique(test.Y));
-    % testTheta = BaumWelchPWM.genThetaJ(testParams);
+    % testTheta = misc.genThetaJ(testParams);
     % for i=1:max(train.Y, [], 1);
     %     testTheta.E(i,:) = thetas(i).E(:);
     %     testTheta.G(i,:) = thetas(i).G(:);
@@ -68,12 +68,12 @@ function mainRealData(mergedPeaksMin)
 
     % t1 = mergedPeaksMin.originalTheta;
     % t2 = testTheta;
-    % alpha1 = BaumWelchPWM.EM.forwardAlgJ(train.X, t1, testParams, train.pcPWMp);
-    % beta1 = BaumWelchPWM.EM.backwardAlgJ(train.X, t1, testParams, train.pcPWMp);
-    % pX1 = BaumWelchPWM.EM.makePx(alpha1, beta1);
-    % alpha2 = BaumWelchPWM.EM.forwardAlgJ(train.X, t2, testParams, train.pcPWMp);
-    % beta2 = BaumWelchPWM.EM.backwardAlgJ(train.X, t2, testParams, train.pcPWMp);
-    % pX2 = BaumWelchPWM.EM.makePx(alpha2, beta2);
+    % alpha1 = EM.forwardAlgJ(train.X, t1, testParams, train.pcPWMp);
+    % beta1 = EM.backwardAlgJ(train.X, t1, testParams, train.pcPWMp);
+    % pX1 = EM.makePx(alpha1, beta1);
+    % alpha2 = EM.forwardAlgJ(train.X, t2, testParams, train.pcPWMp);
+    % beta2 = EM.backwardAlgJ(train.X, t2, testParams, train.pcPWMp);
+    % pX2 = EM.makePx(alpha2, beta2);
     % % t2.E = t1.E;
     % figure
     % subplot(1,4,1);
@@ -114,7 +114,7 @@ function rocAucTest(params, pcPWMp, Y)
         [aucRocs(i),aucRocsSign(i)] = matUtils.getAucRoc(pos(:, i), neg(:, i), false, true);
         fprintf('%d - %.2f\n', i, aucRocs(i))
     end
-    [PWM, lengths, names] = BaumWelchPWM.PWMs();
+    [PWM, lengths, names] = misc.PWMs();
     [b, i] = max(aucRocs, [], 1);
 
     fprintf('The best: %s - %.2f\n', names{i}, b)
@@ -161,17 +161,17 @@ function accuricy = classify(theta, params, X, pcPWMp, Y)
     [N, L] = size(X);
     fprintf('Calculating alpha...\n')
     % N x m x L
-    alpha = BaumWelchPWM.EM.forwardAlgJ(X, theta, params, pcPWMp);
+    alpha = EM.forwardAlgJ(X, theta, params, pcPWMp);
     fprintf('Calculating beta...\n')
-    beta = BaumWelchPWM.EM.backwardAlgJ(X, theta, params, pcPWMp);
+    beta = EM.backwardAlgJ(X, theta, params, pcPWMp);
     % N x 1
-    pX = BaumWelchPWM.EM.makePx(alpha, beta);
+    pX = EM.makePx(alpha, beta);
     fprintf('Calculating Gamma...\n')
     % N x m x L
-    gamma = BaumWelchPWM.EM.makeGamma(params, alpha, beta, pX);
+    gamma = EM.makeGamma(params, alpha, beta, pX);
     % N x m x k x L
-    psi = BaumWelchPWM.EM.makePsi(alpha, beta, X, params, theta, pcPWMp);
-    BaumWelchPWM.EM.drawStatus(theta, params, gamma)
+    psi = EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
+    EM.drawStatus(theta, params, gamma)
     % g = permute(gamma, [1, 3, 2]);
     % figure;
     % plot(g(1, :, 1));
@@ -257,7 +257,7 @@ function [test, train] = preprocess(mergedPeaksMin, testTrainRatio)
 
     % X = cat(2, X, fliplr(5-X));
     % N x k x L
-    pcPWMp = BaumWelchPWM.preComputePWMp(X);
+    pcPWMp = misc.preComputePWMp(X);
     N = size(X, 1);
     trainMask = rand(N, 1) > testTrainRatio;
     train.X = X(trainMask, :);
@@ -273,13 +273,13 @@ end
 % X - N x L
 
 function [theta] = learnSingleMode(X, params, pcPWMp, maxIter)
-    [theta, ~] = BaumWelchPWM.EM.EMJ(X, params, pcPWMp, maxIter);
+    [theta, ~] = EM.EMJ(X, params, pcPWMp, maxIter);
 end
 
 function theta = meanMergeTheta(params, thetas)
     thetas = [thetas{:}];
     parts = length(thetas);
-    theta = BaumWelchPWM.genThetaUni(params);
+    theta = misc.genThetaUni(params);
     theta.G = log(mean(reshape(exp([thetas.G]), [params.m, params.k, parts]), 3));
     theta.F = log(mean(exp([thetas.F]), 2));
     theta.T = log(mean(reshape(exp([thetas.T]), [params.m, params.m, parts]), 3));
@@ -293,9 +293,9 @@ end
 function theta = catThetas(params, thetas)
     thetas = [thetas{:}];
     params.m = length(thetas);
-    theta = BaumWelchPWM.genThetaUni(params);
+    theta = misc.genThetaUni(params);
     theta.G = reshape([thetas.G], [params.k, params.m])';
-    theta.F = [thetas.F]';
+    %theta.F = [thetas.F]';
     theta.T = log(eye(params.m) * (1 - (params.m * params.tEpsilon)) + params.tEpsilon);
     theta.E = zeros([params.m, ones(1, params.order) * params.n]);
     for i = 1:params.m

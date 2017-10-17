@@ -23,7 +23,7 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, maxIter)
     for rep = 1:repeat
         fprintf('Repeat %d / %d\n', rep, repeat);
         X = X(randperm(N), :);
-        initTheta = BaumWelchPWM.genThetaJ(params);
+        initTheta = misc.genThetaJ(params);
         [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, indicesHotMap, N, L);
         if bestLikelihood < iterLike(end)
             bestLikelihood = iterLike(end);
@@ -42,22 +42,22 @@ function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, 
         % alphaSub - N x m x L+J x k
         % N x m x L
         % fprintf('Calculating alpha...\n')
-        alpha = BaumWelchPWM.EM.forwardAlgJ(X, theta, params, pcPWMp);
+        alpha = EM.forwardAlgJ(X, theta, params, pcPWMp);
         % fprintf('Calculating beta...\n')
-        beta = BaumWelchPWM.EM.backwardAlgJ(X, theta, params, pcPWMp);
+        beta = EM.backwardAlgJ(X, theta, params, pcPWMp);
         % N x 1
-        pX = BaumWelchPWM.EM.makePx(alpha, beta);
+        pX = EM.makePx(alpha, beta);
         % fprintf('Calculating Xi...\n')
         % xi - N x m x m x L
-        xi = BaumWelchPWM.EM.makeXi(theta, params, alpha, beta, X, pX);
+        xi = EM.makeXi(theta, params, alpha, beta, X, pX);
         % fprintf('Calculating Gamma...\n')
         % gamma - N x m x L
-        gamma = BaumWelchPWM.EM.makeGamma(params, alpha, beta, pX);
+        gamma = EM.makeGamma(params, alpha, beta, pX);
         % fprintf('Update E\n');
-        psi = BaumWelchPWM.EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
+        psi = EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
         theta.E = updateE(gamma, params, indicesHotMap);
         % fprintf('Update G\n');
-        [theta.G, theta.T] = updateGT(params, theta, xi, gamma);
+        [theta.G, theta.T] = updateGT(params, theta, xi, gamma, psi);
         % fprintf('Update startT\n');
         theta.startT = updateStartT(gamma);
         iterLike(end+1) = matUtils.logMatSum(pX, 1);% / (N*L);
@@ -152,7 +152,7 @@ end
 % beta - N x m x L
 % gamma - N x m x L
 % newT - m x m
-function [newG, newT] = updateGT(params, theta, xi, gamma)
+function [newG, newT] = updateGT(params, theta, xi, gamma, psi)
     [N, ~, ~, L] = size(gamma);
     % keyboard
 

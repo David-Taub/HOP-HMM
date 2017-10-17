@@ -9,6 +9,6 @@ function ret = getEp3d(theta, params, X, ts, kronMN, matSize)
         if ts(i) > L
             continue;
         end
-        ret(:, :, i) = BaumWelchPWM.EM.getEp(theta, params, X, ts(i), kronMN, matSize);
+        ret(:, :, i) = EM.getEp(theta, params, X, ts(i), kronMN, matSize);
     end
 end
