@@ -2,7 +2,7 @@
 % load('data/peaks/raw/roadmap/merged/mergedPeaks.mat');
 % peaks.minimizeMergePeak(mergedPeaks, 500);
 function minimizeMergePeak(mergedPeaks, L)
-    TOP_PEAKS_HEIGHT_PERCENT = 0.50;
+    TOP_PEAKS_HEIGHT_PERCENT = 0.99;
     r = length(mergedPeaks(1).overlap); %19
 
 

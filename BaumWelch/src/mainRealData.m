@@ -188,16 +188,27 @@ function accuricy = classify(theta, params, X, pcPWMp, Y)
     % accuricy = mean(Ymatch(:), 1);
 end
 
+
+% A - l x 1
+function newMask = takeTopN(A, n, mask)
+    A(~mask) = -inf;
+    [~, inds] = sort(A, 1);
+    newMask = false(size(A, 1), 1);
+    newMask(inds(end-n+1:end)) = true;
+end
+
 function [test, train] = preprocess(mergedPeaksMin, testTrainRatio, tissueId1, tissueId2)
     L = size(mergedPeaksMin.seqs, 2);
     types = [tissueId1, tissueId2];
     overlaps = mergedPeaksMin.overlaps;
     mask = true(size(overlaps, 1), 1);
-    mask = mask & mergedPeaksMin.lengths <= L;
+    mask = mask & mergedPeaksMin.lengths >= L & mergedPeaksMin.lengths <= 4*L;
     mask = mask & (sum(overlaps > 0, 2) == 1);
-    mask = mask & (sum(overlaps(:, types) > 0, 2) == 1);
-    % mask = mask & mergedPeaksMin.Y(:,1,1) == 1;
-    mask = mask & mod(1:size(mask,1), 5).' == 0;
+    % mask = mask & mod(1:size(mask,1), 3).' == 0;
+    N = min([500, sum(overlaps(mask, types)>0, 1)]);
+    mask1 = takeTopN(overlaps(:, types(1)), N, mask);
+    mask2 = takeTopN(overlaps(:, types(2)), N, mask);
+    mask = mask & (mask1 | mask2);
     overlaps = overlaps(mask, :);
     overlaps = overlaps(:, types);
     X = mergedPeaksMin.seqs(mask, :);

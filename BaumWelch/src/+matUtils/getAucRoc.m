@@ -2,6 +2,11 @@
 % neg - N2 x 1
 function [auc, wasSwitched] = getAucRoc(pos, neg, shouldPlot, shouldSwitch)
     wasSwitched = false;
+    if length(pos) == 0 || length(neg) == 0
+        auc = 0;
+        wasSwitched = false;
+        return;
+    end
     if mean(pos, 1) < mean(neg, 1) & shouldSwitch
         [pos, neg] = deal(neg, pos);
         wasSwitched = true;

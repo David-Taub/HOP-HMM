@@ -5,15 +5,15 @@ function preprocessPWMs()
     delete(fullfile('data', 'precomputation', 'pcPWMp.mat'));
     % txtFilePath = 'data/Jaspar/raw/JASPAR_CORE_nonredundant_pfm_vertebrates.txt';
     % txtFilePath = 'data/Jaspar/raw/JASPAR_CORE_redundant_pfm_vertebrates.txt';
-    % txtFilePath = 'data/Jaspar/raw/JASPAR_CORE_individual_pfm_vertebrates.txt';
-    txtFilePath = 'data/Jaspar/raw/JASPAR_CNE.txt';
+    txtFilePath = 'data/Jaspar/raw/JASPAR_CORE_individual_pfm_vertebrates.txt';
+    % txtFilePath = 'data/Jaspar/raw/JASPAR_CNE.txt';
     % txtFilePath = 'data/Jaspar/raw/JASPAR_OLD_PMWs.txt';
 	% k x J x n
     [PWM, lengths, names] = parseTxt(txtFilePath);
 	% S = load('data/PWMsRaw.mat');
 	% PWM = S.PWMs;
 	% names = S.names;
-	DUPLICATES_FACTOR = 0.90; STRENGTH_FACTOR = 0.50; % 519 -> 26
+	DUPLICATES_FACTOR = 0.05; STRENGTH_FACTOR = 0.05; % 519 -> 26
 	% DUPLICATES_FACTOR = 0.1; STRENGTH_FACTOR = 0.1; % 519 -> 446
 	% DUPLICATES_FACTOR = 0.97; STRENGTH_FACTOR = 0.97; % 519 -> 2
 	% DUPLICATES_FACTOR = 0.97; STRENGTH_FACTOR = 0.95; % 519 -> 3
