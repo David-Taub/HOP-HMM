@@ -21,7 +21,6 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, maxIter)
     indicesHotMap = cat(2, false(N, params.order-1, params.n ^ params.order), indicesHotMap);
     % figure
     for rep = 1:repeat
-        fprintf('Repeat %d / %d\n', rep, repeat);
         X = X(randperm(N), :);
         initTheta = misc.genThetaJ(params);
         [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, indicesHotMap, N, L);

@@ -3,9 +3,9 @@
 function preprocessPWMs()
 	dbstop if error
     delete(fullfile('data', 'precomputation', 'pcPWMp.mat'));
-    % txtFilePath = 'data/Jaspar/raw/JASPAR_CORE_nonredundant_pfm_vertebrates.txt';
+    txtFilePath = 'data/Jaspar/raw/JASPAR_CORE_nonredundant_pfm_vertebrates.txt';
     % txtFilePath = 'data/Jaspar/raw/JASPAR_CORE_redundant_pfm_vertebrates.txt';
-    txtFilePath = 'data/Jaspar/raw/JASPAR_CORE_individual_pfm_vertebrates.txt';
+    % txtFilePath = 'data/Jaspar/raw/JASPAR_CORE_individual_pfm_vertebrates.txt';
     % txtFilePath = 'data/Jaspar/raw/JASPAR_CNE.txt';
     % txtFilePath = 'data/Jaspar/raw/JASPAR_OLD_PMWs.txt';
 	% k x J x n
@@ -13,11 +13,7 @@ function preprocessPWMs()
 	% S = load('data/PWMsRaw.mat');
 	% PWM = S.PWMs;
 	% names = S.names;
-	DUPLICATES_FACTOR = 0.05; STRENGTH_FACTOR = 0.05; % 519 -> 26
-	% DUPLICATES_FACTOR = 0.1; STRENGTH_FACTOR = 0.1; % 519 -> 446
-	% DUPLICATES_FACTOR = 0.97; STRENGTH_FACTOR = 0.97; % 519 -> 2
-	% DUPLICATES_FACTOR = 0.97; STRENGTH_FACTOR = 0.95; % 519 -> 3
-	% DUPLICATES_FACTOR = 0.97; STRENGTH_FACTOR = 0.91; % 519 -> 5
+	DUPLICATES_FACTOR = 0.01; STRENGTH_FACTOR = 0.01; % 519 -> 26
 	% n x J x k -> k x J x n
 	% PWM = permute(PWM, [3, 2, 1]);
 	% lengths = sum(sum(PWM, 3) > 0, 2)';
@@ -33,7 +29,7 @@ function preprocessPWMs()
 	length(lengths)
 	[PWM, lengths, names] = JasparDataProcessing.removePWMsWeak(PWM, lengths, names, STRENGTH_FACTOR);
 	length(lengths)
-	save('data/PWMs.mat', 'PWM', 'lengths', 'names');
+	save('data/Jaspar/PWMs.mat', 'PWM', 'lengths', 'names');
 end
 % PWM - k x J x n
 function [PWM, lengths, names] = parseTxt(txtFilePath)
