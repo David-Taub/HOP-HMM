@@ -25,9 +25,9 @@ function beta = backwardAlgJ(X, theta, params, pcPWMp)
 
 
         % N x m x k
-        EpReturn = EM.getEp3d(theta, params, X, t+theta.lengths, kronMN, matSize);
+        EpReturn = EM.getEp3d(theta, params, X, t+params.lengths, kronMN, matSize);
         % N x m x k
-        betaSlice = beta(:, :, t+theta.lengths);
+        betaSlice = beta(:, :, t+params.lengths);
         % N x m
         subStateStep = EM.PWMstep(betaSlice, Gs, repmat(t, [params.k, 1]), pcPWMp, EpReturn);
         % N x m

@@ -53,8 +53,7 @@ function [PWM, lengths, names] = parseTxt(txtFilePath)
 			end
 			PWM(pwmId, :, i) = counts;
 		end
-
-		lengths(pwmId) = length(counts);
+		lengths(pwmId) = sum(sum(PWM(pwmId,:,:), 3) > 0, 2)
 		pwmId = pwmId + 1;
 	end
 end

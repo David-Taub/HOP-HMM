@@ -31,9 +31,9 @@ function alpha = forwardAlgJ(X, theta, params, pcPWMp)
         % N x m * m x m
         baseStateStep = matUtils.logMatProd(alpha(:, :, params.J+t-1), theta.T) + Ep;
         % N x m x k
-        alphaSlice = alpha(:, :, params.J+t-theta.lengths-1);
+        alphaSlice = alpha(:, :, params.J+t-params.lengths-1);
         % N x m
-        subStateStep = EM.PWMstep(alphaSlice, Gs, t-theta.lengths', pcPWMp, repmat(Ep, [1, 1, params.k]));
+        subStateStep = EM.PWMstep(alphaSlice, Gs, t-params.lengths', pcPWMp, repmat(Ep, [1, 1, params.k]));
 
         alpha(:, :, params.J + t) = matUtils.logAdd(baseStateStep, subStateStep);
     end

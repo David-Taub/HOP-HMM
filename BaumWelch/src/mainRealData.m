@@ -5,9 +5,7 @@
 % mergedPeaksMin = mainGenSequences(1000, 600, 2, true);
 % mergedPeaksMin = load(fullfile('data', 'dummyDNA.mat'));
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
-%
 % mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
-% mergedPeaksMin = mergedPeaksMin.mergedPeaksMin;
 % mainRealData(mergedPeaksMin);
 
 
@@ -16,71 +14,41 @@ function mainRealData(mergedPeaksMin)
     close all;
     params.m = 1;
     params.order = 3;
-    [params.k, params.n, params.J] = size(misc.PWMs());
-    % params.tEpsilon = 1 ./ (mergedPeaksMin.lengths(1));
+    [k, params.n, params.J] = size(misc.PWMs());
     params.tEpsilon = 0;
     params.batchSize = 2;
-    testTrainRatio = 0.10;
+    testTrainRatio = 0;
     r = size(mergedPeaksMin.overlaps, 2);
     output = zeros(r, r, 2);
 
     % iterating over all 2 tissues pairs, each iteration around 500 sequences are picked from each tissue. then 90% of the
     % sequences are trained, then the thetas are merged and the 10% are classified using the merged thetas (with 2 floors). for
     % each classification, a rocAuc is calculated and shown in imagesc
-    for tissueId1 = 1:r
-        for tissueId2 = tissueId1+1:r
-            [test, train] = preprocess(mergedPeaksMin, testTrainRatio, tissueId1, tissueId2);
-            % rocAucTest(params, train.pcPWMp, train.Y);
-
-            learnedThetas = {};
-            realM = max(train.Y, [] , 1);
-            for i = 1:realM
-                % train each base state
-                X = train.X(train.Y(:, 1, 1)==i, :);
-                pcPWMp = train.pcPWMp(train.Y(:, 1, 1)==i, :, :);
-                params.m = 1;
-                learnedThetas{i} = learnSingleMode(X, params, pcPWMp, 3);
-                theta = learnedThetas{i};
-            end
-            learnedTheta = catThetas(params, learnedThetas);
-            params.m = realM;
-            testAccuricy = classify(learnedTheta, params, test.X, test.pcPWMp, test.Y)
-            trainAccuricy = classify(learnedTheta, params, train.X, train.pcPWMp, train.Y)
-            output(tissueId1, tissueId2, 1) = testAccuricy;
-            output(tissueId2, tissueId1, 1) = testAccuricy;
-            output(tissueId1, tissueId2, 2) = trainAccuricy;
-            output(tissueId2, tissueId1, 2) = trainAccuricy;
-            hold on;subplot(1,2,1); imagesc(output(:,:,1)); colorbar;title('Test')
-            hold on;subplot(1,2,2); imagesc(output(:,:,2)); colorbar;title('Train')
-            drawnow;
-        end
+    learnedThetas = {};
+    params.m = 1;
+    [params.PWMs, params.lengths, params.names] = misc.PWMs();
+    [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, 1);
+    X = train.X(train.Y(:)==1, :);
+    pcPWMpFull = misc.preComputePWMp(X, params);
+    pcPWMpFull = pcPWMpFull(train.Y(:)==1, :, :);
+    for pwmI = 1 : 40
+        [params.PWMs, params.lengths, params.names] = misc.PWMs();
+        % N x k x L
+        mask = mod(1:k, 40) == pwmI-1;
+        params.k = sum(mask, 2);
+        pcPWMp = pcPWMpFull(:, mask, :);
+        params.PWMs = params.PWMs(mask, :, :);
+        params.lengths = params.lengths(mask);
+        params.names = {params.names{mask}};
+        theta = learnSingleMode(X, params, pcPWMp, 3);
+        theta.G
+        % learnedThetas{tissueId1} = theta;
     end
+    % learnedTheta = catThetas(params, learnedThetas);
+    % learnedTheta = catThetas(params, learnedThetas);
+    keyboard
 end
 
-function rocAucTest(params, pcPWMp, Y)
-
-    sortedPWMs = sort(pcPWMp, 3);
-    PWMmax = sum(sortedPWMs(:, :, end-10: end), 3);
-    pos = PWMmax(Y == 1, :);
-    neg = PWMmax(Y ~= 1, :);
-    aucRocs = zeros(params.k, 1);
-    aucRocsSign = false(params.k, 1);
-    for i = 1 : params.k
-        [aucRocs(i),aucRocsSign(i)] = matUtils.getAucRoc(pos(:, i), neg(:, i), false, true);
-        fprintf('%d - %.2f\n', i, aucRocs(i))
-    end
-    [PWM, lengths, names] = misc.PWMs();
-    [b, i] = max(aucRocs, [], 1);
-
-    fprintf('The best: %s - %.2f\n', names{i}, b)
-
-    [bests, is] = sort(aucRocs, 1);
-    sortedPWMs(:, aucRocsSign==1, :) = -sortedPWMs(:, aucRocsSign==1, :);
-    PWMmaxOfBest = sum(sum(sortedPWMs(:, is(end-2:end), end-10 : end), 3), 2);
-    pos = PWMmaxOfBest(Y == 1);
-    neg = PWMmaxOfBest(Y ~= 1);
-    fprintf('sum of best: %.2f\n', matUtils.getAucRoc(pos, neg, false, true))
-end
 % gamma - N x m x L
 % psi - N x m x k x L
 function Yest = genEstimation(params, theta, gamma, psi)
@@ -93,7 +61,7 @@ function Yest = genEstimation(params, theta, gamma, psi)
     psiPer = cat(2, -inf(N, params.J, params.m, params.k), permute(psi, [1, 4, 2, 3]));
     skewedPsi = -inf(N, L, params.m, params.k);
     for l = 1:params.k
-        for u = 1:theta.lengths(l)
+        for u = 1:params.lengths(l)
             skewedPsi(:, :, :, l) = max(skewedPsi(:, :, :, l), psiPer(:, [1:L] + params.J - u, :, l));
         end
     end
@@ -197,40 +165,43 @@ function newMask = takeTopN(A, n, mask)
     newMask(inds(end-n+1:end)) = true;
 end
 
-function [test, train] = preprocess(mergedPeaksMin, testTrainRatio, tissueId1, tissueId2)
+function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, tissueId1)
     L = size(mergedPeaksMin.seqs, 2);
-    types = [tissueId1, tissueId2];
+    types = [tissueId1];
     overlaps = mergedPeaksMin.overlaps;
     mask = true(size(overlaps, 1), 1);
-    mask = mask & mergedPeaksMin.lengths >= L & mergedPeaksMin.lengths <= 4*L;
+    mask = mask & mergedPeaksMin.lengths >= 0.75*L;
+    mask = mask & mergedPeaksMin.lengths <= 4*L;
     mask = mask & (sum(overlaps > 0, 2) == 1);
     % mask = mask & mod(1:size(mask,1), 3).' == 0;
     N = min([500, sum(overlaps(mask, types)>0, 1)]);
     mask1 = takeTopN(overlaps(:, types(1)), N, mask);
-    mask2 = takeTopN(overlaps(:, types(2)), N, mask);
-    mask = mask & (mask1 | mask2);
+    % mask2 = takeTopN(overlaps(:, types(2)), N, mask);
+    % mask = mask & (mask1 | mask2);
+    mask = mask & mask1;
     overlaps = overlaps(mask, :);
     overlaps = overlaps(:, types);
     X = mergedPeaksMin.seqs(mask, :);
     [overlaps, seqInd] = sortrows(overlaps);
     X = X(seqInd, :);
     Y = (overlaps > 0) * (1:size(overlaps, 2))';
-
     % X = cat(2, X, fliplr(5-X));
     % N x k x L
-    pcPWMp = misc.preComputePWMp(X);
+    % k x n x J
+
+    % pcPWMp = misc.preComputePWMp(X, params.PWMs, params.lengths);
     N = size(X, 1);
     trainMask = rand(N, 1) > testTrainRatio;
     train.X = X(trainMask, :);
     train.Y = Y(trainMask);
-    train.pcPWMp = pcPWMp(trainMask, :, :);
+    % train.pcPWMp = pcPWMp(trainMask, :, :);
     test.X = X(~trainMask, :);
     test.Y = Y(~trainMask);
-    test.pcPWMp = pcPWMp(~trainMask, :, :);
+    % test.pcPWMp = pcPWMp(~trainMask, :, :);
 end
 
 
-% pcPWMp - N x k x L-1+J
+% pcPWMp - N x k x L
 % X - N x L
 
 function [theta] = learnSingleMode(X, params, pcPWMp, maxIter)

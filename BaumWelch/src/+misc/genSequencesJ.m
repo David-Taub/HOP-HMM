@@ -7,8 +7,8 @@ function [X, Y] = genSequencesJ(theta, params)
     E = exp(theta.E);
     T = exp(theta.T);
     G = exp(theta.G);
-    PWMs = exp(theta.PWMs);
-    lengths = theta.lengths;
+    PWMs = exp(params.PWMs);
+    lengths = params.lengths;
     startT = exp(theta.startT);
     for j = 1:params.N
         % first letter

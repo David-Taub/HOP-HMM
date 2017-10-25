@@ -17,8 +17,9 @@ function [theta] = genThetaJ(params)
     % m x n
     theta.E = rand([params.m, ones(1, params.order) .* params.n]);
     theta.E = log(bsxfun(@times, theta.E, 1 ./ sum(theta.E, params.order+1)));
-    [theta.PWMs, theta.lengths] = misc.PWMs();
-    theta.PWMs = log(theta.PWMs);
+    % [params.PWMs, params.lengths] = misc.PWMs();
+    % params.PWMs = log(params.PWMs);
+    % params.lengths = lengths;
     % load(fullfile('data', 'dummyDNA.mat'));
 end
 

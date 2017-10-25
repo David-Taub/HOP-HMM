@@ -18,10 +18,10 @@ function psi = makePsi(alpha, beta, X, params, theta, pcPWMp, pX)
         psi(:, :, :, t) = psi(:, :, :, t) + repmat(alpha(:, :, t), [1, 1, params.k]);
         psi(:, :, :, t) = psi(:, :, :, t) + repmat(permute(theta.G, [3, 1, 2]), [N, 1, 1]);
         for l = 1:params.k
-            psi(:, :, l, t) = psi(:, :, l, t) + beta(:, :, t+theta.lengths(l)+1);
+            psi(:, :, l, t) = psi(:, :, l, t) + beta(:, :, t+params.lengths(l)+1);
             % N x m x k
             psi(:, :, l, t) = psi(:, :, l, t) + repmat(pcPWMp(:, l, t+1), [1, params.m]);
-            psi(:, :, l, t) = psi(:, :, l, t) + Eps(:, :, t+theta.lengths(l)+1);
+            psi(:, :, l, t) = psi(:, :, l, t) + Eps(:, :, t+params.lengths(l)+1);
         end
     end
     psi  = psi - repmat(pX, [1, params.m, params.k, L]);

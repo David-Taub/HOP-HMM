@@ -60,8 +60,9 @@ function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, 
         % fprintf('Update startT\n');
         theta.startT = updateStartT(gamma);
         iterLike(end+1) = matUtils.logMatSum(pX, 1);% / (N*L);
+
         % DRAW
-        % drawStatus(theta, params, alpha, beta, gamma, pX, xi);
+        % drawStatus(theta, params, alpha, beta, gamma, pX, xi, psi);
         assert(not(any(isnan(theta.T(:)))))
         assert(not(any(isnan(theta.E(:)))))
         assert(not(any(isnan(theta.G(:)))))
@@ -81,41 +82,31 @@ function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, 
 % psi - N x m x k x L
 % pX - N x 1
 % gamma - N x m x L
-function drawStatus(theta, params, alpha, beta, gamma, pX, xi)
+function drawStatus(theta, params, alpha, beta, gamma, pX, xi, psi)
     figure
     YsEst = mean(gamma, 3);
     YsEst = YsEst(:, 1);
-    subplot(2,2,1); scatter(1:size(pX, 1), YsEst); colorbar;
-    title('gamma')
+    subplot(2,2,1);
+    scatter(1:size(pX, 1), YsEst); colorbar;
+    title('Px')
     % [~, YsEst] = max(alpha, [], 2);
     % subplot(2,3,2);imagesc(permute(YsEst, [1,3,2])); colorbar;
     % % title('alpha')
     % [~, YsEst] = max(beta(:,:,1:end), [], 2);
     % subplot(2,3,3);imagesc(permute(YsEst, [1,3,2])); colorbar;
     % title('beta')
-    subplot(2,2,1);plot(exp(theta.E(:)));
-    hold on;
-    plot(exp(theta.ot.E(:)));
-    legend('current', 'original')
+    subplot(2,2,2);plot(exp(theta.E(:)));
+    plot(exp(theta.E(:)));
     ylim([0,1]);
     title('E')
-    subplot(2,2,2);
+
+    subplot(2,2,3);
+    plot(permute(gamma(1,1,:), [3,2,1]));
     hold on;
-    plot(permute(alpha(1,1,:), [3,2,1]));
-    % plot(permute(alpha(2,1,:), [3,2,1]));
-    % plot(permute(alpha(3,1,:), [3,2,1]));
-    % plot(permute(alpha(4,1,:), [3,2,1]));
-    plot(permute(beta(1,1,:), [3,2,1]));
-    % plot(permute(beta(2,1,:), [3,2,1]));
-    % plot(permute(beta(3,1,:), [3,2,1]));
-    % plot(permute(beta(4,1,:), [3,2,1]));
-    title('alpha vs beta')
-    subplot(2,2,3);plot(pX);
-    title('px')
+    % N x m x k x L
+    plot(permute(matUtils.logMatSum(psi(1,1,:,:), 3), [4,3,2,1]));
+    title('Postirior')
     subplot(2,2,4);plot(exp(theta.G(:)));
-    hold on
-    plot(exp(theta.ot.G(:)));
-    legend('current', 'original')
     ylim([0,1]);
     title('G')
     drawnow

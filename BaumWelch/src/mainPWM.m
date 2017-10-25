@@ -127,7 +127,7 @@ function Yest = genEstimation(params, theta, gamma, psi)
     psiPer = cat(2, -inf(N, params.J, params.m, params.k), permute(psi, [1, 4, 2, 3]));
     skewedPsi = -inf(N, L, params.m, params.k);
     for l = 1:params.k
-        for u = 1:theta.lengths(l)
+        for u = 1:params.lengths(l)
             skewedPsi(:, :, :, l) = max(skewedPsi(:, :, :, l), psiPer(:, [1:L] + params.J - u, :, l));
         end
     end

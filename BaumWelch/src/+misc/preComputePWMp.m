@@ -1,25 +1,23 @@
 
 % Xs - N x L
 % pcPWMp - N x k x L
-function pcPWMp = preComputePWMp(Xs)
-    [PWMs, ~] = misc.PWMs();
-    [~, n, J] = size(PWMs);
+function pcPWMp = preComputePWMp(Xs, params)
     [N, ~] = size(Xs);
     %0 padding for handling the edges probability calculation
     % Xs1H = cat(2, matUtils.mat23Dmat(Xs, n), zeros(N, J, n));
-    Xs1H = matUtils.mat23Dmat(Xs, n);
+    Xs1H = matUtils.mat23Dmat(Xs, params.n);
     % NxJxnxk
-    pcPWMp = preComputePWMpAux(Xs1H);
+    pcPWMp = preComputePWMpAux(Xs1H, params.PWMs, params.lengths);
 end
 
 % calculating the probability of each position in the sequences
 % to be emitted by each PWM
 % PWMsRep - N x J x n x k
-function out = preComputePWMpAux(Xs1H)
+function out = preComputePWMpAux(Xs1H, PWMs, lengths)
     % pcPWMp - N x k x L
     persistent pcPWMp
     persistent sample
-    [PWMs, ~] = misc.PWMs();
+    % [PWMs, ~] = misc.PWMs();
     [k, ~, J] = size(PWMs);
     [N, L, ~] = size(Xs1H);
     % L = L - fJ;
@@ -42,11 +40,15 @@ function out = preComputePWMpAux(Xs1H)
                 return;
             else
                 delete(PC_PWM_PROBABILITY_FILE);
+                fprintf('data file mismatch\n');
             end
         end
+    catch ME
+        fprintf('File not found\n');
+        ME
     end
     fprintf('Calculating pre-computed PWM probability\n');
-    pcPWMp = calculate(Xs1H, N, k, J, L);
+    pcPWMp = calculate(Xs1H, N, k, J, L, PWMs, lengths);
     sample = newSample;
     assert(not(any(isnan(pcPWMp(:)))))
     fprintf('Saving data in file %s...\n', PC_PWM_PROBABILITY_FILE);
@@ -60,9 +62,9 @@ end
 % Xs1H - N x L + J x n
 % lengths - k x 1
 % pcPWMp - N x k x L
-function pcPWMp = calculate(Xs1H, N, k, J, L)
+function pcPWMp = calculate(Xs1H, N, k, J, L, PWMs, lengths)
     fprintf('Pre-computing PWM probability on %d sequences\n', size(Xs1H, 1));
-    [PWMs, lengths] = misc.PWMs();
+    % [PWMs, lengths] = misc.PWMs();
     PWMsRep = permute(repmat(PWMs, [1, 1, 1, N]), [4, 3, 2, 1]);
     mask = repmat(1:J, [N, 1, k]) > repmat(permute(lengths, [1,3,2]), [N,J,1]);
     mask = permute(mask, [1, 2, 4, 3]);
@@ -70,7 +72,9 @@ function pcPWMp = calculate(Xs1H, N, k, J, L)
     for t = 1:L
         % see c code https://github.com/yatbear/nlangp/blob/master/Baum-Welch/hmm.c
         pcPWMp(:, :, t) = misc.getPWMp(J, PWMsRep, Xs1H, t, mask);
-        fprintf('\r%d / %d', t, L);
+        if mod(t, 20) == 0
+            fprintf('\r%d / %d', t, L);
+        end
         if any(isnan(pcPWMp(:)))
             keyboard
         end
