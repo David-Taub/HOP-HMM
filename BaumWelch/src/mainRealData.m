@@ -1,6 +1,5 @@
 % mainGenSequences();
 % load(fullfile('data', 'dummyDNA.mat'));
-% pcPWMp = misc.preComputePWMp(X);
 % mainPWM(pcPWMp, X, Y);
 % mergedPeaksMin = mainGenSequences(1000, 600, 2, true);
 % mergedPeaksMin = load(fullfile('data', 'dummyDNA.mat'));
@@ -14,7 +13,8 @@ function mainRealData(mergedPeaksMin)
     close all;
     params.m = 1;
     params.order = 3;
-    [k, params.n, params.J] = size(misc.PWMs());
+    [params.PWMs, params.lengths, params.names] = misc.PWMs();
+    [params.k, params.n, params.J] = size(params.PWMs);
     params.tEpsilon = 0;
     params.batchSize = 2;
     testTrainRatio = 0;
@@ -27,22 +27,21 @@ function mainRealData(mergedPeaksMin)
     learnedThetas = {};
     params.m = 1;
     [params.PWMs, params.lengths, params.names] = misc.PWMs();
-    [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, 1);
-    X = train.X(train.Y(:)==1, :);
-    pcPWMpFull = misc.preComputePWMp(X, params);
-    pcPWMpFull = pcPWMpFull(train.Y(:)==1, :, :);
-    for pwmI = 1 : 40
-        [params.PWMs, params.lengths, params.names] = misc.PWMs();
+    G = zeros(r, params.k);
+    figure
+    for i = 1 : r
+        delete(fullfile('data', 'precomputation', 'pcPWMp.mat'));
+        [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, i);
+        X = train.X(train.Y(:)==1, :);
         % N x k x L
-        mask = mod(1:k, 40) == pwmI-1;
-        params.k = sum(mask, 2);
-        pcPWMp = pcPWMpFull(:, mask, :);
-        params.PWMs = params.PWMs(mask, :, :);
-        params.lengths = params.lengths(mask);
-        params.names = {params.names{mask}};
-        theta = learnSingleMode(X, params, pcPWMp, 3);
-        theta.G
+        theta = learnSingleMode(X, params, train.pcPWMp, 3);
+        G(i, :) = exp(theta.G);
+        plot(log(mean(G(1:i,:), 1)));
+        hold on;
+        plot(log(var(G(1:i,:), 1)));
+        hold off;
         % learnedThetas{tissueId1} = theta;
+        drawnow;
     end
     % learnedTheta = catThetas(params, learnedThetas);
     % learnedTheta = catThetas(params, learnedThetas);
@@ -174,7 +173,7 @@ function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, tiss
     mask = mask & mergedPeaksMin.lengths <= 4*L;
     mask = mask & (sum(overlaps > 0, 2) == 1);
     % mask = mask & mod(1:size(mask,1), 3).' == 0;
-    N = min([500, sum(overlaps(mask, types)>0, 1)]);
+    N = min([250, sum(overlaps(mask, types)>0, 1)]);
     mask1 = takeTopN(overlaps(:, types(1)), N, mask);
     % mask2 = takeTopN(overlaps(:, types(2)), N, mask);
     % mask = mask & (mask1 | mask2);
@@ -189,15 +188,15 @@ function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, tiss
     % N x k x L
     % k x n x J
 
-    % pcPWMp = misc.preComputePWMp(X, params.PWMs, params.lengths);
+    pcPWMp = misc.preComputePWMp(X, params);
     N = size(X, 1);
     trainMask = rand(N, 1) > testTrainRatio;
     train.X = X(trainMask, :);
     train.Y = Y(trainMask);
-    % train.pcPWMp = pcPWMp(trainMask, :, :);
+    train.pcPWMp = pcPWMp(trainMask, :, :);
     test.X = X(~trainMask, :);
     test.Y = Y(~trainMask);
-    % test.pcPWMp = pcPWMp(~trainMask, :, :);
+    test.pcPWMp = pcPWMp(~trainMask, :, :);
 end
 
 
