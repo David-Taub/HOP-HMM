@@ -1,18 +1,16 @@
 
-% mainGenSequences(20, 50);
+% mainGenSequences(3000, 500, 5, false);
 function mergedPeaksMin = mainGenSequences(N, L, m, isMixed)
     clear pcPWMp
     delete(fullfile('data', 'precomputation', 'pcPWMp.mat'));
+    params = misc.genParams();
     PWM_NOISE_FACTOR = 0.0;
     params.m = m;
-    params.order = 3;
     params.N = N;
     params.L = L;
     params.tEpsilon = isMixed * (1 / L);
-    [PWMs, ~] = BaumWelchPWM.PWMs();
-    [params.k, params.n, params.J] = size(PWMs);
 
-    originalTheta = BaumWelchPWM.genThetaJ(params);
+    originalTheta = misc.genThetaJ(params);
     for i=1:params.m
         originalTheta.E(i, :) = [ 9298, 6036, 7032, 4862, 7625, 7735, 6107, 6381, 8470,...
                                   1103, 7053, 6677, 4151, 4202, 3203, 4895, 4996, 6551,...
@@ -31,7 +29,9 @@ function mergedPeaksMin = mainGenSequences(N, L, m, isMixed)
         originalTheta.G(i, :) = matUtils.logMakeDistribution(log(exp(originalTheta.G(i, :)) + (rand(1, params.k) .* PWM_NOISE_FACTOR)));
     end
     originalTheta.G = originalTheta.G + repmat(log(F), [1, params.k]);
-    [seqs, Y] = BaumWelchPWM.genSequencesJ(originalTheta, params);
+    [seqs, Y] = misc.genSequencesJ(originalTheta, params);
+    Y2 = Y;
+    Y = mode(Y(:,:,1), 2);
     overlaps = matUtils.vec2mat(Y(:, 1)', params.m)';
     lengths = ones(params.N, 1) * params.L;
     save(fullfile('data', 'dummyDNA.mat'), 'seqs', 'lengths', 'overlaps', 'originalTheta', 'Y', 'originalTheta');
@@ -39,5 +39,7 @@ function mergedPeaksMin = mainGenSequences(N, L, m, isMixed)
     mergedPeaksMin.overlaps = overlaps;
     mergedPeaksMin.lengths = lengths;
     mergedPeaksMin.originalTheta = originalTheta;
-    mergedPeaksMin.Y = Y;
+    mergedPeaksMin.Y = Y
+    mergedPeaksMin.Y2 = Y2;
 end
+
