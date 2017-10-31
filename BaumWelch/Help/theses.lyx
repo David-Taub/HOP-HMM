@@ -91,7 +91,46 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-[enhancer background]
+Recent new techniques for high throughput sequencing.
+ Little is currently known on regulation sequences.
+\end_layout
+
+\begin_layout Standard
+Levin, blue mice researches, showed that insertion of a sequence without
+ any epigenetic information will activate an enhancer with a near by blue
+ coloring gene.
+\end_layout
+
+\begin_layout Standard
+This implies that for some enhancers, the sequence and the location of the
+ enhancer & gene is enough for activation regulation.
+\end_layout
+
+\begin_layout Standard
+The TF inside the nucleus of specific tissues are thought to be a key factor
+ in the activation of specific enhancer.
+ The TFs form a transcription complex and are connected to the enhancer
+ and promotor sequences on top of the TF binding sites (TFBS).
+ Studies using TFBS of TF present in specific cell types are used to classify
+ cell specific enhancer sequences.
+ show heat map of AUC-ROC results.
+ Between these TFBS, k-mer frequencies varies between enhancers and non
+ regulatory 
+\begin_inset Quotes eld
+\end_inset
+
+backgound
+\begin_inset Quotes erd
+\end_inset
+
+ DNA, and was used to classify enhancers from backgound using only the k-mer
+ distribution (Inbar and tomy, gkm-SVM), and is thought to play a role in
+ spacial properties, nucleosome location and cleavage that cause accessibility
+ of near-by TFBS.
+ Using 44 out of 127 epigenetic data of Roadmap Project to select tissue
+ specific enhancer sequences dataset.
+ In our method, we look for different TFBS and k-mer presence in sequences
+ to classify cell-specific sequences, inside regulatory modules.
 \end_layout
 
 \begin_layout Standard
@@ -925,6 +964,10 @@ P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0)\right)= & P\left(x_{t+2:L}|y_{t+1}=(
 
 \begin_layout Standard
 For the sub-state transition term, using the chain rule:
+\end_layout
+
+\begin_layout Standard
+
 \end_layout
 
 \begin_layout Standard
