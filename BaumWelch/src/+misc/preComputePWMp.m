@@ -2,23 +2,20 @@
 % Xs - N x L
 % pcPWMp - N x k x L
 function pcPWMp = preComputePWMp(Xs, params)
-    [N, ~] = size(Xs);
     %0 padding for handling the edges probability calculation
-    % Xs1H = cat(2, matUtils.mat23Dmat(Xs, n), zeros(N, J, n));
     Xs1H = matUtils.mat23Dmat(Xs, params.n);
-    % NxJxnxk
-    pcPWMp = preComputePWMpAux(Xs1H, params.PWMs, params.lengths);
+    % N x J x n x k
+    pcPWMp = preComputePWMpAux(Xs1H, params);
 end
 
 % calculating the probability of each position in the sequences
 % to be emitted by each PWM
 % PWMsRep - N x J x n x k
-function out = preComputePWMpAux(Xs1H, PWMs, lengths)
+function out = preComputePWMpAux(Xs1H, params)
     % pcPWMp - N x k x L
     persistent pcPWMp
     persistent sample
-    % [PWMs, ~] = misc.PWMs();
-    [k, ~, J] = size(PWMs);
+    [k, ~, J] = size(params.PWMs);
     [N, L, ~] = size(Xs1H);
     % L = L - fJ;
     PC_PWM_PROBABILITY_FILE = fullfile('data', 'precomputation', 'pcPWMp.mat');
@@ -48,7 +45,7 @@ function out = preComputePWMpAux(Xs1H, PWMs, lengths)
         ME
     end
     fprintf('Calculating pre-computed PWM probability\n');
-    pcPWMp = calculate(Xs1H, N, k, J, L, PWMs, lengths);
+    pcPWMp = calculate(Xs1H, N, k, J, L, params);
     sample = newSample;
     assert(not(any(isnan(pcPWMp(:)))))
     fprintf('Saving data in file %s...\n', PC_PWM_PROBABILITY_FILE);
@@ -60,13 +57,13 @@ end
 
 % PWMsRep - N x J x n x k
 % Xs1H - N x L + J x n
-% lengths - k x 1
+% params.lengths - k x 1
 % pcPWMp - N x k x L
-function pcPWMp = calculate(Xs1H, N, k, J, L, PWMs, lengths)
+function pcPWMp = calculate(Xs1H, N, k, J, L, params)
     fprintf('Pre-computing PWM probability on %d sequences\n', size(Xs1H, 1));
-    % [PWMs, lengths] = misc.PWMs();
-    PWMsRep = permute(repmat(PWMs, [1, 1, 1, N]), [4, 3, 2, 1]);
-    mask = repmat(1:J, [N, 1, k]) > repmat(permute(lengths, [1,3,2]), [N,J,1]);
+    % [params.PWMs, params.lengths] = misc.params.PWMs();
+    PWMsRep = permute(repmat(params.PWMs, [1, 1, 1, N]), [4, 3, 2, 1]);
+    mask = repmat(1:J, [N, 1, k]) > repmat(permute(params.lengths, [1,3,2]), [N,J,1]);
     mask = permute(mask, [1, 2, 4, 3]);
     pcPWMp = -inf(N, k, L);
     for t = 1:L

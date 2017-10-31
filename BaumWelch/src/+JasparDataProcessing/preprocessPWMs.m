@@ -31,6 +31,8 @@ function preprocessPWMs()
 	length(lengths)
 	save('data/Jaspar/PWMs.mat', 'PWM', 'lengths', 'names');
 end
+
+
 % PWM - k x J x n
 function [PWM, lengths, names] = parseTxt(txtFilePath)
 	fileID = fopen(txtFilePath,'r');

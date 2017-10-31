@@ -15,6 +15,7 @@ function [auc, wasSwitched] = getAucRoc(pos, neg, shouldPlot, shouldSwitch)
     labels = [ones(length(pos), 1); zeros(length(neg), 1)];
     [X, Y, ~, auc] = perfcurve(labels, scores, 1);
     if shouldPlot
+        figure
         subplot(1,2,2);
         plot(X,Y)
         title(['ROC AUC = ', sprintf('%.2f', auc)])
