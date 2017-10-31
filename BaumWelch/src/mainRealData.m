@@ -7,46 +7,53 @@
 % mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
 % mainRealData(mergedPeaksMin);
 
-
 function mainRealData(mergedPeaksMin)
     dbstop if error
     close all;
-    params.m = 1;
-    params.order = 3;
-    [params.PWMs, params.lengths, params.names] = misc.PWMs();
-    [params.k, params.n, params.J] = size(params.PWMs);
-    params.tEpsilon = 0;
-    params.batchSize = 2;
-    testTrainRatio = 0;
+    params = genParams();
+    testTrainRatio = 0.15;
     r = size(mergedPeaksMin.overlaps, 2);
     output = zeros(r, r, 2);
 
     % iterating over all 2 tissues pairs, each iteration around 500 sequences are picked from each tissue. then 90% of the
     % sequences are trained, then the thetas are merged and the 10% are classified using the merged thetas (with 2 floors). for
     % each classification, a rocAuc is calculated and shown in imagesc
-    learnedThetas = {};
-    params.m = 1;
-    [params.PWMs, params.lengths, params.names] = misc.PWMs();
+    thetas = {};
     G = zeros(r, params.k);
     figure
-    for i = 1 : r
-        delete(fullfile('data', 'precomputation', 'pcPWMp.mat'));
-        [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, i);
-        X = train.X(train.Y(:)==1, :);
+    delete(fullfile('data', 'precomputation', 'pcPWMp.mat'));
+    [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, [3, 14, 15, 9, 2]);
+    m = max(train.Y(:));
+    for i = 1 : m
+        X = train.X(train.Y(:)==i, :);
+        params.m = 1;
+        pcPWMp = train.pcPWMp(train.Y(:)==i, :, :);
         % N x k x L
-        theta = learnSingleMode(X, params, train.pcPWMp, 3);
-        G(i, :) = exp(theta.G);
-        plot(log(mean(G(1:i,:), 1)));
-        hold on;
-        plot(log(var(G(1:i,:), 1)));
-        hold off;
-        % learnedThetas{tissueId1} = theta;
+        theta = learnSingleMode(X, params, pcPWMp, 3);
+        thetas{i} = theta;
         drawnow;
     end
-    % learnedTheta = catThetas(params, learnedThetas);
-    % learnedTheta = catThetas(params, learnedThetas);
-    keyboard
+    params.m = m;
+    theta = catThetas(params, thetas);
+    classify(theta, params, train.X, train.pcPWMp, train.Y)
+    classify(theta, params, test.X, test.pcPWMp, test.Y)
 end
+
+function params = genParams()
+    params.m = 1;
+    params.order = 3;
+    [params.PWMs, params.lengths, params.names] = misc.PWMs();
+    params.tEpsilon = 0;
+    params.batchSize = 2;
+    [~, params.n, params.J] = size(params.PWMs);
+    loaded = load('data/temp/G.mat');
+    inds = loaded.inds;
+    params.k = 50;
+    params.PWMs = params.PWMs(inds(end - params.k + 1 : end), :, :);
+    params.lengths = params.lengths(inds(end-params.k+1:end));
+    params.names = {params.names{inds(end-params.k+1:end)}};
+end
+
 
 % gamma - N x m x L
 % psi - N x m x k x L
@@ -78,7 +85,7 @@ function Yest = genEstimation(params, theta, gamma, psi)
     % Yest1 = max(matUtils.logAdd(matUtils.logMatSum(skewedPsi, 4), gammaPer), [], 3);
 
 end
-
+% Y - N x 1
 function accuricy = classify(theta, params, X, pcPWMp, Y)
     [N, L] = size(X);
     fprintf('Calculating alpha...\n')
@@ -94,65 +101,47 @@ function accuricy = classify(theta, params, X, pcPWMp, Y)
     % N x m x k x L
     psi = EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
     % EM.drawStatus(theta, params, gamma);
+    psiPer = permute(matUtils.logMatSum(psi, 3), [1,2,4,3]);
+    % N x m x L
+    YEst = matUtils.logAdd(psiPer, gamma);
+    % N x m
+    YSeqEst = matUtils.logMatSum(YEst, 3);
+    aucRocs = zeros(params.m, 1);
+    for i = 1:params.m
+        aucRocs(i) = matUtils.getAucRoc(YSeqEst(Y == i, i),YSeqEst(Y ~= i, i), true, false);
+    end
 
-    % figure;
-    % subplot(1,3,1);
-    g = permute(gamma, [1, 3, 2]);
-    % [mm, ii] = max(g, [], 3);
-    % imagesc(ii);
-    % subplot(1,3,2);
-    % imagesc(g(:, :, 1) - g(:, :, 2));
-    % subplot(1,3,3);
-    % imagesc(repmat(Y, [1, L]));
-    % figure
-    auc = matUtils.getAucRoc(g(Y==1,1,1)-g(Y==1,1,2), g(Y==2,1,1)-g(Y==2,1,2), false, true);
-    accuricy = auc;
-    % Yest = genEstimation(params, theta, gamma, psi);
-    % YestSingle = mode(Yest(:, :, 1), 2);
-    % Ymatch = Y == YestSingle;
+    aucRocs
+    accuricy = mean(aucRocs, 1);
+    [~, YSeqEstMax] = max(YSeqEst, [], 2);
+    accuricy = sum(YSeqEstMax == Y, 1) ./ N
+    YSeqEstMax1hot = matUtils.vec2mat(YSeqEstMax, params.m);
 
-    % figure;
-    % subplot(1,3,1);
-    % Ypresent = Y(:, :, 1);
-    % Ypresent(~YmatchBoth) = params.m + 1;
-    % imagesc(Ypresent);
-    % colormap([1,0,0; 1,1,1; 1,0.5,0.5]);
-    % caxis([1,3])
-    % title('State Estimation')
-    % drawnow;
+    %%%%%%%%%%%%%%
+    % Figures
+    %%%%%%%%%%%%%%
+    figure
+    subplot(1,5,1);
+    imagesc(theta.G); colorbar;title('G')
+    subplot(1,5,2);
+    imagesc(theta.E(:,:)); colorbar;title('E')
+    subplot(1,5,3);
+    plot(permute(YEst(1,1,:), [3,2,1])); hold on;
+    plot(permute(YEst(1,2,:), [3,2,1])); hold on;
+    plot(permute(YEst(1,3,:), [3,2,1])); hold on;
+    plot(permute(YEst(1,4,:), [3,2,1])); hold on;
+    plot(permute(YEst(1,5,:), [3,2,1])); hold on;
+    title('posterior of first Seq')
+    subplot(1,5,4);
+    imagesc(YSeqEst); colorbar;
+    title('Y estimation')
+    subplot(1,5,5);
+    imagesc(matUtils.vec2mat(Y', params.m)');  colorbar;
+    title('Y real')
 
-    % subplot(1,3,2);
-    % Ypresent = Y(:, :, 1);
-    % Ypresent(~YmatchBase) = params.m + 1;
-    % imagesc(Ypresent);
-    % colormap([1,0,0; 1,1,1; 1,0.5,0.5]);
-    % caxis([1,3])
-    % drawnow;
-    % title('Floor Estimation')
 
-    % errorLengths = [];
-    % isInError = false;
-    % for i = 1:N
-    %     for j = 1:L
-    %         if YmatchBase(i, j) == true
-    %             isInError = false;
-    %         else
-    %             if isInError
-    %                 errorLengths(end) = errorLengths(end) + 1;
-    %             else
-    %                 errorLengths(end + 1) = 1;
-    %             end
-    %             isInError = true;
-    %         end
-    %     end
-    %     isInError = false;
-    % end
-    % subplot(1,3,3);
-    % histogram(errorLengths, 100, 'Normalization', 'probability');
-    % title('Floor Errors Lengths Distribution')
-    % mean(errorLengths)
+    %%%%%%%%%%%%%%
 
-    % accuricy = mean(Ymatch(:), 1);
 end
 
 
@@ -164,22 +153,30 @@ function newMask = takeTopN(A, n, mask)
     newMask(inds(end-n+1:end)) = true;
 end
 
-function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, tissueId1)
+function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, tissueIds)
     L = size(mergedPeaksMin.seqs, 2);
-    types = [tissueId1];
     overlaps = mergedPeaksMin.overlaps;
     mask = true(size(overlaps, 1), 1);
-    mask = mask & mergedPeaksMin.lengths >= 0.75*L;
-    mask = mask & mergedPeaksMin.lengths <= 4*L;
-    mask = mask & (sum(overlaps > 0, 2) == 1);
+    fprintf('%d (%.2f) - > ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
+    mask = mask & mergedPeaksMin.lengths >= 0.3*L;
+    fprintf('%d (%.2f) - > ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
+    mask = mask & mergedPeaksMin.lengths <= 2.1*L;
+    fprintf('%d (%.2f) - > ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
+    mask = mask & (sum(overlaps > 0, 2) <= 2);
+    fprintf('%d (%.2f) - > ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
+    mask = mask & (sum(overlaps(:, tissueIds) > 0, 2) == 1);
+    fprintf('%d (%.2f) - > ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
     % mask = mask & mod(1:size(mask,1), 3).' == 0;
-    N = min([250, sum(overlaps(mask, types)>0, 1)]);
-    mask1 = takeTopN(overlaps(:, types(1)), N, mask);
-    % mask2 = takeTopN(overlaps(:, types(2)), N, mask);
-    % mask = mask & (mask1 | mask2);
-    mask = mask & mask1;
+    N = min([2000, sum(overlaps(mask, tissueIds)>0, 1)]);
+    maskTop = false(size(mask, 1), 1);
+    for id = tissueIds
+        maskTop = maskTop | takeTopN(overlaps(:, id), N, mask);
+    end
+    mask = mask & maskTop;
+    fprintf('%d (%.2f)\n', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
+
     overlaps = overlaps(mask, :);
-    overlaps = overlaps(:, types);
+    overlaps = overlaps(:, tissueIds);
     X = mergedPeaksMin.seqs(mask, :);
     [overlaps, seqInd] = sortrows(overlaps);
     X = X(seqInd, :);
