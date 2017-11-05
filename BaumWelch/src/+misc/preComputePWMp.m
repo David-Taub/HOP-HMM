@@ -15,7 +15,6 @@ function out = preComputePWMpAux(Xs1H, params)
     % pcPWMp - N x k x L
     persistent pcPWMp
     persistent sample
-    [k, ~, J] = size(params.PWMs);
     [N, L, ~] = size(Xs1H);
     % L = L - fJ;
     PC_PWM_PROBABILITY_FILE = fullfile('data', 'precomputation', 'pcPWMp.mat');
@@ -45,7 +44,7 @@ function out = preComputePWMpAux(Xs1H, params)
         ME
     end
     fprintf('Calculating pre-computed PWM probability\n');
-    pcPWMp = calculate(Xs1H, N, k, J, L, params);
+    pcPWMp = calculate(params, Xs1H);
     sample = newSample;
     assert(not(any(isnan(pcPWMp(:)))))
     fprintf('Saving data in file %s...\n', PC_PWM_PROBABILITY_FILE);
@@ -59,21 +58,22 @@ end
 % Xs1H - N x L + J x n
 % params.lengths - k x 1
 % pcPWMp - N x k x L
-function pcPWMp = calculate(Xs1H, N, k, J, L, params)
+function pcPWMp = calculate(params, Xs1H)
+    [N, L, ~] = size(Xs1H);
     fprintf('Pre-computing PWM probability on %d sequences\n', size(Xs1H, 1));
     % [params.PWMs, params.lengths] = misc.params.PWMs();
     PWMsRep = permute(repmat(params.PWMs, [1, 1, 1, N]), [4, 3, 2, 1]);
-    outOfMotifMask  = repmat(1:J, [N, 1, k]) > repmat(permute(params.lengths, [1,3,2]), [N,J,1]);
+    outOfMotifMask  = repmat(1:params.J, [N, 1, params.k]) > repmat(permute(params.lengths, [1, 3, 2]), [N, params.J, 1]);
     outOfMotifMask = permute(outOfMotifMask, [1, 2, 4, 3]);
-    pcPWMp = -inf(N, k, L);
+    pcPWMp = -inf(N, params.k, L);
     for startPos = 1:L
         % see c code https://github.com/yatbear/nlangp/blob/master/Baum-Welch/hmm.c
-        pcPWMp(:, :, startPos) = PWMLikelihood(J, PWMsRep, Xs1H, startPos, outOfMotifMask);
+        pcPWMp(:, :, startPos) = PWMLikelihood(params, PWMsRep, Xs1H, startPos, outOfMotifMask);
         if mod(startPos, 20) == 0
             fprintf('\r%d / %d', startPos, L);
         end
     end
-    assert not(any(isnan(pcPWMp(:))))
+    assert(not(any(isnan(pcPWMp(:)))))
     fprintf('\nDone calculating\n');
 end
 
@@ -81,16 +81,15 @@ end
 % PWMsRep - N x J x n x k
 % outOfMotifMask - N x J x 1 x k
 % Xs1H - N x L x n
-function res = PWMLikelihood(J, PWMsRep, Xs1H, startPos, outOfMotifMask)
-    L = size(Xs1H, 2);
-    endPos = min(L, startPos+J-1);
+function res = PWMLikelihood(params, PWMsRep, Xs1H, startPos, outOfMotifMask)
+    [N, L, ~] = size(Xs1H);
+    endPos = min(L, startPos+params.J-1);
     % Note: J2 usually equals J, except when L-startPos is less than J
     J2 = endPos-startPos+1;
     % N x J x n
     lastJXs1H = Xs1H(:, startPos:startPos+J2-1, :);
-    k = size(PWMsRep, 4);
     % N x J2 x n x k .* N x J2 x n x k
-    res = PWMsRep(:, 1:J2, :, :) .* repmat(lastJXs1H, [1, 1, 1, k]);
+    res = PWMsRep(:, 1:J2, :, :) .* repmat(lastJXs1H, [1, 1, 1, params.k]);
     % N x J2 x n x k -> % N x J2 x 1 x k
     res = sum(res, 3);
     % N x J2 x 1 x k
@@ -99,4 +98,6 @@ function res = PWMLikelihood(J, PWMsRep, Xs1H, startPos, outOfMotifMask)
     res = sum(log(res), 2);
     % N x 1 x 1 x k -> N x k
     res = permute(res, [1, 4, 2, 3]);
+    % N x k
+    res(:, params.lengths+startPos-1 > L) = -inf;
 end

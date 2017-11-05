@@ -1,19 +1,20 @@
 % pos - N1 x 1
 % neg - N2 x 1
-function [auc, wasSwitched] = getAucRoc(pos, neg, shouldPlot, shouldSwitch)
+function [auc, wasSwitched, thresh] = getAucRoc(pos, neg, shouldPlot, shouldSwitch)
     wasSwitched = false;
-    if length(pos) == 0 || length(neg) == 0
+    if isempty(pos) || isempty(neg)
         auc = 0;
         wasSwitched = false;
         return;
     end
-    if mean(pos, 1) < mean(neg, 1) & shouldSwitch
+    if mean(pos, 1) < mean(neg, 1) && shouldSwitch
         [pos, neg] = deal(neg, pos);
         wasSwitched = true;
     end
     scores = [pos;neg];
     labels = [ones(length(pos), 1); zeros(length(neg), 1)];
-    [X, Y, ~, auc] = perfcurve(labels, scores, 1);
+    [X, Y, T, auc, OPTROCPT] = perfcurve(labels, scores, 1);
+    thresh = T((X==OPTROCPT(1))&(Y==OPTROCPT(2)));
     if shouldPlot
         figure
         subplot(1,2,2);

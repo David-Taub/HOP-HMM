@@ -11,6 +11,7 @@ function mainRealData(mergedPeaksMin)
     dbstop if error
     close all;
     params = misc.genParams();
+    params.NperTissue = 500;
     testTrainRatio = 0.15;
     r = size(mergedPeaksMin.overlaps, 2);
     output = zeros(r, r, 2);
@@ -20,15 +21,14 @@ function mainRealData(mergedPeaksMin)
     % each classification, a rocAuc is calculated and shown in imagesc
     thetas = {};
     G = zeros(r, params.k);
-    figure
-    delete(fullfile('data', 'precomputation', 'pcPWMp.mat'));
+    % delete(fullfile('data', 'precomputation', 'pcPWMp.mat'));
     % [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, [3, 14, 15, 9, 2]);
-    [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, [1:5]);
+    [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, [1:3]);
     m = max(train.Y(:));
     for i = 1 : m
-        X = train.X(train.Y(:)==i, :);
+        X = train.X(train.Y(:, 1)==i, :);
         params.m = 1;
-        pcPWMp = train.pcPWMp(train.Y(:)==i, :, :);
+        pcPWMp = train.pcPWMp(train.Y(:, 1)==i, :, :);
         % N x k x L
         theta = learnSingleMode(X, params, pcPWMp, 3);
         thetas{i} = theta;
@@ -72,8 +72,8 @@ function Yest = genEstimation(params, theta, gamma, psi)
     % Yest1 = max(matUtils.logAdd(matUtils.logMatSum(skewedPsi, 4), gammaPer), [], 3);
 
 end
-% Y - N x 1
-function accuricy = classify(theta, params, X, pcPWMp, Y)
+% Y - N x L
+function loss = classify(theta, params, X, pcPWMp, Y)
     [N, L] = size(X);
     fprintf('Calculating alpha...\n')
     % N x m x L
@@ -88,36 +88,70 @@ function accuricy = classify(theta, params, X, pcPWMp, Y)
     % N x m x k x L
     psi = EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
     % EM.drawStatus(theta, params, gamma);
-    psiPer = permute(matUtils.logMatSum(psi, 3), [1,2,4,3]);
     % N x m x L
-    YEst = matUtils.logAdd(psiPer, gamma);
+    YEst = calcPosterior(params, gamma, psi, N);
+    % N x m x L
+    YOneHot = permute(matUtils.mat23Dmat(Y, params.m), [1, 3, 2]);
+    % N x L
+    certainty = reshape(YEst(YOneHot), [N, L]);
+    loss = mean(log(1-certainty(:)))
+
     % N x m
     YSeqEst = matUtils.logMatSum(YEst, 3);
+    % N x 1
+    [~, YSeqEstMax] = max(YSeqEst, [], 2);
+    % N x m
     aucRocs = zeros(params.m, 1);
     for i = 1:params.m
-        aucRocs(i) = matUtils.getAucRoc(YSeqEst(Y == i, i),YSeqEst(Y ~= i, i), true, false);
+        aucRocs(i) = matUtils.getAucRoc(YSeqEst(Y(:, 1) == i, i),YSeqEst(Y(:, 1) ~= i, i), false, false);
     end
-
     aucRocs
-    accuricy = mean(aucRocs, 1);
-    [~, YSeqEstMax] = max(YSeqEst, [], 2);
-    accuricy = sum(YSeqEstMax == Y, 1) ./ N
+    [~, YEstMax] = max(YEst, [], 2);
+    YEstMax = permute(YEstMax, [1, 3, 2]);
+
+    accuracy = sum(sum(YEstMax == Y, 1), 2) ./ (N * L)
+
     YSeqEstMax1hot = matUtils.vec2mat(YSeqEstMax, params.m);
 
     %%%%%%%%%%%%%%
     % Figures
     %%%%%%%%%%%%%%
-    figure
+    keyboard
+    sequencesToShow = 10;
+    figure;
+    inds = randsample(N, sequencesToShow);
+    errors = repmat([1, 0.3, 0.3], [params.m, 1]);
+    colormap([winter(params.m);errors])
+    for i = 1:sequencesToShow
+        subplot(sequencesToShow, 1, i);
+        YOneHot = matUtils.vec2mat(Y(inds(i), :), params.m);
+        repCertainty = YOneHot .* repmat(certainty(inds(i), :), [params.m, 1]);
+        repCertainty = [repCertainty; (1-repCertainty) .* double(repCertainty~=0)];
+        bar(repCertainty', 'stacked')
+        xlim([1, L])
+        if i < sequencesToShow
+            set(gca,'xtick', [])
+        end
+        if i == 1
+            title(sprintf('Posterior of Correct Floor\nLetter accuracy: %.2f\nLog loss: %.2f', accuracy, loss))
+        end
+        set(gca,'ytick', [])
+        ylabel(['Seq ', num2str(inds(i))]);
+    end
+    xlabel('Position');
+    l = strsplit(num2str(1:params.m));
+    l = strcat({'Tissue type '}, l);
+    l{params.m+1} = 'error';
+    legend(l);
+
+
+    figure;
     subplot(1,5,1);
     imagesc(theta.G); colorbar;title('G')
     subplot(1,5,2);
     imagesc(theta.E(:,:)); colorbar;title('E')
     subplot(1,5,3);
-    plot(permute(YEst(1,1,:), [3,2,1])); hold on;
-    plot(permute(YEst(1,2,:), [3,2,1])); hold on;
-    plot(permute(YEst(1,3,:), [3,2,1])); hold on;
-    plot(permute(YEst(1,4,:), [3,2,1])); hold on;
-    plot(permute(YEst(1,5,:), [3,2,1])); hold on;
+    imagesc(YSeqEstMax1hot'); colorbar;
     title('posterior of first Seq')
     subplot(1,5,4);
     imagesc(YSeqEst); colorbar;
@@ -125,12 +159,20 @@ function accuricy = classify(theta, params, X, pcPWMp, Y)
     subplot(1,5,5);
     imagesc(matUtils.vec2mat(Y', params.m)');  colorbar;
     title('Y real')
-
-
     %%%%%%%%%%%%%%
 
 end
-
+% posterior - N x m x L
+function posterior = calcPosterior(params, gamma, psi, N)
+    posterior = gamma;
+    for l = 1:params.k
+        for t = 1:params.lengths(l)
+            subStatePost = permute(cat(4, -inf(N, params.m, 1, t), psi(:, :, l, 1:end-t)), [1,2,4,3]);
+            posterior = matUtils.logAdd(posterior, subStatePost);
+        end
+    end
+    posterior = exp(posterior);
+end
 
 % A - l x 1
 function newMask = takeTopN(A, n, mask)
@@ -145,16 +187,16 @@ function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, tiss
     overlaps = mergedPeaksMin.overlaps;
     mask = true(size(overlaps, 1), 1);
     fprintf('%d (%.2f) - > ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
-    mask = mask & mergedPeaksMin.lengths >= 0.3*L;
-    fprintf('%d (%.2f) - > ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
-    mask = mask & mergedPeaksMin.lengths <= 2.1*L;
+    % mask = mask & mergedPeaksMin.lengths >= 0.3*L;
+    % fprintf('%d (%.2f) - > ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
+    mask = mask & mergedPeaksMin.lengths <= 3*L;
     fprintf('%d (%.2f) - > ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
     mask = mask & (sum(overlaps > 0, 2) <= 2);
     fprintf('%d (%.2f) - > ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
     mask = mask & (sum(overlaps(:, tissueIds) > 0, 2) == 1);
     fprintf('%d (%.2f) - > ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
     % mask = mask & mod(1:size(mask,1), 3).' == 0;
-    N = min([2000, sum(overlaps(mask, tissueIds)>0, 1)]);
+    N = min([params.NperTissue, sum(overlaps(mask, tissueIds)>0, 1)]);
     maskTop = false(size(mask, 1), 1);
     for id = tissueIds
         maskTop = maskTop | takeTopN(overlaps(:, id), N, mask);
@@ -176,10 +218,10 @@ function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, tiss
     N = size(X, 1);
     trainMask = rand(N, 1) > testTrainRatio;
     train.X = X(trainMask, :);
-    train.Y = Y(trainMask);
+    train.Y = repmat(Y(trainMask), [1, L]);
     train.pcPWMp = pcPWMp(trainMask, :, :);
     test.X = X(~trainMask, :);
-    test.Y = Y(~trainMask);
+    test.Y = repmat(Y(~trainMask), [1, L]);
     test.pcPWMp = pcPWMp(~trainMask, :, :);
 end
 

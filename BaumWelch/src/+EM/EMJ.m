@@ -22,7 +22,7 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, maxIter)
     % figure
     for rep = 1:repeat
         X = X(randperm(N), :);
-        initTheta = misc.genThetaJ(params);
+        initTheta = misc.genThetaUni(params);
         [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, indicesHotMap, N, L);
         if bestLikelihood < iterLike(end)
             bestLikelihood = iterLike(end);
@@ -53,7 +53,9 @@ function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, 
         % gamma - N x m x L
         gamma = EM.makeGamma(params, alpha, beta, pX);
         % fprintf('Update E\n');
+        % N x m x k x L
         psi = EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
+
         theta.E = updateE(gamma, params, indicesHotMap);
         % fprintf('Update G\n');
         [theta.G, theta.T] = updateGT(params, theta, xi, gamma, psi);
