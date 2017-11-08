@@ -6,10 +6,8 @@
 % xi - N x m x m x L
 function xi = makeXi(theta, params, alpha, beta, X, pX)
     [N, L] = size(X);
-    kronMN = kron(1:params.m, ones(1, N));
-    matSize = [params.m , params.n * ones(1, params.order)];
     % Eps - N x m x L
-    Eps = cat(3, EM.getEp3d(theta, params, X, 2:L, kronMN, matSize), -inf(N, params.m, 1));
+    Eps = cat(3, EM.getEp3d(theta, params, X, 2:L), -inf(N, params.m, 1));
     % xi - N x m x m x L
     xi = repmat(permute(alpha, [1, 2, 4, 3]), [1, 1, params.m, 1]);
 

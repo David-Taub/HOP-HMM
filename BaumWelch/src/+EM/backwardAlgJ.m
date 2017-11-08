@@ -9,29 +9,26 @@
 % beta(N, i, t) P( x_s_t+1, ...x_s_k| y_s_t=i, startT, T, E)
 function beta = backwardAlgJ(X, theta, params, pcPWMp)
     [N, L] = size(X);
-    kronMN = kron(1:params.m, ones(1, N));
-    matSize = [params.m , params.n * ones(1, params.order)];
     % zero appended to handle pwm steps in the end of the sequence (first iterations) which have probability 0
     beta = cat(3, zeros(N, params.m, L), -inf(N, params.m, params.J));
     % performance optimization
     Gs = repmat(shiftdim(theta.G, -1), [N, 1, 1]);
-    expT = exp(theta.T.');
+    % N x m x L
+    Eps = cat(3, EM.getEp3d(theta, params, X, 1:L), -inf(N, params.m, params.J));
     for t = L : -1 : 2
         % fprintf('Backward algorithm %.2f%%\r', 100 * (L-t+2) / L);
         % note: this peeks at part of the sequences before t, which might be problematic
         % note 25.07.17: Tommy thinks it is fine - and I see no reason it will affect non-margins areas.
-        % N x m
-        Ep = EM.getEp(theta, params, X, t, kronMN, matSize);
-
 
         % N x m x k
-        EpReturn = EM.getEp3d(theta, params, X, t+params.lengths, kronMN, matSize);
+
+        EpReturn = Eps(:, :, t+params.lengths);
         % N x m x k
         betaSlice = beta(:, :, t+params.lengths);
         % N x m
         subStateStep = EM.PWMstep(betaSlice, Gs, repmat(t, [params.k, 1]), pcPWMp, EpReturn);
         % N x m
-        baseStateStep = matUtils.logMatProd(Ep + beta(:, :, t), theta.T');
+        baseStateStep = matUtils.logMatProd(Eps(:, :, t) + beta(:, :, t), theta.T');
         beta(:,:,t-1) = matUtils.logAdd(baseStateStep, subStateStep);
     end
     beta = beta(:, :, 1:L);

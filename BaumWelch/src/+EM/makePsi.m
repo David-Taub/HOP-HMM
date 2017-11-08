@@ -5,9 +5,7 @@
 % psi - N x m x k x L
 function psi = makePsi(alpha, beta, X, params, theta, pcPWMp, pX)
     [N, L] = size(X);
-    kronMN = kron(1:params.m, ones(1, N));
-    matSize = [params.m , params.n * ones(1, params.order)];
-    Eps = EM.getEp3d(theta, params, X, 1:L, kronMN, matSize);
+    Eps = EM.getEp3d(theta, params, X, 1:L);
     Eps = cat(3, Eps, -inf(N, params.m, params.J + 1));
     pcPWMp = cat(3, pcPWMp, -inf(N, params.k, 1));
     beta = cat(3, beta, -inf(N, params.m, params.J + 1));

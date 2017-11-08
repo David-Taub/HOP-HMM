@@ -16,24 +16,22 @@ function alpha = forwardAlgJ(X, theta, params, pcPWMp)
     % m x L
     kronMN = kron(1:params.m, ones(1, N));
     Gs = repmat(shiftdim(theta.G, -1), [N, 1, 1]);
-    expT = exp(theta.T);
     % the k+1 index is for base modes, 1 to k are for sub modes
     alpha = -inf(N, params.m, L + params.J);
     % N x m
+
+    Eps = EM.getEp3d(theta, params, X, 1:L);
     Ep = EM.getEp(theta, params, X, 1, kronMN, matSize);
-    alpha(:, :, params.J+1) = (repmat(theta.startT', [N, 1]) + Ep);
+    alpha(:, :, params.J+1) = (repmat(theta.startT', [N, 1]) + Eps(:, :, 1));
 
     for t = 2:L
         % fprintf('Forward algorithm %.2f%%\r', 100*t/L);
-        % N x m
-        Ep = EM.getEp(theta, params, X, t, kronMN, matSize);
-        % N x m
         % N x m * m x m
         baseStateStep = matUtils.logMatProd(alpha(:, :, params.J+t-1), theta.T) + Ep;
         % N x m x k
         alphaSlice = alpha(:, :, params.J+t-params.lengths-1);
         % N x m
-        subStateStep = EM.PWMstep(alphaSlice, Gs, t-params.lengths', pcPWMp, repmat(Ep, [1, 1, params.k]));
+        subStateStep = EM.PWMstep(alphaSlice, Gs, t-params.lengths', pcPWMp, repmat(Eps(:, :, t), [1, 1, params.k]));
 
         alpha(:, :, params.J + t) = matUtils.logAdd(baseStateStep, subStateStep);
     end
