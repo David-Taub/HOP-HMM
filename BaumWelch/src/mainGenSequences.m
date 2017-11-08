@@ -34,7 +34,7 @@ function mergedPeaksMin = mainGenSequences(N, L, m, isMixed)
     Y = mode(Y(:,:,1), 2);
     overlaps = matUtils.vec2mat(Y(:, 1)', params.m)';
     lengths = ones(params.N, 1) * params.L;
-    save(fullfile('data', 'dummyDNA.mat'), 'seqs', 'lengths', 'overlaps', 'originalTheta', 'Y', 'originalTheta');
+    save(fullfile('data', 'dummyDNA.mat'), 'seqs', 'lengths', 'overlaps', 'originalTheta', 'Y', 'Y2', 'originalTheta');
     mergedPeaksMin.seqs = seqs;
     mergedPeaksMin.overlaps = overlaps;
     mergedPeaksMin.lengths = lengths;

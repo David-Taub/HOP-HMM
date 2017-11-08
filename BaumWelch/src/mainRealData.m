@@ -30,7 +30,7 @@ function mainRealData(mergedPeaksMin)
         params.m = 1;
         pcPWMp = train.pcPWMp(train.Y(:, 1)==i, :, :);
         % N x k x L
-        theta = learnSingleMode(X, params, pcPWMp, 3);
+        theta = learnSingleMode(X, params, pcPWMp, 7);
         thetas{i} = theta;
         drawnow;
     end
@@ -41,37 +41,6 @@ function mainRealData(mergedPeaksMin)
 end
 
 
-
-% gamma - N x m x L
-% psi - N x m x k x L
-function Yest = genEstimation(params, theta, gamma, psi)
-    [N, ~, L] = size(gamma);
-    % N x L x m
-    gammaPer = permute(gamma, [1, 3, 2]);
-    [gammaMaxVals, YestBaseStates] = max(gammaPer, [], 3);
-
-    % N x m x k x L -> N x L x m x k
-    psiPer = cat(2, -inf(N, params.J, params.m, params.k), permute(psi, [1, 4, 2, 3]));
-    skewedPsi = -inf(N, L, params.m, params.k);
-    for l = 1:params.k
-        for u = 1:params.lengths(l)
-            skewedPsi(:, :, :, l) = max(skewedPsi(:, :, :, l), psiPer(:, [1:L] + params.J - u, :, l));
-        end
-    end
-    % N x L x m x k -> N x L
-    [psiMaxVals, psiMaxInd] = max(skewedPsi(:,:,:), [], 3);
-    subStates = floor((psiMaxInd - 1) / params.m) + 1;
-    baseStates = mod(psiMaxInd - 1, params.m) + 1;
-    subStateMask = psiMaxVals > gammaMaxVals;
-    % N x L
-    YestBaseStates(subStateMask) = baseStates(subStateMask);
-    YestSubStates = zeros(N, L);
-    YestSubStates(subStateMask) = subStates(subStateMask);
-    Yest = cat(3, YestBaseStates, YestSubStates);
-
-    % Yest1 = max(matUtils.logAdd(matUtils.logMatSum(skewedPsi, 4), gammaPer), [], 3);
-
-end
 % Y - N x L
 function loss = classify(theta, params, X, pcPWMp, Y)
     [N, L] = size(X);
@@ -89,79 +58,72 @@ function loss = classify(theta, params, X, pcPWMp, Y)
     psi = EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
     % EM.drawStatus(theta, params, gamma);
     % N x m x L
-    YEst = calcPosterior(params, gamma, psi, N);
+    posterior = calcPosterior(params, gamma, psi, N);
     % N x m x L
     YOneHot = permute(matUtils.mat23Dmat(Y, params.m), [1, 3, 2]);
     % N x L
-    certainty = reshape(YEst(YOneHot), [N, L]);
+    certainty = reshape(posterior(YOneHot), [N, L]);
     loss = mean(log(1-certainty(:)))
-
-    % N x m
-    YSeqEst = matUtils.logMatSum(YEst, 3);
-    % N x 1
-    [~, YSeqEstMax] = max(YSeqEst, [], 2);
-    % N x m
-    aucRocs = zeros(params.m, 1);
-    for i = 1:params.m
-        aucRocs(i) = matUtils.getAucRoc(YSeqEst(Y(:, 1) == i, i),YSeqEst(Y(:, 1) ~= i, i), false, false);
-    end
-    aucRocs
-    [~, YEstMax] = max(YEst, [], 2);
-    YEstMax = permute(YEstMax, [1, 3, 2]);
-
-    accuracy = sum(sum(YEstMax == Y, 1), 2) ./ (N * L)
-
-    YSeqEstMax1hot = matUtils.vec2mat(YSeqEstMax, params.m);
-
-    %%%%%%%%%%%%%%
-    % Figures
-    %%%%%%%%%%%%%%
     keyboard
-    sequencesToShow = 10;
-    figure;
-    inds = randsample(N, sequencesToShow);
-    errors = repmat([1, 0.3, 0.3], [params.m, 1]);
-    colormap([winter(params.m);errors])
-    for i = 1:sequencesToShow
-        subplot(sequencesToShow, 1, i);
-        YOneHot = matUtils.vec2mat(Y(inds(i), :), params.m);
-        repCertainty = YOneHot .* repmat(certainty(inds(i), :), [params.m, 1]);
-        repCertainty = [repCertainty; (1-repCertainty) .* double(repCertainty~=0)];
-        bar(repCertainty', 'stacked')
-        xlim([1, L])
-        if i < sequencesToShow
-            set(gca,'xtick', [])
-        end
-        if i == 1
-            title(sprintf('Posterior of Correct Floor\nLetter accuracy: %.2f\nLog loss: %.2f', accuracy, loss))
-        end
-        set(gca,'ytick', [])
-        ylabel(['Seq ', num2str(inds(i))]);
-    end
-    xlabel('Position');
-    l = strsplit(num2str(1:params.m));
-    l = strcat({'Tissue type '}, l);
-    l{params.m+1} = 'error';
-    legend(l);
+    YEst = misc.viterbi(theta, params, X, pcPWMp);
+    subplot(1,3,1);
+    imagesc(YEst(:,:,1)); colorbar;
+    subplot(1,3,2);
+    imagesc(YEst(:,:,2)); colorbar;
+    subplot(1,3,3);
+    imagesc(Y); colorbar;
 
-
-    figure;
-    subplot(1,5,1);
-    imagesc(theta.G); colorbar;title('G')
-    subplot(1,5,2);
-    imagesc(theta.E(:,:)); colorbar;title('E')
-    subplot(1,5,3);
-    imagesc(YSeqEstMax1hot'); colorbar;
-    title('posterior of first Seq')
-    subplot(1,5,4);
-    imagesc(YSeqEst); colorbar;
-    title('Y estimation')
-    subplot(1,5,5);
-    imagesc(matUtils.vec2mat(Y', params.m)');  colorbar;
-    title('Y real')
-    %%%%%%%%%%%%%%
-
+    % subplot(1,3,1);imagesc(O1); colorbar;subplot(1,3,2);imagesc(O2(:,:,2)); colorbar;subplot(1,3,3);imagesc(O2(:,:,1)); colorbar;
 end
+
+% function seqClassification(params, theta, posterior, Y)
+%     % % N x m
+%     % overlapsEst = matUtils.logMatSum(posterior, 3);
+%     % % N x m
+%     % aucRocs = zeros(params.m, 1);
+%     % for i = 1:params.m
+%     %     aucRocs(i) = matUtils.getAucRoc(overlapsEst(Y(:, 1) == i, i),overlapsEst(Y(:, 1) ~= i, i), false, false);
+%     % end
+%     % aucRocs
+%     % [~, YEstMax] = max(posterior, [], 2);
+%     % YEstMax = permute(YEstMax, [1, 3, 2]);
+%     % accuricy = sum(sum(YEstMax == Y, 1), 2) ./ (N * L)
+%     % fitcnb(overlapsEst, Y)
+%     % [~, YEstMax] = max(posterior - repmat(mean(posterior, 1), [N, 1]), [], 2);
+%     % YEstMax = permute(YEstMax, [1, 3, 2]);
+%     % accuricy = sum(sum(YEstMax == Y, 1), 2) ./ (N * L)
+
+%     %%%%%%%%%%%%%%
+%     % Figures
+%     %%%%%%%%%%%%%%
+%     keyboard
+%     sequencesToShow = 10;
+%     figure;
+%     inds = randsample(N, sequencesToShow);
+%     for i = 1:sequencesToShow
+%         subplot(sequencesToShow, 1, i);
+%         YOneHot = matUtils.vec2mat(Y(inds(i), :), params.m);
+%         repCertainty = YOneHot .* repmat(certainty(inds(i), :), [params.m, 1]);
+%         repCertainty = [repCertainty; (1-repCertainty) .* double(repCertainty~=0)];
+%         bar(repCertainty', 'stacked')
+%     end
+%     figure;
+%     subplot(1,5,1);
+%     imagesc(theta.G); colorbar;title('G')
+%     subplot(1,5,2);
+%     imagesc(theta.E(:,:)); colorbar;title('E')
+%     subplot(1,5,3);
+%     imagesc(YSeqEstMax1hot'); colorbar;
+%     title('posterior of first Seq')
+%     subplot(1,5,4);
+%     imagesc(overlapsEst); colorbar;
+%     title('Y estimation')
+%     subplot(1,5,5);
+%     imagesc(matUtils.vec2mat(Y', params.m)');  colorbar;
+%     title('Y real')
+%     %%%%%%%%%%%%%%
+% end
+
 % posterior - N x m x L
 function posterior = calcPosterior(params, gamma, psi, N)
     posterior = gamma;
@@ -253,7 +215,9 @@ function theta = catThetas(params, thetas)
     theta = misc.genThetaUni(params);
     theta.G = reshape([thetas.G], [params.k, params.m])';
     %theta.F = [thetas.F]';
-    theta.T = log(eye(params.m) * (1 - (params.m * params.tEpsilon)) + params.tEpsilon);
+    keyboard
+    theta.T = eye(params.m) * (1 - (params.m * params.tEpsilon)) + params.tEpsilon;
+    theta.T = log(theta.T .* repmat(1-sum(exp(theta.G), 2), [1, params.m]));
     theta.E = zeros([params.m, ones(1, params.order) * params.n]);
     for i = 1:params.m
         theta.E(i, :) = thetas(i).E(:);

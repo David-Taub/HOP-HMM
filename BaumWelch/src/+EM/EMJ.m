@@ -22,7 +22,7 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, maxIter)
     % figure
     for rep = 1:repeat
         X = X(randperm(N), :);
-        initTheta = misc.genThetaUni(params);
+        initTheta = misc.genThetaJ(params);
         [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, indicesHotMap, N, L);
         if bestLikelihood < iterLike(end)
             bestLikelihood = iterLike(end);
@@ -173,6 +173,7 @@ function [newG, newT] = updateGT(params, theta, xi, gamma, psi)
     mergedAveraged = permute(mergedAveraged, [2,3,1]);
     newG = mergedAveraged(:, 1:params.k);
     newT = log(Tbound(params, exp(mergedAveraged(:, params.k+1:end))));
+    sum(exp(newG), 2), exp(newT)
 end
 
 
