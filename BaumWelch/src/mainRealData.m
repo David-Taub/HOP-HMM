@@ -44,21 +44,11 @@ end
 % Y - N x L
 function loss = classify(theta, params, X, pcPWMp, Y)
     [N, L] = size(X);
-    fprintf('Calculating alpha...\n')
     % N x m x L
-    alpha = EM.forwardAlgJ(X, theta, params, pcPWMp);
-    fprintf('Calculating beta...\n')
-    beta = EM.backwardAlgJ(X, theta, params, pcPWMp);
-    % N x 1
-    pX = EM.makePx(alpha, beta);
-    fprintf('Calculating Gamma...\n')
-    % N x m x L
-    gamma = EM.makeGamma(params, alpha, beta, pX);
-    % N x m x k x L
-    psi = EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
+    [alpha, beta, pX, xi, gamma, psi] = EM.EStep(params, theta, X, pcPWMp);
     % EM.drawStatus(theta, params, gamma);
     % N x m x L
-    posterior = calcPosterior(params, gamma, psi, N);
+    posterior = calcPosterior(params, gamma, psi);
     % N x m x L
     YOneHot = permute(matUtils.mat23Dmat(Y, params.m), [1, 3, 2]);
     % N x L
@@ -125,7 +115,8 @@ end
 % end
 
 % posterior - N x m x L
-function posterior = calcPosterior(params, gamma, psi, N)
+function posterior = calcPosterior(params, gamma, psi)
+    N = size(gamma, 1);
     posterior = gamma;
     for l = 1:params.k
         for t = 1:params.lengths(l)
@@ -215,7 +206,6 @@ function theta = catThetas(params, thetas)
     theta = misc.genThetaUni(params);
     theta.G = reshape([thetas.G], [params.k, params.m])';
     %theta.F = [thetas.F]';
-    keyboard
     theta.T = eye(params.m) * (1 - (params.m * params.tEpsilon)) + params.tEpsilon;
     theta.T = log(theta.T .* repmat(1-sum(exp(theta.G), 2), [1, params.m]));
     theta.E = zeros([params.m, ones(1, params.order) * params.n]);

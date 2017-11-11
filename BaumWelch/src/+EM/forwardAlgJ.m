@@ -7,10 +7,11 @@
 % startT - m x 1 probabilities of first states
 % theta.E - m x n x n x ... x n (order times) alphabet emission probability matrix
 % pcPWMp - N x k x L
+% Eps - N x m x L
 % lengths - m x 1 length of each motif in the PWM matrix. J = max(lengths)
 % X - N x L emission variables
 % alpha - N x m x L
-function alpha = forwardAlgJ(X, theta, params, pcPWMp)
+function alpha = forwardAlgJ(X, theta, params, pcPWMp, Eps)
     [N, L] = size(X);
     matSize = [params.m , params.n * ones(1, params.order)];
     % m x L
@@ -20,14 +21,12 @@ function alpha = forwardAlgJ(X, theta, params, pcPWMp)
     alpha = -inf(N, params.m, L + params.J);
     % N x m
 
-    Eps = EM.getEp3d(theta, params, X, 1:L);
-    Ep = EM.getEp(theta, params, X, 1, kronMN, matSize);
     alpha(:, :, params.J+1) = (repmat(theta.startT', [N, 1]) + Eps(:, :, 1));
 
     for t = 2:L
         % fprintf('Forward algorithm %.2f%%\r', 100*t/L);
         % N x m * m x m
-        baseStateStep = matUtils.logMatProd(alpha(:, :, params.J+t-1), theta.T) + Ep;
+        baseStateStep = matUtils.logMatProd(alpha(:, :, params.J+t-1), theta.T) + Eps(:, :, t);
         % N x m x k
         alphaSlice = alpha(:, :, params.J+t-params.lengths-1);
         % N x m

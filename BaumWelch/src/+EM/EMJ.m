@@ -41,20 +41,8 @@ function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, 
         % alphaSub - N x m x L+J x k
         % N x m x L
         % fprintf('Calculating alpha...\n')
-        alpha = EM.forwardAlgJ(X, theta, params, pcPWMp);
-        % fprintf('Calculating beta...\n')
-        beta = EM.backwardAlgJ(X, theta, params, pcPWMp);
-        % N x 1
-        pX = EM.makePx(alpha, beta);
-        % fprintf('Calculating Xi...\n')
-        % xi - N x m x m x L
-        xi = EM.makeXi(theta, params, alpha, beta, X, pX);
-        % fprintf('Calculating Gamma...\n')
-        % gamma - N x m x L
-        gamma = EM.makeGamma(params, alpha, beta, pX);
-        % fprintf('Update E\n');
-        % N x m x k x L
-        psi = EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
+        % N x m x L
+        [alpha, beta, pX, xi, gamma, psi] = EM.EStep(params, theta, X, pcPWMp);
 
         theta.E = updateE(gamma, params, indicesHotMap);
         % fprintf('Update G\n');
@@ -72,7 +60,7 @@ function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, 
         assert(not(any(isnan(beta(:)))))
 
 
-        fprintf('Likelihood in iteration %d is %.2f (%.2f seconds)\n', length(iterLike), iterLike(end), toc());
+        fprintf('Likelihood in iteration %d is %.2f (%.2f seconds, ~%.2f%% motifs)\n', length(iterLike), iterLike(end), toc(), sum(exp(theta.G), 2).*100);
         if length(iterLike) > 1 && abs((iterLike(end) - iterLike(end-1)) / iterLike(end)) < LIKELIHOOD_THRESHOLD
             fprintf('Converged\n');
             break
@@ -172,8 +160,8 @@ function [newG, newT] = updateGT(params, theta, xi, gamma, psi)
     mergedAveraged = matUtils.logMakeDistribution(mergedAveraged);
     mergedAveraged = permute(mergedAveraged, [2,3,1]);
     newG = mergedAveraged(:, 1:params.k);
-    newT = log(Tbound(params, exp(mergedAveraged(:, params.k+1:end))));
-    sum(exp(newG), 2), exp(newT)
+    newT = mergedAveraged(:, params.k+1:end);
+    newT = log(Tbound(params, exp(newT)));
 end
 
 

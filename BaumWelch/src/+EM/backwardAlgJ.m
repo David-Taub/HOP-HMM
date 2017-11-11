@@ -7,14 +7,14 @@
 % pcPWMp - N x k x L
 % beta - N x m x L
 % beta(N, i, t) P( x_s_t+1, ...x_s_k| y_s_t=i, startT, T, E)
-function beta = backwardAlgJ(X, theta, params, pcPWMp)
+function beta = backwardAlgJ(X, theta, params, pcPWMp, Eps)
     [N, L] = size(X);
     % zero appended to handle pwm steps in the end of the sequence (first iterations) which have probability 0
     beta = cat(3, zeros(N, params.m, L), -inf(N, params.m, params.J));
     % performance optimization
     Gs = repmat(shiftdim(theta.G, -1), [N, 1, 1]);
     % N x m x L
-    Eps = cat(3, EM.getEp3d(theta, params, X, 1:L), -inf(N, params.m, params.J));
+    Eps = cat(3, Eps, -inf(N, params.m, params.J));
     for t = L : -1 : 2
         % fprintf('Backward algorithm %.2f%%\r', 100 * (L-t+2) / L);
         % note: this peeks at part of the sequences before t, which might be problematic
