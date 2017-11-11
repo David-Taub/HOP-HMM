@@ -3,12 +3,12 @@
 % pcPWMp - N x k x L
 function Y = viterbi(theta, params, X, pcPWMp)
     [N, L] = size(X);
-    % N x k x J + L
     pcPWMp = cat(3, -inf(N, params.k, params.J), pcPWMp);
     Y = zeros(N, L, 2);
+    matSize = [params.m , params.n * ones(1, params.order)];
+    kronMN = kron(1:params.m, ones(1, N));
     % N x m x L
     Eps = EM.getEp3d(theta, params, X, 1:L);
-    tt = []; tt2 = [];
     for i = 1:N
         fprintf('%d / %d\r',i, N)
         O1 = -inf(params.m, L+params.J);
@@ -22,19 +22,14 @@ function Y = viterbi(theta, params, X, pcPWMp)
             % m x k
             subSteps = zeros(params.m, params.k);
             for j = 1:params.k
-                subSteps(:, j) = pcPWMp(i, j, t-params.lengths(j)+params.J);
+                subSteps(:, j) = O1(:, t-params.lengths(j)-1+params.J) + permute(pcPWMp(i, j, t-params.lengths(j)'+params.J), [1,3,2]);
             end
             % m x k
-            subSteps = subSteps + O1(:, t-params.lengths'-1+params.J) + theta.G + repmat(Eps(i, :, t)', [1, params.k]);
-
+            subSteps = subSteps + theta.G + repmat(Eps(i, :, t)', [1, params.k]) + repmat(Eps(i, :, t)', [1, params.k]);
             O2(:, t, 1) = 1:params.m;
             [O1(:, t+params.J), O2(:, t, 2)] = max(subSteps, [], 2);
             % 1 x m
             [maxBaseStep, maxBaseStepInds] = max(baseSteps, [], 1);
-            O1(:, t+params.J)
-            maxBaseStep
-            tt = [tt;maxBaseStep];
-            tt2 = [tt2;O1(:, t+params.J)'];
             baseMask = O1(:, t+params.J) <= maxBaseStep';
 
             % if baseMask(1) == 0
@@ -44,6 +39,7 @@ function Y = viterbi(theta, params, X, pcPWMp)
             O2(baseMask, t, 1) = maxBaseStepInds(baseMask);
             O1(baseMask, t+params.J) = maxBaseStep(baseMask);
         end
+
         % back trailing
         Y(i, L, 2) = 0;
         [~, Y(i, L, 1)] = max(O1(:, end), [], 1);
@@ -60,15 +56,5 @@ function Y = viterbi(theta, params, X, pcPWMp)
                 t = t - 1;
             end
         end
-
-        subplot(2,3,1); imagesc(O1); colorbar;
-        subplot(2,3,2); imagesc(O2(:, :, 1)); colorbar;
-        subplot(2,3,3); imagesc(O2(:, :, 2)); colorbar;
-        subplot(2,3,4); imagesc(Y(1:i, :, 1)); colorbar;
-        subplot(2,3,5); imagesc(Y(1:i, :, 2)); colorbar;
-        subplot(2,3,6); plot(tt(:, 2)'); hold on; plot(tt2(:, 2)'); hold off;
-
-        drawnow
-        keyboard
     end
 end
