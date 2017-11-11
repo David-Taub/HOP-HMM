@@ -32,7 +32,7 @@ function mainRealData(mergedPeaksMin)
         X = train.X(train.Y(:, 1, 1)==i, :);
         pcPWMp = train.pcPWMp(train.Y(:, 1, 1)==i, :, :);
         params.m = 1;
-        learnedThetas{i} = learnSingleMode(X, params, pcPWMp, 2);
+        learnedThetas{i} = learnSingleMode(X, params, pcPWMp, 8);
         theta = learnedThetas{i};
     end
     learnedTheta = catThetas(params, learnedThetas);

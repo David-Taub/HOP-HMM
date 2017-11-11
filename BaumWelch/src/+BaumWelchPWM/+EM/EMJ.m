@@ -57,7 +57,8 @@ function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, 
         psi = BaumWelchPWM.EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
         theta.E = updateE(gamma, params, indicesHotMap);
         % fprintf('Update G\n');
-        [theta.G, theta.T] = updateGT(params, theta, xi, gamma);
+        [theta.G, theta.T] = updateGT(params, theta, xi, gamma, psi);
+        sum(exp(theta.G), 2)
         % fprintf('Update startT\n');
         theta.startT = updateStartT(gamma);
         iterLike(end+1) = matUtils.logMatSum(pX, 1);% / (N*L);
@@ -152,7 +153,7 @@ end
 % beta - N x m x L
 % gamma - N x m x L
 % newT - m x m
-function [newG, newT] = updateGT(params, theta, xi, gamma)
+function [newG, newT] = updateGT(params, theta, xi, gamma, psi)
     [N, ~, ~, L] = size(gamma);
     % keyboard
 
