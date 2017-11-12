@@ -1,9 +1,9 @@
 function [alpha, beta, pX, xi, gamma, psi] = EStep(params, theta, X, pcPWMp)
     [N, L] = size(X);
     Eps = EM.getEp3d(theta, params, X, 1:L);
-    alpha = EM.forwardAlgJ(X, theta, params, pcPWMp, Eps);
+    alpha = EM.forwardAlg(X, theta, params, pcPWMp, Eps);
     % fprintf('Calculating beta...\n')
-    beta = EM.backwardAlgJ(X, theta, params, pcPWMp, Eps);
+    beta = EM.backwardAlg(X, theta, params, pcPWMp, Eps);
     % N x 1
     pX = EM.makePx(alpha, beta);
     % fprintf('Calculating Xi...\n')

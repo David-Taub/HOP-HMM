@@ -10,7 +10,7 @@ function mergedPeaksMin = mainGenSequences(N, L, m, isMixed)
     params.L = L;
     params.tEpsilon = isMixed * (1 / L);
 
-    originalTheta = misc.genThetaJ(params);
+    originalTheta = misc.genTheta(params);
     for i=1:params.m
         originalTheta.E(i, :) = [ 9298, 6036, 7032, 4862, 7625, 7735, 6107, 6381, 8470,...
                                   1103, 7053, 6677, 4151, 4202, 3203, 4895, 4996, 6551,...
@@ -29,7 +29,7 @@ function mergedPeaksMin = mainGenSequences(N, L, m, isMixed)
         originalTheta.G(i, :) = matUtils.logMakeDistribution(log(exp(originalTheta.G(i, :)) + (rand(1, params.k) .* PWM_NOISE_FACTOR)));
     end
     originalTheta.G = originalTheta.G + repmat(log(F), [1, params.k]);
-    [seqs, Y] = misc.genSequencesJ(originalTheta, params);
+    [seqs, Y] = misc.genSequences(originalTheta, params);
     Y2 = Y;
     Y = mode(Y(:,:,1), 2);
     overlaps = matUtils.vec2mat(Y(:, 1)', params.m)';

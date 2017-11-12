@@ -205,7 +205,7 @@ end
 % X - N x L
 
 function [theta] = learnSingleMode(X, params, pcPWMp, maxIter)
-    [theta, ~] = EM.EMJ(X, params, pcPWMp, maxIter);
+    [theta, ~] = EM.EM(X, params, pcPWMp, maxIter);
 end
 
 function theta = meanMergeTheta(params, thetas)

@@ -11,7 +11,7 @@
 % lengths - m x 1 length of each motif in the PWM matrix. J = max(lengths)
 % X - N x L emission variables
 % alpha - N x m x L
-function alpha = forwardAlgJ(X, theta, params, pcPWMp, Eps)
+function alpha = forwardAlg(X, theta, params, pcPWMp, Eps)
     [N, L] = size(X);
     matSize = [params.m , params.n * ones(1, params.order)];
     % m x L

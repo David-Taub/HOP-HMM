@@ -7,7 +7,7 @@
 % pcPWMp - N x k x L
 % beta - N x m x L
 % beta(N, i, t) P( x_s_t+1, ...x_s_k| y_s_t=i, startT, T, E)
-function beta = backwardAlgJ(X, theta, params, pcPWMp, Eps)
+function beta = backwardAlg(X, theta, params, pcPWMp, Eps)
     [N, L] = size(X);
     % zero appended to handle pwm steps in the end of the sequence (first iterations) which have probability 0
     beta = cat(3, zeros(N, params.m, L), -inf(N, params.m, params.J));

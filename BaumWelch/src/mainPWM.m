@@ -60,7 +60,7 @@ function mainPWM(mergedPeaksMin)
     % % merge thetas
     % testParams = params;
     % testParams.m = length(unique(test.Y));
-    % testTheta = misc.genThetaJ(testParams);
+    % testTheta = misc.genTheta(testParams);
     % for i=1:max(train.Y, [], 1);
     %     testTheta.E(i,:) = thetas(i).E(:);
     %     testTheta.G(i,:) = thetas(i).G(:);
@@ -82,11 +82,11 @@ function mainPWM(mergedPeaksMin)
 
     % t1 = mergedPeaksMin.originalTheta;
     % t2 = testTheta;
-    % alpha1 = EM.forwardAlgJ(train.X, t1, testParams, train.pcPWMp);
-    % beta1 = EM.backwardAlgJ(train.X, t1, testParams, train.pcPWMp);
+    % alpha1 = EM.forwardAlg(train.X, t1, testParams, train.pcPWMp);
+    % beta1 = EM.backwardAlg(train.X, t1, testParams, train.pcPWMp);
     % pX1 = EM.makePx(alpha1, beta1);
-    % alpha2 = EM.forwardAlgJ(train.X, t2, testParams, train.pcPWMp);
-    % beta2 = EM.backwardAlgJ(train.X, t2, testParams, train.pcPWMp);
+    % alpha2 = EM.forwardAlg(train.X, t2, testParams, train.pcPWMp);
+    % beta2 = EM.backwardAlg(train.X, t2, testParams, train.pcPWMp);
     % pX2 = EM.makePx(alpha2, beta2);
     % % t2.E = t1.E;
     % figure
@@ -150,9 +150,9 @@ function accuricy = classify(theta, params, X, pcPWMp, Y)
     [N, L] = size(X);
     fprintf('Calculating alpha...\n')
     % N x m x L
-    alpha = EM.forwardAlgJ(X, theta, params, pcPWMp);
+    alpha = EM.forwardAlg(X, theta, params, pcPWMp);
     fprintf('Calculating beta...\n')
-    beta = EM.backwardAlgJ(X, theta, params, pcPWMp);
+    beta = EM.backwardAlg(X, theta, params, pcPWMp);
     % N x 1
     pX = EM.makePx(alpha, beta);
     fprintf('Calculating Gamma...\n')
@@ -263,7 +263,7 @@ end
 % pcPWMp - N x k x L-1+J
 % X - N x L
 function [theta] = learnSingleMode(X, params, pcPWMp, maxIter, mergedPeaksMin, Ymode)
-    [theta, ~] = EM.EMJ(X, params, pcPWMp, maxIter);
+    [theta, ~] = EM.EM(X, params, pcPWMp, maxIter);
     figure
     subplot(1,3,2);
     plot(exp(mergedPeaksMin.originalTheta.G(Ymode, :)));ylim([0,1]);
@@ -284,7 +284,7 @@ function [theta] = learnSingleMode(X, params, pcPWMp, maxIter, mergedPeaksMin, Y
     %     partMask = mod(1:N, parts) == (i-1);
     %     % initTheta = misc.genThetaUni(params);
     %     % initTheta.ot = mergedPeaksMin.originalTheta;
-    %     [thetas{i}, ~] = EM.EMJ(X(partMask, :), params, pcPWMp(partMask, :, :), maxIter);
+    %     [thetas{i}, ~] = EM.EM(X(partMask, :), params, pcPWMp(partMask, :, :), maxIter);
     %     % initTheta = thetas{i};
     %     theta = meanMergeTheta(params, thetas);
     %     dists(i) = relativeEntropy(exp(mergedPeaksMin.originalTheta.G(Ymode, :)'), exp(theta.G'));

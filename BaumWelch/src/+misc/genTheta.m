@@ -1,4 +1,4 @@
-function [theta] = genThetaJ(params)
+function [theta] = genTheta(params)
     % normalized random probabilities
     % theta.startT = rand(params.m, 1);
     theta.startT = ones(params.m, 1);

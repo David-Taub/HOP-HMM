@@ -1,5 +1,5 @@
 
-function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, maxIter)
+function [bestTheta, bestLikelihood] = EM(X, params, pcPWMp, maxIter)
     % X - N x L emission variables
     % m - amount of possible states (y)
     % n - amount of possible emissions (x)
@@ -22,7 +22,7 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, maxIter)
     % figure
     for rep = 1:repeat
         X = X(randperm(N), :);
-        initTheta = misc.genThetaJ(params);
+        initTheta = misc.genTheta(params);
         [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, indicesHotMap, N, L);
         if bestLikelihood < iterLike(end)
             bestLikelihood = iterLike(end);

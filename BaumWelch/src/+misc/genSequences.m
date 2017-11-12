@@ -1,5 +1,5 @@
 
-function [X, Y] = genSequencesJ(theta, params)
+function [X, Y] = genSequences(theta, params)
     fprintf('Generating sequences... \n');
     params.order = length(size(theta.E)) - 1;
     Y = zeros(params.N, params.L, 2);
