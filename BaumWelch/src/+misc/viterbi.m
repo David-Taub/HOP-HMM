@@ -3,6 +3,7 @@
 % pcPWMp - N x k x L
 function Y = viterbi(theta, params, X, pcPWMp)
     [N, L] = size(X);
+    fprintf('Running Viterbi on %d sequences of length %d\n', N, L)
     pcPWMp = cat(3, -inf(N, params.k, params.J), pcPWMp);
     Y = zeros(N, L, 2);
     matSize = [params.m , params.n * ones(1, params.order)];
@@ -10,7 +11,6 @@ function Y = viterbi(theta, params, X, pcPWMp)
     % N x m x L
     Eps = EM.getEp3d(theta, params, X, 1:L);
     for i = 1:N
-        fprintf('%d / %d\r',i, N)
         O1 = -inf(params.m, L+params.J);
         O2 = zeros(params.m, L, 2);
         % m x L x 2
@@ -25,7 +25,7 @@ function Y = viterbi(theta, params, X, pcPWMp)
                 subSteps(:, j) = O1(:, t-params.lengths(j)-1+params.J) + permute(pcPWMp(i, j, t-params.lengths(j)'+params.J), [1,3,2]);
             end
             % m x k
-            subSteps = subSteps + theta.G + repmat(Eps(i, :, t)', [1, params.k]) + repmat(Eps(i, :, t)', [1, params.k]);
+            subSteps = subSteps + theta.G + repmat(Eps(i, :, t)', [1, params.k]);
             O2(:, t, 1) = 1:params.m;
             [O1(:, t+params.J), O2(:, t, 2)] = max(subSteps, [], 2);
             % 1 x m
@@ -44,7 +44,7 @@ function Y = viterbi(theta, params, X, pcPWMp)
         Y(i, L, 2) = 0;
         [~, Y(i, L, 1)] = max(O1(:, end), [], 1);
         t = L;
-        while t > 2
+        while t >= 2
             % m x m
             Y(i, t-1, :) = O2(Y(i, t, 1), t, :);
             if Y(i, t-1, 2) > 0

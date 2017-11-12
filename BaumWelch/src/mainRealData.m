@@ -23,21 +23,22 @@ function mainRealData(mergedPeaksMin)
     G = zeros(r, params.k);
     % delete(fullfile('data', 'precomputation', 'pcPWMp.mat'));
     % [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, [3, 14, 15, 9, 2]);
-    [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, [1:3]);
+    [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, [1:5]);
     m = max(train.Y(:));
     for i = 1 : m
         X = train.X(train.Y(:, 1)==i, :);
         params.m = 1;
         pcPWMp = train.pcPWMp(train.Y(:, 1)==i, :, :);
         % N x k x L
-        theta = learnSingleMode(X, params, pcPWMp, 7);
+        theta = learnSingleMode(X, params, pcPWMp, 25);
         thetas{i} = theta;
-        drawnow;
     end
     params.m = m;
     theta = catThetas(params, thetas);
+    show.showTheta(theta);
     classify(theta, params, train.X, train.pcPWMp, train.Y)
     classify(theta, params, test.X, test.pcPWMp, test.Y)
+    keyboard
 end
 
 
@@ -53,17 +54,52 @@ function loss = classify(theta, params, X, pcPWMp, Y)
     YOneHot = permute(matUtils.mat23Dmat(Y, params.m), [1, 3, 2]);
     % N x L
     certainty = reshape(posterior(YOneHot), [N, L]);
-    loss = mean(log(1-certainty(:)))
-    keyboard
-    YEst = misc.viterbi(theta, params, X, pcPWMp);
-    subplot(1,3,1);
-    imagesc(YEst(:,:,1)); colorbar;
-    subplot(1,3,2);
-    imagesc(YEst(:,:,2)); colorbar;
-    subplot(1,3,3);
-    imagesc(Y); colorbar;
+    loss = mean(log(1-certainty(:)));
+    YEstViterbi = misc.viterbi(theta, params, X, pcPWMp);
+    YEstViterbiAcc = YEstViterbi(:,:,1) == Y; YEstViterbiAcc = sum(YEstViterbiAcc(:)) ./ length(YEstViterbiAcc(:));
 
-    % subplot(1,3,1);imagesc(O1); colorbar;subplot(1,3,2);imagesc(O2(:,:,2)); colorbar;subplot(1,3,3);imagesc(O2(:,:,1)); colorbar;
+    YEstMax = maxPostEstimator(theta, params, psi, gamma);
+    YEstMaxAcc = YEstMax(:,:,1) == Y; YEstMaxAcc = sum(YEstMaxAcc(:)) ./ length(YEstMaxAcc(:));
+
+    fprintf('Avg log loss: %.2f\n', loss);
+    show.seqSampleCertainty(params, Y, certainty);
+    figure
+    subplot(1,5,1);
+    imagesc(YEstMax(:,:,1)); colorbar; title(['viterbi state ', num2str(YEstViterbiAcc)]);
+    subplot(1,5,2);
+    imagesc(YEstMax(:,:,2)); colorbar;title('viterbi motifs');
+    subplot(1,5,3);
+    imagesc(YEstViterbi(:,:,1)); colorbar; title(['maxPosterior state ', num2str(YEstMaxAcc)]);
+    subplot(1,5,4);
+    imagesc(YEstViterbi(:,:,2)); colorbar;title('maxPosterior motifs');
+    subplot(1,5,5);
+    imagesc(Y); colorbar;title('real');
+
+end
+function YEst = maxPostEstimator(theta, params, psi, gamma)
+    [N, ~, L] = size(gamma);
+    % N x L x m
+    gammaPer = permute(gamma, [1, 3, 2]);
+    [gammaMaxVals, YEstBaseStates] = max(gammaPer, [], 3);
+
+    % N x m x k x L -> N x L x m x k
+    psiPer = cat(2, -inf(N, params.J, params.m, params.k), permute(psi, [1, 4, 2, 3]));
+    skewedPsi = -inf(N, L, params.m, params.k);
+    for l = 1:params.k
+        for u = 1:params.lengths(l)
+            skewedPsi(:, :, :, l) = max(skewedPsi(:, :, :, l), psiPer(:, [1:L] + params.J - u, :, l));
+        end
+    end
+    % N x L x m x k -> N x L
+    [psiMaxVals, psiMaxInd] = max(skewedPsi(:,:,:), [], 3);
+    subStates = floor((psiMaxInd - 1) / params.m) + 1;
+    baseStates = mod(psiMaxInd - 1, params.m) + 1;
+    subStateMask = psiMaxVals > gammaMaxVals;
+    % N x L
+    YEstBaseStates(subStateMask) = baseStates(subStateMask);
+    YEstSubStates = zeros(N, L);
+    YEstSubStates(subStateMask) = subStates(subStateMask);
+    YEst = cat(3, YEstBaseStates, YEstSubStates);
 end
 
 % function seqClassification(params, theta, posterior, Y)
@@ -83,21 +119,7 @@ end
 %     % YEstMax = permute(YEstMax, [1, 3, 2]);
 %     % accuricy = sum(sum(YEstMax == Y, 1), 2) ./ (N * L)
 
-%     %%%%%%%%%%%%%%
-%     % Figures
-%     %%%%%%%%%%%%%%
-%     keyboard
-%     sequencesToShow = 10;
-%     figure;
-%     inds = randsample(N, sequencesToShow);
-%     for i = 1:sequencesToShow
-%         subplot(sequencesToShow, 1, i);
-%         YOneHot = matUtils.vec2mat(Y(inds(i), :), params.m);
-%         repCertainty = YOneHot .* repmat(certainty(inds(i), :), [params.m, 1]);
-%         repCertainty = [repCertainty; (1-repCertainty) .* double(repCertainty~=0)];
-%         bar(repCertainty', 'stacked')
-%     end
-%     figure;
+
 %     subplot(1,5,1);
 %     imagesc(theta.G); colorbar;title('G')
 %     subplot(1,5,2);

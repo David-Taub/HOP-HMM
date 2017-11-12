@@ -47,9 +47,9 @@ function [X, Y] = genSequencesJ(theta, params)
             else
                 ytNext = state;
                 X(j, t) = emitBaseState(X, params, E, t, ytNext, j);
-                if ytNext ~= yt
-                    fprintf('!')
-                end
+                % if ytNext ~= yt
+                %     fprintf('!')
+                % end
                 Y(j, t, 1) = ytNext;
                 Y(j, t, 2) = 0;
                 t = t + 1;
@@ -61,7 +61,7 @@ end
 
 % emit one letter from base state
 function ret = emitBaseState(X, params, E, t, yt, j)
-    fprintf('.');
+    % fprintf('.');
     % regular E step
     if t >= params.order
         Etemp = E;
