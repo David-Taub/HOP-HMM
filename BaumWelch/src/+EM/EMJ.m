@@ -32,7 +32,7 @@ function [bestTheta, bestLikelihood] = EMJ(X, params, pcPWMp, maxIter)
 end
 
 function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, indicesHotMap, N, L)
-    LIKELIHOOD_THRESHOLD = 10 ^ -4;
+    LIKELIHOOD_THRESHOLD = 10 ^ -6;
     theta = initTheta;
     iterLike = [];
     for it = 1:maxIter
