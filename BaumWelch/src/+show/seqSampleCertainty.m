@@ -5,6 +5,7 @@ function seqSampleCertainty(params, Y, certainty)
     myColormap = [jet(params.m); myColormap];
     inds = randsample(N, sequencesToShow);
     inds = sort(inds);
+    loss = mean(log(1-certainty(:)));
     figure;
     for i = 1:sequencesToShow
         subplot(sequencesToShow, 1, i);
@@ -17,7 +18,7 @@ function seqSampleCertainty(params, Y, certainty)
         xlim([1, L])
         colormap(myColormap);
         if i == 1
-            title(['Posterior of ', num2str(sequencesToShow), ' Sequences']);
+            title(['Posterior of ', num2str(sequencesToShow), ' Sequences (logloss: ', num2str(loss),')']);
         end
         if i == sequencesToShow
             xlabel('Position in Sequence');

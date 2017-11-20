@@ -13,7 +13,7 @@ function preprocessPWMs()
 	% S = load('data/PWMsRaw.mat');
 	% PWM = S.PWMs;
 	% names = S.names;
-	DUPLICATES_FACTOR = 0.01; STRENGTH_FACTOR = 0.01; % 519 -> 26
+	DUPLICATES_TO_REMOVE = 0.80; STRENGTH_TO_REMOVE = 0.60; % 519 -> 26
 	% n x J x k -> k x J x n
 	% PWM = permute(PWM, [3, 2, 1]);
 	% lengths = sum(sum(PWM, 3) > 0, 2)';
@@ -25,9 +25,9 @@ function preprocessPWMs()
 	PWM = permute(PWM, [1, 3, 2]);
 
 	length(lengths)
-	[PWM, lengths, names] = JasparDataProcessing.removedPWMsDuplicates(PWM, lengths, names, DUPLICATES_FACTOR);
+	[PWM, lengths, names] = JasparDataProcessing.removedPWMsDuplicates(PWM, lengths, names, DUPLICATES_TO_REMOVE);
 	length(lengths)
-	[PWM, lengths, names] = JasparDataProcessing.removePWMsWeak(PWM, lengths, names, STRENGTH_FACTOR);
+	[PWM, lengths, names] = JasparDataProcessing.removePWMsWeak(PWM, lengths, names, STRENGTH_TO_REMOVE);
 	length(lengths)
 	save('data/Jaspar/PWMs.mat', 'PWM', 'lengths', 'names');
 end

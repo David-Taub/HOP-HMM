@@ -5,75 +5,78 @@
 % mergedPeaksMin = load(fullfile('data', 'dummyDNA.mat'));
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
 % mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
-% mainRealData(mergedPeaksMin);
+% mainRealData(mergedPeaksMin, 5);
+% clear all; mainGenSequences(5000, 500, 2, 5, false, true); mergedPeaksMin = load(fullfile('data', 'dummyDNA.mat')); mainRealData(mergedPeaksMin, 5);
 
-function mainRealData(mergedPeaksMin)
+function mainRealData(mergedPeaksMin, k)
     dbstop if error
     close all;
-    params = misc.genParams();
-    params.NperTissue = 500;
+    params = misc.genParams(k);
+    params.NperTissue = 1000;
     testTrainRatio = 0.15;
-    r = size(mergedPeaksMin.overlaps, 2);
-    output = zeros(r, r, 2);
 
     % iterating over all 2 tissues pairs, each iteration around 500 sequences are picked from each tissue. then 90% of the
     % sequences are trained, then the thetas are merged and the 10% are classified using the merged thetas (with 2 floors). for
     % each classification, a rocAuc is calculated and shown in imagesc
     thetas = {};
-    G = zeros(r, params.k);
     % delete(fullfile('data', 'precomputation', 'pcPWMp.mat'));
     % [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, [3, 14, 15, 9, 2]);
-    [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, [1:5]);
+    [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, 1:size(mergedPeaksMin.overlaps, 2));
     m = max(train.Y(:));
     for i = 1 : m
         X = train.X(train.Y(:, 1)==i, :);
         params.m = 1;
         pcPWMp = train.pcPWMp(train.Y(:, 1)==i, :, :);
         % N x k x L
-        theta = learnSingleMode(X, params, pcPWMp, 25);
+        theta = learnSingleMode(X, params, pcPWMp, 100);
         thetas{i} = theta;
     end
     params.m = m;
     theta = catThetas(params, thetas);
     show.showTheta(theta);
-    classify(theta, params, train.X, train.pcPWMp, train.Y)
-    classify(theta, params, test.X, test.pcPWMp, test.Y)
+    classify(theta, params, train);
+    classify(theta, params, test);
     keyboard
 end
 
 
 % Y - N x L
-function loss = classify(theta, params, X, pcPWMp, Y)
-    [N, L] = size(X);
+function loss = classify(theta, params, dataset)
+    [N, L] = size(dataset.X);
     % N x m x L
-    [alpha, beta, pX, xi, gamma, psi] = EM.EStep(params, theta, X, pcPWMp);
+    [alpha, beta, pX, xi, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
     % EM.drawStatus(theta, params, gamma);
     % N x m x L
     posterior = calcPosterior(params, gamma, psi);
     % N x m x L
-    YOneHot = permute(matUtils.mat23Dmat(Y, params.m), [1, 3, 2]);
+    YOneHot = permute(matUtils.mat23Dmat(dataset.Y, params.m), [1, 3, 2]);
     % N x L
     certainty = reshape(posterior(YOneHot), [N, L]);
     loss = mean(log(1-certainty(:)));
-    YEstViterbi = misc.viterbi(theta, params, X, pcPWMp);
-    YEstViterbiAcc = YEstViterbi(:,:,1) == Y; YEstViterbiAcc = sum(YEstViterbiAcc(:)) ./ length(YEstViterbiAcc(:));
+    YEstViterbi = misc.viterbi(theta, params, dataset.X, dataset.pcPWMp);
+    YEstViterbiAcc = YEstViterbi(:, :, 1) == dataset.Y; YEstViterbiAcc = sum(YEstViterbiAcc(:)) ./ length(YEstViterbiAcc(:));
 
     YEstMax = maxPostEstimator(theta, params, psi, gamma);
-    YEstMaxAcc = YEstMax(:,:,1) == Y; YEstMaxAcc = sum(YEstMaxAcc(:)) ./ length(YEstMaxAcc(:));
+    YEstMaxAcc = YEstMax(:, :, 1) == dataset.Y; YEstMaxAcc = sum(YEstMaxAcc(:)) ./ length(YEstMaxAcc(:));
 
     fprintf('Avg log loss: %.2f\n', loss);
-    show.seqSampleCertainty(params, Y, certainty);
+    show.seqSampleCertainty(params, dataset.Y, certainty);
     figure
-    subplot(1,5,1);
-    imagesc(YEstMax(:,:,1)); colorbar; title(['viterbi state ', num2str(YEstViterbiAcc)]);
-    subplot(1,5,2);
-    imagesc(YEstMax(:,:,2)); colorbar;title('viterbi motifs');
-    subplot(1,5,3);
-    imagesc(YEstViterbi(:,:,1)); colorbar; title(['maxPosterior state ', num2str(YEstMaxAcc)]);
-    subplot(1,5,4);
-    imagesc(YEstViterbi(:,:,2)); colorbar;title('maxPosterior motifs');
-    subplot(1,5,5);
-    imagesc(Y); colorbar;title('real');
+    subplot(1,6,1);
+    imagesc(YEstViterbi(:,:,1)); colorbar; title(['Viterbi States', num2str(YEstViterbiAcc)]);
+    subplot(1,6,2);
+    imagesc(YEstViterbi(:,:,2)); colorbar;title('Viterbi Motifs');
+    subplot(1,6,3);
+    imagesc(YEstMax(:,:,1)); colorbar; title(['MaxPosterior States', num2str(YEstMaxAcc)]);
+    subplot(1,6,4);
+    imagesc(YEstMax(:,:,2)); colorbar;title('MaxPosterior Motifs');
+    subplot(1,6,5);
+    subplot(1,6,5);
+    imagesc(dataset.Y); colorbar;title(['Real States (', dataset.title, ')']);
+    if isfield(dataset, 'Y2')
+        subplot(1,6,6);
+        imagesc(dataset.Y2); colorbar;title('Real Motifs');
+    end
 
 end
 function YEst = maxPostEstimator(theta, params, psi, gamma)
@@ -161,15 +164,15 @@ function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, tiss
     L = size(mergedPeaksMin.seqs, 2);
     overlaps = mergedPeaksMin.overlaps;
     mask = true(size(overlaps, 1), 1);
-    fprintf('%d (%.2f) - > ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
+    fprintf('%d (%.2f) -> ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1));
     % mask = mask & mergedPeaksMin.lengths >= 0.3*L;
-    % fprintf('%d (%.2f) - > ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
+    % fprintf('%d (%.2f) -> ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1));
     mask = mask & mergedPeaksMin.lengths <= 3*L;
-    fprintf('%d (%.2f) - > ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
+    fprintf('%d (%.2f) -> ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1));
     mask = mask & (sum(overlaps > 0, 2) <= 2);
-    fprintf('%d (%.2f) - > ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
+    fprintf('%d (%.2f) -> ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1));
     mask = mask & (sum(overlaps(:, tissueIds) > 0, 2) == 1);
-    fprintf('%d (%.2f) - > ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
+    fprintf('%d (%.2f) -> ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1));
     % mask = mask & mod(1:size(mask,1), 3).' == 0;
     N = min([params.NperTissue, sum(overlaps(mask, tissueIds)>0, 1)]);
     maskTop = false(size(mask, 1), 1);
@@ -177,7 +180,7 @@ function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, tiss
         maskTop = maskTop | takeTopN(overlaps(:, id), N, mask);
     end
     mask = mask & maskTop;
-    fprintf('%d (%.2f)\n', sum(mask, 1), sum(mask, 1)/size(overlaps, 1))
+    fprintf('%d (%.2f)\n', sum(mask, 1), sum(mask, 1)/size(overlaps, 1));
 
     overlaps = overlaps(mask, :);
     overlaps = overlaps(:, tissueIds);
@@ -192,12 +195,22 @@ function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, tiss
     pcPWMp = misc.preComputePWMp(X, params);
     N = size(X, 1);
     trainMask = rand(N, 1) > testTrainRatio;
+    train.title = 'Train';
+    test.title = 'Test';
     train.X = X(trainMask, :);
-    train.Y = repmat(Y(trainMask), [1, L]);
-    train.pcPWMp = pcPWMp(trainMask, :, :);
     test.X = X(~trainMask, :);
+    train.Y = repmat(Y(trainMask), [1, L]);
     test.Y = repmat(Y(~trainMask), [1, L]);
+    train.pcPWMp = pcPWMp(trainMask, :, :);
     test.pcPWMp = pcPWMp(~trainMask, :, :);
+    if isfield(mergedPeaksMin, 'Y2')
+        Y2 = mergedPeaksMin.Y2(mask, :, :);
+        Y2 = Y2(seqInd, :, :);
+        train.Y = Y2(trainMask, :, 1);
+        test.Y = Y2(~trainMask, :, 1);
+        train.Y2 = Y2(trainMask, :, 2);
+        test.Y2 = Y2(~trainMask, :, 2);
+    end
 end
 
 
@@ -206,20 +219,6 @@ end
 
 function [theta] = learnSingleMode(X, params, pcPWMp, maxIter)
     [theta, ~] = EM.EM(X, params, pcPWMp, maxIter);
-end
-
-function theta = meanMergeTheta(params, thetas)
-    thetas = [thetas{:}];
-    parts = length(thetas);
-    theta = misc.genThetaUni(params);
-    theta.G = log(mean(reshape(exp([thetas.G]), [params.m, params.k, parts]), 3));
-    theta.F = log(mean(exp([thetas.F]), 2));
-    theta.T = log(mean(reshape(exp([thetas.T]), [params.m, params.m, parts]), 3));
-    theta.E = zeros([params.m, ones(1, params.order) * params.n]);
-    for i = 1:parts
-        theta.E = theta.E + exp(thetas(i).E);
-    end
-    theta.E = log(theta.E ./ parts);
 end
 
 function theta = catThetas(params, thetas)

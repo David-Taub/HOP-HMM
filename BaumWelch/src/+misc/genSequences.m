@@ -1,16 +1,14 @@
 
-function [X, Y] = genSequences(theta, params)
+function [X, Y] = genSequences(theta, params, N, L)
     fprintf('Generating sequences... \n');
     params.order = length(size(theta.E)) - 1;
-    Y = zeros(params.N, params.L, 2);
-    X = zeros(params.N, params.L);
+    Y = zeros(N, L, 2);
+    X = zeros(N, L);
     E = exp(theta.E);
     T = exp(theta.T);
     G = exp(theta.G);
-    PWMs = params.PWMs;
-    lengths = params.lengths;
     startT = exp(theta.startT);
-    for j = 1:params.N
+    for j = 1:N
         % first letter
         Etemp = matUtils.sumDim(E, 2 : params.order);
         Etemp = bsxfun(@times, Etemp, 1 ./ sum(Etemp, length(size(Etemp))));
@@ -19,26 +17,26 @@ function [X, Y] = genSequences(theta, params)
         X(j, 1) = smrnd(Etemp(Y(j, 1), :)');
         fprintf('%d ', Y(j, 1, 1));
         t = 2;
-        while t <= params.L
+        while t <= L
             yt = Y(j, t-1, 1);
             state = smrnd([T(yt, :), G(yt, :)]');
             if params.m < state
                 % PWM step
                 motif = state - params.m;
-                for i=1:lengths(motif)
-                    X(j, t) = smrnd(PWMs(motif, :, i)');
+                for i=1:params.lengths(motif)
+                    X(j, t) = smrnd(params.PWMs(motif, :, i)');
                     fprintf('%d',motif)
                     % fprintf('%d',X(j, t))
                     Y(j, t, 1) = yt;
                     Y(j, t, 2) = motif;
                     assert(X(j, t) > 0);
                     t = t + 1;
-                    if t > params.L
+                    if t > L
                         % sequence too long
                         break
                     end
                 end
-                if t <= params.L
+                if t <= L
                     X(j, t) = emitBaseState(X, params, E, t, yt, j);
                     Y(j, t, 1) = yt;
                     Y(j, t, 2) = 0;
