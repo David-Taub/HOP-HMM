@@ -1,9 +1,15 @@
+% m - number of base states in the model
+% k - number of sub states each base state has in the model
+function params = genParams(m, k)
 
-function params = genParams(k)
-    params.m = 1;
+    params.m = m;
     params.order = 3;
     [params.PWMs, params.lengths, params.names] = misc.PWMs();
     params.tEpsilon = 1/1000;
+    params.backgroundRatio = 0.9;
+    params.crossEnhancer = 0.1;
+    params.enhancerLength = 500;
+    params.enhancerMotifsRatio = 0.2;
     params.batchSize = 2;
     [~, params.n, params.J] = size(params.PWMs);
     params.k = k;

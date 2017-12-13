@@ -1,38 +1,22 @@
 % mainGenSequences();
-% load(fullfile('data', 'dummyDNA.mat'));
+% load(fullfile('..', 'data', 'dummyDNA.mat'));
 % mainPWM(pcPWMp, X, Y);
 % mergedPeaksMin = mainGenSequences(1000, 600, 2, true);
-% mergedPeaksMin = load(fullfile('data', 'dummyDNA.mat'));
+% mergedPeaksMin = load(fullfile('..', 'data', 'dummyDNA.mat'));
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
-% mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
+% mergedPeaksMin = load('../data/peaks/roadmap/mergedPeaksMinimized.mat');
 % mainRealData(mergedPeaksMin, 5);
-% clear all; mainGenSequences(5000, 500, 2, 5, false, true); mergedPeaksMin = load(fullfile('data', 'dummyDNA.mat')); mainRealData(mergedPeaksMin, 5);
+% clear all; mainGenSequences(5000, 500, 3, 6, true, true); mergedPeaksMin = load(fullfile('..', 'data', 'dummyDNA.mat')); mainRealData(mergedPeaksMin, 5);
 
-function mainRealData(mergedPeaksMin, k)
+function mainRealData(mergedPeaksMin, m, k)
     dbstop if error
     close all;
-    params = misc.genParams(k);
+    params = misc.genParams(m, k);
     params.NperTissue = 1000;
     testTrainRatio = 0.15;
 
-    % iterating over all 2 tissues pairs, each iteration around 500 sequences are picked from each tissue. then 90% of the
-    % sequences are trained, then the thetas are merged and the 10% are classified using the merged thetas (with 2 floors). for
-    % each classification, a rocAuc is calculated and shown in imagesc
-    thetas = {};
-    % delete(fullfile('data', 'precomputation', 'pcPWMp.mat'));
-    % [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, [3, 14, 15, 9, 2]);
     [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, 1:size(mergedPeaksMin.overlaps, 2));
-    m = max(train.Y(:));
-    for i = 1 : m
-        X = train.X(train.Y(:, 1)==i, :);
-        params.m = 1;
-        pcPWMp = train.pcPWMp(train.Y(:, 1)==i, :, :);
-        % N x k x L
-        theta = learnSingleMode(X, params, pcPWMp, 100);
-        thetas{i} = theta;
-    end
-    params.m = m;
-    theta = catThetas(params, thetas);
+    [theta, ~] = EM.EM(train.X, params, train.pcPWMp, 400);
     show.showTheta(theta);
     classify(theta, params, train);
     classify(theta, params, test);
@@ -218,7 +202,7 @@ end
 % X - N x L
 
 function [theta] = learnSingleMode(X, params, pcPWMp, maxIter)
-    [theta, ~] = EM.EM(X, params, pcPWMp, maxIter);
+
 end
 
 function theta = catThetas(params, thetas)
