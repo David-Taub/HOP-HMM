@@ -1,0 +1,286 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 1
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\headheight 0cm
+\headsep 0cm
+\footskip 0cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation 0bp
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Computation Biology Lab (2018)
+\end_layout
+
+\begin_layout Author
+Written by: David Ariel
+\end_layout
+
+\begin_layout Author
+Guided by: Prof.
+ Tommy Kaplan
+\end_layout
+
+\begin_layout Part*
+Introduction
+\end_layout
+
+\begin_layout Subsubsection*
+Enhancer Background
+\end_layout
+
+\begin_layout Standard
+Enhancers are DNA sequences which have a regulatory role on the transcription
+ of genes.
+ The exact length of the enhancers varies, some are no longer the 200 bases
+ long
+\series bold
+ [TODO: citation needed]
+\series default
+ and recent works found enhancers of 10 kilo bases long 
+\series bold
+[TODO: citation needed]
+\series default
+.
+ The distance between the enhancer and its target gene also varies, some
+ enhancers were found activating genes up to 100 kilo bases downstream and
+ upstream of their location 
+\series bold
+[TODO: citation needed].
+\end_layout
+
+\begin_layout Standard
+It is currently unknown exactly how much of the human genome has a gene
+ regulation role.
+\end_layout
+
+\begin_layout Subsubsection*
+Other Types of Gene Regulation
+\end_layout
+
+\begin_layout Standard
+accessibility & TADs
+\end_layout
+
+\begin_layout Standard
+DNA methylation
+\end_layout
+
+\begin_layout Subsubsection*
+Structure of Enhancers
+\end_layout
+
+\begin_layout Standard
+3D spacial features, kmer
+\end_layout
+
+\begin_layout Standard
+PWM which describes binding sites
+\end_layout
+
+\begin_layout Standard
+alternative to PWMs
+\end_layout
+
+\begin_layout Subsubsection*
+Two approaches: Epigenetic vs.
+ Sequence
+\end_layout
+
+\begin_layout Standard
+In Vista project 
+\series bold
+[TODO: add link and citation]
+\series default
+, mice eggs genome were injected with suspected enhancer sequence following
+ a reporter gene LacZ.
+ Then, after the intergenic eggs developed into 11.5 days old embryos, the
+ mice embryos where extracted and photographed so the blue LacZ gene expression
+ colored the tissues where the inserted enhancer became active.
+ It is important to notice that even though the injected enhancer was synthetica
+lly printed and carried no epigenetic information, the activation of the
+ enhancers was tissue-specific, which strengthen the hypothesis that the
+ sequence itself is enough to turn a DNA region into an enhancer and not
+ its epigenetic modifications.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename VistaMice.jpg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure ##: 
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this work, we shows the information about the enhancer activity is in
+ the sequence and not the epigenetic information.
+\end_layout
+
+\begin_layout Standard
+Using epigenetic data to search for active enhancers is useful only for
+ tissues from which a samples with high enough purity could be obtained
+ for preforming the ChIP-seq procedure.
+ Establishing a way to correctly classify enhancer sequences in the genome
+ might help to
+\end_layout
+
+\begin_layout Part*
+Sequence Based Machine Learning
+\end_layout
+
+\begin_layout Subsubsection*
+Data Sources
+\end_layout
+
+\begin_layout Standard
+JASPAR
+\end_layout
+
+\begin_layout Standard
+Roadmap project
+\end_layout
+
+\begin_layout Standard
+The Roadmap Project data set of high- throughput ChIP-seq of H3K27ac, H3K4me1,
+ H3K4me3, H3K27me3 chromatin modification in cells from a specific tissues
+ can be used to classify sequences as active enhancers in each of the 127
+ tested tissues.
+\end_layout
+
+\begin_layout Subsubsection*
+Classifying Sequences to Enhancers and Non-Enhancers
+\end_layout
+
+\begin_layout Subsubsection*
+Predicting Active Tissue by The Enhancer Sequences
+\end_layout
+
+\begin_layout Subsubsection*
+Classifying Tissue-Specific Enhancers to Their Target Tissue 
+\end_layout
+
+\begin_layout Standard
+Results:
+\end_layout
+
+\begin_layout Standard
+Heat map - N x 4 ^ 6 each kmer frequencies for each sequences of 
+\end_layout
+
+\begin_layout Standard
+Heat map - N x k each max PSSM for each sequences
+\end_layout
+
+\begin_layout Standard
+Heat map - AUC-ROC of m x m separation between each two tissues using the
+ kmers
+\end_layout
+
+\begin_layout Standard
+Heat map - AUC-ROC of m x m separation between each two tissues using the
+ PWMs
+\end_layout
+
+\begin_layout Standard
+Data:
+\end_layout
+
+\begin_layout Standard
+.
+ that Further analyzing of these sequences can generate features that can
+ be used to distinguish between sequences without epigenetic data.
+ This way, sequences that are active enhancers in at least one tissue, and
+ to distinguish between sequences that are active in specific
+\end_layout
+
+\begin_layout Standard
+Table, AUC-ROC of classification of sequences using kmer 
+\end_layout
+
+\begin_layout Part*
+Conclusions
+\end_layout
+
+\end_body
+\end_document
