@@ -17,7 +17,7 @@ function out = preComputePWMpAux(Xs1H, params)
     persistent sample
     [N, L, ~] = size(Xs1H);
     % L = L - fJ;
-    PC_PWM_PROBABILITY_FILE = fullfile('data', 'precomputation', 'pcPWMp.mat');
+    PC_PWM_PROBABILITY_FILE = fullfile('..', 'data', 'precomputation', 'pcPWMp.mat');
     newSample = Xs1H(1:400);
     if ~isempty(pcPWMp) && all(newSample == sample)
         % in memory

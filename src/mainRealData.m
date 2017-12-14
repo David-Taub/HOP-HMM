@@ -4,9 +4,10 @@
 % mergedPeaksMin = mainGenSequences(1000, 600, 2, true);
 % mergedPeaksMin = load(fullfile('..', 'data', 'dummyDNA.mat'));
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
-% mergedPeaksMin = load('../data/peaks/roadmap/mergedPeaksMinimized.mat');
-% mainRealData(mergedPeaksMin, 5);
-% clear all; mainGenSequences(5000, 500, 3, 6, true, true); mergedPeaksMin = load(fullfile('..', 'data', 'dummyDNA.mat')); mainRealData(mergedPeaksMin, 5);
+% mainGenSequences(100, 10000, 5, 25, true, true);
+% mergedPeaksMin = load(fullfile('..', 'data', 'dummyDNA.mat'));
+% mainRealData(mergedPeaksMin, 5, 25);
+% clear all; mainGenSequences(5000, 500, 3, 6, true, true);  mainRealData(mergedPeaksMin, 5);
 
 function mainRealData(mergedPeaksMin, m, k)
     dbstop if error
@@ -14,8 +15,7 @@ function mainRealData(mergedPeaksMin, m, k)
     params = misc.genParams(m, k);
     params.NperTissue = 1000;
     testTrainRatio = 0.15;
-
-    [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, 1:size(mergedPeaksMin.overlaps, 2));
+    [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio);
     [theta, ~] = EM.EM(train.X, params, train.pcPWMp, 400);
     show.showTheta(theta);
     classify(theta, params, train);
@@ -144,34 +144,9 @@ function newMask = takeTopN(A, n, mask)
     newMask(inds(end-n+1:end)) = true;
 end
 
-function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, tissueIds)
+function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio)
     L = size(mergedPeaksMin.seqs, 2);
-    overlaps = mergedPeaksMin.overlaps;
-    mask = true(size(overlaps, 1), 1);
-    fprintf('%d (%.2f) -> ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1));
-    % mask = mask & mergedPeaksMin.lengths >= 0.3*L;
-    % fprintf('%d (%.2f) -> ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1));
-    mask = mask & mergedPeaksMin.lengths <= 3*L;
-    fprintf('%d (%.2f) -> ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1));
-    mask = mask & (sum(overlaps > 0, 2) <= 2);
-    fprintf('%d (%.2f) -> ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1));
-    mask = mask & (sum(overlaps(:, tissueIds) > 0, 2) == 1);
-    fprintf('%d (%.2f) -> ', sum(mask, 1), sum(mask, 1)/size(overlaps, 1));
-    % mask = mask & mod(1:size(mask,1), 3).' == 0;
-    N = min([params.NperTissue, sum(overlaps(mask, tissueIds)>0, 1)]);
-    maskTop = false(size(mask, 1), 1);
-    for id = tissueIds
-        maskTop = maskTop | takeTopN(overlaps(:, id), N, mask);
-    end
-    mask = mask & maskTop;
-    fprintf('%d (%.2f)\n', sum(mask, 1), sum(mask, 1)/size(overlaps, 1));
-
-    overlaps = overlaps(mask, :);
-    overlaps = overlaps(:, tissueIds);
-    X = mergedPeaksMin.seqs(mask, :);
-    [overlaps, seqInd] = sortrows(overlaps);
-    X = X(seqInd, :);
-    Y = (overlaps > 0) * (1:size(overlaps, 2))';
+    X = mergedPeaksMin.seqs;
     % X = cat(2, X, fliplr(5-X));
     % N x k x L
     % k x n x J
@@ -183,13 +158,10 @@ function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, tiss
     test.title = 'Test';
     train.X = X(trainMask, :);
     test.X = X(~trainMask, :);
-    train.Y = repmat(Y(trainMask), [1, L]);
-    test.Y = repmat(Y(~trainMask), [1, L]);
     train.pcPWMp = pcPWMp(trainMask, :, :);
     test.pcPWMp = pcPWMp(~trainMask, :, :);
     if isfield(mergedPeaksMin, 'Y2')
-        Y2 = mergedPeaksMin.Y2(mask, :, :);
-        Y2 = Y2(seqInd, :, :);
+        Y2 = mergedPeaksMin.Y2;
         train.Y = Y2(trainMask, :, 1);
         test.Y = Y2(~trainMask, :, 1);
         train.Y2 = Y2(trainMask, :, 2);
@@ -197,13 +169,6 @@ function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio, tiss
     end
 end
 
-
-% pcPWMp - N x k x L
-% X - N x L
-
-function [theta] = learnSingleMode(X, params, pcPWMp, maxIter)
-
-end
 
 function theta = catThetas(params, thetas)
     thetas = [thetas{:}];
