@@ -2,8 +2,8 @@
 % JasparDataProcessing.preprocessPWMs()
 function preprocessPWMs()
 	dbstop if error
-    delete(fullfile('data', 'precomputation', 'pcPWMp.mat'));
-    txtFilePath = 'data/Jaspar/raw/JASPAR_CORE_nonredundant_pfm_vertebrates.txt';
+    delete(fullfile('..', 'data', 'precomputation', 'pcPWMp.mat'));
+    txtFilePath = '../data/Jaspar/raw/JASPAR_CORE_nonredundant_pfm_vertebrates.txt';
     % txtFilePath = 'data/Jaspar/raw/JASPAR_CORE_redundant_pfm_vertebrates.txt';
     % txtFilePath = 'data/Jaspar/raw/JASPAR_CORE_individual_pfm_vertebrates.txt';
     % txtFilePath = 'data/Jaspar/raw/JASPAR_CNE.txt';
@@ -29,7 +29,7 @@ function preprocessPWMs()
 	length(lengths)
 	[PWM, lengths, names] = JasparDataProcessing.removePWMsWeak(PWM, lengths, names, STRENGTH_TO_REMOVE);
 	length(lengths)
-	save('data/Jaspar/PWMs.mat', 'PWM', 'lengths', 'names');
+	save('../data/Jaspar/PWMs.mat', 'PWM', 'lengths', 'names');
 end
 
 

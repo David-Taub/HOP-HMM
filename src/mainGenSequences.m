@@ -3,8 +3,8 @@
 function mergedPeaksMin = mainGenSequences(N, L, m, k, isMixed, withBackground)
     dbstop if error
     clear pcPWMp
-    delete(fullfile('data', 'precomputation', 'pcPWMp.mat'));
-    params = misc.genParams(k);
+    delete(fullfile('..', 'data', 'precomputation', 'pcPWMp.mat'));
+    params = misc.genParams(m, k);
     params.m = m;
     params.tEpsilon = isMixed * params.tEpsilon;
     theta = genHumanTheta(params, withBackground);
@@ -14,7 +14,7 @@ function mergedPeaksMin = mainGenSequences(N, L, m, k, isMixed, withBackground)
     Y = mode(Y(:,:,1), 2);
     overlaps = matUtils.vec2mat(Y(:, 1)', params.m)';
     lengths = ones(N, 1) * L;
-    save(fullfile('data', 'dummyDNA.mat'), 'seqs', 'lengths', 'overlaps', 'theta', 'Y', 'Y2', 'theta');
+    save(fullfile('..', 'data', 'dummyDNA.mat'), 'seqs', 'lengths', 'overlaps', 'theta', 'Y', 'Y2', 'theta');
     mergedPeaksMin.seqs = seqs;
     mergedPeaksMin.overlaps = overlaps;
     mergedPeaksMin.lengths = lengths;
@@ -51,7 +51,7 @@ function theta = genHumanTheta(params, withBackground)
     T = ones(params.m) * PCrossBaseState;
     T(eye(params.m) == 1) = PStayInBase;
     if withBackground
-        theta.G(end, :) = log(eps);
+        G(end, :) = eps;
         PBackgroundToEnhancer = (1-params.backgroundRatio)/(params.backgroundRatio*params.enhancerLength*(params.m-1));
         PCrossBaseState = params.crossEnhancer*(1-PStayInBase-PTotalBaseToSub)/(params.m-2);
         PBaseToBackground = (1-params.crossEnhancer) * (1-PStayInBase-PTotalBaseToSub);
@@ -60,8 +60,8 @@ function theta = genHumanTheta(params, withBackground)
         T(:, end) = PBaseToBackground;
         T(end, :) = PBackgroundToEnhancer;
         T(end, end) = 1 - (sum(T(end, 1:end-1), 2) + sum(G(end, :), 2));
+        % TODO: add randomness
     end
     theta.T = log(T);
     theta.G = log(G);
-
 end
