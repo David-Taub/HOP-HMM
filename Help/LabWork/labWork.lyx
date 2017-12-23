@@ -129,7 +129,11 @@ Other Types of Gene Regulation
 \end_layout
 
 \begin_layout Standard
-accessibility & TADs
+Accessibility of the enhancer sequence to TF and other proteins in the transcrip
+tion complex affects its ability to activate.
+ It has been shown that active regulatory regions tend to be have fewer
+ nucleosomes, thereby allowing TFs to bind to the enhancers.
+ can be active only when accessibility & TADs
 \end_layout
 
 \begin_layout Standard
