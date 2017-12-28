@@ -16,16 +16,49 @@ function mainRealData(mergedPeaksMin, m, k)
     params.NperTissue = 1000;
     testTrainRatio = 0.15;
     [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio);
+    show.showTheta(mergedPeaksMin.theta);
     [theta, ~] = EM.EM(train.X, params, train.pcPWMp, 400);
     show.showTheta(theta);
-    classify(theta, params, train);
+    YEst = classify(theta, params, train);
+    theta = permuteTheta(theta, params, train.Y(:, :, 1), YEst(:, :, 1))
     classify(theta, params, test);
     keyboard
 end
 
 
+function perm = findCorrectPermute(params, Y, YEst)
+    % N * L x m
+    Y1Hot = matUtils.vec2mat(Y(:)', params.m)';
+    YEst1Hot = matUtils.vec2mat(YEst(:)', params.m)';
+    % 1 x m x N * L
+    Y1HotPer = permute(Y1Hot, [3, 2, 1]);
+    % m x 1 x N * L
+    YEst1HotPer = permute(YEst1Hot, [2, 3, 1]);
+    distMat = sum(repmat(Y1HotPer, [params.m, 1, 1]) == repmat(YEst1HotPer, [1, params.m, 1]), 3);
+    perm = zeros(params.m, 1);
+    for i = 1:params.m
+        [~, I] = max(distMat(:));
+        [I_row, I_col] = ind2sub(size(distMat),I);
+        perm(I_col) = I_row;
+        distMat(I_row, :) = -1;
+        distMat(:, I_col) = -1;
+    end
+end
+
+
 % Y - N x L
-function loss = classify(theta, params, dataset)
+% YEst - N x L
+function theta = permuteTheta(theta, params, Y, YEst)
+    perm = findCorrectPermute(params, Y, YEst);
+    theta.T = theta.T(perm, :);
+    theta.T = theta.T(:, perm);
+    theta.G = theta.G(perm, :);
+    theta.E(:, :) = theta.E(perm, :);
+    theta.startT = theta.startT(perm);
+end
+
+% Y - N x L
+function YEstViterbi = classify(theta, params, dataset)
     [N, L] = size(dataset.X);
     % N x m x L
     [alpha, beta, pX, xi, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);

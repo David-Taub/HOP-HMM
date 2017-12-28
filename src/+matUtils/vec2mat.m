@@ -7,6 +7,9 @@
 % 0 0 1 0
 % 1 1 0 0
 function M = vec2mat(v, n)
+    assert(ndims(v) == 2);
+    assert(size(v, 1) == 1);
+    assert(max(v, [], 2) <= n);
     M = full(sparse(double(v), 1:length(v), 1, n, length(v))) == 1;
 end
 
