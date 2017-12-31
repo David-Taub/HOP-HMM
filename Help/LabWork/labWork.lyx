@@ -129,11 +129,19 @@ Other Types of Gene Regulation
 \end_layout
 
 \begin_layout Standard
-Accessibility of the enhancer sequence to TF and other proteins in the transcrip
-tion complex affects its ability to activate.
- It has been shown that active regulatory regions tend to be have fewer
- nucleosomes, thereby allowing TFs to bind to the enhancers.
- can be active only when accessibility & TADs
+The accessibility of enhancer sequences to TFs affects their ability to
+ activate.
+ It has been shown that active regulatory regions usually have fewer nucleosomes
+ bounded, thereby allowing TFs to bind to the enhancers DNA.
+ Nucleosome-depleted open chromatin regions (OCRs) often have TFBSs and
+ so the nucleosomes binding sites frequency in the sequence, although not
+ specific to a certain cell type, plays a role in the activation of the
+ enhancer.
+ The 
+\end_layout
+
+\begin_layout Standard
+can be active only when accessibility & TADs
 \end_layout
 
 \begin_layout Standard
