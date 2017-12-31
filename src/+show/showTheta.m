@@ -1,6 +1,6 @@
 function showTheta(theta)
     fprintf('Showing Theta\n')
-    figure
+    figure('units','normalized','outerposition',[0 0 1 1]);
     subplot(1,4,1);
     imagesc(exp(theta.startT)); colorbar; title('startT')
     subplot(1,4,2);

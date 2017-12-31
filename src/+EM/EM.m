@@ -43,7 +43,7 @@ function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, 
         % fprintf('Calculating alpha...\n')
         % N x m x L
         [alpha, beta, pX, xi, gamma, psi] = EM.EStep(params, theta, X, pcPWMp);
-
+        show.showTheta(theta);
         theta.E = updateE(gamma, params, indicesHotMap);
         % fprintf('Update G\n');
         [theta.G, theta.T] = updateGT(params, theta, xi, gamma, psi);
@@ -131,10 +131,11 @@ end
 % alpha - N x m x L
 % beta - N x m x L
 % gamma - N x m x L
+% psi - N x m x k x L
+% newG - m x k
 % newT - m x m
 function [newG, newT] = updateGT(params, theta, xi, gamma, psi)
     [N, ~, L] = size(gamma);
-    % keyboard
 
     % note: batch trick is used to reduce the
     % calculation errors due to summing
@@ -159,29 +160,8 @@ function [newG, newT] = updateGT(params, theta, xi, gamma, psi)
     mergedAveraged = matUtils.logMatSum(mergedBatches, 1);
     mergedAveraged = matUtils.logMakeDistribution(mergedAveraged);
     mergedAveraged = permute(mergedAveraged, [2,3,1]);
-    newG = mergedAveraged(:, 1:params.k);
-    newT = mergedAveraged(:, params.k+1:end);
-    newT = log(Tbound(params, exp(newT)));
+    G = mergedAveraged(:, 1:params.k);
+    T = mergedAveraged(:, params.k+1:end);
+    [newG, newT] = EM.GTbound(params, G, T);
 end
 
-
-% newT - m x m
-% T - m x m
-function newT = Tbound(params, T)
-    if params.m == 1
-        newT = T;
-        return;
-    end
-    newT = zeros(params.m);
-    nonDiagSum = sum(T, 2) - diag(T);
-    overflows = nonDiagSum - params.tEpsilon;
-    overflows(overflows < 0) = 0;
-    for i = 1:params.m
-        if overflows(i) > 0
-            newT(i, :) = (T(i, :) ./ nonDiagSum(i)) .* params.tEpsilon;
-            newT(i, i) = T(i, i) + overflows(i);
-        else
-            newT(i, :) = T(i, :);
-        end
-    end
-end

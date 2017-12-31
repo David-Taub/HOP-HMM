@@ -5,11 +5,22 @@ function params = genParams(m, k)
     params.m = m;
     params.order = 3;
     [params.PWMs, params.lengths, params.names] = misc.PWMs();
-    params.tEpsilon = 1/1000;
-    params.backgroundRatio = 0.9;
-    params.crossEnhancer = 0.1;
+
+    params.backgroundRatio = 0.2;
+    params.crossEnhancer = 0.1; % probability that for a cross enhancer transition at end of enhancer
     params.enhancerLength = 500;
     params.enhancerMotifsRatio = 0.2;
+
+    meanEnhancerLength = (params.enhancerLength * (1 + params.crossEnhancer));
+    PTotalBaseToOthers = 1/((1-params.enhancerMotifsRatio)*params.enhancerLength);
+
+    params.PTotalBaseToSub = misc.ratio2TransitionProb(mean(params.lengths, 2), params.enhancerMotifsRatio);
+    params.PBackgroundToEnhancer = misc.ratio2TransitionProb(meanEnhancerLength, 1-params.backgroundRatio) / (params.m-1);
+    params.PEnhancerToBackground = PTotalBaseToOthers * (1-params.crossEnhancer);
+    params.PCrossEnhancers = PTotalBaseToOthers * params.crossEnhancer / (params.m-2);
+    params.maxPRatio = 2;
+
+
     params.batchSize = 2;
     [~, params.n, params.J] = size(params.PWMs);
     params.k = k;

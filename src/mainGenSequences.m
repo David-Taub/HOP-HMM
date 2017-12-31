@@ -1,13 +1,13 @@
 
 % mainGenSequences(100, 10000, 5, 25, true, true);
-function mergedPeaksMin = mainGenSequences(N, L, m, k, isMixed, withBackground)
+function mergedPeaksMin = mainGenSequences(N, L, m, k)
     dbstop if error
     clear pcPWMp
+    close all;
     delete(fullfile('..', 'data', 'precomputation', 'pcPWMp.mat'));
     params = misc.genParams(m, k);
     params.m = m;
-    params.tEpsilon = isMixed * params.tEpsilon;
-    theta = genHumanTheta(params, withBackground);
+    theta = genHumanTheta(params);
 
     [seqs, Y] = misc.genSequences(theta, params, N, L);
     Y2 = Y;
@@ -21,13 +21,37 @@ function mergedPeaksMin = mainGenSequences(N, L, m, k, isMixed, withBackground)
     mergedPeaksMin.theta = theta;
     mergedPeaksMin.Y = Y
     mergedPeaksMin.Y2 = Y2;
+    imagesc(Y2(:,:,1)+Y2(:,:,2))
 end
 
-function theta = genHumanTheta(params, withBackground)
-    PWM_NOISE_FACTOR = 0.0;
-    theta = misc.genTheta(params);
+function T = genHumanT(params)
+    T = ones(params.m) * params.PCrossEnhancers;
+    T(eye(params.m) == 1) = 1 - (params.PCrossEnhancers * (params.m-2) + params.PEnhancerToBackground + params.PTotalBaseToSub);
+    T(:, end) = params.PEnhancerToBackground;
+    T(end, :) = params.PBackgroundToEnhancer;
+    T(end, end) = 1 - params.PBackgroundToEnhancer * (params.m-1);
+    T = log(T);
+end
+
+function G = genHumanG(params)
+    G = zeros(params.m, params.k);
+    for i = 1:params.m
+        G(i, :) = ((mod(1:params.k, params.m) == (i-1)) + eps) .* rand(1, params.k);
+    end
+    G = G ./ repmat(sum(G, 2), [1, params.k]);
+    G = G .* params.PTotalBaseToSub;
+    G(end, :) = eps;
+    G = log(G);
+end
+
+function startT = genHumanStartT(params)
+    startT = log([ones(params.m-1, 1)*eps; 1-(params.m-1)*eps]);
+end
+
+function E = genHumanE(params)
+    E = zeros([params.m, params.n * ones(1,params.order)]);
     for i=1:params.m
-        theta.E(i, :) = [ 9298, 6036, 7032, 4862, 7625, 7735, 6107, 6381, 8470,...
+        E(i, :) = [ 9298, 6036, 7032, 4862, 7625, 7735, 6107, 6381, 8470,...
                           1103, 7053, 6677, 4151, 4202, 3203, 4895, 4996, 6551,...
                           4387, 3150, 4592, 7331, 5951, 6900, 6870, 1289, 5710,...
                           6244, 4139, 7391, 4423, 6990, 7396, 9784, 7709, 4184,...
@@ -35,33 +59,14 @@ function theta = genHumanTheta(params, withBackground)
                           9804, 6587, 6132, 5651, 5732, 4213, 3952, 5459, 8393,...
                           7066, 8345, 5533, 1235, 4689, 7744, 5493, 7510, 4973,...
                           9313]';
-        % theta.E(i, :) = theta.E(i, :) + (rand(1, params.n ^ params.order) * 3000);
+        % E(i, :) = E(i, :) + (rand(1, params.n ^ params.order) * 3000);
     end
-    theta.E = log(bsxfun(@times, theta.E, 1./sum(theta.E, length(size(theta.E)))));
-    PTotalBaseToSub = params.enhancerMotifsRatio / (mean(params.lengths, 2) * (1-params.enhancerMotifsRatio));
-    G = zeros(params.m, params.k);
-    for i = 1:params.m
-        G(i, :) = ((mod(1:params.k, params.m) == (i-1)) + eps) .* rand(1, params.k);
-    end
-    G = G ./ repmat(sum(G, 2), [1, params.k]);
-    G = G .* PTotalBaseToSub;
-    PTotalBaseToOtherBase = 1/((1-params.enhancerMotifsRatio)*params.enhancerLength);
-    PStayInBase = 1-PTotalBaseToSub-PTotalBaseToOtherBase;
-    PCrossBaseState = (1-PStayInBase-PTotalBaseToSub) ./ (params.m-1);
-    T = ones(params.m) * PCrossBaseState;
-    T(eye(params.m) == 1) = PStayInBase;
-    if withBackground
-        G(end, :) = eps;
-        PBackgroundToEnhancer = (1-params.backgroundRatio)/(params.backgroundRatio*params.enhancerLength*(params.m-1));
-        PCrossBaseState = params.crossEnhancer*(1-PStayInBase-PTotalBaseToSub)/(params.m-2);
-        PBaseToBackground = (1-params.crossEnhancer) * (1-PStayInBase-PTotalBaseToSub);
-        T = ones(params.m) * PCrossBaseState;
-        T(eye(params.m) == 1) = PStayInBase;
-        T(:, end) = PBaseToBackground;
-        T(end, :) = PBackgroundToEnhancer;
-        T(end, end) = 1 - (sum(T(end, 1:end-1), 2) + sum(G(end, :), 2));
-        % TODO: add randomness
-    end
-    theta.T = log(T);
-    theta.G = log(G);
+    E = log(bsxfun(@times, E, 1./sum(E, ndims(E))));
+end
+
+function theta = genHumanTheta(params)
+    theta.E = genHumanE(params);
+    theta.T = genHumanT(params);
+    theta.G = genHumanG(params);
+    theta.startT = genHumanStartT(params);
 end

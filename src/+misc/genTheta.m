@@ -4,7 +4,7 @@ function [theta] = genTheta(params)
     theta.startT = ones(params.m, 1);
     theta.startT = log(theta.startT / sum(theta.startT));
     % m x m
-    theta.T = eye(params.m) + params.tEpsilon * rand(params.m);
+    theta.T = eye(params.m) + params.PCrossEnhancers * rand(params.m);
     theta.T = bsxfun(@times, theta.T, 1 ./ sum(theta.T, 2));
 
     theta.G = rand(params.m, params.k);
