@@ -37,11 +37,12 @@ function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, 
     iterLike = [];
     for it = 1:maxIter
         tic
-        % alphaBase - N x m x L
-        % alphaSub - N x m x L+J x k
-        % N x m x L
-        % fprintf('Calculating alpha...\n')
-        % N x m x L
+        % alpha - N x m x L
+        % beta - N x m x L
+        % pX - N x 1
+        % xi - N x m x m x L
+        % gamma - N x m x L
+        % psi - N x m x k x L
         [alpha, beta, pX, xi, gamma, psi] = EM.EStep(params, theta, X, pcPWMp);
         show.showTheta(theta);
         theta.E = updateE(gamma, params, indicesHotMap);
@@ -127,10 +128,10 @@ end
 
 
 
-% xi - N x m x m x L
 % alpha - N x m x L
 % beta - N x m x L
 % gamma - N x m x L
+% xi - N x m x m x L
 % psi - N x m x k x L
 % newG - m x k
 % newT - m x m
@@ -143,10 +144,19 @@ function [newG, newT] = updateGT(params, theta, xi, gamma, psi)
 
     % N x m x k x L
     batchAmount = ceil(N / params.batchSize);
-    % % batchAmount = 1;
+    % N x m x k+m x L
     psiXiMerged = cat(3, psi, xi);
     psiXiMerged = psiXiMerged(:, :, :, 1:end-params.J);
-    psiXiMerged = psiXiMerged - permute(repmat(gamma(:,:,1:end-params.J), [1, 1, 1, params.k+params.m]), [1,2,4,3]);
+    % psiXiMerged = psiXiMerged - permute(repmat(gamma(:,:,1:end-params.J), [1, 1, 1, params.k+params.m]), [1,2,4,3]);
+
+    figure('units','normalized','outerposition',[0 0 1 1]);
+    subplot(1,2,1);
+    imagesc(permute(gamma(1, :, :), [3, 2, 1])); colorbar; title('gamma')
+    subplot(1,2,2);
+    kk = permute(psiXiMerged(1, :, :, :), [4, 3, 2, 1]);
+    imagesc(kk(:, :)); colorbar; title('psi:xi')
+    drawnow
+
     psiXiMerged = matUtils.logMatSum(psiXiMerged, 4);
     mergedBatches = -inf(batchAmount, params.m, params.k+params.m);
     for u = 1:batchAmount
@@ -156,6 +166,7 @@ function [newG, newT] = updateGT(params, theta, xi, gamma, psi)
         mergedBatches(u, :, :) = matUtils.logMatSum(batch, 1);
         mergedBatches(u, :, :) = matUtils.logMakeDistribution(mergedBatches(u, :, :));
     end
+
     % batchSize x m x k+m -> m x k+m
     mergedAveraged = matUtils.logMatSum(mergedBatches, 1);
     mergedAveraged = matUtils.logMakeDistribution(mergedAveraged);

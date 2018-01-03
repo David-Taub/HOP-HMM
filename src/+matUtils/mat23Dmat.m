@@ -7,6 +7,9 @@
 % 1 0 0  0 1 1  0 0 0  0 0 0
 % 1 0 0  0 0 0  0 1 0  0 0 1
 function M3D = mat23Dmat(M, n)
+    assert(ndims(M) == 2);
+    assert(max(M(:)) <= n);
+    assert(min(M(:)) >= 1);
     M2D = matUtils.vec2mat(M(:).', n);
     M3D = permute(reshape(M2D, [n, size(M)]), [2,3,1]);
     % M3D = repmat(M, [1,1,n]) == repmat(permute(1:n, [3,1,2]), [size(M),1]);

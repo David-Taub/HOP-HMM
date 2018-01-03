@@ -17,10 +17,19 @@ function mainRealData(mergedPeaksMin, m, k)
     testTrainRatio = 0.15;
     [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio);
     show.showTheta(mergedPeaksMin.theta);
-    [theta, ~] = EM.EM(train.X, params, train.pcPWMp, 400);
+    figure('units','normalized','outerposition',[0 0 1 1]);
+    imagesc([train.Y(1, :);train.Y2(1, :)]); colorbar; title('Y of 1st seq')
+    ttt = 0.01;
+    mergedPeaksMin.theta.G = log(exp(mergedPeaksMin.theta.G) + (ttt./params.k));
+    mergedPeaksMin.theta.T = log(exp(mergedPeaksMin.theta.T) - eye(params.m).*ttt);
+    [theta, ~] = EM.EM(train.X, params, train.pcPWMp, 40);
     show.showTheta(theta);
     YEst = classify(theta, params, train);
+
     theta = permuteTheta(theta, params, train.Y(:, :, 1), YEst(:, :, 1))
+    [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, train.X, train.pcPWMp);
+    show.seqSampleCertainty(params, train.Y, gamma, psi);
+
     classify(theta, params, test);
     keyboard
 end
@@ -61,23 +70,14 @@ end
 function YEstViterbi = classify(theta, params, dataset)
     [N, L] = size(dataset.X);
     % N x m x L
-    [alpha, beta, pX, xi, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
+    [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
     % EM.drawStatus(theta, params, gamma);
-    % N x m x L
-    posterior = calcPosterior(params, gamma, psi);
-    % N x m x L
-    YOneHot = permute(matUtils.mat23Dmat(dataset.Y, params.m), [1, 3, 2]);
-    % N x L
-    certainty = reshape(posterior(YOneHot), [N, L]);
-    loss = mean(log(1-certainty(:)));
     YEstViterbi = misc.viterbi(theta, params, dataset.X, dataset.pcPWMp);
     YEstViterbiAcc = YEstViterbi(:, :, 1) == dataset.Y; YEstViterbiAcc = sum(YEstViterbiAcc(:)) ./ length(YEstViterbiAcc(:));
 
     YEstMax = maxPostEstimator(theta, params, psi, gamma);
     YEstMaxAcc = YEstMax(:, :, 1) == dataset.Y; YEstMaxAcc = sum(YEstMaxAcc(:)) ./ length(YEstMaxAcc(:));
 
-    fprintf('Avg log loss: %.2f\n', loss);
-    show.seqSampleCertainty(params, dataset.Y, certainty);
     figure
     subplot(1,6,1);
     imagesc(YEstViterbi(:,:,1)); colorbar; title(['Viterbi States', num2str(YEstViterbiAcc)]);

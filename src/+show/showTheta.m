@@ -9,5 +9,6 @@ function showTheta(theta)
     imagesc(exp(theta.G)); colorbar; title('G')
     subplot(1,4,4);
     plot(exp(theta.E(:))); colorbar; title('E')
+    ylim([0,1]);
     drawnow
 end
