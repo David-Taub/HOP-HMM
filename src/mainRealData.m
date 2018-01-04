@@ -16,7 +16,7 @@ function mainRealData(mergedPeaksMin, m, k)
     params.NperTissue = 1000;
     testTrainRatio = 0.15;
     [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio);
-    % show.showTheta(mergedPeaksMin.theta);
+    show.showTheta(mergedPeaksMin.theta);
     ttt = 0.01;
     mergedPeaksMin.theta.G = log(exp(mergedPeaksMin.theta.G) + (ttt./params.k));
     mergedPeaksMin.theta.T = log(exp(mergedPeaksMin.theta.T) - eye(params.m).*ttt);
