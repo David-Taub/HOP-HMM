@@ -1,5 +1,5 @@
 
-% mainGenSequences(100, 10000, 5, 25, true, true);
+% mainGenSequences(300, 10000, 5, 25);
 function mergedPeaksMin = mainGenSequences(N, L, m, k)
     dbstop if error
     clear pcPWMp
@@ -8,7 +8,7 @@ function mergedPeaksMin = mainGenSequences(N, L, m, k)
     params = misc.genParams(m, k);
     params.m = m;
     theta = genHumanTheta(params);
-
+    show.showTheta(theta);
     [seqs, Y] = misc.genSequences(theta, params, N, L);
     Y2 = Y;
     Y = mode(Y(:,:,1), 2);
@@ -34,9 +34,10 @@ function T = genHumanT(params)
 end
 
 function G = genHumanG(params)
+    BACKGROUND_G_NOISE = 0.2;
     G = zeros(params.m, params.k);
     for i = 1:params.m
-        G(i, :) = ((mod(1:params.k, params.m) == (i-1)) + eps) .* rand(1, params.k);
+        G(i, :) = (mod(1:params.k, params.m) == (i-1)) + (rand(1, params.k) .* BACKGROUND_G_NOISE);
     end
     G = G ./ repmat(sum(G, 2), [1, params.k]);
     G = G .* params.PTotalBaseToSub;

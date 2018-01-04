@@ -18,7 +18,7 @@ function params = genParams(m, k)
     params.PBackgroundToEnhancer = misc.ratio2TransitionProb(meanEnhancerLength, 1-params.backgroundRatio) / (params.m-1);
     params.PEnhancerToBackground = PTotalBaseToOthers * (1-params.crossEnhancer);
     params.PCrossEnhancers = PTotalBaseToOthers * params.crossEnhancer / (params.m-2);
-    params.maxPRatio = 1;
+    params.maxPRatio = 5;
     params
 
 

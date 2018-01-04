@@ -16,13 +16,11 @@ function mainRealData(mergedPeaksMin, m, k)
     params.NperTissue = 1000;
     testTrainRatio = 0.15;
     [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio);
-    show.showTheta(mergedPeaksMin.theta);
-    figure('units','normalized','outerposition',[0 0 1 1]);
-    imagesc([train.Y(1, :);train.Y2(1, :)]); colorbar; title('Y of 1st seq')
+    % show.showTheta(mergedPeaksMin.theta);
     ttt = 0.01;
     mergedPeaksMin.theta.G = log(exp(mergedPeaksMin.theta.G) + (ttt./params.k));
     mergedPeaksMin.theta.T = log(exp(mergedPeaksMin.theta.T) - eye(params.m).*ttt);
-    [theta, ~] = EM.EM(train.X, params, train.pcPWMp, 40);
+    [theta, ~] = EM.EM(train.X, params, train.pcPWMp, 100);
     show.showTheta(theta);
     YEst = classify(theta, params, train);
 

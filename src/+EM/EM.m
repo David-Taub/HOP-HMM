@@ -61,7 +61,7 @@ function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, 
         assert(not(any(isnan(beta(:)))))
 
 
-        fprintf('Likelihood in iteration %d is %.2f (%.2f seconds, ~%.2f%% motifs)\n', length(iterLike), iterLike(end), toc(), sum(exp(theta.G), 2).*100);
+        % fprintf('Likelihood in iteration %d is %.2f (%.2f seconds, ~%.2f%% motifs)\n', length(iterLike), iterLike(end), toc(), sum(exp(theta.G), 2).*100);
         if length(iterLike) > 1 && abs((iterLike(end) - iterLike(end-1)) / iterLike(end)) < LIKELIHOOD_THRESHOLD
             fprintf('Converged\n');
             break
@@ -148,14 +148,6 @@ function [newG, newT] = updateGT(params, theta, xi, gamma, psi)
     psiXiMerged = cat(3, psi, xi);
     psiXiMerged = psiXiMerged(:, :, :, 1:end-params.J);
     % psiXiMerged = psiXiMerged - permute(repmat(gamma(:,:,1:end-params.J), [1, 1, 1, params.k+params.m]), [1,2,4,3]);
-
-    figure('units','normalized','outerposition',[0 0 1 1]);
-    subplot(1,2,1);
-    imagesc(permute(gamma(1, :, :), [3, 2, 1])); colorbar; title('gamma')
-    subplot(1,2,2);
-    kk = permute(psiXiMerged(1, :, :, :), [4, 3, 2, 1]);
-    imagesc(kk(:, :)); colorbar; title('psi:xi')
-    drawnow
 
     psiXiMerged = matUtils.logMatSum(psiXiMerged, 4);
     mergedBatches = -inf(batchAmount, params.m, params.k+params.m);
