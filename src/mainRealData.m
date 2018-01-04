@@ -29,6 +29,8 @@ function mainRealData(mergedPeaksMin, m, k)
     show.seqSampleCertainty(params, train.Y, gamma, psi);
 
     classify(theta, params, test);
+    [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, test.X, test.pcPWMp);
+    show.seqSampleCertainty(params, test.Y, gamma, psi);
     keyboard
 end
 
@@ -78,19 +80,18 @@ function YEstViterbi = classify(theta, params, dataset)
 
     figure
     subplot(1,6,1);
-    imagesc(YEstViterbi(:,:,1)); colorbar; title(['Viterbi States', num2str(YEstViterbiAcc)]);
+    imagesc(YEstViterbi(:,:,1)'); colorbar; title(['Viterbi States', num2str(YEstViterbiAcc)]);
     subplot(1,6,2);
-    imagesc(YEstViterbi(:,:,2)); colorbar;title('Viterbi Motifs');
+    imagesc(YEstViterbi(:,:,2)'); colorbar;title('Viterbi Motifs');
     subplot(1,6,3);
-    imagesc(YEstMax(:,:,1)); colorbar; title(['MaxPosterior States', num2str(YEstMaxAcc)]);
+    imagesc(YEstMax(:,:,1)'); colorbar; title(['MaxPosterior States', num2str(YEstMaxAcc)]);
     subplot(1,6,4);
-    imagesc(YEstMax(:,:,2)); colorbar;title('MaxPosterior Motifs');
+    imagesc(YEstMax(:,:,2)'); colorbar;title('MaxPosterior Motifs');
     subplot(1,6,5);
-    subplot(1,6,5);
-    imagesc(dataset.Y); colorbar;title(['Real States (', dataset.title, ')']);
+    imagesc(dataset.Y'); colorbar;title(['Real States (', dataset.title, ')']);
     if isfield(dataset, 'Y2')
         subplot(1,6,6);
-        imagesc(dataset.Y2); colorbar;title('Real Motifs');
+        imagesc(dataset.Y2'); colorbar;title('Real Motifs');
     end
 
 end

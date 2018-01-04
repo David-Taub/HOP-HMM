@@ -23,7 +23,7 @@ function seqSampleCertainty(params, Y, gamma, psi)
         YOneHot = matUtils.vec2mat(Y(inds(i), :), params.m);
         repCertainty = YOneHot .* repmat(certainty(inds(i), :), [params.m, 1]);
         repCertainty = [repCertainty; (1-repCertainty) .* double(repCertainty~=0)];
-        bar(repCertainty', 'stacked')
+        bar(1:L, repCertainty', 1, 'stacked')
         ylabel(['Seq ', num2str(inds(i))]);
         rotateYLabel();
         xlim([1, L])
