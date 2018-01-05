@@ -61,7 +61,7 @@ function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, 
         assert(not(any(isnan(beta(:)))))
 
 
-        fprintf('Iteration %d: likelihood %.2f (%.2f seconds, ~%.2f%% motifs)\n', it, iterLike(end), toc(), sum(exp(theta.G(:)), 1).*100);
+        fprintf('Iteration %d: log likelihood %.2f (%.2f seconds, ~%.2f%% motifs)\n', it, iterLike(end), toc(), sum(exp(theta.G(:)), 1).*100);
         if length(iterLike) > 1 && abs((iterLike(end) - iterLike(end-1)) / iterLike(end)) < LIKELIHOOD_THRESHOLD
             fprintf('Converged\n');
             break

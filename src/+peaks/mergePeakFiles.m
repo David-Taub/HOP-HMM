@@ -1,4 +1,4 @@
-%merges this weird mats to one mat file that has struct array without
+% merges Roadmap mats to one mat file that has struct array without
 % overlapping sequences, since they were all joint together and the
 % overlaps vectors became from one hot to a heat map of the height of
 % the peak in each tissue
@@ -8,12 +8,12 @@
 function mergedPeaks = mergePeakFiles()
     [totalpeaks] = genTotalPeaks();
     mergedPeaks = genMergePeaks(totalpeaks);
-    save('-v7.3', 'data/peaks/raw/roadmap/merged/mergedPeaks.mat', 'mergedPeaks');
+    save('-v7.3', '../data/peaks/raw/roadmap/merged/mergedPeaks.mat', 'mergedPeaks');
 end
 
 function [totalpeaks] = genTotalPeaks()
     totalpeaks = [];
-    peaksBasePath = 'data/peaks/raw/roadmap/mat';
+    peaksBasePath = '../data/peaks/raw/roadmap/mat';
     peakFiles = dir(fullfile(peaksBasePath, '*.peaks.mat'));
     for i = 1:length(peakFiles)
         peakFiles(i).name
