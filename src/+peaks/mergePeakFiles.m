@@ -8,12 +8,12 @@
 function mergedPeaks = mergePeakFiles()
     [totalpeaks] = genTotalPeaks();
     mergedPeaks = genMergePeaks(totalpeaks);
-    save('-v7.3', '../data/peaks/raw/roadmap/merged/mergedPeaks.mat', 'mergedPeaks');
+    save('-v7.3', '../data/peaks/mergedPeaks.mat', 'mergedPeaks');
 end
 
 function [totalpeaks] = genTotalPeaks()
     totalpeaks = [];
-    peaksBasePath = '../data/peaks/raw/roadmap/mat';
+    peaksBasePath = '../data/peaks/mat';
     peakFiles = dir(fullfile(peaksBasePath, '*.peaks.mat'));
     for i = 1:length(peakFiles)
         peakFiles(i).name
@@ -45,7 +45,7 @@ function mergedPeaks  = genMergePeaks(totalpeaks)
                 % oldPeak.seq'
                 % newPeak.seq(end-(newPeak.seqTo-oldPeak.seqTo) + 1:end)'
                 % merge
-                oldPeak.seq = [oldPeak.seq, newPeak.seq(end-(newPeak.seqTo-oldPeak.seqTo) + 1:end)];
+                % oldPeak.seq = [oldPeak.seq, newPeak.seq(end-(newPeak.seqTo-oldPeak.seqTo) + 1:end)];
                 oldPeak.seqTo = newPeak.seqTo;
                 oldPeak.peakTo = max(newPeak.peakTo, oldPeak.peakTo);
                 oldPeak.peakFrom = min(newPeak.peakFrom, oldPeak.peakFrom);

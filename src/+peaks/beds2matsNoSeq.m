@@ -1,8 +1,8 @@
-% peaks.beds2mats(500)
+% after download_and_process_all.sh
+% peaks.beds2matsNoSeq()
 % creates mats each has a cell array of only the his sequence, and have overlap one hot map that is on only in it's position
-function beds2mats(L)
+function beds2matsNoSeq()
     BEDS_DIR = '../data/peaks/processed';
-    dict = makeMMDict();
     % save in dict opened hg19 fasta files as memory mapped files
     bedFiles = dir([BEDS_DIR, '/*.cleaned.narrowPeak']);
     typesOfCells = length(bedFiles)
@@ -11,15 +11,15 @@ function beds2mats(L)
             bedPath = fullfile(BEDS_DIR, bedFiles(index).name);
             nameParts = strsplit(bedFiles(index).name, '-');
             name = nameParts{1};
-            bed2mat(index, name, bedPath, typesOfCells, dict, L);
+            bed2mat(index, name, bedPath, typesOfCells);
         end
     end
 end
 
 % cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
-function bed2mat(index, name, bedPath, typesOfCells, dict, L)
+function bed2mat(index, name, bedPath, typesOfCells)
     % bedPath = 'data/peaks/raw/roadmap/BrainMFLVsLiver/brain_mid_frontal_lobe/compressed/GSM773015_BI.Brain_Mid_Frontal_Lobe.H3K27ac.149.cleaned.bed';
-
+    MAT_OUT_DIR = '../data/peaks/mat/';
     fprintf('Loading bed\n');
     fid = fopen(bedPath);
     data = textscan(fopen(bedPath), '%s%d%d%*s%d%*s%f%f%f%d', 'delimiter','\t');
@@ -40,42 +40,13 @@ function bed2mat(index, name, bedPath, typesOfCells, dict, L)
         S{i}.peakPos = data{2}(i)+data{8}(i);
         S{i}.overlap = zeros(1, typesOfCells);
         S{i}.overlap(index) = 1;
-        chrLength = length(dict(S{i}.chr).Data);
-        [S{i}.seqTo, S{i}.seqFrom] = fitToL(S{i}.peakPos, L, chrLength);
-        S{i}.seq = dict(S{i}.chr).Data(S{i}.seqFrom:S{i}.seqTo)';
         fprintf('%.2f\r%%', 100*i/N);
     end
     fprintf('\n');
 
     % seqs should have 473980 sequences
-
-    matPath = ['../data/peaks/mat/', name, '-H3k27ac.peaks.mat'];
+    mkdir(MAT_OUT_DIR)
+    matPath = [MAT_OUT_DIR, name, '-H3k27ac.peaks.mat'];
     fprintf(['Saving mat file ', matPath, '\n']);
     save(matPath, 'S');
-end
-
-% function [newTo, newFrom] = fitToL(to, from, L)
-function [newTo, newFrom] = fitToL(peakPos, L, chrLength)
-    center = peakPos;
-    newTo = min(center + floor(L / 2), chrLength);
-    newFrom = newTo - L + 1;
-    if newFrom < 1
-        newFrom = 1;
-        newTo = L;
-    end
-end
-
-function dict = makeMMDict()
-    HG19_MM_DIR = '../data/peaks/mm';
-    % save in dict opened hg19 fasta files as memory mapped files
-    fprintf('Making mm dict\n');
-    dict = containers.Map;
-    mmFiles = dir([HG19_MM_DIR, '/*.mm']);
-    for i = 1:length(mmFiles)
-        if not(mmFiles(i).isdir)
-            mmFilePath = fullfile(HG19_MM_DIR, mmFiles(i).name);
-            [~,filename,~] = fileparts(fullfile(HG19_MM_DIR, mmFiles(i).name));
-            dict(filename) = memmapfile(mmFilePath, 'format', 'uint8');
-        end
-    end
 end

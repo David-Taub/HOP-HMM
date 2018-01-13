@@ -1,5 +1,5 @@
 
-cd ../raw
+cd ../raw_bed
 
 ls -la
 wget -O $1-H3K27ac.narrowPeak.gz "http://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K27ac.narrowPeak.gz"
