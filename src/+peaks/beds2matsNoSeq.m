@@ -1,5 +1,10 @@
-% after download_and_process_all.sh
+% download_and_process_all.sh
+
 % peaks.beds2matsNoSeq()
+% peaks.mergePeakFiles()
+% mergedPeaks = load('../data/peaks/mergedPeaks.mat', 'mergedPeaks');
+% superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000);
+
 % creates mats each has a cell array of only the his sequence, and have overlap one hot map that is on only in it's position
 function beds2matsNoSeq()
     BEDS_DIR = '../data/peaks/processed';

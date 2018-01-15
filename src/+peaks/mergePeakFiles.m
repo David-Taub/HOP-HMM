@@ -3,7 +3,11 @@
 % overlaps vectors became from one hot to a heat map of the height of
 % the peak in each tissue
 
+% download_and_process_all.sh
+% peaks.beds2matsNoSeq()
 % peaks.mergePeakFiles()
+% mergedPeaks = load('../data/peaks/mergedPeaks.mat', 'mergedPeaks');
+% superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000);
 
 function mergedPeaks = mergePeakFiles()
     [totalpeaks] = genTotalPeaks();

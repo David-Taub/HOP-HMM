@@ -1,5 +1,10 @@
+% download_and_process_all.sh
+% peaks.beds2matsNoSeq()
+% peaks.mergePeakFiles()
 % mergedPeaks = load('../data/peaks/mergedPeaks.mat', 'mergedPeaks');
 % superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000);
+
+
 % L - super enhancer size
 % mergedPeaks - enhancers data
 % finds the J regions of length L with the most enhancers starts in them

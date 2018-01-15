@@ -107,10 +107,12 @@ rm -f *.gz
 
 #then in matlab
 
+# download_and_process_all.sh
 # cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
 # peaks.beds2matsNoSeq()
 # peaks.mergePeakFiles()
-
+# mergedPeaks = load('../data/peaks/mergedPeaks.mat', 'mergedPeaks');
+# superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000);
 
 # load('data/peaks/raw/roadmap/merged/mergedPeaks.mat');
 # peaks.minimizeMergePeak(mergedPeaks);
