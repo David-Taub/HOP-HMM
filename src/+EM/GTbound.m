@@ -28,6 +28,7 @@ function T = limitTDiag(params, T)
 end
 
 % T - m x m
+% transfers from T(i,j) to T(i,i)
 function T = transferWeight(params, T, i, j, threshold)
     if isExceedThreshold(params, threshold, T(i, j)) & i ~= j
         T(i, i) = T(i, i) + T(i, j) - threshold;

@@ -10,8 +10,8 @@ function mergedPeaksMin = mainGenSequences(N, L, m, k)
     theta = genHumanTheta(params);
     show.showTheta(theta);
     [seqs, Y] = misc.genSequences(theta, params, N, L);
-    Y2 = Y;
-    Y = mode(Y(:,:,1), 2);
+    Y2 = Y(:,:,2);
+    Y = Y(:,:,1);
     overlaps = matUtils.vec2mat(Y(:, 1)', params.m)';
     lengths = ones(N, 1) * L;
     save(fullfile('..', 'data', 'dummyDNA.mat'), 'seqs', 'lengths', 'overlaps', 'theta', 'Y', 'Y2', 'theta');
@@ -21,7 +21,7 @@ function mergedPeaksMin = mainGenSequences(N, L, m, k)
     mergedPeaksMin.theta = theta;
     mergedPeaksMin.Y = Y
     mergedPeaksMin.Y2 = Y2;
-    imagesc(Y2(:,:,1)+Y2(:,:,2))
+    imagesc(Y+Y2)
 end
 
 function T = genHumanT(params)

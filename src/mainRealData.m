@@ -1,14 +1,16 @@
-% mainGenSequences();
-% load(fullfile('..', 'data', 'dummyDNA.mat'));
-% mainPWM(pcPWMp, X, Y);
-% mergedPeaksMin = mainGenSequences(1000, 600, 2, true);
-% mergedPeaksMin = load(fullfile('..', 'data', 'dummyDNA.mat'));
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
+% delete(fullfile('..', 'data', 'dummyDNA.mat'));
 % mainGenSequences(100, 10000, 5, 25, true, true);
-% mergedPeaksMin = load(fullfile('..', 'data', 'dummyDNA.mat'));
-% mainRealData(mergedPeaksMin, 5, 25);
-% clear all; mainGenSequences(5000, 500, 3, 6, true, true);  mainRealData(mergedPeaksMin, 5);
+% download_and_process_all.sh
+% peaks.beds2matsNoSeq()
+% peaks.mergePeakFiles()
+% mergedPeaks = load(fullfile('..', 'data', 'dummyDNA.mat'));
 
+% mergedPeaks = load('../data/peaks/mergedPeaks.mat', 'mergedPeaks');
+% mergedPeaks = mergedPeaks.mergedPeaks;
+
+% superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000);
+% mainRealData(superEnhancers, 5, 40);
 function mainRealData(mergedPeaksMin, m, k)
     dbstop if error
     close all;
@@ -16,15 +18,15 @@ function mainRealData(mergedPeaksMin, m, k)
     params.NperTissue = 1000;
     testTrainRatio = 0.15;
     [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio);
-    show.showTheta(mergedPeaksMin.theta);
+    % show.showTheta(mergedPeaksMin.theta);
     ttt = 0.01;
-    mergedPeaksMin.theta.G = log(exp(mergedPeaksMin.theta.G) + (ttt./params.k));
-    mergedPeaksMin.theta.T = log(exp(mergedPeaksMin.theta.T) - eye(params.m).*ttt);
+    % mergedPeaksMin.theta.G = log(exp(mergedPeaksMin.theta.G) + (ttt./params.k));
+    % mergedPeaksMin.theta.T = log(exp(mergedPeaksMin.theta.T) - eye(params.m).*ttt);
     [theta, ~] = EM.EM(train.X, params, train.pcPWMp, 100);
     show.showTheta(theta);
     YEst = classify(theta, params, train);
 
-    theta = permuteTheta(theta, params, train.Y(:, :, 1), YEst(:, :, 1))
+    theta = permuteTheta(theta, params, train.Y, YEst(:, :, 1))
     [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, train.X, train.pcPWMp);
     show.seqSampleCertainty(params, train.Y, gamma, psi);
 
@@ -192,12 +194,14 @@ function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio)
     test.X = X(~trainMask, :);
     train.pcPWMp = pcPWMp(trainMask, :, :);
     test.pcPWMp = pcPWMp(~trainMask, :, :);
+    if isfield(mergedPeaksMin, 'Y')
+        train.Y = mergedPeaksMin.Y(trainMask, :);
+        test.Y = mergedPeaksMin.Y(~trainMask, :);
+    end
     if isfield(mergedPeaksMin, 'Y2')
-        Y2 = mergedPeaksMin.Y2;
-        train.Y = Y2(trainMask, :, 1);
-        test.Y = Y2(~trainMask, :, 1);
-        train.Y2 = Y2(trainMask, :, 2);
-        test.Y2 = Y2(~trainMask, :, 2);
+        mergedPeaksMin.Y2
+        train.Y2 = mergedPeaksMin.Y2(trainMask, :);
+        test.Y2 = mergedPeaksMin.Y2(~trainMask, :);
     end
 end
 
