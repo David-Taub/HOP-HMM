@@ -9,7 +9,7 @@ function params = genParams(m, k)
     params.backgroundRatio = 0.7;
     params.crossEnhancer = 0.1; % probability that for a cross enhancer transition at end of enhancer
     params.enhancerLength = 500;
-    params.enhancerMotifsRatio = 0.4;
+    params.enhancerMotifsRatio = 0.1;
 
     meanEnhancerLength = (params.enhancerLength * (1 + params.crossEnhancer));
     PTotalBaseToOthers = 1/((1-params.enhancerMotifsRatio)*params.enhancerLength);
@@ -26,15 +26,14 @@ function params = genParams(m, k)
     [~, params.n, params.J] = size(params.PWMs);
     params.k = k;
     try
-        loaded = load('data/temp/G.mat');
+        loaded = load('../data/temp/G.mat');
         inds = loaded.inds;
         params.PWMs = params.PWMs(inds(end - params.k + 1 : end), :, :);
         params.lengths = params.lengths(inds(end-params.k+1:end));
         params.names = {params.names{inds(end-params.k+1:end)}};
     catch
-        inds = 1:params.k;
-        params.PWMs = params.PWMs(inds(end - params.k + 1 : end), :, :);
-        params.lengths = params.lengths(inds(end-params.k+1:end));
-        params.names = {params.names{inds(end-params.k+1:end)}};
+        params.PWMs = params.PWMs(1:params.k, :, :);
+        params.lengths = params.lengths(1:params.k);
+        params.names = {params.names{1:params.k}};
     end
 end

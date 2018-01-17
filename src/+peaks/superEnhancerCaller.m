@@ -36,11 +36,16 @@ function superEnhancers = addY(superEnhancers, mergedPeaks, L)
         toSuperEnh = superEnhancers.from(i) + L - 1;
         enhancers = getEnhancersInRegion(mergedPeaks, chr, fromSuperEnh, toSuperEnh);
         for j = 1:length(enhancers)
-            Yval = (enhancers(j).overlap > 0) * [1:m]'
+            Yval = (enhancers(j).overlap > 0) * [1:m]';
             fromEnh = max(fromSuperEnh, enhancers(j).peakFrom) - fromSuperEnh + 1;
             toEnh = min(toSuperEnh, enhancers(j).peakTo) - fromSuperEnh + 1;
             superEnhancers.Y(i, fromEnh : toEnh) = Yval;
         end
+    end
+
+    v = sort(unique(superEnhancers.Y(:)));
+    for i = 1:length(v)
+        superEnhancers.Y(superEnhancers.Y == v(i)) = i;
     end
 end
 
@@ -80,14 +85,16 @@ function superEnhancers = findSuperEnhancers(mergedPeaks, L, binTicks, amountToP
         wantedMask = wantedMask & getTissueListMask(mergedPeaks, tissueList);
         fprintf('%.3f < ', sum(wantedMask,1) ./ length(wantedMask));
         wantedMask = wantedMask & getShortMask(mergedPeaks, MAX_PEAKS_LENGTH);
-        fprintf('%.3f < ', sum(wantedMask,1) ./ length(wantedMask));
+        fprintf('%.3f\n', sum(wantedMask,1) ./ length(wantedMask));
         wantedPeaks = mergedPeaks(wantedMask);
 
         unwantedMask = not(getUniqueMask(mergedPeaks));
-        fprintf('\n%.3f < ', sum(unwantedMask,1) ./ length(unwantedMask));
+        fprintf('%.3f < ', sum(unwantedMask,1) ./ length(unwantedMask));
         unwantedMask = unwantedMask | not(getTissueListMask(mergedPeaks, tissueList));
         fprintf('%.3f < ', sum(unwantedMask,1) ./ length(unwantedMask));
         unwantedMask = unwantedMask | not(highFilterPeaks(mergedPeaks, HIGH_PEAKS_RATIO));
+        fprintf('%.3f < ', sum(unwantedMask,1) ./ length(unwantedMask));
+        unwantedMask = unwantedMask | not(getShortMask(mergedPeaks, MAX_PEAKS_LENGTH));
         fprintf('%.3f < ', sum(unwantedMask,1) ./ length(unwantedMask));
         unwantedMask = unwantedMask & getChrMask(mergedPeaks, chrName);
         fprintf('%.3f\n', sum(unwantedMask,1) ./ length(unwantedMask));

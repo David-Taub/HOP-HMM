@@ -4,11 +4,11 @@
 % download_and_process_all.sh
 % peaks.beds2matsNoSeq()
 % peaks.mergePeakFiles()
-% mergedPeaks = load(fullfile('..', 'data', 'dummyDNA.mat'));
 
 % mergedPeaks = load('../data/peaks/mergedPeaks.mat', 'mergedPeaks');
 % mergedPeaks = mergedPeaks.mergedPeaks;
 
+% load(fullfile('..', 'data', 'dummyDNA.mat'), 'superEnhancers');
 % superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000);
 % mainRealData(superEnhancers, 5, 40);
 function mainRealData(mergedPeaksMin, m, k)
@@ -22,7 +22,7 @@ function mainRealData(mergedPeaksMin, m, k)
     ttt = 0.01;
     % mergedPeaksMin.theta.G = log(exp(mergedPeaksMin.theta.G) + (ttt./params.k));
     % mergedPeaksMin.theta.T = log(exp(mergedPeaksMin.theta.T) - eye(params.m).*ttt);
-    [theta, ~] = EM.EM(train.X, params, train.pcPWMp, 100);
+    [theta, ~] = EM.EM(train.X, params, train.pcPWMp, 10);
     show.showTheta(theta);
     YEst = classify(theta, params, train);
 
@@ -187,7 +187,8 @@ function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio)
 
     pcPWMp = misc.preComputePWMp(X, params);
     N = size(X, 1);
-    trainMask = rand(N, 1) > testTrainRatio;
+    trainMask = true(N, 1);
+    trainMask(randperm(N, floor(N * testTrainRatio))) = false;
     train.title = 'Train';
     test.title = 'Test';
     train.X = X(trainMask, :);

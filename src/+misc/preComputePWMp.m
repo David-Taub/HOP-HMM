@@ -18,7 +18,8 @@ function out = preComputePWMpAux(Xs1H, params)
     [N, L, ~] = size(Xs1H);
     % L = L - fJ;
     PC_PWM_PROBABILITY_FILE = fullfile('..', 'data', 'precomputation', 'pcPWMp.mat');
-    newSample = Xs1H(1:400);
+
+    newSample = [Xs1H(1:500), Xs1H(end-499:end), params.k, L, N];
     if ~isempty(pcPWMp) && all(newSample == sample)
         % in memory
         fprintf('Pre-computed PWM probability from memory cache\n');

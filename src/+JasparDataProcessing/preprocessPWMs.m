@@ -8,12 +8,13 @@ function preprocessPWMs()
     % txtFilePath = 'data/Jaspar/raw/JASPAR_CORE_individual_pfm_vertebrates.txt';
     % txtFilePath = 'data/Jaspar/raw/JASPAR_CNE.txt';
     % txtFilePath = 'data/Jaspar/raw/JASPAR_OLD_PMWs.txt';
+
 	% k x J x n
     [PWM, lengths, names] = parseTxt(txtFilePath);
-	% S = load('data/PWMsRaw.mat');
-	% PWM = S.PWMs;
-	% names = S.names;
-	DUPLICATES_TO_REMOVE = 0.80; STRENGTH_TO_REMOVE = 0.60; % 519 -> 26
+
+	% high values remove many, low values remove few
+	DUPLICATES_TO_REMOVE = 0.10; STRENGTH_TO_REMOVE = 0.30; % 519 -> 26
+
 	% n x J x k -> k x J x n
 	% PWM = permute(PWM, [3, 2, 1]);
 	% lengths = sum(sum(PWM, 3) > 0, 2)';
