@@ -18,15 +18,18 @@ mkdir ../raw_bed
 cd ../raw_bed
 #HG19 genome size:
 wget -O hg19.chrom.sizes http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/hg19.chrom.sizes
+# wget -O hg19.chrom_2.sizes https://raw.githubusercontent.com/arq5x/bedtools/master/genomes/human.hg19.genome
 
 #HG19 known Genes (2009):
 # wget -O hg19.KnownGenes.bed "https://genome.ucsc.edu/cgi-bin/hgTables?hgsid=597259395_zm48O4B23IAG8yLNYr5ekoweAIGe&boolshad.hgta_printCustomTrackHeaders=0&hgta_ctName=tb_knownGene&hgta_ctDesc=table+browser+query+on+knownGene&hgta_ctVis=pack&hgta_ctUrl=&fbQual=whole&fbUpBases=200&fbExonBases=0&fbIntronBases=0&fbDownBases=200&hgta_doGetBed=get+BED"
 wget -O hg19.KnownGenes.bed "https://genome.ucsc.edu/cgi-bin/hgTables?hgsid=652268259_VIkdFtkCyWYPpumVNPdYEZxkg5MP&boolshad.hgta_printCustomTrackHeaders=0&hgta_ctName=tb_knownGene&hgta_ctDesc=table+browser+query+on+knownGene&hgta_ctVis=pack&hgta_ctUrl=&fbQual=whole&fbUpBases=200&fbExonBases=0&fbIntronBases=0&fbDownBases=200&hgta_doGetBed=get+BED"
 bedtools slop -i ./hg19.KnownGenes.bed -g ./hg19.chrom.sizes -b 5000 > ./hg19.KnownGenes.slopped.bed
 ls -la
-rm ./hg19.KnownGenes.bed
+
 
 mkdir ../processed
+bedtools sort -faidx hg19.chrom.sizes -i hg19.KnownGenes.slopped.bed > tmp.1.narrowPeak
+bedtools complement  -i tmp.1.narrowPeak -g hg19.chrom.sizes > background.narrowPeak
 
 ../scripts/download_and_process_one.sh E003
 ../scripts/download_and_process_one.sh E004
@@ -73,6 +76,9 @@ mkdir ../processed
 ../scripts/download_and_process_one.sh E127
 ../scripts/download_and_process_one.sh E128
 
+mv -f background.narrowPeak ../processed/background.cleaned.narrowPeak
+mv -f hg19.KnownGenes.bed ../processed/genes.cleaned.narrowPeak
+
 #download fasta of genome
 mkdir ../raw_genome
 cd ../raw_genome
@@ -105,15 +111,18 @@ wget -O chrY.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/ch
 gunzip -f *.gz
 rm -f *.gz
 
-#then in matlab
+bedtools complement -i a.bed -g hg19.chrom.sizes
 
 # download_and_process_all.sh
 # cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
+#then in matlab
 # peaks.beds2matsNoSeq()
 # peaks.mergePeakFiles()
 # mergedPeaks = load('../data/peaks/mergedPeaks.mat', 'mergedPeaks');
 # superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000);
 
+# or:
+# peaks.beds2mats(500)
 # load('data/peaks/raw/roadmap/merged/mergedPeaks.mat');
 # peaks.minimizeMergePeak(mergedPeaks);
 # mergedPeaksMin = load('data/peaks/roadmap/mergedPeaksMinimized.mat');
