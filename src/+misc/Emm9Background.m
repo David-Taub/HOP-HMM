@@ -1,3 +1,4 @@
+% generates E emission matrix of background from MM9 genome, based on Tommy's preprocessing
 % misc.Emm9Background();
 
 % E - 4 x 4 x 4
