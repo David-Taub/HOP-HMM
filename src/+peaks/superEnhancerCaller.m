@@ -3,7 +3,7 @@
 % peaks.mergePeakFiles()
 % mergedPeaks = load('../data/peaks/mergedPeaks.mat', 'mergedPeaks');
 % mergedPeaks = mergedPeaks.mergedPeaks;
-% superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000, [1:6]);
+% superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000, [20,30]);
 % mainRealData(superEnhancers, 5, 40);
 
 % L - super enhancer size
@@ -64,7 +64,7 @@ end
 
 
 function superEnhancers = findSuperEnhancers(mergedPeaks, L, binTicks, amountToPick, tissueList)
-    HIGH_PEAKS_RATIO = 0.4; %ratio of high peaks that will be used
+    HIGH_PEAKS_RATIO = 0.7; %ratio of high peaks that will be used
     MAX_PEAKS_LENGTH = 1200;
     [superEnhancers.chr{1:amountToPick}] = deal('');
     superEnhancers.amount = zeros(1, amountToPick);
@@ -91,10 +91,10 @@ function superEnhancers = findSuperEnhancers(mergedPeaks, L, binTicks, amountToP
         unwantedMask = not(getUniqueMask(mergedPeaks));
         fprintf('%.3f < ', sum(unwantedMask,1) ./ length(unwantedMask));
         unwantedMask = unwantedMask | not(getTissueListMask(mergedPeaks, tissueList));
-        fprintf('%.3f < ', sum(unwantedMask,1) ./ length(unwantedMask));
-        unwantedMask = unwantedMask | not(highFilterPeaks(mergedPeaks, HIGH_PEAKS_RATIO));
-        fprintf('%.3f < ', sum(unwantedMask,1) ./ length(unwantedMask));
-        unwantedMask = unwantedMask | not(getShortMask(mergedPeaks, MAX_PEAKS_LENGTH));
+        % fprintf('%.3f < ', sum(unwantedMask,1) ./ length(unwantedMask));
+        % unwantedMask = unwantedMask | not(highFilterPeaks(mergedPeaks, HIGH_PEAKS_RATIO));
+        % fprintf('%.3f < ', sum(unwantedMask,1) ./ length(unwantedMask));
+        % unwantedMask = unwantedMask | not(getShortMask(mergedPeaks, MAX_PEAKS_LENGTH));
         fprintf('%.3f < ', sum(unwantedMask,1) ./ length(unwantedMask));
         unwantedMask = unwantedMask & getChrMask(mergedPeaks, chrName);
         fprintf('%.3f\n', sum(unwantedMask,1) ./ length(unwantedMask));
@@ -163,7 +163,9 @@ function superEnhancers = updateSuperEnhancers(superEnhancers, windows, chrName,
         superEnhancers.chr{toReplace} = chrName{:};
         superEnhancers.amount(toReplace) = newBest;
         superEnhancers.from(toReplace) = newBestfrom * binTicks;
-        windows(max(0,newBestfrom - floor(L / binTicks))+1:newBestfrom) = -inf;
+        unmarkBinsFrom = max(0,newBestfrom - floor(L / binTicks));
+        unmarkBinsTo = min(size(windows, 2) , newBestfrom + floor(L / binTicks));
+        windows(unmarkBinsFrom:unmarkBinsTo) = -inf;
     end
 end
 
