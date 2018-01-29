@@ -23,8 +23,8 @@ function params = genParams(m, k)
 
 
     params.batchSize = 2;
-    [~, params.n, params.J] = size(params.PWMs);
-    params.k = k;
+    [kMax, params.n, params.J] = size(params.PWMs);
+    params.k = min(k, kMax);
     try
         loaded = load('../data/temp/G.mat');
         inds = loaded.inds;

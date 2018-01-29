@@ -20,13 +20,13 @@ function out = preComputePWMpAux(Xs1H, params)
     PC_PWM_PROBABILITY_FILE = fullfile('..', 'data', 'precomputation', 'pcPWMp.mat');
 
     newSample = [Xs1H(1:500), Xs1H(end-499:end), params.k, L, N];
+    try
     if ~isempty(pcPWMp) && all(newSample == sample)
         % in memory
         fprintf('Pre-computed PWM probability from memory cache\n');
         out = pcPWMp;
         return;
     end
-    try
         if exist(PC_PWM_PROBABILITY_FILE, 'file') == 2
             fprintf('Loading pre-computed PWM from %s...\n', PC_PWM_PROBABILITY_FILE);
             load(PC_PWM_PROBABILITY_FILE, 'pcPWMp');
