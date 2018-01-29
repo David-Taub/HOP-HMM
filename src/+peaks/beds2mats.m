@@ -1,57 +1,67 @@
 % peaks.beds2mats(500)
+% peaks.mergePeakFiles()
+% load('../data/peaks/mergedPeaks.mat');
+% peaks.minimizeMergePeak(mergedPeaks, 500);
 % creates mats each has a cell array of only the his sequence, and have overlap one hot map that is on only in it's position
+
 function beds2mats(L)
+    dbstop if error
     BEDS_DIR = '../data/peaks/processed';
-    dict = makeMMDict();
     % save in dict opened hg19 fasta files as memory mapped files
     bedFiles = dir([BEDS_DIR, '/*.cleaned.narrowPeak']);
     typesOfCells = length(bedFiles)
+    dict = peaks.fasta2mem();
     for index = 1:typesOfCells
         if not(bedFiles(index).isdir)
             bedPath = fullfile(BEDS_DIR, bedFiles(index).name);
             nameParts = strsplit(bedFiles(index).name, '-');
             name = nameParts{1};
-            bed2mat(index, name, bedPath, typesOfCells, dict, L);
+            bed2mat(index, name, bedPath, typesOfCells, L, dict);
         end
     end
+    fclose('all')
 end
 
 % cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
-function bed2mat(index, name, bedPath, typesOfCells, dict, L)
-    % bedPath = 'data/peaks/raw/roadmap/BrainMFLVsLiver/brain_mid_frontal_lobe/compressed/GSM773015_BI.Brain_Mid_Frontal_Lobe.H3K27ac.149.cleaned.bed';
-
+function bed2mat(index, name, bedPath, typesOfCells, L, dict)
     fprintf('Loading bed\n');
     fid = fopen(bedPath);
-    data = textscan(fopen(bedPath), '%s%d%d%*s%d%*s%f%f%f%d', 'delimiter','\t');
+    bedData = textscan(fopen(bedPath), '%s%d%d%*s%d%*s%f%f%f%d', 'delimiter','\t');
     fclose(fid);
 
-    N = length(data{1});
+    N = length(bedData{1});
     % read sequences from HG19 fasta files
     fprintf(['Generating mat file ',name,'\n']);
-    S = cell(N, 1);
+    S = {};
     for i = 1:N
-        S{i}.chr = data{1}{i};
-        S{i}.peakFrom = data{2}(i);
-        S{i}.peakTo = data{3}(i);
-        S{i}.seqFrom = data{2}(i);
-        S{i}.seqTo = data{3}(i);
-        S{i}.peakLength = S{i}.peakTo - S{i}.peakFrom;
-        S{i}.height = data{4}(i);
-        S{i}.peakPos = data{2}(i)+data{8}(i);
-        S{i}.overlap = zeros(1, typesOfCells);
-        S{i}.overlap(index) = 1;
-        chrLength = length(dict(S{i}.chr).Data);
-        [S{i}.seqTo, S{i}.seqFrom] = fitToL(S{i}.peakPos, L, chrLength);
-        S{i}.seq = dict(S{i}.chr).Data(S{i}.seqFrom:S{i}.seqTo)';
-        fprintf('%.2f\r%%', 100*i/N);
+        if ~any(strcmp(dict.keys(), bedData{1}{i}))
+            continue;
+        end
+        newSeqId = length(S) + 1;
+        S{newSeqId}.chr = bedData{1}{i};
+        S{newSeqId}.peakFrom = bedData{2}(i);
+        S{newSeqId}.peakTo = bedData{3}(i);
+        S{newSeqId}.seqFrom = bedData{2}(i);
+        S{newSeqId}.seqTo = bedData{3}(i);
+        S{newSeqId}.peakLength = S{newSeqId}.peakTo - S{newSeqId}.peakFrom;
+        S{newSeqId}.height = bedData{4}(i);
+        S{newSeqId}.peakPos = bedData{2}(i)+bedData{8}(i);
+        S{newSeqId}.overlap = zeros(1, typesOfCells);
+        S{newSeqId}.overlap(index) = 1;
+        chrLength = length(dict(S{newSeqId}.chr).Data);
+        [S{newSeqId}.seqTo, S{newSeqId}.seqFrom] = fitToL(S{newSeqId}.peakPos, L, chrLength);
+        S{newSeqId}.seq = dict(S{newSeqId}.chr).Data(S{newSeqId}.seqFrom:S{newSeqId}.seqTo)';
+        if mod(i, 1000) == 0
+            fprintf('%.2f\r%%', 100*i/N);
+        end
     end
     fprintf('\n');
 
     % seqs should have 473980 sequences
 
-    matPath = ['../data/peaks/mat/', name, '-H3k27ac.peaks.mat'];
+    matPath = ['../data/peaks/mat/', name, '.peaks.mat'];
     fprintf(['Saving mat file ', matPath, '\n']);
-    save(matPath, 'S');
+    save(matPath, 'S', '-v7.3');
 end
 
 % function [newTo, newFrom] = fitToL(to, from, L)
