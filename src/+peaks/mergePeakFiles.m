@@ -5,6 +5,7 @@
 
 % download_and_process_all.sh
 % peaks.beds2matsNoSeq()
+% peaks.beds2mats(500)
 % peaks.mergePeakFiles()
 % mergedPeaks = load('../data/peaks/mergedPeaks.mat', 'mergedPeaks');
 % superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000);
@@ -12,16 +13,17 @@
 function mergedPeaks = mergePeakFiles()
     [totalpeaks] = genTotalPeaks();
     mergedPeaks = genMergePeaks(totalpeaks);
-    save('-v7.3', '../data/peaks/mergedPeaks.mat', 'mergedPeaks');
+    OUT_FILE_PATH = '../data/peaks/mergedPeaks.mat';
+    save('-v7.3', OUT_FILE_PATH, 'mergedPeaks');
 end
 
 function [totalpeaks] = genTotalPeaks()
     totalpeaks = [];
-    peaksBasePath = '../data/peaks/mat';
-    peakFiles = dir(fullfile(peaksBasePath, '*.peaks.mat'));
+    INPUT_MAT_DIR = '../data/peaks/mat';
+    peakFiles = dir(fullfile(INPUT_MAT_DIR, '*.peaks.mat'));
     for i = 1:length(peakFiles)
         peakFiles(i).name
-        peaks = load(fullfile(peaksBasePath, peakFiles(i).name));
+        peaks = load(fullfile(INPUT_MAT_DIR, peakFiles(i).name));
         S = [peaks.S{:}];
         for j=1:size(S, 2)
             S(j).overlap(i) = S(j).height;
@@ -46,10 +48,8 @@ function mergedPeaks  = genMergePeaks(totalpeaks)
             oldPeak = mergedPeaks(j);
             if oldPeak.seqTo > newPeak.seqFrom
                 fprintf('.')
-                % oldPeak.seq'
-                % newPeak.seq(end-(newPeak.seqTo-oldPeak.seqTo) + 1:end)'
                 % merge
-                % oldPeak.seq = [oldPeak.seq, newPeak.seq(end-(newPeak.seqTo-oldPeak.seqTo) + 1:end)];
+                oldPeak.seq = [oldPeak.seq, newPeak.seq(end-(newPeak.seqTo-oldPeak.seqTo) + 1:end)];
                 oldPeak.seqTo = newPeak.seqTo;
                 oldPeak.peakTo = max(newPeak.peakTo, oldPeak.peakTo);
                 oldPeak.peakFrom = min(newPeak.peakFrom, oldPeak.peakFrom);
