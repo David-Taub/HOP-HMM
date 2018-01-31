@@ -19,14 +19,15 @@ function beds2mats(L)
             bed2mat(index, name, bedPath, typesOfCells, L, dict);
         end
     end
-    fclose('all')
+    fclose('all');
 end
+
 
 % cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
 function bed2mat(index, name, bedPath, typesOfCells, L, dict)
     fprintf('Loading bed\n');
     fid = fopen(bedPath);
-    bedData = textscan(fopen(bedPath), '%s%d%d%*s%d%*s%f%f%f%d', 'delimiter','\t');
+    bedData = textscan(fid, '%s%d%d%*s%d%*s%f%f%f%d', 'delimiter','\t');
     fclose(fid);
 
     N = length(bedData{1});
@@ -47,7 +48,7 @@ function bed2mat(index, name, bedPath, typesOfCells, L, dict)
         S{newSeqId}.height = bedData{4}(i);
         S{newSeqId}.peakPos = bedData{2}(i)+bedData{8}(i);
         S{newSeqId}.overlap = zeros(1, typesOfCells);
-        S{newSeqId}.overlap(index) = 1;
+        S{newSeqId}.overlap(index) = max(bedData{4}(i), 1);
         chrLength = length(dict(S{newSeqId}.chr).Data);
         [S{newSeqId}.seqTo, S{newSeqId}.seqFrom] = fitToL(S{newSeqId}.peakPos, L, chrLength);
         S{newSeqId}.seq = dict(S{newSeqId}.chr).Data(S{newSeqId}.seqFrom:S{newSeqId}.seqTo)';

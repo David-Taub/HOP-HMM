@@ -2,22 +2,42 @@
 % pcPWMp = misc.preComputePWMp(X);
 % mainPWM(pcPWMp, X, Y);
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
-% load('../data/peaks/mergedPeaksMinimized.mat');
-% mergedPeaksMin = mainGenSequences(500, 600, 2, true);
-% chooseBestPWMs(mergedPeaksMin, [10, 3]);
+% load('../data/peaks/mergedPeaks.mat');
+% peaks.minimizeMergePeak(mergedPeaks, 500, tissueNames);
+% mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized.mat')
+% chooseBestPWMs(mergedPeaks, [1, 2, 3, 45, 46]);
 
 
-function chooseBestPWMs(mergedPeaksMin, tissueList)
+function bestPWMs = chooseBestPWMs(mergedPeaksMin, tissueList)
     dbstop if error
     close all;
     k = 519;
+    BEST_PWM_TO_CHOOSE_PER_TISSUE = 4;
     m = length(tissueList);
     params = misc.genParams(m, k);
     % params.tEpsilon = 0;
     params.batchSize = 2;
 
-    [dataset] = preprocess(params, mergedPeaksMin, tissueList);
+    for tissueID = tissueList
+        mergedPeaksMin.tissueNames{tissueID}
+    end
+
+    dataset = preprocess(params, mergedPeaksMin, tissueList);
     % TODO: add background to the sequences
+
+    [aucRocsSorted, PWMRank] = sort(aucRocs, 2, 'descend');
+    % m x k
+    aucRocs = oneVsAllAucRoc(params, dataset);
+    % m x BEST_PWM_TO_CHOOSE_PER_TISSUE
+    bestPWMs = PWMRank(:, 1:BEST_PWM_TO_CHOOSE_PER_TISSUE);
+    bestPWMs = unqiue(bestPWMs(:));
+    bestPWMsAucRocs = aucRocsSorted(:, 1:BEST_PWM_TO_CHOOSE_PER_TISSUE);
+    min(bestPWMsAucRocs(:))
+    max(bestPWMsAucRocs(:))
+    keyboard
+end
+
+function aucRocs = oneVsAllAucRoc(params, dataset)
     aucRocs = zeros(params.m, params.k);
     for tissueID = 1:params.m
         tissueMask = dataset.Y(:,1) == tissueID;
@@ -28,13 +48,9 @@ function chooseBestPWMs(mergedPeaksMin, tissueList)
             aucRocs(tissueID, pwmID) = matUtils.getAucRoc(pos(:), neg(:), false, true);
         end
     end
-    [aucRocsSorted, PWMRank] = sort(aucRocs, 2, 'descend');
-    keyboard
 end
 
-
-
-function [dataset] = preprocess(params, mergedPeaksMin, tissueList)
+function dataset = preprocess(params, mergedPeaksMin, tissueList)
     L = size(mergedPeaksMin.seqs, 2);
     overlaps = mergedPeaksMin.overlaps(:, :);
     % overlaps = mergedPeaksMin.overlaps(:, tissueList);

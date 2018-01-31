@@ -7,39 +7,63 @@
 % peaks.beds2matsNoSeq()
 % peaks.beds2mats(500)
 % peaks.mergePeakFiles()
-% mergedPeaks = load('../data/peaks/mergedPeaks.mat', 'mergedPeaks');
+% load('../data/peaks/mergedPeaks.mat');
+% minimizeMergePeak(mergedPeaks, L, tissueNames)
+% of
 % superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000);
 
 function mergedPeaks = mergePeakFiles()
-    [totalpeaks] = genTotalPeaks();
-    mergedPeaks = genMergePeaks(totalpeaks);
+    dbstop if error
+    INPUT_MAT_DIR_PATH = '../data/peaks/mat';
     OUT_FILE_PATH = '../data/peaks/mergedPeaks.mat';
-    save('-v7.3', OUT_FILE_PATH, 'mergedPeaks');
+    ROADMAP_NAMES_CSV_PATH = '../data/peaks/help/full_tissue_names.csv';
+    namesDict = roadmapNamesDict(ROADMAP_NAMES_CSV_PATH);
+    fprintf('Reading mat files...\n')
+    [unmergedPeaks, tissueNames] = readMatFiles(INPUT_MAT_DIR_PATH);
+    tissueNames = convertNames(tissueNames, namesDict);
+    fprintf('Merging...\n')
+    mergedPeaks = mergePeaks(unmergedPeaks);
+    fprintf('Saving...\n')
+
+    save('-v7.3', OUT_FILE_PATH, 'mergedPeaks', 'tissueNames');
+    fprintf('Done\n')
 end
 
-function [totalpeaks] = genTotalPeaks()
-    totalpeaks = [];
-    INPUT_MAT_DIR = '../data/peaks/mat';
-    peakFiles = dir(fullfile(INPUT_MAT_DIR, '*.peaks.mat'));
-    for i = 1:length(peakFiles)
-        peakFiles(i).name
-        peaks = load(fullfile(INPUT_MAT_DIR, peakFiles(i).name));
-        S = [peaks.S{:}];
-        for j=1:size(S, 2)
-            S(j).overlap(i) = S(j).height;
-            S(j).overlap(S(j).overlap == 1) = -inf;
+function namesDict = roadmapNamesDict(namesCSVPath)
+    fid = fopen(namesCSVPath);
+    csvData = textscan(fid, '%s%s', 'delimiter',',');
+    fclose(fid);
+    namesDict = containers.Map(csvData{1}, csvData{2});
+end
+
+function tissueNames = convertNames(tissueNames, namesDict)
+    for i = 1:length(tissueNames)
+        if any(strcmp(tissueNames{i}, namesDict.keys))
+            tissueNames{i} = namesDict(tissueNames{i});
         end
-        totalpeaks = [totalpeaks, S];
     end
 end
 
-function mergedPeaks  = genMergePeaks(totalpeaks)
+function [unmergedPeaks, tissueNames] = readMatFiles(matDirPath)
+    unmergedPeaks = [];
+    tissueNames = {};
+    peakFiles = dir(fullfile(matDirPath, '*.peaks.mat'));
+    for i = 1:length(peakFiles)
+        filename = peakFiles(i).name;
+        peaks = load(fullfile(matDirPath, filename));
+        filenameParts = strsplit(filename, '.');
+        tissueNames{find(peaks.S{1}.overlap)} = filenameParts{1};
+        unmergedPeaks = [unmergedPeaks, [peaks.S{:}]];
+    end
+end
 
-    mergedPeaks = totalpeaks;
+function mergedPeaks  = mergePeaks(unmergedPeaks)
+
+    mergedPeaks = unmergedPeaks;
     j = 1;
-    for chrName = unique({totalpeaks.chr})
-        chrMask = strcmp({totalpeaks.chr}, chrName{1});
-        chrPeaks = totalpeaks(chrMask);
+    for chrName = unique({unmergedPeaks.chr})
+        chrMask = strcmp({unmergedPeaks.chr}, chrName{1});
+        chrPeaks = unmergedPeaks(chrMask);
         [~, ind] = sort([chrPeaks.seqFrom]);
         mergedPeaks(j) = chrPeaks(ind(1));
         i = 2;
