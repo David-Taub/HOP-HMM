@@ -3,17 +3,23 @@
 function [auc, wasSwitched, thresh] = getAucRoc(pos, neg, shouldPlot, shouldSwitch)
     wasSwitched = false;
     if isempty(pos) || isempty(neg)
+        fprintf('Warning empty input. pos size %d, neg size %d', length(pos), length(neg))
         auc = 0;
         wasSwitched = false;
+        keyboard
         return;
-    end
-    if mean(pos, 1) < mean(neg, 1) && shouldSwitch
-        [pos, neg] = deal(neg, pos);
-        wasSwitched = true;
     end
     scores = [pos;neg];
     labels = [ones(length(pos), 1); zeros(length(neg), 1)];
-    [X, Y, T, auc, OPTROCPT] = perfcurve(labels, scores, 1);
+    % [X, Y, T, auc, OPTROCPT] = perfcurve(labels, scores, 1);
+    [X, Y, T, auc, OPTROCPT] = matUtils.perfcurve2(labels, scores, 1);
+    if auc < 0.5 && shouldSwitch
+        [pos, neg] = deal(neg, pos);
+        scores = [pos;neg];
+        labels = [ones(length(pos), 1); zeros(length(neg), 1)];
+        wasSwitched = true;
+        [X, Y, T, auc, OPTROCPT] = matUtils.perfcurve2(labels, scores, 1);
+    end
     thresh = T((X==OPTROCPT(1))&(Y==OPTROCPT(2)));
     if shouldPlot
         figure
