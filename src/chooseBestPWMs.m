@@ -1,20 +1,20 @@
 % mainGenSequences();
-% pcPWMp = misc.preComputePWMp(X);
-% mainPWM(pcPWMp, X, Y);
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
 % load('../data/peaks/mergedPeaks.mat');
 % peaks.minimizeMergePeak(mergedPeaks, 500, tissueNames);
 % mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized.mat')
-% chooseBestPWMs(mergedPeaks, [1, 2, 3, 45, 46]);
+% chooseBestPWMs(mergedPeaksMin, [10, 20, 30, 45, 46]);
 
 
-function bestPWMs = chooseBestPWMs(mergedPeaksMin, tissueList)
+function selectedPWMs = chooseBestPWMs(mergedPeaksMin, tissueList)
     dbstop if error
+    profile on
     close all;
     k = 519;
     BEST_PWM_TO_CHOOSE_PER_TISSUE = 4;
     m = length(tissueList);
     params = misc.genParams(m, k);
+    params.L = size(mergedPeaksMin.seqs, 2);
     % params.tEpsilon = 0;
     params.batchSize = 2;
 
@@ -25,56 +25,65 @@ function bestPWMs = chooseBestPWMs(mergedPeaksMin, tissueList)
     dataset = preprocess(params, mergedPeaksMin, tissueList);
     % TODO: add background to the sequences
 
-    [aucRocsSorted, PWMRank] = sort(aucRocs, 2, 'descend');
     % m x k
     aucRocs = oneVsAllAucRoc(params, dataset);
+    [aucRocsSorted, aucRocsSortedInd] = sort(aucRocs, 2, 'descend');
     % m x BEST_PWM_TO_CHOOSE_PER_TISSUE
-    bestPWMs = PWMRank(:, 1:BEST_PWM_TO_CHOOSE_PER_TISSUE);
-    bestPWMs = unqiue(bestPWMs(:));
+    selectedPWMs = aucRocsSortedInd(:, 1:BEST_PWM_TO_CHOOSE_PER_TISSUE);
+    selectedPWMs = unique(selectedPWMs(:));
     bestPWMsAucRocs = aucRocsSorted(:, 1:BEST_PWM_TO_CHOOSE_PER_TISSUE);
     min(bestPWMsAucRocs(:))
     max(bestPWMsAucRocs(:))
+    plot(sort(bestPWMsAucRocs(:)))
+    save('..\data\precomputation\SelectedPWMs.mat', 'selectedPWMs', 'aucRocsSorted', 'aucRocsSortedInd');
     keyboard
 end
 
 function aucRocs = oneVsAllAucRoc(params, dataset)
     aucRocs = zeros(params.m, params.k);
-    for tissueID = 1:params.m
-        tissueMask = dataset.Y(:,1) == tissueID;
-        for pwmID = 1:params.k
-            % N x k x L
-            pos = dataset.pcPWMp(tissueMask, pwmID, :);
-            neg = dataset.pcPWMp(~tissueMask, pwmID, :);
-            aucRocs(tissueID, pwmID) = matUtils.getAucRoc(pos(:), neg(:), false, true);
+    Xs1H = matUtils.mat23Dmat(dataset.X, params.n);
+    for pwmId = 1:params.k
+        PWMLogLike = misc.PWMLogLikelihood(params, Xs1H, pwmId);
+        for tissueID = 1:params.m
+            tissueMask = dataset.Y(:,1) == tissueID;
+            % N x L
+            pos = PWMLogLike(tissueMask, :);
+            neg = PWMLogLike(~tissueMask, :);
+            % pos = downsample(pos, 20);
+            % neg = downsample(pos, 20);
+            aucRocs(tissueID, pwmId) = matUtils.getAucRoc(pos(:), neg(:), false, true);
+            fprintf('%.2f\n', max(aucRocs(:)));
         end
     end
 end
 
 function dataset = preprocess(params, mergedPeaksMin, tissueList)
-    L = size(mergedPeaksMin.seqs, 2);
+    params.L = size(mergedPeaksMin.seqs, 2);
     overlaps = mergedPeaksMin.overlaps(:, :);
     % overlaps = mergedPeaksMin.overlaps(:, tissueList);
-    mask = mergedPeaksMin.lengths >= L;
+    mask = mergedPeaksMin.lengths >= params.L;
     mask = mask & (sum(overlaps > 0, 2) == 1);
     % mask = mask & mergedPeaksMin.Y(:,1,1) == 1;
     mask = mask & (sum(overlaps(:, tissueList) > 0, 2) == 1);
     % mask = mask & mod(1:size(mask,1), 15).' == 0;
     overlaps = overlaps(mask, :);
     overlaps = overlaps(:, tissueList);
+    sum(overlaps>0, 1)
+    assert(all(sum(overlaps>0, 1)>0))
     X = mergedPeaksMin.seqs(mask, :);
     % Y = mergedPeaksMin.Y(mask, :);
-    Y = repmat((overlaps > 0) * (1:size(overlaps, 2))', [1, L]);
+    Y = repmat((overlaps > 0) * (1:size(overlaps, 2))', [1, params.L]);
     [overlaps, seqInd] = sortrows(overlaps);
     X = X(seqInd, :);
     Y = Y(seqInd, :);
 
     % X = cat(2, X, fliplr(5-X));
     % N x k x L
-    pcPWMp = misc.preComputePWMp(X, params);
+    % mf = misc.preComputePWMp(X, params);
     N = size(X, 1);
     dataset.title = 'dataset';
-    % dataset.X = X;
-    dataset.pcPWMp = pcPWMp;
+    dataset.X = X;
+    % dataset.mf = mf;
     dataset.Y = Y;
     if isfield(mergedPeaksMin, 'Y')
     end

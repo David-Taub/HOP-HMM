@@ -1,3 +1,4 @@
+
 % peaks.beds2mats(500)
 % peaks.mergePeakFiles()
 % load('../data/peaks/mergedPeaks.mat');
@@ -13,10 +14,11 @@ function beds2mats(L)
     dict = peaks.fasta2mem();
     for index = 1:typesOfCells
         if not(bedFiles(index).isdir)
-            bedPath = fullfile(BEDS_DIR, bedFiles(index).name);
-            nameParts = strsplit(bedFiles(index).name, '-');
+            bedFilePath = fullfile(BEDS_DIR, bedFiles(index).name);
+            nameParts = strsplit(bedFiles(index).name, '.');
+            nameParts = strsplit(nameParts{1}, '-');
             name = nameParts{1};
-            bed2mat(index, name, bedPath, typesOfCells, L, dict);
+            bed2mat(index, name, bedFilePath, typesOfCells, L, dict);
         end
     end
     fclose('all');
@@ -24,31 +26,47 @@ end
 
 
 % cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
-function bed2mat(index, name, bedPath, typesOfCells, L, dict)
+function bed2mat(index, name, bedFilePath, typesOfCells, L, dict)
     fprintf('Loading bed\n');
-    fid = fopen(bedPath);
-    bedData = textscan(fid, '%s%d%d%*s%d%*s%f%f%f%d', 'delimiter','\t');
+    fid = fopen(bedFilePath);
+    if strcmp(name, 'genes')
+        123
+        bedData = textscan(fid, '%s%d%d%*s%d%*s%d%d%d%s%s%s', 'delimiter','\t');
+        chrs = bedData{1};
+        peakFroms = bedData{2};
+        peakTos = bedData{3};
+        heights = bedData{4};
+        maxPos = bedData{7};
+    else
+        bedData = textscan(fid,' %s%d%d%*s%d%*s%f%f%f%d', 'delimiter','\t');
+        chrs = bedData{1};
+        peakFroms = bedData{2};
+        peakTos = bedData{3};
+        heights = bedData{4};
+        maxPos = bedData{8};
+    end
+
     fclose(fid);
 
-    N = length(bedData{1});
+    N = length(chrs);
     % read sequences from HG19 fasta files
     fprintf(['Generating mat file ',name,'\n']);
     S = {};
     for i = 1:N
-        if ~any(strcmp(dict.keys(), bedData{1}{i}))
+        if ~any(strcmp(dict.keys(), chrs{i}))
             continue;
         end
         newSeqId = length(S) + 1;
-        S{newSeqId}.chr = bedData{1}{i};
-        S{newSeqId}.peakFrom = bedData{2}(i);
-        S{newSeqId}.peakTo = bedData{3}(i);
-        S{newSeqId}.seqFrom = bedData{2}(i);
-        S{newSeqId}.seqTo = bedData{3}(i);
+        S{newSeqId}.chr = chrs{i};
+        S{newSeqId}.peakFrom = peakFroms(i);
+        S{newSeqId}.peakTo = peakTos(i);
+        S{newSeqId}.seqFrom = peakFroms(i);
+        S{newSeqId}.seqTo = peakTos(i);
         S{newSeqId}.peakLength = S{newSeqId}.peakTo - S{newSeqId}.peakFrom;
-        S{newSeqId}.height = bedData{4}(i);
-        S{newSeqId}.peakPos = bedData{2}(i)+bedData{8}(i);
+        S{newSeqId}.height = heights(i);
+        S{newSeqId}.peakPos = peakFroms(i)+maxPos(i);
         S{newSeqId}.overlap = zeros(1, typesOfCells);
-        S{newSeqId}.overlap(index) = max(bedData{4}(i), 1);
+        S{newSeqId}.overlap(index) = max(heights(i), 1);
         chrLength = length(dict(S{newSeqId}.chr).Data);
         [S{newSeqId}.seqTo, S{newSeqId}.seqFrom] = fitToL(S{newSeqId}.peakPos, L, chrLength);
         S{newSeqId}.seq = dict(S{newSeqId}.chr).Data(S{newSeqId}.seqFrom:S{newSeqId}.seqTo)';

@@ -10,13 +10,14 @@ end
 
 % calculating the probability of each position in the sequences
 % to be emitted by each PWM
-% PWMsRep - N x J x n x k
 function out = preComputePWMpAux(Xs1H, params)
     % pcPWMp - N x k x L
     persistent pcPWMp
     persistent sample
     [N, L, ~] = size(Xs1H);
     % L = L - fJ;
+    % TODO: pcPWMp is too big for the memory. Tried matfile and memfile,
+    % no good, too slow and unfit for this size. Tall array should work.
     PC_PWM_PROBABILITY_FILE = fullfile('..', 'data', 'precomputation', 'pcPWMp.mat');
 
     newSample = [Xs1H(1:500), Xs1H(end-499:end), params.k, L, N];
@@ -55,50 +56,20 @@ function out = preComputePWMpAux(Xs1H, params)
     out = pcPWMp;
 end
 
-% PWMsRep - N x J x n x k
-% Xs1H - N x L + J x n
+% Xs1H - N x L x n
 % params.lengths - k x 1
 % pcPWMp - N x k x L
 function pcPWMp = calculate(params, Xs1H)
     [N, L, ~] = size(Xs1H);
-    fprintf('Pre-computing PWM probability on %d sequences\n', size(Xs1H, 1));
-    % [params.PWMs, params.lengths] = misc.params.PWMs();
-    PWMsRep = permute(repmat(params.PWMs, [1, 1, 1, N]), [4, 3, 2, 1]);
-    outOfMotifMask  = repmat(1:params.J, [N, 1, params.k]) > repmat(permute(params.lengths, [1, 3, 2]), [N, params.J, 1]);
-    outOfMotifMask = permute(outOfMotifMask, [1, 2, 4, 3]);
-    pcPWMp = -inf(N, params.k, L);
-    for startPos = 1:L
-        % see c code https://github.com/yatbear/nlangp/blob/master/Baum-Welch/hmm.c
-        pcPWMp(:, :, startPos) = PWMLikelihood(params, PWMsRep, Xs1H, startPos, outOfMotifMask);
-        if mod(startPos, 20) == 0
-            fprintf('\r%d / %d', startPos, L);
-        end
-    end
-    assert(not(any(isnan(pcPWMp(:)))))
-    fprintf('\nDone calculating\n');
-end
+    onePaddedPWMs = onePadPWMs(params, N);
 
-% res - N x k
-% PWMsRep - N x J x n x k
-% outOfMotifMask - N x J x 1 x k
-% Xs1H - N x L x n
-function res = PWMLikelihood(params, PWMsRep, Xs1H, startPos, outOfMotifMask)
-    [N, L, ~] = size(Xs1H);
-    endPos = min(L, startPos+params.J-1);
-    % Note: J2 usually equals J, except when L-startPos is less than J
-    J2 = endPos-startPos+1;
-    % N x J x n
-    lastJXs1H = Xs1H(:, startPos:startPos+J2-1, :);
-    % N x J2 x n x k .* N x J2 x n x k
-    res = PWMsRep(:, 1:J2, :, :) .* repmat(lastJXs1H, [1, 1, 1, params.k]);
-    % N x J2 x n x k -> % N x J2 x 1 x k
-    res = sum(res, 3);
-    % N x J2 x 1 x k
-    res = res + outOfMotifMask(:, 1:J2, :, :);
-    % N x J2 x 1 x k -> N x 1 x 1 x k
-    res = sum(log(res), 2);
-    % N x 1 x 1 x k -> N x k
-    res = permute(res, [1, 4, 2, 3]);
-    % N x k
-    res(:, params.lengths+startPos-1 > L) = -inf;
+    fprintf('Pre-computing PWM probability on %d sequences\n', size(Xs1H, 1));
+    for pwmId = 1:params.k
+        newVec = misc.PWMLogLikelihood(params, Xs1H, onePaddedPWM);
+        fprintf('\r%d / %d', pwmId, params.k);
+        pcPWMp(1:N, 1:params.k, startPos) = newVec;
+        fprintf('..');
+        assert(not(any(isnan(newVec(:)))));
+    end
+    fprintf('\nDone calculating\n');
 end
