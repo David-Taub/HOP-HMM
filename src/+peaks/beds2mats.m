@@ -30,7 +30,6 @@ function bed2mat(index, name, bedFilePath, typesOfCells, L, dict)
     fprintf('Loading bed\n');
     fid = fopen(bedFilePath);
     if strcmp(name, 'genes')
-        123
         bedData = textscan(fid, '%s%d%d%*s%d%*s%d%d%d%s%s%s', 'delimiter','\t');
         chrs = bedData{1};
         peakFroms = bedData{2};

@@ -24,29 +24,50 @@ function beds2matsNoSeq()
 end
 
 % cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
-function bed2mat(index, name, bedPath, typesOfCells, outDir)
+function bed2mat(index, name, bedFilePath, typesOfCells, outDir)
     % bedPath = 'data/peaks/raw/roadmap/BrainMFLVsLiver/brain_mid_frontal_lobe/compressed/GSM773015_BI.Brain_Mid_Frontal_Lobe.H3K27ac.149.cleaned.bed';
     fprintf('Loading bed\n');
-    fid = fopen(bedPath);
-    data = textscan(fopen(bedPath), '%s%d%d%*s%d%*s%f%f%f%d', 'delimiter','\t');
+    fid = fopen(bedFilePath);
+    if strcmp(name, 'genes')
+        bedData = textscan(fid, '%s%d%d%*s%d%*s%d%d%d%s%s%s', 'delimiter','\t');
+        chrs = bedData{1};
+        peakFroms = bedData{2};
+        peakTos = bedData{3};
+        heights = bedData{4};
+        maxPos = bedData{7};
+    else
+        bedData = textscan(fid,' %s%d%d%*s%d%*s%f%f%f%d', 'delimiter','\t');
+        chrs = bedData{1};
+        peakFroms = bedData{2};
+        peakTos = bedData{3};
+        heights = bedData{4};
+        maxPos = bedData{8};
+    end
+
     fclose(fid);
 
-    N = length(data{1});
+    N = length(chrs);
     % read sequences from HG19 fasta files
     fprintf(['Generating mat file ',name,'\n']);
-    S = cell(N, 1);
+    S = {};
     for i = 1:N
-        S{i}.chr = data{1}{i};
-        S{i}.peakFrom = data{2}(i);
-        S{i}.peakTo = data{3}(i);
-        S{i}.seqFrom = data{2}(i);
-        S{i}.seqTo = data{3}(i);
-        S{i}.peakLength = S{i}.peakTo - S{i}.peakFrom;
-        S{i}.height = data{4}(i);
-        S{i}.peakPos = data{2}(i)+data{8}(i);
-        S{i}.overlap = zeros(1, typesOfCells);
-        S{i}.overlap(index) = 1;
-        fprintf('%.2f\r%%', 100*i/N);
+        newSeqId = length(S) + 1;
+        S{newSeqId}.chr = chrs{i};
+        S{newSeqId}.peakFrom = peakFroms(i);
+        S{newSeqId}.peakTo = peakTos(i);
+        % S{newSeqId}.seqFrom = peakFroms(i);
+        % S{newSeqId}.seqTo = peakTos(i);
+        S{newSeqId}.peakLength = S{newSeqId}.peakTo - S{newSeqId}.peakFrom;
+        S{newSeqId}.height = heights(i);
+        S{newSeqId}.peakPos = peakFroms(i)+maxPos(i);
+        S{newSeqId}.overlap = zeros(1, typesOfCells);
+        S{newSeqId}.overlap(index) = max(heights(i), 1);
+        % chrLength = length(dict(S{newSeqId}.chr).Data);
+        % [S{newSeqId}.seqTo, S{newSeqId}.seqFrom] = fitToL(S{newSeqId}.peakPos, L, chrLength);
+        % S{newSeqId}.seq = dict(S{newSeqId}.chr).Data(S{newSeqId}.seqFrom:S{newSeqId}.seqTo)';
+        if mod(i, 1000) == 0
+            fprintf('%.2f\r%%', 100*i/N);
+        end
     end
     fprintf('\n');
 
