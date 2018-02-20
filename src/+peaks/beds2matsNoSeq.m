@@ -36,12 +36,12 @@ function bed2mat(index, name, bedFilePath, typesOfCells, outDir)
         heights = bedData{4};
         maxPos = bedData{7};
     else
-        bedData = textscan(fid,' %s%d%d%*s%d%*s%f%f%f%d', 'delimiter','\t');
+        bedData = textscan(fid,' %s%d%d %*s%*s%*s %*s%*s%*s %*s%*s%*s', 'delimiter','\t');
         chrs = bedData{1};
         peakFroms = bedData{2};
         peakTos = bedData{3};
-        heights = bedData{4};
-        maxPos = bedData{8};
+        heights = ones(size(peakFroms));
+        maxPos = round((bedData{2} + bedData{3}) / 2);
     end
 
     fclose(fid);
