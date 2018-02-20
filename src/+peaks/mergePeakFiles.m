@@ -4,22 +4,35 @@
 % the peak in each tissue
 
 % download_and_process_all.sh
-% peaks.beds2matsNoSeq()
+
+% first we choose the PWMs that are most different between the following tissues,
+% including background and genes:
+
 % peaks.beds2mats(500)
-% peaks.mergePeakFiles()
+% peaks.mergePeakFiles(true)
 % load('../data/peaks/mergedPeaks.mat');
 % minimizeMergePeak(mergedPeaks, L, tissueNames)
-% of
-% superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000);
+% mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized.mat')
+% chooseBestPWMs(mergedPeaksMin, [10, 20, 30, 45, 46])
 
-function mergedPeaks = mergePeakFiles()
+% then we find superEnhancers, and try to learn them
+% peaks.beds2matsNoSeq()
+% peaks.mergePeakFiles(false)
+% load('../data/peaks/mergedPeaksNoBackground.mat');
+% superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000, [10, 20, 30]);
+% mainRealData(superEnhancers, 5, 40);
+
+function mergedPeaks = mergePeakFiles(withBackground)
     dbstop if error
     INPUT_MAT_DIR_PATH = '../data/peaks/mat';
     OUT_FILE_PATH = '../data/peaks/mergedPeaks.mat';
+    if ~withBackground
+        OUT_FILE_PATH = '../data/peaks/mergedPeaksNoBackground.mat';
+    end
     ROADMAP_NAMES_CSV_PATH = '../data/peaks/help/full_tissue_names.csv';
     namesDict = roadmapNamesDict(ROADMAP_NAMES_CSV_PATH);
     fprintf('Reading mat files...\n')
-    [unmergedPeaks, tissueNames] = readMatFiles(INPUT_MAT_DIR_PATH);
+    [unmergedPeaks, tissueNames] = readMatFiles(INPUT_MAT_DIR_PATH, withBackground);
     tissueNames = convertNames(tissueNames, namesDict);
     fprintf('Merging...\n')
     mergedPeaks = mergePeaks(unmergedPeaks);
@@ -44,7 +57,7 @@ function tissueNames = convertNames(tissueNames, namesDict)
     end
 end
 
-function [unmergedPeaks, tissueNames] = readMatFiles(matDirPath)
+function [unmergedPeaks, tissueNames] = readMatFiles(matDirPath, withBackground)
     unmergedPeaks = [];
     tissueNames = {};
     peakFiles = dir(fullfile(matDirPath, '*.peaks.mat'));
@@ -52,7 +65,11 @@ function [unmergedPeaks, tissueNames] = readMatFiles(matDirPath)
         filename = peakFiles(i).name;
         peaks = load(fullfile(matDirPath, filename));
         filenameParts = strsplit(filename, '.');
-        tissueNames{find(peaks.S{1}.overlap)} = filenameParts{1};
+        tissueName = filenameParts{1};
+        if strcmp(tissueName , 'background') && ~withBackground
+            continue
+        end
+        tissueNames{find(peaks.S{1}.overlap)} = tissueName;
         unmergedPeaks = [unmergedPeaks, [peaks.S{:}]];
     end
 end
