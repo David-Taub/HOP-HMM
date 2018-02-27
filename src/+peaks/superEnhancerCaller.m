@@ -3,12 +3,13 @@
 % peaks.mergePeakFiles()
 % mergedPeaks = load('../data/peaks/mergedPeaks.mat', 'mergedPeaks');
 % mergedPeaks = mergedPeaks.mergedPeaks;
-% superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000, [20,30]);
+% superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000, [10, 20,30]);
 % mainRealData(superEnhancers, 5, 40);
 
 % L - super enhancer size
 % mergedPeaks - enhancers data
 % finds the J regions of length L with the most enhancers starts in them
+
 function superEnhancers = superEnhancerCaller(mergedPeaks, L, tissueList)
     close all;
     binTicks = 500;
@@ -17,7 +18,7 @@ function superEnhancers = superEnhancerCaller(mergedPeaks, L, tissueList)
     superEnhancers = findSuperEnhancers(mergedPeaks, L, binTicks, amountToPick, tissueList);
     superEnhancers = addSequences(superEnhancers, L);
     superEnhancers = addY(superEnhancers, mergedPeaks, L);
-    save(fullfile('..', 'data', 'dummyDNA.mat'), 'superEnhancers');
+    save(fullfile('..', 'data', 'superEnhancers.mat'), 'superEnhancers');
 end
 function enhancers = getEnhancersInRegion(mergedPeaks, chr, fromSuperEnh, toSuperEnh)
     mask = strcmp({mergedPeaks.chr}, chr);
@@ -69,9 +70,6 @@ function superEnhancers = findSuperEnhancers(mergedPeaks, L, binTicks, amountToP
     [superEnhancers.chr{1:amountToPick}] = deal('');
     superEnhancers.amount = zeros(1, amountToPick);
     superEnhancers.from = zeros(1, amountToPick);
-
-    tissuesMask = getTissueListMask(mergedPeaks, tissueList);
-    uniqueMask = getUniqueMask(mergedPeaks);
 
     for chrName = unique({mergedPeaks.chr})
         chrSize = getChrSize(chrName);

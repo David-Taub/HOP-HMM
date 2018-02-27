@@ -61,13 +61,12 @@ end
 % pcPWMp - N x k x L
 function pcPWMp = calculate(params, Xs1H)
     [N, L, ~] = size(Xs1H);
-    onePaddedPWMs = onePadPWMs(params, N);
-
     fprintf('Pre-computing PWM probability on %d sequences\n', size(Xs1H, 1));
     for pwmId = 1:params.k
-        newVec = misc.PWMLogLikelihood(params, Xs1H, onePaddedPWM);
+        % N x L
+        newVec = misc.PWMLogLikelihood(params, Xs1H, pwmId);
         fprintf('\r%d / %d', pwmId, params.k);
-        pcPWMp(1:N, 1:params.k, startPos) = newVec;
+        pcPWMp(1:N, pwmId, 1:L) = permute(newVec, [1, 3, 2]);
         fprintf('..');
         assert(not(any(isnan(newVec(:)))));
     end

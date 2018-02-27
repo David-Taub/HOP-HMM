@@ -9,7 +9,7 @@
 % mergedPeaks = mergedPeaks.mergedPeaks;
 
 % load(fullfile('..', 'data', 'dummyDNA.mat'), 'superEnhancers');
-% superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000);
+% superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000, 10,);
 % mainRealData(superEnhancers, 5, 40);
 function mainRealData(mergedPeaksMin, m, k)
     dbstop if error

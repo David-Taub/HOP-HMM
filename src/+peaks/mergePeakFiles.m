@@ -9,7 +9,7 @@
 % including background and genes:
 
 % peaks.beds2mats(500)
-% peaks.mergePeakFiles(true)
+% peaks.mergePeakFiles(true, true)
 % load('../data/peaks/mergedPeaks.mat');
 % minimizeMergePeak(mergedPeaks, L, tissueNames)
 % mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized.mat')
@@ -17,14 +17,18 @@
 
 % then we find superEnhancers, and try to learn them
 % peaks.beds2matsNoSeq()
-% peaks.mergePeakFiles(false)
+% peaks.mergePeakFiles(false, false)
 % load('../data/peaks/mergedPeaksNoBackground.mat');
 % superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000, [10, 20, 30]);
-% mainRealData(superEnhancers, 5, 40);
+% mainRealData(superEnhancers, 4, 40);
 
-function mergedPeaks = mergePeakFiles(withBackground)
+function mergedPeaks = mergePeakFiles(withBackground, with_seq)
     dbstop if error
-    INPUT_MAT_DIR_PATH = '../data/peaks/mat';
+    if with_seq
+        INPUT_MAT_DIR_PATH = '../data/peaks/mat';
+    else
+        INPUT_MAT_DIR_PATH = '../data/peaks/mat_no_seq';
+    end
     OUT_FILE_PATH = '../data/peaks/mergedPeaks.mat';
     if ~withBackground
         OUT_FILE_PATH = '../data/peaks/mergedPeaksNoBackground.mat';
@@ -35,7 +39,7 @@ function mergedPeaks = mergePeakFiles(withBackground)
     [unmergedPeaks, tissueNames] = readMatFiles(INPUT_MAT_DIR_PATH, withBackground);
     tissueNames = convertNames(tissueNames, namesDict);
     fprintf('Merging...\n')
-    mergedPeaks = mergePeaks(unmergedPeaks);
+    mergedPeaks = mergePeaks(unmergedPeaks, with_seq);
     fprintf('Saving...\n')
 
     save('-v7.3', OUT_FILE_PATH, 'mergedPeaks', 'tissueNames');
@@ -70,11 +74,12 @@ function [unmergedPeaks, tissueNames] = readMatFiles(matDirPath, withBackground)
             continue
         end
         tissueNames{find(peaks.S{1}.overlap)} = tissueName;
+        unmergedPeaks
         unmergedPeaks = [unmergedPeaks, [peaks.S{:}]];
     end
 end
 
-function mergedPeaks  = mergePeaks(unmergedPeaks)
+function mergedPeaks = mergePeaks(unmergedPeaks, with_seq)
 
     mergedPeaks = unmergedPeaks;
     j = 1;
@@ -90,7 +95,9 @@ function mergedPeaks  = mergePeaks(unmergedPeaks)
             if oldPeak.seqTo > newPeak.seqFrom
                 fprintf('.')
                 % merge
-                oldPeak.seq = [oldPeak.seq, newPeak.seq(end-(newPeak.seqTo-oldPeak.seqTo) + 1:end)];
+                if with_seq
+                    oldPeak.seq = [oldPeak.seq, newPeak.seq(end-(newPeak.seqTo-oldPeak.seqTo) + 1:end)];
+                end
                 oldPeak.seqTo = newPeak.seqTo;
                 oldPeak.peakTo = max(newPeak.peakTo, oldPeak.peakTo);
                 oldPeak.peakFrom = min(newPeak.peakFrom, oldPeak.peakFrom);

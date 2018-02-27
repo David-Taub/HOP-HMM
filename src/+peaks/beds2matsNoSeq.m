@@ -1,14 +1,14 @@
 % download_and_process_all.sh
 
 % peaks.beds2matsNoSeq()
-% peaks.mergePeakFiles()
+% peaks.mergePeakFiles(false)
 % mergedPeaks = load('../data/peaks/mergedPeaks.mat', 'mergedPeaks');
 % superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000);
 
 % creates mats each has a cell array of only the his sequence, and have overlap one hot map that is on only in it's position
 function beds2matsNoSeq()
     BEDS_DIR = '../data/peaks/processed';
-    MAT_OUT_DIR = '../data/peaks/mat/';
+    MAT_OUT_DIR = '../data/peaks/mat_no_seq/';
     mkdir(MAT_OUT_DIR)
     % save in dict opened hg19 fasta files as memory mapped files
     bedFiles = dir([BEDS_DIR, '/*.cleaned.narrowPeak']);
@@ -55,8 +55,8 @@ function bed2mat(index, name, bedFilePath, typesOfCells, outDir)
         S{newSeqId}.chr = chrs{i};
         S{newSeqId}.peakFrom = peakFroms(i);
         S{newSeqId}.peakTo = peakTos(i);
-        % S{newSeqId}.seqFrom = peakFroms(i);
-        % S{newSeqId}.seqTo = peakTos(i);
+        S{newSeqId}.seqFrom = peakFroms(i);
+        S{newSeqId}.seqTo = peakTos(i);
         S{newSeqId}.peakLength = S{newSeqId}.peakTo - S{newSeqId}.peakFrom;
         S{newSeqId}.height = heights(i);
         S{newSeqId}.peakPos = peakFroms(i)+maxPos(i);
@@ -72,7 +72,7 @@ function bed2mat(index, name, bedFilePath, typesOfCells, outDir)
     fprintf('\n');
 
     % seqs should have 473980 sequences
-    matPath = [outDir, name, '-H3k27ac.peaks.mat'];
+    matPath = [outDir, name, '.peaks.mat'];
     fprintf(['Saving mat file ', matPath, '\n']);
     save(matPath, 'S');
 end
