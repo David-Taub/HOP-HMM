@@ -2,6 +2,7 @@
 function [PWMs, lengths, names] = removedPWMsDuplicates(PWMs, lengths, names, partToRemove)
 
     close all;
+    fprintf('Removing Duplicates\n')
     k = size(PWMs, 1);
     dist = zeros(k, k);
     for i=1:k
