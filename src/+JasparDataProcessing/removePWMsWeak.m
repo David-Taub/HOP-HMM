@@ -1,5 +1,6 @@
 % PWMs - k x n x J
 function [PWMs, lengths, names] = removePWMsWeak(PWMs, lengths, names, partsToRemove)
+    fprintf('Removing "weak" background-like PWMs\n')
     % k x J
     vars = var(exp(PWMs), 0, 2);
     % k x 1
