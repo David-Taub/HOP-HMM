@@ -1,6 +1,6 @@
 % cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
-% JasparDataProcessing.preprocessPWMs()
-function preprocessPWMs()
+% JasparDataProcessing.mainPreprocessPWMs()
+function mainPreprocessPWMs()
 	dbstop if error
     delete(fullfile('..', 'data', 'precomputation', 'pcPWMp.mat'));
     txtFilePath = '../data/Jaspar/raw/JASPAR_CORE_nonredundant_pfm_vertebrates.txt';
