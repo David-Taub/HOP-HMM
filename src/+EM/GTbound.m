@@ -1,14 +1,16 @@
 
 % G - m x k
 % T - m x m
-function [G, T] = GTbound(params, G, T)
+function [G, T] = GTbound(params, G, T, doResample)
     if params.m == 1
         return;
     end
     G = exp(G);
     T = exp(T);
     % TODO: most of these bounding are probably not necessary, and could be removed
-    G = makeDifferent(params, G);
+    if doResample
+        G = makeDifferent(params, G);
+    end
     [G, T] = balanceGTweights(params, G, T);
     T = limitTDiag(params, T);
     G = log(G);

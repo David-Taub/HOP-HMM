@@ -1,5 +1,5 @@
 
-function [bestTheta, bestLikelihood] = EM(X, params, pcPWMp, maxIter)
+function [bestTheta, bestLikelihood] = EM(X, params, pcPWMp, maxIter, doResample)
     % X - N x L emission variables
     % m - amount of possible states (y)
     % n - amount of possible emissions (x)
@@ -23,7 +23,7 @@ function [bestTheta, bestLikelihood] = EM(X, params, pcPWMp, maxIter)
     for rep = 1:repeat
         X = X(randperm(N), :);
         initTheta = misc.genTheta(params);
-        [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, indicesHotMap, N, L);
+        [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, indicesHotMap, N, L, doResample);
         if bestLikelihood < iterLike(end)
             bestLikelihood = iterLike(end);
             bestTheta = theta;
@@ -31,7 +31,7 @@ function [bestTheta, bestLikelihood] = EM(X, params, pcPWMp, maxIter)
     end
 end
 
-function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, indicesHotMap, N, L)
+function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, indicesHotMap, N, L, doResample)
     LIKELIHOOD_THRESHOLD = 10 ^ -6;
     theta = initTheta;
     iterLike = [];
@@ -44,10 +44,11 @@ function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, 
         % gamma - N x m x L
         % psi - N x m x k x L
         [alpha, beta, pX, xi, gamma, psi] = EM.EStep(params, theta, X, pcPWMp);
+        close all;
         show.showTheta(theta);
         theta.E = updateE(gamma, params, indicesHotMap);
         % fprintf('Update G\n');
-        [theta.G, theta.T] = updateGT(params, theta, xi, gamma, psi);
+        [theta.G, theta.T] = updateGT(params, theta, xi, gamma, psi, doResample);
         % fprintf('Update startT\n');
         theta.startT = updateStartT(gamma);
         iterLike(end+1) = matUtils.logMatSum(pX, 1);% / (N*L);
@@ -135,7 +136,7 @@ end
 % psi - N x m x k x L
 % newG - m x k
 % newT - m x m
-function [newG, newT] = updateGT(params, theta, xi, gamma, psi)
+function [newG, newT] = updateGT(params, theta, xi, gamma, psi, doResample)
     [N, ~, L] = size(gamma);
 
     % note: batch trick is used to reduce the
@@ -165,6 +166,6 @@ function [newG, newT] = updateGT(params, theta, xi, gamma, psi)
     mergedAveraged = permute(mergedAveraged, [2,3,1]);
     G = mergedAveraged(:, 1:params.k);
     T = mergedAveraged(:, params.k+1:end);
-    [newG, newT] = EM.GTbound(params, G, T);
+    [newG, newT] = EM.GTbound(params, G, T, doResample);
 end
 
