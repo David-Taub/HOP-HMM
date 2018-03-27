@@ -1,28 +1,14 @@
 
-% first we choose the PWMs that are most different between the following tissues,
-% including background and genes:
-
-% peaks.beds2mats(500)
-% peaks.mergePeakFiles(true, true)
-% load('../data/peaks/mergedPeaks.mat');
-% minimizeMergePeak(mergedPeaks, L, tissueNames)
-% mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized.mat')
-% chooseBestPWMs(mergedPeaksMin, [10, 20, 30, 45, 46])
-
-% then we find superEnhancers, and try to learn them
-% peaks.beds2matsNoSeq()
-% peaks.mergePeakFiles(false, false)
-% load('../data/peaks/mergedPeaksNoBackground.mat');
-% superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000, [10, 20, 30]);
-% mainRealData(superEnhancers, 5, 40);
-
 function beds2mats(L)
     dbstop if error
     BEDS_DIR = '../data/peaks/processed';
+    HG19_MM_DIR = '../data/peaks/mm';
     % save in dict opened hg19 fasta files as memory mapped files
     bedFiles = dir([BEDS_DIR, '/*.cleaned.narrowPeak']);
     typesOfCells = length(bedFiles)
     dict = peaks.fasta2mem();
+    assert(length(dict.keys()) > 0)
+    assert(length(bedFiles) > 0)
     for index = 1:typesOfCells
         if not(bedFiles(index).isdir)
             bedFilePath = fullfile(BEDS_DIR, bedFiles(index).name);
@@ -60,7 +46,7 @@ function bed2mat(index, name, bedFilePath, typesOfCells, L, dict)
 
     N = length(chrs);
     % read sequences from HG19 fasta files
-    fprintf(['Generating mat file ',name,'\n']);
+    fprintf(['Generating mat file ', name, ' (', num2str(N), ')\n']);
     S = {};
     for i = 1:N
         if ~any(strcmp(dict.keys(), chrs{i}))
@@ -81,7 +67,7 @@ function bed2mat(index, name, bedFilePath, typesOfCells, L, dict)
         [S{newSeqId}.seqTo, S{newSeqId}.seqFrom] = fitToL(S{newSeqId}.peakPos, L, chrLength);
         S{newSeqId}.seq = dict(S{newSeqId}.chr).Data(S{newSeqId}.seqFrom:S{newSeqId}.seqTo)';
         if mod(i, 1000) == 0
-            fprintf('%.2f\r%%', 100*i/N);
+            fprintf('%%%.2f\r', 100*i/N);
         end
     end
     fprintf('\n');
@@ -104,12 +90,13 @@ function [newTo, newFrom] = fitToL(peakPos, L, chrLength)
     end
 end
 
-function dict = makeMMDict()
-    HG19_MM_DIR = '../data/peaks/mm';
+function dict = makeMMDict(HG19_MM_DIR)
+
     % save in dict opened hg19 fasta files as memory mapped files
     fprintf('Making mm dict\n');
     dict = containers.Map;
     mmFiles = dir([HG19_MM_DIR, '/*.mm']);
+    assert(length(mmFiles) > 0)
     for i = 1:length(mmFiles)
         if not(mmFiles(i).isdir)
             mmFilePath = fullfile(HG19_MM_DIR, mmFiles(i).name);
