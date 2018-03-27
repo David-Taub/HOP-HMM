@@ -1,5 +1,5 @@
 
-# cd ../raw_bed
+cd ../raw_bed
 
 ls -la
 wget -O $1-H3K27ac.narrowPeak.gz "http://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K27ac.narrowPeak.gz"
@@ -34,10 +34,10 @@ rm -f tmp.*
 bedtools intersect -a $1-H3K27ac.narrowPeak -b $1-H3K4me1.narrowPeak -wa >$1-H3K27ac.cleaned.narrowPeak
 ls -la
 
-sort -V -k 1,3 "total_merged.narrowPeak" | sortBed | tee total_merged.tmp.narrowPeak | sort -c -k1,1 -k2,2n || true
-# bedtools sort -i total_merged.narrowPeak > total_merged.tmp.narrowPeak
-bedtools merge -i total_merged.tmp.narrowPeak -d 10000 > total_merged.narrowPeak
-rm -f total_merged.tmp.narrowPeak
+# sort -V -k 1,3 "total_merged.narrowPeak" | sortBed | tee total_merged.tmp.narrowPeak | sort -c -k1,1 -k2,2n || true
+# # bedtools sort -i total_merged.narrowPeak > total_merged.tmp.narrowPeak
+# bedtools merge -i total_merged.tmp.narrowPeak -d 10000 > total_merged.narrowPeak
+# rm -f total_merged.tmp.narrowPeak
 
 #remove duplicates
 awk '!x[$0]++' $1-H3K27ac.cleaned.narrowPeak > $1-H3K27ac.tmp.narrowPeak
