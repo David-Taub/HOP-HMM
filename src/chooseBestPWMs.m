@@ -36,7 +36,6 @@ function selectedPWMs = chooseBestPWMs(mergedPeaksMin, tissueList)
     max(bestPWMsAucRocs(:))
     plot(sort(bestPWMsAucRocs(:)))
     save('..\data\precomputation\SelectedPWMs.mat', 'selectedPWMs', 'aucRocsSorted', 'aucRocsSortedInd');
-    keyboard
 end
 
 function aucRocs = oneVsAllAucRoc(params, dataset)
@@ -52,10 +51,12 @@ function aucRocs = oneVsAllAucRoc(params, dataset)
             % pos = downsample(pos, 20);
             % neg = downsample(pos, 20);
             aucRocs(tissueID, pwmId) = matUtils.getAucRoc(pos(:), neg(:), false, true);
-            fprintf('%.2f\n', max(aucRocs(:)));
+            [v, i] = max(aucRocs(:));
+            fprintf('Best 1vsAll AucRocs for tissue %d of PWM %d is %.2f (%d)\n', tissueID, pwmId, v, i);
         end
     end
 end
+
 
 function dataset = preprocess(params, mergedPeaksMin, tissueList)
     params.L = size(mergedPeaksMin.seqs, 2);
