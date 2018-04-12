@@ -7,12 +7,16 @@ function [G, T] = GTbound(params, G, T, doResample)
     end
     G = exp(G);
     T = exp(T);
+    originG = G;
+    originT = T;
     % TODO: most of these bounding are probably not necessary, and could be removed
     if doResample
         G = makeDifferent(params, G);
     end
     [G, T] = balanceGTweights(params, G, T);
+    fprintf('balanceGT, G Binding: %.3f T Binding: %.3f\n', mean(abs(originG(:) - G(:)), 1), mean(abs(originT(:) - T(:)), 1));
     T = limitTDiag(params, T);
+    fprintf('limitTDiag, G Binding: %.3f T Binding: %.3f\n', mean(abs(originG(:) - G(:)), 1), mean(abs(originT(:) - T(:)), 1));
     G = log(G);
     T = log(T);
 end

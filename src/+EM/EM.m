@@ -1,5 +1,5 @@
 
-function [bestTheta, bestLikelihood] = EM(X, params, pcPWMp, maxIter, doResample)
+function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doResample, doESharing)
     % X - N x L emission variables
     % m - amount of possible states (y)
     % n - amount of possible emissions (x)
@@ -9,21 +9,22 @@ function [bestTheta, bestLikelihood] = EM(X, params, pcPWMp, maxIter, doResample
     % pcPWMp - N x k x L
     % order - the HMM order of the E matrix
     % initial estimation parameters
-    [N, L] = size(X);
+
+    [N, L] = size(dataset.X);
     fprintf('Starting EM algorithm on %d x %d\n', N, L)
     bestLikelihood = -Inf;
     repeat = 1;
     % N x L - order + 1
-    indices = reshape(matUtils.getIndices1D(X, params.order, params.n), [L-params.order+1, N]).';
+    indices = reshape(matUtils.getIndices1D(dataset.X, params.order, params.n), [L-params.order+1, N]).';
     % N x L - order + 1 x maxEIndex
     indicesHotMap = matUtils.mat23Dmat(indices, params.n ^ params.order);
     % N x L  x maxEIndex
     indicesHotMap = cat(2, false(N, params.order-1, params.n ^ params.order), indicesHotMap);
     % figure
     for rep = 1:repeat
-        X = X(randperm(N), :);
+        % X = X(randperm(N), :);
         initTheta = misc.genTheta(params);
-        [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, indicesHotMap, N, L, doResample);
+        [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doResample, doESharing);
         if bestLikelihood < iterLike(end)
             bestLikelihood = iterLike(end);
             bestTheta = theta;
@@ -31,7 +32,7 @@ function [bestTheta, bestLikelihood] = EM(X, params, pcPWMp, maxIter, doResample
     end
 end
 
-function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, indicesHotMap, N, L, doResample)
+function [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doResample, doESharing)
     LIKELIHOOD_THRESHOLD = 10 ^ -6;
     theta = initTheta;
     iterLike = [];
@@ -43,26 +44,30 @@ function [iterLike, theta] = singleRunEM(X, params, pcPWMp, initTheta, maxIter, 
         % xi - N x m x m x L
         % gamma - N x m x L
         % psi - N x m x k x L
-        [alpha, beta, pX, xi, gamma, psi] = EM.EStep(params, theta, X, pcPWMp);
+        [alpha, beta, pX, xi, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
         close all;
-        show.showTheta(theta);
+        % show.showTheta(theta);
+        % show.seqSampleCertainty(params, dataset.Y, gamma, psi, 8, true);
         theta.E = updateE(gamma, params, indicesHotMap);
+        % drawStatus(theta, params, alpha, beta, gamma, pX, xi, psi);
+        if doESharing
+            theta.E = log(repmat(mean(exp(theta.E), 1), [params.n, ones(1, params.order)]));
+        end
         % fprintf('Update G\n');
         [theta.G, theta.T] = updateGT(params, theta, xi, gamma, psi, doResample);
         % fprintf('Update startT\n');
         theta.startT = updateStartT(gamma);
         iterLike(end+1) = matUtils.logMatSum(pX, 1);% / (N*L);
-
-        % DRAW
-        % drawStatus(theta, params, alpha, beta, gamma, pX, xi, psi);
         assert(not(any(isnan(theta.T(:)))))
         assert(not(any(isnan(theta.E(:)))))
         assert(not(any(isnan(theta.G(:)))))
         assert(not(any(isnan(alpha(:)))))
         assert(not(any(isnan(beta(:)))))
 
-
-        fprintf('Iteration %d: log likelihood %.2f (%.2f seconds, ~%.2f%% motifs)\n', it, iterLike(end), toc(), sum(exp(theta.G(:)), 1).*100);
+        motifsPer = sum(exp(theta.G(:)), 1).*100;
+        timeLapse = toc();
+        R = cov(theta.G);
+        fprintf('It %d: log-like: %.2f Time: %.2fs, motifs: ~%.2f%% cov: %.2f\n', it, iterLike(end), timeLapse, motifsPer, mean(R(:)));
         if length(iterLike) > 1 && abs((iterLike(end) - iterLike(end-1)) / iterLike(end)) < LIKELIHOOD_THRESHOLD
             fprintf('Converged\n');
             break

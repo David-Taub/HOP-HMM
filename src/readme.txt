@@ -10,9 +10,10 @@ mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized.mat');
 JasparDataProcessing.mainPreprocessPWMs()
 chooseBestPWMs(mergedPeaksMin, [10, 20, 30, 45, 46])
 
-% then we find superEnhancers, and try to learn them
+% then we find multiEnhancers, and try to learn them
 peaks.beds2matsNoSeq()
 peaks.mergePeakFiles(false, false)
 load('../data/peaks/mergedPeaksNoBackground.mat');
-superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000, [10, 20, 30]);
-mainRealData(superEnhancers, 5, 40, false);
+multiEnhancers = peaks.multiEnhancerCaller(mergedPeaks, 10000, [10, 20, 30]);
+load('../data/multiEnhancers.mat');
+mainRealData(multiEnhancers, 4, 40, false, true);

@@ -1,23 +1,24 @@
 
 % mainRealData(superEnhancers, 5, 40, false);
 % doResample - if True will resample G of mode if is too similar to another mode (uses threashold)
-function mainRealData(mergedPeaksMin, m, k, doResample)
+% doESharing - Each EM iteration, averaging the E across all modes, and using the average in all modes
+function mainRealData(mergedPeaksMin, m, k, doResample, doESharing)
     dbstop if error
     close all;
     params = misc.genParams(m, k);
     params.NperTissue = 1000;
     testTrainRatio = 0.15;
     [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio);
-    [theta, ~] = EM.EM(train.X, params, train.pcPWMp, 2, doResample);
+    [theta, ~] = EM.EM(train, params, 50, doResample, doESharing);
     show.showTheta(theta);
     YEst = classify(theta, params, train);
     theta = permuteTheta(theta, params, train.Y(:, :, 1), YEst(:, :, 1))
     [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, train.X, train.pcPWMp);
-    show.seqSampleCertainty(params, train.Y, gamma, psi);
+    show.seqSampleCertainty(params, train.Y, gamma, psi, 8, false);
 
     classify(theta, params, test);
     [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, test.X, test.pcPWMp);
-    show.seqSampleCertainty(params, test.Y, gamma, psi);
+    show.seqSampleCertainty(params, test.Y, gamma, psi, 8, false);
     keyboard
 
 end

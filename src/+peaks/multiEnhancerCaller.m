@@ -2,16 +2,15 @@
 % L - super enhancer size
 % mergedPeaks - enhancers data
 % finds the J regions of length L with the most enhancers starts in them
-
-function superEnhancers = superEnhancerCaller(mergedPeaks, L, tissueList)
+function multiEnhancers = multiEnhancerCaller(mergedPeaks, L, tissueList)
     close all;
     binSize = 500;
     amountToPick = 100;
     %todo: remove non unique enhancers
-    superEnhancers = findSuperEnhancers(mergedPeaks, L, binSize, amountToPick, tissueList);
-    superEnhancers = addSequences(superEnhancers, L);
-    superEnhancers = addY(superEnhancers, mergedPeaks, L);
-    save(fullfile('..', 'data', 'superEnhancers.mat'), 'superEnhancers');
+    multiEnhancers = findMultiEnhancers(mergedPeaks, L, binSize, amountToPick, tissueList);
+    multiEnhancers = addSequences(multiEnhancers, L);
+    multiEnhancers = addY(multiEnhancers, mergedPeaks, L);
+    save(fullfile('..', 'data', 'multiEnhancers.mat'), 'multiEnhancers');
 end
 
 
@@ -23,51 +22,51 @@ function enhancers = getEnhancersInRegion(mergedPeaks, chr, fromSuperEnh, toSupe
 end
 
 
-function superEnhancers = addY(superEnhancers, mergedPeaks, L)
+function multiEnhancers = addY(multiEnhancers, mergedPeaks, L)
     m = length(mergedPeaks(1).overlap);
-    N = length(superEnhancers.chr);
-    superEnhancers.Y = zeros(N, L);
+    N = length(multiEnhancers.chr);
+    multiEnhancers.Y = ones(N, L) * (m + 1);
     for i = 1:N
-        chr = superEnhancers.chr{i};
-        fromSuperEnh = superEnhancers.from(i);
+        chr = multiEnhancers.chr{i};
+        fromSuperEnh = multiEnhancers.from(i);
         toSuperEnh = fromSuperEnh + L - 1;
         enhancers = getEnhancersInRegion(mergedPeaks, chr, fromSuperEnh, toSuperEnh);
-        assert(superEnhancers.amount(i) == length(enhancers))
+        assert(multiEnhancers.amount(i) == length(enhancers))
         for j = 1:length(enhancers)
             % Yval = (enhancers(j).overlap > 0) * [1:m]';
-            Yval = find(enhancers(j).overlap > 0, 1)
+            Yval = find(enhancers(j).overlap > 0, 1);
             fromEnh = max(fromSuperEnh, enhancers(j).peakFrom) - fromSuperEnh + 1;
             toEnh = min(toSuperEnh, enhancers(j).peakTo) - fromSuperEnh + 1;
-            superEnhancers.Y(i, fromEnh : toEnh) = Yval;
+            multiEnhancers.Y(i, fromEnh : toEnh) = Yval;
         end
     end
-    v = sort(unique(superEnhancers.Y(:)));
+    v = sort(unique(multiEnhancers.Y(:)));
     for i = 1:length(v)
-        superEnhancers.Y(superEnhancers.Y == v(i)) = i;
+        multiEnhancers.Y(multiEnhancers.Y == v(i)) = i;
     end
 end
 
 
-function superEnhancers = addSequences(superEnhancers, L)
+function multiEnhancers = addSequences(multiEnhancers, L)
     dict = peaks.fasta2mem();
-    N = length(superEnhancers.chr);
-    superEnhancers.seqs = zeros(N, L);
+    N = length(multiEnhancers.chr);
+    multiEnhancers.seqs = zeros(N, L);
     for i = 1:N
-        chr = superEnhancers.chr{i};
-        from = superEnhancers.from(i);
-        to = superEnhancers.from(i) + L - 1;
-        superEnhancers.seqs(i, :) = dict(chr).Data(from:to);
+        chr = multiEnhancers.chr{i};
+        from = multiEnhancers.from(i);
+        to = multiEnhancers.from(i) + L - 1;
+        multiEnhancers.seqs(i, :) = dict(chr).Data(from:to);
 
     end
 end
 
 
-function superEnhancers = findSuperEnhancers(mergedPeaks, L, binSize, amountToPick, tissueList)
+function multiEnhancers = findMultiEnhancers(mergedPeaks, L, binSize, amountToPick, tissueList)
     HIGH_PEAKS_RATIO = 0.9; %amount of high peaks used, 0=none 1=all
     MAX_PEAKS_LENGTH = 1200;
-    [superEnhancers.chr{1:amountToPick}] = deal('');
-    superEnhancers.amount = zeros(1, amountToPick);
-    superEnhancers.from = zeros(1, amountToPick);
+    [multiEnhancers.chr{1:amountToPick}] = deal('');
+    multiEnhancers.amount = zeros(1, amountToPick);
+    multiEnhancers.from = zeros(1, amountToPick);
 
     for chrName = unique({mergedPeaks.chr})
         chrSize = getChrSize(chrName);
@@ -105,7 +104,7 @@ function superEnhancers = findSuperEnhancers(mergedPeaks, L, binSize, amountToPi
         wantedPeaksHist(unwantedPeaksHist > 0) = -inf;
         % divide in 2 since we count both the start and the end of the enhancers
         windows = NCumSum(1 + floor(L / binSize), wantedPeaksHist) ./ 2;
-        superEnhancers = updateSuperEnhancers(superEnhancers, windows, chrName{:}, L, binSize, mergedPeaks, tissueList);
+        multiEnhancers = updatemultiEnhancers(multiEnhancers, windows, chrName{:}, L, binSize, mergedPeaks, tissueList);
 
     end
 end
@@ -159,10 +158,10 @@ function out = NCumSum(n, v)
 end
 
 
-function superEnhancers = updateSuperEnhancers(superEnhancers, windows, chrName, L, binSize, mergedPeaks, tissueList)
-    assert(length(superEnhancers) > 0)
-    while max(windows, [], 2) > min(superEnhancers.amount, [], 2)
-        [toReplaceAmount, toReplace] = min(superEnhancers.amount, [], 2);
+function multiEnhancers = updatemultiEnhancers(multiEnhancers, windows, chrName, L, binSize, mergedPeaks, tissueList)
+    assert(length(multiEnhancers) > 0)
+    while max(windows, [], 2) > min(multiEnhancers.amount, [], 2)
+        [toReplaceAmount, toReplace] = min(multiEnhancers.amount, [], 2);
         [~, newBestFrom] = max(windows, [], 2);
         newBestFrom = newBestFrom * binSize;
         newBestTo = newBestFrom + L - 1;
@@ -175,15 +174,15 @@ function superEnhancers = updateSuperEnhancers(superEnhancers, windows, chrName,
         containsOnlyTissueList = sum(overlaps(:), 1) == 0;
 
         if(newAmount > 0 && newAmount > toReplaceAmount && containsOnlyTissueList)
-            fprintf('%s:%d (%d) <- %s:%d (%d)\n', superEnhancers.chr{toReplace}, ...
-                                                superEnhancers.from(toReplace), ...
+            fprintf('%s:%d (%d) <- %s:%d (%d)\n', multiEnhancers.chr{toReplace}, ...
+                                                multiEnhancers.from(toReplace), ...
                                                 toReplaceAmount, ...
                                                 chrName, ...
                                                 newBestFrom, ...
                                                 newAmount)
-            superEnhancers.chr{toReplace} = chrName;
-            superEnhancers.amount(toReplace) = newAmount;
-            superEnhancers.from(toReplace) = newBestFrom;
+            multiEnhancers.chr{toReplace} = chrName;
+            multiEnhancers.amount(toReplace) = newAmount;
+            multiEnhancers.from(toReplace) = newBestFrom;
         end
         unmarkBinsFrom = max(0, newBestFrom / binSize - floor(L / binSize));
         unmarkBinsTo = min(size(windows, 2), newBestFrom / binSize + floor(L / binSize));

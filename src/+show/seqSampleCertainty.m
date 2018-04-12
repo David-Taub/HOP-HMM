@@ -1,7 +1,7 @@
 % certainty - N x L
 % Y - N x L
 %posterior - N x m x L
-function seqSampleCertainty(params, Y, gamma, psi)
+function seqSampleCertainty(params, Y, gamma, psi, sequencesToShow, showFirst)
     [N, L] = size(Y);
     % N x m x L
     posterior = calcPosterior(params, gamma, psi);
@@ -11,20 +11,33 @@ function seqSampleCertainty(params, Y, gamma, psi)
     certainty = permute(sum(posterior .* YOneHot, 2), [1,3,2]);
     loss = mean(log(1-certainty(:)+eps));
     fprintf('Avg log loss: %.2f\n', loss);
-    sequencesToShow = 10;
-    myColormap = repmat([1, 0.5, 0.5], [params.m, 1]);
-    myColormap = [jet(params.m); myColormap];
+    % sequencesToShow = 10;
+    mJet = jet(params.m);
+    cellJet = {};
+    for i=1:params.m
+        cellJet{i, 1} = mJet(i, :);
+    end
+    myColormap = [mJet; repmat([1, 0.5, 0.5], [params.m, 1])];
     inds = randsample(N, sequencesToShow);
+    if showFirst
+        inds = 1:sequencesToShow;
+    end
+
     inds = sort(inds);
     loss = mean(log(1-certainty(:)));
     figure('units','normalized','outerposition',[0 0 1 1]);
     for i = 1:sequencesToShow
         subplot(sequencesToShow, 1, i);
+
+        % m x L
         YOneHot = matUtils.vec2mat(Y(inds(i), :), params.m);
+        % m x L
         repCertainty = YOneHot .* repmat(certainty(inds(i), :), [params.m, 1]);
+        % 2*m x L
         repCertainty = [repCertainty; (1-repCertainty) .* double(repCertainty~=0)];
         bar(1:L, repCertainty', 1, 'stacked')
         ylabel(['Seq ', num2str(inds(i))]);
+
         rotateYLabel();
         xlim([1, L])
         colormap(myColormap);
@@ -36,8 +49,15 @@ function seqSampleCertainty(params, Y, gamma, psi)
         else
             set(gca,'xtick',[]);
         end
+        hold on;
+        p = plot(1:L, permute(posterior(inds(i), :, :), [3, 2, 1]));
+        set(p, {'Color'}, cellJet)
+        hold off;
     end
-    legend(strcat({'Tissue Type '}, num2str([1:params.m]')));
+    legendStrings = strcat({'Tissue Type '}, num2str([1:params.m-1]'));
+    legendStrings{params.m} = 'Background';
+    legendStrings{params.m+1} = 'Error';
+    legend(legendStrings);
     drawnow;
 end
 

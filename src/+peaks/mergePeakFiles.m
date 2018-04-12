@@ -3,25 +3,9 @@
 % overlaps vectors became from one hot to a heat map of the height of
 % the peak in each tissue
 
-% download_and_process_all.sh
 
-% first we choose the PWMs that are most different between the following tissues,
-% including background and genes:
-
-% peaks.beds2mats(500)
-% peaks.mergePeakFiles(true, true)
-% load('../data/peaks/mergedPeaks.mat');
-% minimizeMergePeak(mergedPeaks, L, tissueNames)
-% mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized.mat')
-% chooseBestPWMs(mergedPeaksMin, [10, 20, 30, 45, 46])
-
-% then we find superEnhancers, and try to learn them
-% peaks.beds2matsNoSeq()
-% peaks.mergePeakFiles(false, false)
-% load('../data/peaks/mergedPeaksNoBackground.mat');
-% superEnhancers = peaks.superEnhancerCaller(mergedPeaks, 10000, [10, 20, 30]);
-% mainRealData(superEnhancers, 4, 40);
-
+% withBackground - sees the background as a tissue, and takes sequences from it
+% withSeq - saves a sequences actual data in file, instead only the metadata of the sequences
 function mergedPeaks = mergePeakFiles(withBackground, with_seq)
     dbstop if error
     if with_seq
