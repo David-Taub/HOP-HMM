@@ -33,7 +33,7 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doResample, 
 end
 
 function [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doResample, doESharing)
-    LIKELIHOOD_THRESHOLD = 10 ^ -6;
+    LIKELIHOOD_THRESHOLD = 10 ^ -4;
     theta = initTheta;
     iterLike = [];
     for it = 1:maxIter
@@ -54,6 +54,7 @@ function [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, in
             theta.E = log(repmat(mean(exp(theta.E), 1), [params.n, ones(1, params.order)]));
         end
         % fprintf('Update G\n');
+        fprintf('. ');
         [theta.G, theta.T] = updateGT(params, theta, xi, gamma, psi, doResample);
         % fprintf('Update startT\n');
         theta.startT = updateStartT(gamma);
@@ -63,7 +64,6 @@ function [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, in
         assert(not(any(isnan(theta.G(:)))))
         assert(not(any(isnan(alpha(:)))))
         assert(not(any(isnan(beta(:)))))
-
         motifsPer = sum(exp(theta.G(:)), 1).*100;
         timeLapse = toc();
         R = cov(theta.G);

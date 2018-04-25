@@ -14,9 +14,9 @@ function [G, T] = GTbound(params, G, T, doResample)
         G = makeDifferent(params, G);
     end
     [G, T] = balanceGTweights(params, G, T);
-    fprintf('balanceGT, G Binding: %.3f T Binding: %.3f\n', mean(abs(originG(:) - G(:)), 1), mean(abs(originT(:) - T(:)), 1));
+    fprintf('balanceGT, G Binding: %.3f T Binding: %.3f\n', max(abs(originG(:) - G(:)), [], 1), max(abs(originT(:) - T(:)), [], 1));
     T = limitTDiag(params, T);
-    fprintf('limitTDiag, G Binding: %.3f T Binding: %.3f\n', mean(abs(originG(:) - G(:)), 1), mean(abs(originT(:) - T(:)), 1));
+    fprintf('limitTDiag, G Binding: %.3f T Binding: %.3f\n', max(abs(originG(:) - G(:)), [], 1), max(abs(originT(:) - T(:)), [], 1));
     G = log(G);
     T = log(T);
 end

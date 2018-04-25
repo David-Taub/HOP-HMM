@@ -9,7 +9,7 @@ function params = genParams(m, k)
     params.backgroundRatio = 0.7;
     params.crossEnhancer = 0.1; % probability that for a cross enhancer transition at end of enhancer
     params.enhancerLength = 500;
-    params.enhancerMotifsRatio = 0.1;
+    params.enhancerMotifsRatio = 0.01;
 
     meanEnhancerLength = (params.enhancerLength * (1 + params.crossEnhancer));
     PTotalBaseToOthers = 1 / ((1 - params.enhancerMotifsRatio) * params.enhancerLength);

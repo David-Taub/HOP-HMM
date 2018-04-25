@@ -15,19 +15,17 @@ function pretrain(mergedPeaksMin, k, tissueList, backgroundIndex)
     paramsTotal.m = length(tissueList) + 1;
 
     totalTheta = misc.genTheta(paramsTotal);
-    for tissueIndex=tissueList
-        dataset = preprocess(params, mergedPeaksMin, tissueIndex, backgroundIndex);
+    for i = 1:length(tissueList)
+        dataset = preprocess(params, mergedPeaksMin, tissueList(i), backgroundIndex);
         [theta, ~] = EM.EM(dataset, params, 50, doResample, doESharing);
-        totalTheta.E(tissueIndex, :) = theta.E(tissueIndex, :);
-        totalTheta.G(tissueIndex, :) = theta.G(tissueIndex, :);
+        totalTheta.E(i, :) = theta.E(1, :);
+        totalTheta.G(i, :) = theta.G(1, :);
         show.showTheta(totalTheta);
         [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
         show.seqSampleCertainty(params, dataset.Y, gamma, psi, 8, false);
         classify(theta, params, dataset);
     end
 end
-
-
 
 
 function [dataset] = preprocess(params, mergedPeaksMin, tissueIndex, backgroundIndex)
@@ -51,9 +49,8 @@ function [dataset] = preprocess(params, mergedPeaksMin, tissueIndex, backgroundI
         X = X(mask, :);
         overlaps = overlaps(mask, :);
         overlaps = overlaps(:, sort([tissueIndex, backgroundIndex]));
-        size(overlaps)
-        Y = overlaps * [1;2];
-        assert(not(any(Y==0)))
+        Y = repmat((overlaps > 0) * [1;2], [1, L]);
+        assert(not(any(Y(:)==0)))
     end
     % N x k x L
     dataset.title = 'dataset';
