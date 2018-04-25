@@ -1,13 +1,5 @@
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
 
-
-% peaks.beds2mats(500)
-% peaks.mergePeakFiles()
-% load('../data/peaks/mergedPeaks.mat')
-% peaks.minimizeMergePeak(mergedPeaks, 500, tissueNames);
-% mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized.mat')
-% chooseBestPWMs(mergedPeaksMin, [10, 20, 30, 45, 46]);
-
 function minimizeMergePeak(mergedPeaks, L, tissueNames)
     TOP_PEAKS_HEIGHT_PERCENT_KEPT = 0.50;
     numerOfTissues = length(mergedPeaks(1).overlap);

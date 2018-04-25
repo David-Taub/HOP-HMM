@@ -17,6 +17,9 @@ function [theta] = genTheta(params)
     % m x n
     theta.E = rand([params.m, ones(1, params.order) .* params.n]);
     theta.E = log(bsxfun(@times, theta.E, 1 ./ sum(theta.E, params.order+1)));
+    assert(not(any(isnan(theta.T(:)))))
+    assert(not(any(isnan(theta.E(:)))))
+    assert(not(any(isnan(theta.G(:)))))
 end
 
 

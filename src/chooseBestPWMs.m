@@ -1,17 +1,10 @@
-% mainGenSequences();
-% cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
-% load('../data/peaks/mergedPeaks.mat');
-% peaks.minimizeMergePeak(mergedPeaks, 500, tissueNames);
-% mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized.mat')
-% chooseBestPWMs(mergedPeaksMin, [10, 20, 30, 45, 46]);
-
 
 function selectedPWMs = chooseBestPWMs(mergedPeaksMin, tissueList)
     dbstop if error
     profile on
     close all;
     k = 519;
-    BEST_PWM_TO_CHOOSE_PER_TISSUE = 4;
+    BEST_PWM_TO_CHOOSE_PER_TISSUE = 25;
     m = length(tissueList);
     params = misc.genParams(m, k);
     params.L = size(mergedPeaksMin.seqs, 2);
@@ -35,10 +28,11 @@ function selectedPWMs = chooseBestPWMs(mergedPeaksMin, tissueList)
     min(bestPWMsAucRocs(:))
     max(bestPWMsAucRocs(:))
     plot(sort(bestPWMsAucRocs(:)))
-    save('..\data\precomputation\SelectedPWMs.mat', 'selectedPWMs', 'aucRocsSorted', 'aucRocsSortedInd');
+    save('..\data\precomputation\SelectedPWMs.mat', 'selectedPWMs', 'aucRocsSorted', 'aucRocsSortedInd', 'tissueList');
 end
 
 function aucRocs = oneVsAllAucRoc(params, dataset)
+    expected_num_of_peaks_in_seq = 5
     aucRocs = zeros(params.m, params.k);
     Xs1H = matUtils.mat23Dmat(dataset.X, params.n);
     for pwmId = 1:params.k
@@ -46,13 +40,13 @@ function aucRocs = oneVsAllAucRoc(params, dataset)
         for tissueID = 1:params.m
             tissueMask = dataset.Y(:,1) == tissueID;
             % N x L
-            pos = PWMLogLike(tissueMask, :);
-            neg = PWMLogLike(~tissueMask, :);
+            pos = misc.maxN(PWMLogLike(tissueMask, :), 2, expected_num_of_peaks_in_seq);
+            neg = misc.maxN(PWMLogLike(~tissueMask, :), 2, expected_num_of_peaks_in_seq);
             % pos = downsample(pos, 20);
             % neg = downsample(pos, 20);
             aucRocs(tissueID, pwmId) = matUtils.getAucRoc(pos(:), neg(:), false, true);
             [v, i] = max(aucRocs(:));
-            fprintf('Best 1vsAll AucRocs for tissue %d of PWM %d is %.2f (%d)\n', tissueID, pwmId, v, i);
+            fprintf('Best 1vsAll AucRocs for tissue %d of PWM %d is %.2f / %.2f (%d)\n', tissueID, pwmId, aucRocs(tissueID, pwmId), v, i);
         end
     end
 end
