@@ -17,6 +17,7 @@ function [G, T] = GTbound(params, G, T, doResample)
     fprintf('balanceGT, G Binding: %.3f T Binding: %.3f\n', max(abs(originG(:) - G(:)), [], 1), max(abs(originT(:) - T(:)), [], 1));
     T = limitTDiag(params, T);
     fprintf('limitTDiag, G Binding: %.3f T Binding: %.3f\n', max(abs(originG(:) - G(:)), [], 1), max(abs(originT(:) - T(:)), [], 1));
+    T = limitCrossEnhancers(params, T, params.PCrossEnhancers);
     G = log(G);
     T = log(T);
 end
@@ -40,22 +41,38 @@ end
 % T - m x m
 function T = limitTDiag(params, T)
     for i = 1 : params.m - 1
-        T = transferWeight(params, T, i, params.m, params.PEnhancerToBackground);
+        T = makeDiagonalDominant(params, T, i, params.m, params.PEnhancerToBackground);
         for j = 1 : params.m - 1
-            T = transferWeight(params, T, i, j, params.PCrossEnhancers);
+            T = makeDiagonalDominant(params, T, i, j, params.PCrossEnhancers);
         end
     end
     for j = 1 : params.m - 1
-        T = transferWeight(params, T, params.m, j, params.PBackgroundToEnhancer);
+        T = makeDiagonalDominant(params, T, params.m, j, params.PBackgroundToEnhancer);
     end
 end
 
 % T - m x m
 % transfers from T(i,j) to T(i,i)
-function T = transferWeight(params, T, i, j, threshold)
+function T = makeDiagonalDominant(params, T, i, j, threshold)
     if isExceedThreshold(params, threshold, T(i, j)) & i ~= j
         T(i, i) = T(i, i) + T(i, j) - threshold;
         T(i, j) = threshold;
+    end
+end
+
+% T - m x m
+% transfers from T(i,j) to T(i,i)
+function T = limitCrossEnhancers(params, T, threshold)
+    for i = 1:params.m - 1
+        for j = 1:params.m - 1
+            if j == i
+                continue;
+            end
+            if T(i, j) > threshold
+                T(i, params.m) = T(i, params.m) + T(i, j) - threshold;
+                T(i, j) = threshold;
+            end
+        end
     end
 end
 
@@ -68,6 +85,7 @@ function [G, T] = balanceGTweights(params, G, T)
             T(i, :) = T(i, :) .* ((1-params.PTotalBaseToSub) / (sum(T(i, :), 2) + eps));
         end
     end
+    % make background with eps sub modes (motifs)
     G(params.m, :) = G(params.m, :) .* ((params.k*eps) / sum(G(params.m, :), 2));
     T(params.m, :) = T(params.m, :) .* ((1-(params.k*eps)) / (sum(T(params.m, :), 2) + eps));
 end
