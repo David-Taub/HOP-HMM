@@ -9,8 +9,8 @@ function seqSampleCertainty(params, Y, gamma, psi, sequencesToShow, showFirst)
     YOneHot = permute(matUtils.mat23Dmat(Y, params.m), [1, 3, 2]);
     % N x L
     certainty = permute(sum(posterior .* YOneHot, 2), [1,3,2]);
-    loss = log(mean(1-certainty(:)+eps));
-    fprintf('Avg log loss: %.2f\n', loss);
+    loss = mean(1-certainty(:)+eps);
+    fprintf('Avg loss: %.2f\n', loss);
     % sequencesToShow = 10;
     mJet = jet(params.m);
     cellJet = {};
@@ -24,7 +24,7 @@ function seqSampleCertainty(params, Y, gamma, psi, sequencesToShow, showFirst)
     end
 
     inds = sort(inds);
-    loss = mean(log(1-certainty(:)));
+    loss = mean(1-certainty(:));
     figure('units','normalized','outerposition',[0 0 1 1]);
     for i = 1:sequencesToShow
         subplot(sequencesToShow, 1, i);
