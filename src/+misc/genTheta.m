@@ -1,5 +1,7 @@
 function [theta] = genTheta(params)
     % normalized random probabilities
+
+
     % theta.startT = rand(params.m, 1);
     theta.startT = ones(params.m, 1);
     theta.startT = log(theta.startT / sum(theta.startT));
@@ -17,6 +19,20 @@ function [theta] = genTheta(params)
     % m x n
     theta.E = rand([params.m, ones(1, params.order) .* params.n]);
     theta.E = log(bsxfun(@times, theta.E, 1 ./ sum(theta.E, params.order+1)));
+
+    pretrainedThetaPath = '../data/precomputation/pretrainedTheta.mat';
+    if exist(pretrainedThetaPath, 'file') == 2
+        fprintf('Found pretrained theta file: %s\n', pretrainedThetaPath)
+        load(pretrainedThetaPath);
+        [foundM, foundK] = size(G);
+        foundOrder = ndims(E) - 1;
+        if params.m == foundM + 1 & params.k == foundK  & foundOrder == params.order
+            fprintf('Loading pretrained theta...\n')
+            theta.E(1:foundM, :) = E(1:foundM, :);
+            theta.G(1:foundM, 1:foundK) = G;
+        end
+    end
+
     assert(not(any(isnan(theta.T(:)))))
     assert(not(any(isnan(theta.E(:)))))
     assert(not(any(isnan(theta.G(:)))))

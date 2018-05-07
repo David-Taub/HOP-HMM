@@ -12,7 +12,7 @@ function pretrain(mergedPeaksMin, k, tissueList, backgroundIndex)
     params.NperTissue = 1000;
     testTrainRatio = 0.15;
     paramsTotal = params
-    paramsTotal.m = length(tissueList) + 1;
+    paramsTotal.m = length(tissueList);
 
     totalTheta = misc.genTheta(paramsTotal);
     for i = 1:length(tissueList)
@@ -25,6 +25,9 @@ function pretrain(mergedPeaksMin, k, tissueList, backgroundIndex)
         show.seqSampleCertainty(params, dataset.Y, gamma, psi, 8, false);
         classify(theta, params, dataset);
     end
+    E = totalTheta.E;
+    G = totalTheta.G;
+    save('../data/precomputation/pretrainedTheta.mat', 'tissueList', 'E', 'G');
 end
 
 
