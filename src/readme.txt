@@ -28,8 +28,6 @@ k = 40
 mainRealData(multiEnhancers, 4, k, false, true);
 
 mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized.mat');
-pretrain(multiEnhancers, 4, k, false, true);
-
 
 
 mergedPeaksMin =

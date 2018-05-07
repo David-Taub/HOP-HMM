@@ -11,20 +11,21 @@ function pretrain(mergedPeaksMin, k, tissueList, backgroundIndex)
     params = misc.genParams(m, k);
     params.NperTissue = 1000;
     testTrainRatio = 0.15;
+    maxIters = 1000;
     paramsTotal = params
     paramsTotal.m = length(tissueList);
 
     totalTheta = misc.genTheta(paramsTotal);
     for i = 1:length(tissueList)
         dataset = preprocess(params, mergedPeaksMin, tissueList(i), backgroundIndex);
-        [theta, ~] = EM.EM(dataset, params, 50, doResample, doESharing);
+        [theta, ~] = EM.EM(dataset, params, maxIters, doResample, doESharing);
         totalTheta.E(i, :) = theta.E(1, :);
         totalTheta.G(i, :) = theta.G(1, :);
-        show.showTheta(totalTheta);
         [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
         show.seqSampleCertainty(params, dataset.Y, gamma, psi, 8, false);
         classify(theta, params, dataset);
     end
+    show.showTheta(totalTheta);
     E = totalTheta.E;
     G = totalTheta.G;
     save('../data/precomputation/pretrainedTheta.mat', 'tissueList', 'E', 'G');
