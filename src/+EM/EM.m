@@ -33,7 +33,7 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doResample, 
 end
 
 function [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doResample, doESharing)
-    LIKELIHOOD_THRESHOLD = 10 ^ -4;
+    LIKELIHOOD_THRESHOLD = 10 ^ -5;
     theta = initTheta;
     iterLike = [];
     for it = 1:maxIter

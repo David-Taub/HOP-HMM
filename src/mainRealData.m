@@ -13,8 +13,10 @@ function mainRealData(mergedPeaksMin, m, k, doResample, doESharing)
     [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio);
     [theta, ~] = EM.EM(train, params, maxIters, doResample, doESharing);
     show.showTheta(theta);
-    YEst = classify(theta, params, train);
-    theta = permuteTheta(theta, params, train.Y(:, :, 1), YEst(:, :, 1))
+    YEst = misc.viterbi(theta, params, train.X, train.pcPWMp);
+    theta = permuteTheta(theta, params, train.Y(:, :, 1), YEst(:, :, 1));
+
+    classify(theta, params, train);
     [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, train.X, train.pcPWMp);
     show.seqSampleCertainty(params, train.Y, gamma, psi, 8, false);
 
