@@ -98,3 +98,7 @@ function [G, T] = balanceGTweights(params, G, T)
     G(params.m, :) = G(params.m, :) .* ((params.k*eps) / sum(G(params.m, :), 2));
     T(params.m, :) = T(params.m, :) .* ((1-(params.k*eps)) / (sum(T(params.m, :), 2) + eps));
 end
+
+function res = isExceedThreshold(params, thresh, val)
+    res = abs(val - thresh) > thresh * params.maxPRatio;
+end
