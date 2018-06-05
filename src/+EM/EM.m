@@ -53,11 +53,9 @@ function [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, in
         if doESharing
             theta.E = log(repmat(mean(exp(theta.E), 1), [params.n, ones(1, params.order)]));
         end
-        % fprintf('Update G\n');
         fprintf('. ');
-        [theta.G, theta.T] = updateGT(params, theta, xi, gamma, psi, doResample);
-        % fprintf('Update startT\n');
         theta.startT = updateStartT(gamma);
+        [theta.G, theta.T, theta.startT] = updateGT(params, theta, xi, gamma, psi, doResample);
         iterLike(end+1) = matUtils.logMatSum(pX, 1);% / (N*L);
         assert(not(any(isnan(theta.T(:)))))
         assert(not(any(isnan(theta.E(:)))))
@@ -141,7 +139,7 @@ end
 % psi - N x m x k x L
 % newG - m x k
 % newT - m x m
-function [newG, newT] = updateGT(params, theta, xi, gamma, psi, doResample)
+function [newG, newT, newStartT] = updateGT(params, theta, xi, gamma, psi, doResample)
     [N, ~, L] = size(gamma);
 
     % note: batch trick is used to reduce the
@@ -171,6 +169,6 @@ function [newG, newT] = updateGT(params, theta, xi, gamma, psi, doResample)
     mergedAveraged = permute(mergedAveraged, [2,3,1]);
     G = mergedAveraged(:, 1:params.k);
     T = mergedAveraged(:, params.k+1:end);
-    [newG, newT] = EM.GTbound(params, G, T, doResample);
+    [newG, newT, newStartT] = EM.GTbound(params, G, T, doResample);
 end
 

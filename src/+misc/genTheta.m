@@ -1,19 +1,24 @@
 function [theta] = genTheta(params)
     % normalized random probabilities
 
+    theta.startT = log([ones(params.m - 1, 1) * eps; 1 - eps * (params.m - 1)]);
+    theta.T = log((rand(params.m) .* (params.maxT - params.minT)) + params.minT);
+    theta.G = log((rand(params.m, params.k) .* (params.maxG - params.minG)) + params.minG);
 
     % theta.startT = rand(params.m, 1);
-    theta.startT = ones(params.m, 1);
-    theta.startT = log(theta.startT / sum(theta.startT));
-    % m x m
-    theta.T = eye(params.m) + params.PCrossEnhancers * rand(params.m);
-    theta.T = bsxfun(@times, theta.T, 1 ./ sum(theta.T, 2));
+    % theta.startT = ones(params.m, 1);
+    % theta.startT = log(theta.startT / sum(theta.startT));
 
-    theta.G = rand(params.m, params.k);
-    theta.G = bsxfun(@times, theta.G, 1 ./ sum(theta.G, 2));
-    F = ones(params.m, 1) * 0.02;
-    theta.G = log(theta.G .* repmat(F, [1, params.k]));
-    theta.T = log(theta.T .* repmat(1-F, [1, params.m]));
+
+
+    % theta.T = eye(params.m) + params.PCrossEnhancers * rand(params.m);
+    % theta.T = bsxfun(@times, theta.T, 1 ./ sum(theta.T, 2));
+
+    % theta.G = rand(params.m, params.k);
+    % theta.G = bsxfun(@times, theta.G, 1 ./ sum(theta.G, 2));
+    % F = ones(params.m, 1) * 0.02;
+    % theta.G = log(theta.G .* repmat(F, [1, params.k]));
+    % theta.T = log(theta.T .* repmat(1-F, [1, params.m]));
 
 
     % m x n
@@ -31,6 +36,8 @@ function [theta] = genTheta(params)
             theta.E(1:foundM, :) = E(1:foundM, :);
             theta.G(1:foundM, 1:foundK) = G;
         end
+    else
+        fprintf('Using random theta initialization...\n')
     end
 
     assert(not(any(isnan(theta.T(:)))))

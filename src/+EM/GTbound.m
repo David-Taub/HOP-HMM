@@ -1,7 +1,7 @@
 
 % G - m x k
 % T - m x m
-function [G, T] = GTbound(params, G, T, doResample)
+function [G, T, startT] = GTbound(params, G, T, doResample)
     if params.m == 1
         return;
     end
@@ -9,21 +9,51 @@ function [G, T] = GTbound(params, G, T, doResample)
     T = exp(T);
     originG = G;
     originT = T;
-    % TODO: most of these bounding are probably not necessary, and could be removed
     if doResample
         G = makeDifferent(params, G);
     end
 
-    fprintf('original: %.2f %.2f\n', 1./(1-diag(T)), 1./(sum(G, 2)))
-    [G, T] = balanceGTweights(params, G, T);
-    fprintf('balanceGT, G Binding: %.3f T Binding: %.3f\n', max(abs(originG(:) - G(:)), [], 1), max(abs(originT(:) - T(:)), [], 1));
-    T = limitTDiag(params, T);
-    fprintf('limitTDiag, G Binding: %.3f T Binding: %.3f\n', max(abs(originG(:) - G(:)), [], 1), max(abs(originT(:) - T(:)), [], 1));
+    fprintf('\n')
+    for i=1:params.m
+        fprintf('original: 1/1-T - %.2f 1/sum(G) - %.2f\n', 1./(1 - T(i, i)), 1./(sum(G(i, :), 2)))
+    end
+    % [G, T] = balanceGTweights(params, G, T);
+
+    params.maxT < T
+    params.minT > T
+    sum(params.maxG < G, 2)
+    sum(params.minG > G, 2)
+
+    for i = 1:5
+        T = max(T, params.minT);
+        G = max(G, params.minG);
+        T = min(T, params.maxT);
+        G = min(G, params.maxG);
+        s = sum(G, 2) + sum(T, 2);
+
+        T = T ./ repmat(s, [1, params.m]);
+        G = G ./ repmat(s, [1, params.k]);
+    end
+    % T = T + diag(1 - s);
+
+    for i=1:params.m
+        fprintf('balanceGTweights:  1/1-T - %.2f 1/sum(G) - %.2f\n', 1./(1 - T(i, i)), 1./(sum(G(i, :), 2)))
+    end
+    % T = limitTDiag(params, T);
+
+    % for i=1:params.m
+    %     fprintf('limitTDiag:  1/1-T - %.2f 1/sum(G) - %.2f\n', 1./(1 - T(i, i)), 1./(sum(G(i, :), 2)))
+    % end
     T = limitCrossEnhancers(params, T, params.PCrossEnhancers);
 
-    fprintf('end: %.2f %.2f\n', 1./(1-diag(T))', 1./(sum(G, 2))')
+    % for i=1:params.m
+    %     fprintf('limitCrossEnhancers:  1/1-T - %.2f 1/sum(G) - %.2f\n', 1./(1 - T(i, i)), 1./(sum(G(i, :), 2)))
+    % end
+
+    startT = [ones(params.m-1, 1) * eps; 1 - (eps * (params.m - 1))];
     G = log(G);
     T = log(T);
+    startT = log(startT);
 end
 
 function G = makeDifferent(params, G)
@@ -44,7 +74,6 @@ function G = makeDifferent(params, G)
 end
 % T - m x m
 function T = limitTDiag(params, T)
-    fprintf('Before: %.2f\n', 1./(1-diag(T)))
     for i = 1 : params.m - 1
         % limits enhancer length
         T = makeDiagonalDominant(params, T, i, params.m, params.PEnhancerToBackground);
@@ -57,7 +86,6 @@ function T = limitTDiag(params, T)
         % limits background length
         T = makeDiagonalDominant(params, T, params.m, j, params.PBackgroundToEnhancer);
     end
-    fprintf('After: %.2f\n', 1./(1-diag(T)))
 end
 
 % T - m x m
@@ -68,6 +96,7 @@ function T = makeDiagonalDominant(params, T, i, j, threshold)
         T(i, j) = threshold;
     end
 end
+
 
 % T - m x m
 % transfers from T(i,j) to T(i,i)
@@ -102,3 +131,4 @@ end
 function res = isExceedThreshold(params, thresh, val)
     res = abs(val - thresh) > thresh * params.maxPRatio;
 end
+
