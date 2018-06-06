@@ -24,10 +24,9 @@ function mergedPeaks = mergePeakFiles(withBackground, with_seq)
     tissueNames = convertNames(tissueNames, namesDict);
     fprintf('Merging...\n')
     mergedPeaks = mergePeaks(unmergedPeaks, with_seq);
-    fprintf('Saving...\n')
 
     save('-v7.3', OUT_FILE_PATH, 'mergedPeaks', 'tissueNames');
-    fprintf('Done\n')
+    fprintf('Saved peaks in %s\n', OUT_FILE_PATH)
 end
 
 function namesDict = roadmapNamesDict(namesCSVPath)

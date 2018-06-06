@@ -15,8 +15,9 @@ function minimizeMergePeak(mergedPeaks, L, tissueNames)
     [seqs, overlaps, lengths] = removeNonLetters(seqs, overlaps, lengths);
     size(overlaps, 1)
     [seqs, overlaps, lengths] = balanceOverlaps(seqs, overlaps, lengths);
-    fprintf('save\n');
-    save('../data/peaks/mergedPeaksMinimized.mat', '-v7.3', 'seqs', 'overlaps', 'lengths', 'tissueNames')
+    outFilepath = '../data/peaks/mergedPeaksMinimized.mat';
+    save(outFilepath, '-v7.3', 'seqs', 'overlaps', 'lengths', 'tissueNames');
+    fprintf('Saved peaks in %s\n', outFilepath);
 end
 
 function [seqs, overlaps, lengths] = balanceOverlaps(seqs, overlaps, lengths)

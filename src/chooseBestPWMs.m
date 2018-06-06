@@ -1,9 +1,8 @@
 
-function selectedPWMs = chooseBestPWMs(mergedPeaksMin, tissueList)
+function selectedPWMs = chooseBestPWMs(mergedPeaksMin, tissueList, k)
     dbstop if error
     profile on
     close all;
-    k = 519;
     BEST_PWM_TO_CHOOSE_PER_TISSUE = 25;
     m = length(tissueList);
     params = misc.genParams(m, k);
@@ -28,11 +27,13 @@ function selectedPWMs = chooseBestPWMs(mergedPeaksMin, tissueList)
     min(bestPWMsAucRocs(:))
     max(bestPWMsAucRocs(:))
     plot(sort(bestPWMsAucRocs(:)))
-    save('../data/precomputation/SelectedPWMs.mat', 'selectedPWMs', 'aucRocsSorted', 'aucRocsSortedInd', 'tissueList');
+    selectedPWMsFilepath = '../data/precomputation/SelectedPWMs.mat';
+    save(selectedPWMsFilepath, 'selectedPWMs', 'aucRocsSorted', 'aucRocsSortedInd', 'tissueList');
+    fprintf('Saved feature selected PWMs in %s\n', selectedPWMsFilepath);
 end
 
 function aucRocs = oneVsAllAucRoc(params, dataset)
-    expected_num_of_peaks_in_seq = 5
+    expected_num_of_peaks_in_seq = 2;
     aucRocs = zeros(params.m, params.k);
     Xs1H = matUtils.mat23Dmat(dataset.X, params.n);
     for pwmId = 1:params.k
@@ -63,7 +64,7 @@ function dataset = preprocess(params, mergedPeaksMin, tissueList)
     % mask = mask & mod(1:size(mask,1), 15).' == 0;
     overlaps = overlaps(mask, :);
     overlaps = overlaps(:, tissueList);
-    sum(overlaps>0, 1)
+    sum(overlaps>0, 1);
     assert(all(sum(overlaps>0, 1)>0))
     X = mergedPeaksMin.seqs(mask, :);
     % Y = mergedPeaksMin.Y(mask, :);
@@ -80,10 +81,7 @@ function dataset = preprocess(params, mergedPeaksMin, tissueList)
     dataset.X = X;
     % dataset.mf = mf;
     dataset.Y = Y;
-    if isfield(mergedPeaksMin, 'Y')
-    end
     if isfield(mergedPeaksMin, 'Y2')
-        mergedPeaksMin.Y2
         dataset.Y2 = mergedPeaksMin.Y2;
     end
 end

@@ -14,7 +14,7 @@ function mainRealData(mergedPeaksMin, m, k, doResample, doESharing)
     [theta, ~] = EM.EM(train, params, maxIters, doResample, doESharing);
     show.showTheta(theta);
     YEst = misc.viterbi(theta, params, train.X, train.pcPWMp);
-    theta = permuteTheta(theta, params, train.Y(:, :, 1), YEst(:, :, 1));
+    theta = permuteTheta(theta, params, train.Y(:, :), YEst(:, :, 1));
 
     classify(theta, params, train);
     [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, train.X, train.pcPWMp);

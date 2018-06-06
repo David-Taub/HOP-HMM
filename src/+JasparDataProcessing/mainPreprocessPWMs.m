@@ -30,7 +30,9 @@ function mainPreprocessPWMs()
 	length(lengths)
 	[PWM, lengths, names] = JasparDataProcessing.removePWMsWeak(PWM, lengths, names, STRENGTH_TO_REMOVE);
 	length(lengths)
-	save('../data/Jaspar/PWMs.mat', 'PWM', 'lengths', 'names');
+	out_filepath = '../data/Jaspar/PWMs.mat';
+	save(out_filepath, 'PWM', 'lengths', 'names');
+	fprintf('Saved PWMs in %s\n', out_filepath)
 end
 
 

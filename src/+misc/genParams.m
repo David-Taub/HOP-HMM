@@ -46,12 +46,13 @@ function params = genParams(m, k)
     [params.minT, params.minG] = genMinGT(params);
     params
     try
-        loaded = load('../data/precomputation/SelectedPWMs.mat');;
+        selectedPWMsFilepath = '../data/precomputation/SelectedPWMs.mat';
+        loaded = load(selectedPWMsFilepath);
         inds = loaded.selectedPWMs;
         params.PWMs = params.PWMs(inds(end - params.k + 1 : end), :, :);
         params.lengths = params.lengths(inds(end-params.k+1:end));
         params.names = {params.names{inds(end-params.k+1:end)}};
-        fprintf('loaded optimized PWMs for tissue list', loaded.tissueList)
+        fprintf('loaded feature selected PWMs from %s\n', selectedPWMsFilepath)
     catch
         params.PWMs = params.PWMs(1:params.k, :, :);
         params.lengths = params.lengths(1:params.k);

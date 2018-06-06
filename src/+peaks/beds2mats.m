@@ -75,8 +75,9 @@ function bed2mat(index, name, bedFilePath, typesOfCells, L, dict)
     % seqs should have 473980 sequences
 
     matPath = ['../data/peaks/mat/', name, '.peaks.mat'];
-    fprintf(['Saving mat file ', matPath, '\n']);
     save(matPath, 'S', '-v7.3');
+    fprintf('Saving bed in mat format in %s \n', matPath);
+
 end
 
 % function [newTo, newFrom] = fitToL(to, from, L)
