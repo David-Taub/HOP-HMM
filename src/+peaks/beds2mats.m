@@ -73,7 +73,9 @@ function bed2mat(index, name, bedFilePath, typesOfCells, L, dict)
     fprintf('\n');
 
     % seqs should have 473980 sequences
-
+    if not(isdir('../data/peaks/mat/'))
+        mkdir('../data/peaks/mat/');
+    end
     matPath = ['../data/peaks/mat/', name, '.peaks.mat'];
     save(matPath, 'S', '-v7.3');
     fprintf('Saving bed in mat format in %s \n', matPath);

@@ -50,15 +50,18 @@ function [unmergedPeaks, tissueNames] = readMatFiles(matDirPath, withBackground)
     peakFiles = dir(fullfile(matDirPath, '*.peaks.mat'));
     for i = 1:length(peakFiles)
         filename = peakFiles(i).name;
-        peaks = load(fullfile(matDirPath, filename));
+        matFilepath = fullfile(matDirPath, filename);
+        peaks = load(matFilepath);
+        fprintf('loaded mat peak data from %s\n', matFilepath);
         filenameParts = strsplit(filename, '.');
         tissueName = filenameParts{1};
         if strcmp(tissueName , 'background') && ~withBackground
             continue
         end
-        tissueNames{find(peaks.S{1}.overlap)} = tissueName;
-        unmergedPeaks
-        unmergedPeaks = [unmergedPeaks, [peaks.S{:}]];
+        if length(peaks.S) > 0
+            tissueNames{find(peaks.S{1}.overlap)} = tissueName;
+            unmergedPeaks = [unmergedPeaks, [peaks.S{:}]];
+        end
     end
 end
 
