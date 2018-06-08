@@ -1,5 +1,5 @@
 cd /home/david/projects/HopHMM/data/peaks/scripts
-
+cd /cygdrive/c/users/booga/Dropbox/projects/HOP-HMM/data/peaks/scripts
 # Downloaded from roadmap site (2013):
 # from page http://egg2.wustl.edu/roadmap/web_portal/processed_data.html
 # http://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/
@@ -26,11 +26,11 @@ wget -O hg19.chrom.sizes http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/
 # wget -O hg19.KnownGenes.bed.gz hgdownload.cse.ucsc.edu/goldenPath/hg19/database/knownGene.txt.gz
 # gunzip -f hg19.KnownGenes.bed.gz
 # mv knownGenes.txt hg19.KnownGenes.bed
+# wget -O hg19.KnownGenes.bed "https://genome.ucsc.edu/cgi-bin/hgTables?hgsid=597259395_zm48O4B23IAG8yLNYr5ekoweAIGe&boolshad.hgta_printCustomTrackHeaders=0&hgta_ctName=tb_knownGene&hgta_ctDesc=table+browser+query+on+knownGene&hgta_ctVis=pack&hgta_ctUrl=&fbQual=whole&fbUpBases=200&fbExonBases=0&fbIntronBases=0&fbDownBases=200&hgta_doGetBed=get+BED"
 
-wget -O hg19.KnownGenes.bed.gz https://10gbps-io.dl.sourceforge.net/project/rseqc/BED/Human_Homo_sapiens/hg19_UCSC_knownGene.bed.gz
+wget --no-check-certificate -O hg19.KnownGenes.bed.gz https://10gbps-io.dl.sourceforge.net/project/rseqc/BED/Human_Homo_sapiens/hg19_UCSC_knownGene.bed.gz
 gunzip -f hg19.KnownGenes.bed.gz
 
-# wget -O hg19.KnownGenes.bed "https://genome.ucsc.edu/cgi-bin/hgTables?hgsid=597259395_zm48O4B23IAG8yLNYr5ekoweAIGe&boolshad.hgta_printCustomTrackHeaders=0&hgta_ctName=tb_knownGene&hgta_ctDesc=table+browser+query+on+knownGene&hgta_ctVis=pack&hgta_ctUrl=&fbQual=whole&fbUpBases=200&fbExonBases=0&fbIntronBases=0&fbDownBases=200&hgta_doGetBed=get+BED"
 
 bedtools slop -i ./hg19.KnownGenes.bed -g ./hg19.chrom.sizes -b 5000 > ./hg19.KnownGenes.slopped.bed
 ls -la

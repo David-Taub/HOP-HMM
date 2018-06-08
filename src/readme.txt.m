@@ -1,6 +1,7 @@
 
 % first we choose the PWMs that are most different between the following tissues,
 % including background and genes:
+cd /cygdrive/c/users/booga/Dropbox/projects/HOP-HMM/src
 cd ~/projects/HopHMM/src
 k = 40
 peaks.beds2mats(500)
