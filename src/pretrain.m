@@ -12,9 +12,7 @@ function pretrain(mergedPeaksMin, k, tissueList, backgroundIndex)
     params.NperTissue = 1000;
     testTrainRatio = 0.15;
     maxIters = 1000;
-    paramsTotal = params
-    paramsTotal.m = length(tissueList);
-
+    paramsTotal = misc.genParams(length(tissueList), k);
     totalTheta = misc.genTheta(paramsTotal);
     for i = 1:length(tissueList)
         dataset = preprocess(params, mergedPeaksMin, tissueList(i), backgroundIndex);
@@ -33,8 +31,8 @@ end
 
 
 function [dataset] = preprocess(params, mergedPeaksMin, tissueIndex, backgroundIndex)
-    L = size(mergedPeaksMin.seqs, 2);
     X = mergedPeaksMin.seqs;
+    [N, L] = size(X);
 
     if isfield(mergedPeaksMin, 'overlaps')
         overlaps = mergedPeaksMin.overlaps;

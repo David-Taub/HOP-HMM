@@ -27,6 +27,9 @@ function selectedPWMs = chooseBestPWMs(mergedPeaksMin, tissueList, k)
     min(bestPWMsAucRocs(:))
     max(bestPWMsAucRocs(:))
     plot(sort(bestPWMsAucRocs(:)))
+    if not(isdir('../data/precomputation'))
+        mkdir('../data/precomputation')
+    end
     selectedPWMsFilepath = '../data/precomputation/SelectedPWMs.mat';
     save(selectedPWMsFilepath, 'selectedPWMs', 'aucRocsSorted', 'aucRocsSortedInd', 'tissueList');
     fprintf('Saved feature selected PWMs in %s\n', selectedPWMsFilepath);

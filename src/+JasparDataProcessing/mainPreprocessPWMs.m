@@ -1,6 +1,6 @@
 % cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
 % JasparDataProcessing.mainPreprocessPWMs()
-function mainPreprocessPWMs()
+function mainPreprocessPWMs(duplicatesToRemove, strengthToRemove)
 	dbstop if error
     delete(fullfile('..', 'data', 'precomputation', 'pcPWMp.mat'));
     txtFilePath = '../data/Jaspar/raw/JASPAR_CORE_nonredundant_pfm_vertebrates.txt';
@@ -13,7 +13,7 @@ function mainPreprocessPWMs()
     [PWM, lengths, names] = parseTxt(txtFilePath);
 
 	% high values remove many, low values remove few
-	DUPLICATES_TO_REMOVE = 0.10; STRENGTH_TO_REMOVE = 0.30; % 519 -> 26
+	% duplicatesToRemove = 0.10; strengthToRemove = 0.30; % 519 -> 26
 
 	% n x J x k -> k x J x n
 	% PWM = permute(PWM, [3, 2, 1]);
@@ -24,12 +24,15 @@ function mainPreprocessPWMs()
 	PWM(emptyMap) = 0;
 	% k x J x N -> k x n x J
 	PWM = permute(PWM, [1, 3, 2]);
-
 	length(lengths)
-	[PWM, lengths, names] = JasparDataProcessing.removedPWMsDuplicates(PWM, lengths, names, DUPLICATES_TO_REMOVE);
-	length(lengths)
-	[PWM, lengths, names] = JasparDataProcessing.removePWMsWeak(PWM, lengths, names, STRENGTH_TO_REMOVE);
-	length(lengths)
+	if duplicatesToRemove > 0
+		[PWM, lengths, names] = JasparDataProcessing.removedPWMsDuplicates(PWM, lengths, names, duplicatesToRemove);
+		length(lengths)
+	end
+	if strengthToRemove > 0
+		[PWM, lengths, names] = JasparDataProcessing.removePWMsWeak(PWM, lengths, names, strengthToRemove);
+		length(lengths)
+	end
 	out_filepath = '../data/Jaspar/PWMs.mat';
 	save(out_filepath, 'PWM', 'lengths', 'names');
 	fprintf('Saved PWMs in %s\n', out_filepath)

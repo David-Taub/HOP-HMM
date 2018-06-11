@@ -26,13 +26,14 @@ end
 function res = PWMLogLikelihoodFor(params, Xs1H, pwmId)
     % PWMs - k x n x J
     N = size(Xs1H, 1);
-e    res = eps(N, params.L);
+    L = size(Xs1H, 2);
+    res = ones(N, L) .* eps;
     % 1 x n x length -> 1 x length x n
     pwm = permute(params.PWMs(pwmId, :, 1:params.lengths(pwmId)), [1, 3, 2]);
     % 1 x length x n -> N x length x n
-    pwm = repmat(pwm, [N, 1, 1])
+    pwm = repmat(pwm, [N, 1, 1]);
     for i = 1:L - params.lengths(pwmId) + 1
-        res(:, i) = prod(sum(pwm .* Xs1H(:, i:i+params.lengths(pwmId) - 1), 3), 2);
+        res(:, i) = prod(sum(pwm .* Xs1H(:, i:i+params.lengths(pwmId) - 1, :), 3), 2);
     end
     res = log(res);
 end

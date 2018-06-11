@@ -4,6 +4,7 @@
 cd /cygdrive/c/users/booga/Dropbox/projects/HOP-HMM/src
 cd ~/projects/HopHMM/src
 k = 40
+JasparDataProcessing.mainPreprocessPWMs(0.0, 0.0)
 peaks.beds2mats(500)
 peaks.mergePeakFiles(true, true)
 load('../data/peaks/mergedPeaks.mat');
@@ -13,6 +14,8 @@ mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized.mat');
 % mainGenSequences(10000, 500, 5, 1000, false);
 % mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized_fake.mat');
 % chooseBestPWMs(mergedPeaksMin, [1,2,3,5], 1000)
+% backgroundIndex = 5;
+% pretrain(mergedPeaksMin, k, [1,2,3], backgroundIndex)
 JasparDataProcessing.mainPreprocessPWMs();
 chooseBestPWMs(mergedPeaksMin, [10, 20, 30, backgroundIndex], 1000)
 
