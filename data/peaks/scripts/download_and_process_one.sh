@@ -6,7 +6,25 @@ wget -O $1-H3K4me1.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType
 wget -O $1-H3K27me3.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K27me3.narrowPeak.gz"
 
 gunzip -f ./*.gz
- rm -f ./*.gz
+rm -f ./*.gz
+
+
+if [ ! -f $1-H3K27me3.narrowPeak ]; then
+    echo "File not found!"
+    exit 1
+fi
+if [ ! -f $1-H3K27ac.narrowPeak ]; then
+    echo "File not found!"
+    exit 1
+fi
+if [ ! -f $1-H3K4me1.narrowPeak ]; then
+    echo "File not found!"
+    exit 1
+fi
+if [ ! -f $1-H3K4me3.narrowPeak ]; then
+    echo "File not found!"
+    exit 1
+fi
 
 # refine with background
 bedtools sort -faidx hg19.chrom.sizes -i $1-H3K27me3.narrowPeak > tmp.1.narrowPeak

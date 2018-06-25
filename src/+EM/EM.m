@@ -1,5 +1,5 @@
 
-function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doResample, doESharing)
+function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doResample, doESharing, doBound)
     % X - N x L emission variables
     % m - amount of possible states (y)
     % n - amount of possible emissions (x)
@@ -23,8 +23,8 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doResample, 
     % figure
     for rep = 1:repeat
         % X = X(randperm(N), :);
-        initTheta = misc.genTheta(params);
-        [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doResample, doESharing);
+        initTheta = misc.genTheta(params, true);
+        [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doResample, doESharing, doBound);
         if bestLikelihood < iterLike(end)
             bestLikelihood = iterLike(end);
             bestTheta = theta;
@@ -32,7 +32,7 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doResample, 
     end
 end
 
-function [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doResample, doESharing)
+function [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doResample, doESharing, doBound)
     LIKELIHOOD_THRESHOLD = 10 ^ -5;
     theta = initTheta;
     iterLike = [];
@@ -45,7 +45,7 @@ function [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, in
         % gamma - N x m x L
         % psi - N x m x k x L
         [alpha, beta, pX, xi, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
-        close all;
+        % close all;
         % show.showTheta(theta);
         % show.seqSampleCertainty(params, dataset.Y, gamma, psi, 8, true);
         theta.E = updateE(gamma, params, indicesHotMap);
@@ -55,13 +55,15 @@ function [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, in
         end
         fprintf('. ');
         theta.startT = updateStartT(gamma);
-        [theta.G, theta.T, theta.startT] = updateGT(params, theta, xi, gamma, psi, doResample);
+        [theta.G, theta.T, theta.startT] = updateGT(params, theta, xi, gamma, psi, doResample, doBound);
         iterLike(end+1) = matUtils.logMatSum(pX, 1);% / (N*L);
+        
         assert(not(any(isnan(theta.T(:)))))
         assert(not(any(isnan(theta.E(:)))))
         assert(not(any(isnan(theta.G(:)))))
         assert(not(any(isnan(alpha(:)))))
         assert(not(any(isnan(beta(:)))))
+
         motifsPer = sum(exp(theta.G(:)), 1).*100;
         timeLapse = toc();
         R = cov(theta.G);
@@ -70,6 +72,7 @@ function [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, in
             fprintf('Converged\n');
             break
         end
+        % show.showTheta(theta);
     end % end of iterations loop
  end
 
@@ -139,7 +142,7 @@ end
 % psi - N x m x k x L
 % newG - m x k
 % newT - m x m
-function [newG, newT, newStartT] = updateGT(params, theta, xi, gamma, psi, doResample)
+function [newG, newT, newStartT] = updateGT(params, theta, xi, gamma, psi, doResample, doBound)
     [N, ~, L] = size(gamma);
 
     % note: batch trick is used to reduce the
@@ -169,6 +172,13 @@ function [newG, newT, newStartT] = updateGT(params, theta, xi, gamma, psi, doRes
     mergedAveraged = permute(mergedAveraged, [2,3,1]);
     G = mergedAveraged(:, 1:params.k);
     T = mergedAveraged(:, params.k+1:end);
-    [newG, newT, newStartT] = EM.GTbound(params, G, T, doResample);
+    if doBound
+        [newG, newT, newStartT] = EM.GTbound(params, G, T, doResample);
+    else
+        newG = G;
+        newT = T;
+        newStartT = theta.startT;
+    end
+
 end
 

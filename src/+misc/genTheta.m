@@ -1,7 +1,10 @@
-function [theta] = genTheta(params)
+function [theta] = genTheta(params, isMixed)
     % normalized random probabilities
-
-    theta.startT = log([ones(params.m - 1, 1) * eps; 1 - eps * (params.m - 1)]);
+    if isMixed
+        theta.startT = log(ones(params.m, 1) ./ params.m);
+    else
+        theta.startT = log([ones(params.m - 1, 1) * eps; 1 - eps * (params.m - 1)]);
+    end
     theta.T = log((rand(params.m) .* (params.maxT - params.minT)) + params.minT);
     theta.G = log((rand(params.m, params.k) .* (params.maxG - params.minG)) + params.minG);
 

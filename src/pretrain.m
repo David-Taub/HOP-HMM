@@ -13,10 +13,12 @@ function pretrain(mergedPeaksMin, k, tissueList, backgroundIndex)
     testTrainRatio = 0.15;
     maxIters = 1000;
     paramsTotal = misc.genParams(length(tissueList), k);
-    totalTheta = misc.genTheta(paramsTotal);
+    totalTheta = misc.genTheta(paramsTotal, true);
     for i = 1:length(tissueList)
+        fprintf('Pre training tissue %d vs background\n', tissueList(i))
         dataset = preprocess(params, mergedPeaksMin, tissueList(i), backgroundIndex);
-        [theta, ~] = EM.EM(dataset, params, maxIters, doResample, doESharing);
+        [theta, ~] = EM.EM(dataset, params, maxIters, doResample, doESharing, false);
+        show.showTheta(theta);
         totalTheta.E(i, :) = theta.E(1, :);
         totalTheta.G(i, :) = theta.G(1, :);
         [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
@@ -40,16 +42,19 @@ function [dataset] = preprocess(params, mergedPeaksMin, tissueIndex, backgroundI
         mask1 = mask & overlaps(:, tissueIndex) > 0;
         mask2 = mask & overlaps(:, backgroundIndex) > 0;
         pN = min(sum(mask1, 1), sum(mask2, 1));
+        
         inds = find(mask1);
-        mask1 = false(size(overlaps, 1), 1);
-        mask1(inds(1:pN)) = true;
-        inds = find(mask2);
-        mask2 = false(size(overlaps, 1), 1);
-        mask2(inds(1:pN)) = true;
+        trimmedMask1 = false(size(overlaps, 1), 1);
+        trimmedMask1(inds(1:pN)) = true;
+        trimmedMask1 = trimmedMask1 & mask;
 
-        mask = mask & (mask1 | mask2);
-        X = X(mask, :);
-        overlaps = overlaps(mask, :);
+        inds = find(mask2);
+        trimmedMask2 = false(size(overlaps, 1), 1);
+        trimmedMask2(inds(1:pN)) = true;
+        trimmedMask2 = trimmedMask2 & mask;
+
+        X = [X(trimmedMask1, :) ; X(trimmedMask2, :)];
+        overlaps = [overlaps(trimmedMask1, :); overlaps(trimmedMask2, :)];
         overlaps = overlaps(:, sort([tissueIndex, backgroundIndex]));
         Y = repmat((overlaps > 0) * [1;2], [1, L]);
         assert(not(any(Y(:)==0)))

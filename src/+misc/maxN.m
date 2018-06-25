@@ -1,5 +1,5 @@
 
-
+% returns maximal n values on axis d from array A
 function [vals, inds] = maxN(A, d, n)
     vals = [];
     inds = [];

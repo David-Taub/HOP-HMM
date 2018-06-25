@@ -24,7 +24,6 @@ function mergedPeaksMin = mainGenSequences(N, L, m, k, mixed)
     mergedPeaksMin.theta = theta;
     mergedPeaksMin.Y = Y
     mergedPeaksMin.Y2 = Y2;
-    imagesc(Y+Y2)
 end
 
 
@@ -46,7 +45,7 @@ function T = genHumanT(params, mixed)
 end
 
 function G = genHumanG(params)
-    BACKGROUND_G_NOISE = 0.001;
+    BACKGROUND_G_NOISE = 0.0005;
     NUM_OF_NONZEROS = 1;
     G = zeros(params.m, params.k);
     for i = 1:params.m
@@ -59,7 +58,6 @@ function G = genHumanG(params)
     G = G ./ repmat(sum(G, 2), [1, params.k]);
     G = G .* params.PTotalBaseToSub;
     G(end, :) = eps;
-    G(:, 1:10)
     G = log(G);
 end
 
@@ -93,7 +91,7 @@ function theta = genHumanTheta(params, mixed)
     theta.T = genHumanT(params, mixed);
     theta.G = genHumanG(params);
     T = exp(theta.T);
-    G = exp(theta.G);
+    G = exp(theta.G) * 3;
 
     s = sum(T, 2) + sum(G, 2);
     theta.T = log(T ./ repmat(s, [1, params.m]));

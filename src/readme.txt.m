@@ -3,19 +3,33 @@
 % including background and genes:
 cd /cygdrive/c/users/booga/Dropbox/projects/HOP-HMM/src
 cd ~/projects/HopHMM/src
-k = 40
+cd ~/projects/HOP-HMM/src
+k = 15
+
 JasparDataProcessing.mainPreprocessPWMs(0.0, 0.0)
 peaks.beds2mats(500)
 peaks.mergePeakFiles(true, true)
 load('../data/peaks/mergedPeaks.mat');
 peaks.minimizeMergePeak(mergedPeaks, 500, tissueNames)
 mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized.mat');
-% delete('../data/precomputation/SelectedPWMs.mat');
-% mainGenSequences(10000, 500, 5, 1000, false);
-% mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized_fake.mat');
-% chooseBestPWMs(mergedPeaksMin, [1,2,3,5], 1000)
-% backgroundIndex = 5;
-% pretrain(mergedPeaksMin, k, [1,2,3], backgroundIndex)
+
+
+mainGenSequences(1000, 500, 5, 1000, false);
+
+delete('../data/precomputation/SelectedPWMs.mat');
+mainGenSequences(10000, 500, 5, 1000, false);
+mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized_fake.mat');
+backgroundIndex = 5;
+selectedPWMs = chooseBestPWMs(mergedPeaksMin, [1,2,3,backgroundIndex], 1000)
+assert(ismember(1, selectedPWMs(1:10)))
+assert(ismember(2, selectedPWMs(1:10)))
+assert(ismember(3, selectedPWMs(1:10)))
+
+
+pretrain(mergedPeaksMin, k, [1,2,3], backgroundIndex)
+
+
+
 JasparDataProcessing.mainPreprocessPWMs();
 chooseBestPWMs(mergedPeaksMin, [10, 20, 30, backgroundIndex], 1000)
 

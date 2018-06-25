@@ -9,13 +9,19 @@ function beds2mats(L)
     dict = peaks.fasta2mem();
     assert(length(dict.keys()) > 0)
     assert(length(bedFiles) > 0)
+    if not(isdir('../data/peaks/mat/'))
+        mkdir('../data/peaks/mat/');
+    end
     for index = 1:typesOfCells
         if not(bedFiles(index).isdir)
             bedFilePath = fullfile(BEDS_DIR, bedFiles(index).name);
             nameParts = strsplit(bedFiles(index).name, '.');
             nameParts = strsplit(nameParts{1}, '-');
             name = nameParts{1};
-            bed2mat(index, name, bedFilePath, typesOfCells, L, dict);
+            matPath = ['../data/peaks/mat/', name, '.peaks.mat'];
+            if not(exist(matPath, 'file') == 2)
+                bed2mat(index, name, bedFilePath, matPath, typesOfCells, L, dict);
+            end
         end
     end
     fclose('all');
@@ -23,7 +29,7 @@ end
 
 
 % cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
-function bed2mat(index, name, bedFilePath, typesOfCells, L, dict)
+function bed2mat(index, name, bedFilePath, matPath, typesOfCells, L, dict)
     fprintf('Loading bed\n');
     fid = fopen(bedFilePath);
     if strcmp(name, 'genes')
@@ -72,11 +78,6 @@ function bed2mat(index, name, bedFilePath, typesOfCells, L, dict)
     end
     fprintf('\n');
 
-    % seqs should have 473980 sequences
-    if not(isdir('../data/peaks/mat/'))
-        mkdir('../data/peaks/mat/');
-    end
-    matPath = ['../data/peaks/mat/', name, '.peaks.mat'];
     save(matPath, 'S', '-v7.3');
     fprintf('Saving bed in mat format in %s \n', matPath);
 

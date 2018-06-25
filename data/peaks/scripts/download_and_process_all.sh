@@ -1,4 +1,4 @@
-cd /home/david/projects/HopHMM/data/peaks/scripts
+cd ~/projects/HOP-HMM/data/peaks/scripts
 cd /cygdrive/c/users/booga/Dropbox/projects/HOP-HMM/data/peaks/scripts
 # Downloaded from roadmap site (2013):
 # from page http://egg2.wustl.edu/roadmap/web_portal/processed_data.html
@@ -13,7 +13,7 @@ cd /cygdrive/c/users/booga/Dropbox/projects/HOP-HMM/data/peaks/scripts
 # cd bedtools2
 # make
 sudo apt update
-sudo apt install bedtools2
+sudo apt install bedtools
 
 # in cygwin on windows laptop:
 # cd  ../../cygdrive/c/Users/booga/Dropbox/projects/CompGenetics/data/peaks/scripts

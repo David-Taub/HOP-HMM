@@ -3,6 +3,7 @@ function showTheta(theta)
     figure('units','normalized','outerposition',[0 0 1 1]);
     subplot(1,4,1);
     imagesc(exp(theta.startT)); colorbar; title('startT')
+    caxis([0,1])
     subplot(1,4,2);
     imagesc(exp(theta.T) - diag(diag(exp(theta.T)))); colorbar; title('T')
     subplot(1,4,3);
