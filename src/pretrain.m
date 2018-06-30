@@ -4,25 +4,23 @@
 
 function pretrain(mergedPeaksMin, k, tissueList, backgroundIndex)
     dbstop if error
-    close all;
     doResample = false;
     doESharing = false;
     m = 2;
     params = misc.genParams(m, k);
     params.NperTissue = 1000;
-    testTrainRatio = 0.15;
     maxIters = 1000;
     paramsTotal = misc.genParams(length(tissueList), k);
     totalTheta = misc.genTheta(paramsTotal, true);
     for i = 1:length(tissueList)
         fprintf('Pre training tissue %d vs background\n', tissueList(i))
         dataset = preprocess(params, mergedPeaksMin, tissueList(i), backgroundIndex);
-        [theta, ~] = EM.EM(dataset, params, maxIters, doResample, doESharing, false);
+        [theta, ~] = EM.EM(dataset, params, maxIters, doResample, doESharing, true);
         show.showTheta(theta);
         totalTheta.E(i, :) = theta.E(1, :);
         totalTheta.G(i, :) = theta.G(1, :);
         [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
-        show.seqSampleCertainty(params, dataset.Y, gamma, psi, 8, false);
+        show.seqSampleCertainty(params, dataset.Y, gamma, psi, 8, true);
         classify(theta, params, dataset);
     end
     show.showTheta(totalTheta);

@@ -52,6 +52,15 @@ function params = genParams(m, k)
         params.PWMs = params.PWMs(inds(end - params.k + 1 : end), :, :);
         params.lengths = params.lengths(inds(end-params.k+1:end));
         params.names = {params.names{inds(end-params.k+1:end)}};
+
+        % k x n x J -> J x n x k
+        PWMImage = permute(params.PWMs, [3,2,1]);
+        PWMImage = cat(2, PWMImage, zeros(params.J, 4, params.k ));
+        PWMImage = PWMImage(:, :);
+        figure
+        imagesc(PWMImage);
+        title('PWMs');
+        drawnow;
         fprintf('loaded feature selected PWMs from %s\n', selectedPWMsFilepath)
     catch
         params.PWMs = params.PWMs(1:params.k, :, :);
