@@ -1,6 +1,7 @@
 
 % first we choose the PWMs that are most different between the following tissues,
 % including background and genes:
+cd C:\Users\booga\Dropbox\projects\HOP-HMM\src
 cd /cygdrive/c/users/booga/Dropbox/projects/HOP-HMM/src
 cd ~/projects/HopHMM/src
 cd ~/projects/HOP-HMM/src
@@ -8,7 +9,6 @@ cd ~/projects/HOP-HMM/src
 % TEST
 
 k = 40
-
 JasparDataProcessing.JasparTxtToMat();
 delete('../data/precomputation/SelectedPWMs.mat');
 delete('../data/precomputation/pcPWMp.mat');
@@ -17,23 +17,15 @@ mainGenSequences(3000, 500, 4, 1000, false);
 mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized_fake.mat');
 backgroundIndex = 4;
 selectedPWMs = JasparDataProcessing.mainPreprocessPWMs(0.25, 0.55, mergedPeaksMin, [1,2,3,backgroundIndex], k)
-
 pretrain(mergedPeaksMin, k, [1,2,3], backgroundIndex)
-
-mainGenSequences(500, 10000, 4, 1000, true);
+mainGenSequences(300, 4000, 4, 1000, true);
 mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized_fake.mat');
-multiEnhancers = peaks.multiEnhancerCaller(mergedPeaks, 10000, [1,2,3]);
+mainRealData(mergedPeaksMin, 4, k, false, true, false);
 
 % REAL
-
-
 delete('../data/precomputation/SelectedPWMs.mat');
+delete('../data/precomputation/pcPWMp.mat');
 delete('../data/precomputation/pretrainedTheta.mat')
-
-
-% then we find multiEnhancers, and try to learn them
-
-
 peaks.beds2mats(500)
 peaks.mergePeakFiles(true, true)
 load('../data/peaks/mergedPeaks.mat');

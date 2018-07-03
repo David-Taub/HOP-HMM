@@ -2,7 +2,7 @@
 % mainRealData(multiEnhancers, 5, 40, false, false);
 % doResample - if True will resample G of mode if is too similar to another mode (uses threshold)
 % doESharing - Each EM iteration, averaging the E across all modes, and using the average in all modes
-function mainRealData(mergedPeaksMin, m, k, doResample, doESharing)
+function mainRealData(mergedPeaksMin, m, k, doResample, doESharing, doBound)
     dbstop if error
     close all;
 
@@ -11,7 +11,7 @@ function mainRealData(mergedPeaksMin, m, k, doResample, doESharing)
     maxIters = 1000;
     testTrainRatio = 0.15;
     [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio);
-    [theta, ~] = EM.EM(train, params, maxIters, doResample, doESharing);
+    [theta, ~] = EM.EM(train, params, maxIters, doResample, doESharing, doBound);
     show.showTheta(theta);
     YEst = misc.viterbi(theta, params, train.X, train.pcPWMp);
     theta = permuteTheta(theta, params, train.Y(:, :), YEst(:, :, 1));
@@ -50,7 +50,6 @@ function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio)
         test.Y = mergedPeaksMin.Y(~trainMask, :);
     end
     if isfield(mergedPeaksMin, 'Y2')
-        mergedPeaksMin.Y2
         train.Y2 = mergedPeaksMin.Y2(trainMask, :);
         test.Y2 = mergedPeaksMin.Y2(~trainMask, :);
     end
@@ -80,8 +79,7 @@ end
 % YEst - N x L
 function theta = permuteTheta(theta, params, Y, YEst)
     perm = findCorrectPermute(params, Y, YEst);
-    perm
-    theta.T = theta.T(perm, :);
+        theta.T = theta.T(perm, :);
     theta.T = theta.T(:, perm);
     theta.G = theta.G(perm, :);
     theta.E(:, :) = theta.E(perm, :);

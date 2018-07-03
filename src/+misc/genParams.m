@@ -49,6 +49,7 @@ function params = genParams(m, k)
         selectedPWMsFilepath = '../data/precomputation/SelectedPWMs.mat';
         loaded = load(selectedPWMsFilepath);
         inds = loaded.selectedPWMs;
+        params.k = length(inds);
         params.PWMs = params.PWMs(inds(end - params.k + 1 : end), :, :);
         params.lengths = params.lengths(inds(end-params.k+1:end));
         params.names = {params.names{inds(end-params.k+1:end)}};

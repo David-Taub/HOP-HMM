@@ -10,7 +10,7 @@ function pretrain(mergedPeaksMin, k, tissueList, backgroundIndex)
     params = misc.genParams(m, k);
     params.NperTissue = 1000;
     maxIters = 1000;
-    paramsTotal = misc.genParams(length(tissueList), k);
+    paramsTotal = misc.genParams(length(tissueList) + 1, k);
     totalTheta = misc.genTheta(paramsTotal, true);
     for i = 1:length(tissueList)
         fprintf('Pre training tissue %d vs background\n', tissueList(i))
@@ -20,7 +20,7 @@ function pretrain(mergedPeaksMin, k, tissueList, backgroundIndex)
         totalTheta.E(i, :) = theta.E(1, :);
         totalTheta.G(i, :) = theta.G(1, :);
         [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
-        show.seqSampleCertainty(params, dataset.Y, gamma, psi, 8, true);
+        show.seqSampleCertainty(params, dataset.Y, gamma, psi, 8, false);
         classify(theta, params, dataset);
     end
     show.showTheta(totalTheta);
@@ -40,7 +40,7 @@ function [dataset] = preprocess(params, mergedPeaksMin, tissueIndex, backgroundI
         mask1 = mask & overlaps(:, tissueIndex) > 0;
         mask2 = mask & overlaps(:, backgroundIndex) > 0;
         pN = min(sum(mask1, 1), sum(mask2, 1));
-        
+
         inds = find(mask1);
         trimmedMask1 = false(size(overlaps, 1), 1);
         trimmedMask1(inds(1:pN)) = true;
