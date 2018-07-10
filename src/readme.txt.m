@@ -26,6 +26,7 @@ mainRealData(mergedPeaksMin, 4, k, false, true, false);
 delete('../data/precomputation/SelectedPWMs.mat');
 delete('../data/precomputation/pcPWMp.mat');
 delete('../data/precomputation/pretrainedTheta.mat')
+k = 40
 peaks.beds2mats(500)
 peaks.mergePeakFiles(true, true)
 load('../data/peaks/mergedPeaks.mat');
@@ -33,15 +34,17 @@ peaks.minimizeMergePeak(mergedPeaks, 500, tissueNames)
 mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized.mat');
 geneIndex = find(strcmp('genes', tissueNames))
 backgroundIndex = find(strcmp('background', tissueNames))
-pretrain(mergedPeaksMin, k, [10, 20, 30], backgroundIndex)
+tissueList = [5, 20, backgroundIndex];
+selectedPWMs = JasparDataProcessing.mainPreprocessPWMs(0.25, 0.55, mergedPeaksMin, tissueList, k);
+pretrain(mergedPeaksMin, k, tissueList(1:end-1), backgroundIndex)
 
 peaks.beds2matsNoSeq()
 peaks.mergePeakFiles(false, false)
 load('../data/peaks/mergedPeaksNoBackground.mat');
-multiEnhancers = peaks.multiEnhancerCaller(mergedPeaks, 10000, [10, 20, 30]);
+multiEnhancers = peaks.multiEnhancerCaller(mergedPeaks, 10000, tissueList(1:end-1));
 load('../data/multiEnhancers.mat');
 k = 40
-mainRealData(multiEnhancers, 4, k, false, true);
+mainRealData(multiEnhancers, 4, k, false, true, false);
 
 mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized.mat');
 

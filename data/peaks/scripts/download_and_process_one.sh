@@ -26,6 +26,7 @@ gunzip -f ./*.gz
 rm -f ./*.gz
 echo "done extracting"
 
+find . -empty -delete
 
 if [ ! -f $1-H3K27me3.narrowPeak ]; then
     echo "$1-H3K27me3.narrowPeak not found!"
@@ -46,6 +47,7 @@ fi
 echo "asserted files existing"
 
 # refine with background
+
 bedtools sort -faidx hg19.chrom.sizes -i $1-H3K27me3.narrowPeak > tmp.1.narrowPeak
 bedtools complement  -i tmp.1.narrowPeak -g hg19.chrom.sizes > tmp.2.narrowPeak
 bedtools intersect -a tmp.2.narrowPeak -b background.narrowPeak > tmp.3.narrowPeak
@@ -63,13 +65,16 @@ bedtools complement  -i tmp.1.narrowPeak -g hg19.chrom.sizes > tmp.2.narrowPeak
 bedtools intersect -a tmp.2.narrowPeak -b background.narrowPeak > tmp.3.narrowPeak
 mv -f tmp.3.narrowPeak background.narrowPeak
 rm -f tmp.*
-echo "bedtools run on background completed"
+
+find . -empty -delete
+
+ls -la background.narrowPeak
 
 if [ ! -f background.narrowPeak ]; then
     echo "background.narrowPeak not found!"
     exit 1
 fi
-echo "asserted background update"
+echo "bedtools run on background completed"
 
 #take only H3k27ac peaks with H3k4me1 peaks
 bedtools intersect -a $1-H3K27ac.narrowPeak -b $1-H3K4me1.narrowPeak -wa >$1-H3K27ac.cleaned.narrowPeak
@@ -104,3 +109,4 @@ if [ ! -f ../processed/$1-H3K27ac.cleaned.narrowPeak ]; then
     echo "../processed/$1-H3K27ac.cleaned.narrowPeak not found!"
     exit 1
 fi
+find . -empty -delete

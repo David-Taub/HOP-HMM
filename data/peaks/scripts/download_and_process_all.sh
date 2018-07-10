@@ -41,8 +41,9 @@ mkdir ../processed
 bedtools sort -faidx hg19.chrom.sizes -i hg19.KnownGenes.slopped.bed > tmp.1.narrowPeak
 bedtools complement  -i tmp.1.narrowPeak -g hg19.chrom.sizes > background.narrowPeak
 
-cat ../scripts/download_and_process_one.sh > ../scripts/download_and_process_one2.sh
+cat ../scripts/download_and_process_one.sh | dos2unix -u > ../scripts/download_and_process_one2.sh
 mv ../scripts/download_and_process_one2.sh ../scripts/download_and_process_one.sh
+
 ../scripts/download_and_process_one.sh E003
 ../scripts/download_and_process_one.sh E004
 ../scripts/download_and_process_one.sh E005

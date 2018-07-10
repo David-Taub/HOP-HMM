@@ -19,9 +19,9 @@ function beds2mats(L)
             nameParts = strsplit(nameParts{1}, '-');
             name = nameParts{1};
             matPath = ['../data/peaks/mat/', name, '.peaks.mat'];
-            if not(exist(matPath, 'file') == 2)
-                bed2mat(index, name, bedFilePath, matPath, typesOfCells, L, dict);
-            end
+            bed2mat(index, name, bedFilePath, matPath, typesOfCells, L, dict);
+            % if not(exist(matPath, 'file') == 2)
+            % end
         end
     end
     fclose('all');
@@ -49,10 +49,13 @@ function bed2mat(index, name, bedFilePath, matPath, typesOfCells, L, dict)
     end
 
     fclose(fid);
-
     N = length(chrs);
+    if N == 0
+        fprintf('no peaks found, not saving a .MAT file');
+        return
+    end
     % read sequences from HG19 fasta files
-    fprintf(['Generating mat file ', name, ' (', num2str(N), ')\n']);
+    fprintf(['Generating .MAT file ', name, ' (', num2str(N), ')\n']);
     S = {};
     for i = 1:N
         if ~any(strcmp(dict.keys(), chrs{i}))
