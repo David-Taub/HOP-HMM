@@ -51,7 +51,8 @@ function [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, in
         theta.E = updateE(gamma, params, indicesHotMap);
         % drawStatus(theta, params, alpha, beta, gamma, pX, xi, psi);
         if doESharing
-            theta.E = log(repmat(mean(exp(theta.E), 1), [params.n, ones(1, params.order)]));
+            % theta.E = log(repmat(mean(exp(theta.E), 1), [params.n, ones(1, params.order)]));
+            theta.E(1:end-1, :) = repmat(log(mean(exp(theta.E(1:end-1, :)), 1)), [params.n-1, 1]);
         end
         fprintf('. ');
         theta.startT = updateStartT(gamma);

@@ -34,7 +34,9 @@ peaks.minimizeMergePeak(mergedPeaks, 500, tissueNames)
 mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized.mat');
 geneIndex = find(strcmp('genes', tissueNames))
 backgroundIndex = find(strcmp('background', tissueNames))
-tissueList = [5, 20, backgroundIndex];
+m = 3;
+tissueList = [14, 75, backgroundIndex];
+tissueList = mainSelectTissues(mergedPeaksMin, backgroundIndex, m);
 selectedPWMs = JasparDataProcessing.mainPreprocessPWMs(0.25, 0.55, mergedPeaksMin, tissueList, k);
 pretrain(mergedPeaksMin, k, tissueList(1:end-1), backgroundIndex)
 
@@ -45,8 +47,6 @@ multiEnhancers = peaks.multiEnhancerCaller(mergedPeaks, 10000, tissueList(1:end-
 load('../data/multiEnhancers.mat');
 k = 40
 mainRealData(multiEnhancers, 4, k, false, true, false);
-
-mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized.mat');
 
 
 mergedPeaksMin =

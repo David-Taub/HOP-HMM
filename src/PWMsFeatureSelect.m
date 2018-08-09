@@ -14,10 +14,9 @@ function selectedPWMs = PWMsFeatureSelect(mergedPeaksMin, tissueList, PWMs, leng
     end
 
     dataset = preprocess(mergedPeaksMin, tissueList);
-    % TODO: add background to the sequences
 
     % m x k
-    aucRocs = oneVsAllAucRoc(dataset.X, dataset.Y, m, k, PWMs, lengths);
+    aucRocs = misc.oneVsAllAucRoc(dataset.X, dataset.Y, m, k, PWMs, lengths);
     [aucRocsSorted, aucRocsSortedInd] = sort(aucRocs, 2, 'descend');
     % m x BEST_PWM_TO_CHOOSE_PER_TISSUE
     selectedPWMs = aucRocsSortedInd(:, 1:BEST_PWM_TO_CHOOSE_PER_TISSUE);
@@ -35,24 +34,6 @@ function selectedPWMs = PWMsFeatureSelect(mergedPeaksMin, tissueList, PWMs, leng
     fprintf('Saved feature selected PWMs in %s\n', selectedPWMsFilepath);
 end
 
-function aucRocs = oneVsAllAucRoc(X, Y, m, k, PWMs, lengths)
-    expected_num_of_peaks_in_seq = 2;
-    n = 4;
-    aucRocs = zeros(m, k);
-    Xs1H = matUtils.mat23Dmat(X, n);
-    for pwmId = 1:k
-        PWMLogLike = misc.PWMLogLikelihood(PWMs, lengths, Xs1H, pwmId);
-        for tissueID = 1:m
-            tissueMask = Y(:,1) == tissueID;
-            % N x L
-            pos = misc.maxN(PWMLogLike(tissueMask, :), 2, expected_num_of_peaks_in_seq);
-            neg = misc.maxN(PWMLogLike(~tissueMask, :), 2, expected_num_of_peaks_in_seq);
-            aucRocs(tissueID, pwmId) = matUtils.getAucRoc(pos(:), neg(:), false, true);
-            [v, i] = max(aucRocs(:));
-            fprintf('Best 1vsAll AucRocs for tissue %d of PWM %d is %.2f / %.2f (%d)\n', tissueID, pwmId, aucRocs(tissueID, pwmId), v, i);
-        end
-    end
-end
 
 
 function dataset = preprocess(mergedPeaksMin, tissueList)
