@@ -1,3 +1,4 @@
+% sample sequences, draw colorful plots with what the algorithm guessed and the correct state per letter
 % certainty - N x L
 % Y - N x L
 %posterior - N x m x L
@@ -33,7 +34,7 @@ function seqSampleCertainty(params, Y, gamma, psi, sequencesToShow, showFirst)
         YOneHot = matUtils.vec2mat(Y(inds(i), :), params.m);
         % m x L
         repCertainty = YOneHot .* repmat(certainty(inds(i), :), [params.m, 1]);
-        % 2*m x L
+        % 2 * m x L
         repCertainty = [repCertainty; (1-repCertainty) .* double(repCertainty~=0)];
         bar(1:L, repCertainty', 1, 'stacked')
         ylabel(['Seq ', num2str(inds(i))]);
@@ -54,7 +55,7 @@ function seqSampleCertainty(params, Y, gamma, psi, sequencesToShow, showFirst)
         set(p, {'Color'}, cellJet)
         hold off;
     end
-    legendStrings = strcat({'Tissue Type '}, num2str([1:params.m-1]'));
+    legendStrings = strcat({'Tissue Type '}, num2str([1:params.m-params.backgroundAmount]'));
     legendStrings{params.m} = 'Background';
     legendStrings{params.m+1} = 'Error';
     legend(legendStrings);
@@ -65,7 +66,7 @@ function rotateYLabel()
     ylh = get(gca,'ylabel');
     gyl = get(ylh);
     ylp = get(ylh, 'Position');
-    set(ylh, 'Rotation',0, 'Position',ylp, 'VerticalAlignment','middle', 'HorizontalAlignment','right')
+    set(ylh, 'Rotation', 0, 'Position', ylp, 'VerticalAlignment', 'middle', 'HorizontalAlignment', 'right')
 end
 
 % posterior - N x m x L

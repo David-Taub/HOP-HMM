@@ -7,10 +7,11 @@ function pretrain(mergedPeaksMin, k, tissueList, backgroundIndex)
     doResample = false;
     doESharing = false;
     m = 2;
-    params = misc.genParams(m, k);
+    params = misc.genParams(m, k, 1);
     params.NperTissue = 1000;
     maxIters = 1000;
-    paramsTotal = misc.genParams(length(tissueList) + 1, k);
+    backgroundAmount = 2;
+    paramsTotal = misc.genParams(length(tissueList) + backgroundAmount, k);
     totalTheta = misc.genTheta(paramsTotal, true);
     for i = 1:length(tissueList)
         fprintf('Pre training tissue %d vs background\n', tissueList(i))

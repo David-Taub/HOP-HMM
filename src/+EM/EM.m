@@ -52,13 +52,13 @@ function [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, in
         % drawStatus(theta, params, alpha, beta, gamma, pX, xi, psi);
         if doESharing
             % theta.E = log(repmat(mean(exp(theta.E), 1), [params.n, ones(1, params.order)]));
-            theta.E(1:end-1, :) = repmat(log(mean(exp(theta.E(1:end-1, :)), 1)), [params.n-1, 1]);
+            theta.E(1:end - params.backgroundAmount, :) = repmat(log(mean(exp(theta.E(1:end - params.backgroundAmount, :)), 1)), [params.n - params.backgroundAmount, 1]);
         end
         fprintf('. ');
         theta.startT = updateStartT(gamma);
         [theta.G, theta.T, theta.startT] = updateGT(params, theta, xi, gamma, psi, doResample, doBound);
         iterLike(end+1) = matUtils.logMatSum(pX, 1);% / (N*L);
-        
+
         assert(not(any(isnan(theta.T(:)))))
         assert(not(any(isnan(theta.E(:)))))
         assert(not(any(isnan(theta.G(:)))))

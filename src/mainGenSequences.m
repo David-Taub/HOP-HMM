@@ -48,7 +48,7 @@ function G = genHumanG(params)
     BACKGROUND_G_NOISE = 0.0005;
     NUM_OF_NONZEROS = 1;
     G = zeros(params.m, params.k);
-    for i = 1:params.m
+    for i = 1:params.m - params.backgroundAmount
         % G(i, :) = mod(1:params.k, params.m) == (i-1);
         G(i, :) = eps;
         % G(i, datasample(1:params.k, NUM_OF_NONZEROS)) = 1;
@@ -63,7 +63,7 @@ end
 
 function startT = genHumanStartT(params, mixed)
     if mixed
-        startT = log([ones(params.m-1, 1)*eps; 1-(params.m-1)*eps]);
+        startT = log([ones(params.m - params.backgroundAmount, 1) * eps; ones(params.backgroundAmount, 1) * (1 - (eps * (params.m - params.backgroundAmount))) / params.backgroundAmount]);
     else
         startT = log(ones(params.m, 1) ./ params.m);
     end

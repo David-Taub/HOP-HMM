@@ -1,4 +1,4 @@
-
+% this code is very dirty it is built out of heuristics that help the algorithm converge to the correct result
 % G - m x k
 % T - m x m
 function [G, T, startT] = GTbound(params, G, T, doResample)
@@ -9,15 +9,7 @@ function [G, T, startT] = GTbound(params, G, T, doResample)
     T = exp(T);
     originG = G;
     originT = T;
-    if doResample
-        G = makeDifferent(params, G);
-    end
 
-    fprintf('\n')
-    for i=1:params.m
-        fprintf('original: 1/1-T - %.2f 1/sum(G) - %.2f\n', 1./(1 - T(i, i)), 1./(sum(G(i, :), 2)))
-    end
-    % [G, T] = balanceGTweights(params, G, T);
 
     params.maxT < T
     params.minT > T
@@ -34,23 +26,17 @@ function [G, T, startT] = GTbound(params, G, T, doResample)
         T = T ./ repmat(s, [1, params.m]);
         G = G ./ repmat(s, [1, params.k]);
     end
-    % T = T + diag(1 - s);
 
-    for i=1:params.m
-        fprintf('balanceGTweights:  1/1-T - %.2f 1/sum(G) - %.2f\n', 1./(1 - T(i, i)), 1./(sum(G(i, :), 2)))
+    if doResample
+        G = makeDifferent(params, G);
     end
+    % [G, T] = balanceGTweights(params, G, T);
     % T = limitTDiag(params, T);
-
-    % for i=1:params.m
-    %     fprintf('limitTDiag:  1/1-T - %.2f 1/sum(G) - %.2f\n', 1./(1 - T(i, i)), 1./(sum(G(i, :), 2)))
-    % end
     T = limitCrossEnhancers(params, T, params.PCrossEnhancers);
 
-    % for i=1:params.m
-    %     fprintf('limitCrossEnhancers:  1/1-T - %.2f 1/sum(G) - %.2f\n', 1./(1 - T(i, i)), 1./(sum(G(i, :), 2)))
-    % end
-
-    startT = [ones(params.m-1, 1) * eps; 1 - (eps * (params.m - 1))];
+    % force always start in one of the backgrounds modes
+    startT = [ones(params.m - params.backgroundAmount, 1) * eps; ones(params.backgroundAmount, 1) * (1 - (eps * (params.m - params.backgroundAmount))) / params.backgroundAmount];
+    fprintf('%d/%d (G) and %d/%d (T) changed in bounding process\n', sum(sum(originG ~= G, 2), 1), params.m * params.k, sum(sum(originT ~= T, 2), 1), params.m ^ 2);
     G = log(G);
     T = log(T);
     startT = log(startT);
@@ -72,37 +58,39 @@ function G = makeDifferent(params, G)
         end
     end
 end
-% T - m x m
-function T = limitTDiag(params, T)
-    for i = 1 : params.m - 1
-        % limits enhancer length
-        T = makeDiagonalDominant(params, T, i, params.m, params.PEnhancerToBackground);
-        for j = 1 : params.m - 1
-            % limits cross enhancers occurrences
-            T = makeDiagonalDominant(params, T, i, j, params.PCrossEnhancers);
-        end
-    end
-    for j = 1 : params.m - 1
-        % limits background length
-        T = makeDiagonalDominant(params, T, params.m, j, params.PBackgroundToEnhancer);
-    end
-end
 
-% T - m x m
-% transfers from T(i,j) to T(i,i)
-function T = makeDiagonalDominant(params, T, i, j, threshold)
-    if isExceedThreshold(params, threshold, T(i, j)) & i ~= j
-        T(i, i) = T(i, i) + T(i, j) - threshold;
-        T(i, j) = threshold;
-    end
-end
+% replaced with min max prob values scheme
+% % T - m x m
+% function T = limitTDiag(params, T)
+%     for i = 1 : params.m - params.backgroundAmount
+%         for t = 0 : params.backgroundAmount - 1
+%             % fix enhancer length
+%             T = makeDiagonalDominant(params, T, i, params.m - t, params.PEnhancerToBackground);
+%             % fix background length
+%             T = makeDiagonalDominant(params, T, params.m - t, i, params.PBackgroundToEnhancer);
+%         end
+%         for j = 1 : params.m - params.backgroundAmount
+%             % limits cross enhancers occurrences
+%             T = makeDiagonalDominant(params, T, i, j, params.PCrossEnhancers);
+%         end
+%     end
+% end
+
+% % T - m x m
+% % transfers from T(i,j) to T(i,i)
+% function T = makeDiagonalDominant(params, T, i, j, threshold)
+%     if isExceedThreshold(params, threshold, T(i, j)) & i ~= j
+%         T(i, i) = T(i, i) + T(i, j) - threshold;
+%         T(i, j) = threshold;
+%     end
+% end
 
 
 % T - m x m
 % transfers from T(i,j) to T(i,i)
 function T = limitCrossEnhancers(params, T, threshold)
-    for i = 1:params.m - 1
-        for j = 1:params.m - 1
+    for i = 1:params.m - params.backgroundAmount
+        for j = 1:params.m - params.backgroundAmount
             if j == i
                 continue;
             end
@@ -114,21 +102,22 @@ function T = limitCrossEnhancers(params, T, threshold)
     end
 end
 
-% G - m x k
-% T - m x m
-function [G, T] = balanceGTweights(params, G, T)
-    for i = 1:params.m - 1
-        if isExceedThreshold(params, params.PTotalBaseToSub, sum(G(i, :), 2))
-            G(i, :) = G(i, :) .* (params.PTotalBaseToSub / sum(G(i, :), 2));
-            T(i, :) = T(i, :) .* ((1-params.PTotalBaseToSub) / (sum(T(i, :), 2) + eps));
-        end
-    end
-    % make background with eps sub modes (motifs)
-    G(params.m, :) = G(params.m, :) .* ((params.k*eps) / sum(G(params.m, :), 2));
-    T(params.m, :) = T(params.m, :) .* ((1-(params.k*eps)) / (sum(T(params.m, :), 2) + eps));
-end
+% % G - m x k
+% % T - m x m
+% function [G, T] = balanceGTweights(params, G, T)
+%     for i = 1:params.m - 1
+%         if isExceedThreshold(params, params.PTotalBaseToSub, sum(G(i, :), 2))
+%             G(i, :) = G(i, :) .* (params.PTotalBaseToSub / sum(G(i, :), 2));
+%             T(i, :) = T(i, :) .* ((1-params.PTotalBaseToSub) / (sum(T(i, :), 2) + eps));
+%         end
+%     end
+%     % make background with eps sub modes (motifs)
+%     G(params.m, :) = G(params.m, :) .* ((params.k*eps) / sum(G(params.m, :), 2));
+%     T(params.m, :) = T(params.m, :) .* ((1-(params.k*eps)) / (sum(T(params.m, :), 2) + eps));
+% end
 
-function res = isExceedThreshold(params, thresh, val)
-    res = abs(val - thresh) > thresh * params.maxPRatio;
-end
+% function res = isExceedThreshold(params, thresh, val)
+%     res = val > thresh * params.maxPRatio || val < tresh / params.maxPRatio;
+%     % res = abs(val - thresh) > thresh * params.maxPRatio;
+% end
 

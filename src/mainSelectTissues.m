@@ -1,3 +1,5 @@
+% for each couple of tissue, we take sequences that are unique to the tissues and background sequences
+then we choose the PWM with the max AucRoc and keep the
 function tissueList = mainSelectTissues(mergedPeaksMin, backgroundIndex, m)
     dbstop if error
     figure;
