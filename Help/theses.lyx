@@ -94,22 +94,6 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-Recent new techniques for high throughput sequencing.
- Little is currently known on regulation sequences.
-\end_layout
-
-\begin_layout Standard
-Levin, blue mice researches, showed that insertion of a sequence without
- any epigenetic information will activate an enhancer with a near by blue
- coloring gene.
-\end_layout
-
-\begin_layout Standard
-This implies that for some enhancers, the sequence and the location of the
- enhancer & gene is enough for activation regulation.
-\end_layout
-
-\begin_layout Standard
 The TF inside the nucleus of specific tissues are thought to be a key factor
  in the activation of specific enhancer.
  The TFs form a transcription complex and are connected to the enhancer
@@ -136,6 +120,242 @@ backgound
  to classify cell-specific sequences, inside regulatory modules.
 \end_layout
 
+\begin_layout Section*
+Background
+\end_layout
+
+\begin_layout Standard
+[description of enhancers, target genes and DNA folding]
+\end_layout
+
+\begin_layout Standard
+Enhancers are non-coding regulatory DNA sequences that are responsible for
+ regulating gene expression.
+ They are usually between 100-1000 bp, and when 
+\begin_inset Quotes eld
+\end_inset
+
+active
+\begin_inset Quotes erd
+\end_inset
+
+ due to various epi-genetic conditions, the DNA folding draws the enhancers
+ spatially closer to different regulatory sequences called promotors.
+ The promotors are adjacent to genes, and could be up to a megabase upstream
+ or downstream and orientation independent to the enhancer and are usually
+ in the same TAD as the enhancer.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+[TFs, cofactors and PIC]
+\end_layout
+
+\begin_layout Standard
+In both enhancers and to the promoters elements there are binding sites
+ for TFs.
+ Binding sites are a short series nucleotides usually between 5 to 8, sometimes
+ with gaps, of which are motifs typical for a TF or a TF group.
+ Multiple studies shows that genetic alternations in these elements, in
+ some cases as little as a SNP, might affect the expression of it's target
+ gene and are a major cause of human diseases (reviewed in I.
+ Miguel-Escalada 2015) [examples: (Soldner F.
+ 2016, Smemo S.
+ 2012, Benko S.
+ 2009, E.
+ S.
+ Emison, 2005, Lettice L.A 2003].
+ When the DNA is folded to allow the enhancer and promotor to interact,
+ other cofactors proteins are recruited to the TFs and cause nearby chromatin
+ modification and transcription activation.
+ The TFs, cofactors form a transcription preinitiation complex (PIC) which
+ is a very large assemblies of proteins, more than hundred in humans, that
+ recruit the RNA Polymerase (RNA pol II) to invokes the transcription process
+ of the adjacent gene: it opens the double stranded DNA, so that one strand
+ of nucleotides is exposed and becomes a template for RNA synthisation.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+[enhancer status, chromatine methylation and accessibility] 
+\end_layout
+
+\begin_layout Standard
+Cells of different types and in different operation modes differ by gene
+ expression patterns that is regulated by enhancers and promotors activity
+ patterns.
+ The activity status of enhancers is connected to multiple factors that
+ are detectable on a genome scale.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Chromatin modifications signatures, or 
+\begin_inset Quotes eld
+\end_inset
+
+histone marks
+\begin_inset Quotes erd
+\end_inset
+
+ are predictive of enhancer position and activity status and can be assessed
+ by chromatin immunoprecipitation followed by deep sequencing (ChIP–seq).
+ H3k4me1 and H3k27ac are among the predominant histone marks of active enhancers
+, where H3k4me1 are enriched on transcribed genes and 
+\begin_inset Quotes eld
+\end_inset
+
+primed
+\begin_inset Quotes erd
+\end_inset
+
+ enhancers prior activation (calo et al 2013), and is thought to precede
+ the H3k27ac modification (Creyghton et al., 2010; Rada-Iglesias et al., 2011;
+ Zentner et al., 2011) which is known to occur during the activation.
+ Other histone marks that are present on active enhancers and are used for
+ their detection are H3k9ac (Ernst et al., 2011; Karmodiya et al., 2012; Krebs
+ et al., 2011; Zentner et al., 2011) and H3K18ac (Jin et al., 2011).
+ 
+\begin_inset Newline newline
+\end_inset
+
+Even though H3k27ac have been identified as an important mark for distinguishing
+ active enhancers from poised enhancers (Creyghton et al.
+ 2010), it is not enough as its own since when present alongside H3k4me3
+ it is an indication for active promotors [Heintzman et al., 2007].
+ In contrast, H3k27ac absence and H3k4me1and H3k27me3 enrichment are typical
+ for poised enhancers (Creyghton et al, 2010).
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+DNA methylation at 5-methycytosine has been involved in genome silencing
+ in multiple processes (Jones, 2012), and has beed documented as largely
+ correlated with gene expression inhibition when present in promotors.
+ In enhancer elements, anticorrelation was found between DNA methylation
+ density and enrichment of active enhancer histone marks (Koch and Andrau,
+ 2011; Schmidl et al., 2009; Stadler et al., 2011; Thurman et al., 2012) and
+ TF binding (Neph et al., 2012; Stadler et al., 2011; Thurman et al., 2012),
+ although the cause and consequence relationship underlying these correlations
+ is not yet clear.
+ Since the scenario of TF binding on an enhancer requires an accessible
+ DNA region, DNase I hypersensative sites are used for detecting a potential
+ DNA cleavages that have the potential of being regulatory elements, in
+ usually a better resolution than histone marks.
+\end_layout
+
+\begin_layout Standard
+[importance of TFBS, genetic diseases]
+\end_layout
+
+\begin_layout Standard
+In recent years, thousands of enhancers DNA sequences have been annotated
+ in multiple organisms, and it was shown [citation: blue mice vista, ...] that
+ the presence and accessibility of the TFBS is critical for the active regulator
+y capability of an enhancer.
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+[kmers, gc]
+\end_layout
+
+\begin_layout Standard
+Enhancers sequences has different nucleotides distribution than promotors,
+ genes and other parts of the genome.
+ This difference is noticeable even in kmer distribution, which is the distribut
+ion of different amount of preceding nucleotides up until 6.
+\end_layout
+
+\begin_layout Standard
+k-mer frequencies varies between enhancers and non regulatory 
+\begin_inset Quotes eld
+\end_inset
+
+backgound
+\begin_inset Quotes erd
+\end_inset
+
+ DNA, and was used to classify enhancers from backgound using only the k-mer
+ distribution (Inbar and tomy, gkm-SVM), 
+\end_layout
+
+\begin_layout Standard
+[problems with epigenetic data to identify enhancers]
+\end_layout
+
+\begin_layout Standard
+[Levin, VISTA] experiments shows that insertion of a sequence without any
+ epigenetic information will activate an enhancer with a near by blue coloring
+ gene.
+ This implies that for the newly introduced sequences to operate as an enhancer
+ and target gene, all that is needed is its sequence in arbitrary location
+ without additional epigenetic information.
+\end_layout
+
+\begin_layout Standard
+From (C.
+ Bessière et al 2018, 
+\begin_inset Quotes eld
+\end_inset
+
+Probing instructions for expression regulation in gene nucleotide compositions
+\begin_inset Quotes erd
+\end_inset
+
+):
+\end_layout
+
+\begin_layout Standard
+\begin_inset Quotes eld
+\end_inset
+
+Several approaches have tackled this problem by modeling gene expression
+ based on epigenetic marks, with the ultimate goal of identifying driving
+ regions and associated genomic variations that are clinically relevant
+ in particular in precision medicine.
+ However, these models rely on experimental data, which are limited to specific
+ samples (even often to cell lines) and cannot be generated for all regulators
+ and all patients.
+ In addition, we show here that, although these approaches are accurate
+ in predicting gene expression, inference of TF combinations from this type
+ of models is not straightforward.
+ Furthermore these methods are not designed to capture regulation instructions
+ present at the sequence level, before the binding of regulators or the
+ opening of the chromatin.
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+[identification of enhancers from sequence]
+\end_layout
+
+\begin_layout Standard
+[sequence classification, generative models, HMM]
+\end_layout
+
+\begin_layout Standard
+[sequences that could have been generated by HOP-HMM]
+\end_layout
+
 \begin_layout Standard
 [PWMs and motif to classify tissue specific enhancers]
 \end_layout
@@ -154,115 +374,6 @@ backgound
 
 \begin_layout Standard
 [Why the HOP-HMM approach to the problem differently]
-\end_layout
-
-\begin_layout Section*
-Background
-\end_layout
-
-\begin_layout Standard
-[description of enhancers, target genes and DNA folding]
-\end_layout
-
-\begin_layout Standard
-Enhancers are non-coding regulatory DNA sequences that are responsible of
- regulating gene expression.
- It is now well acknowledged that enhancer play an essential role in cell
- specific gene expression, altough Enhancer are the focus of much interest
- since methods of high throughput DNA sequencing became more available,
- although their mechanism and identification in the DNA is still not completely
- understood.
- They are short sequences, usually between 100-1000 bp, and when active,
- due to the DNA 3D folding they become spatially closer to other sequences
- called promotors which are adjacent to a gene.
- amd could be up to a megabase upstream or downstream and orientation independen
-t of the enhancer.
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-[enhancer status, chromatine methylation and accessibility]
-\end_layout
-
-\begin_layout Standard
-It is known that multiple elements affect the activeness status of an enhancer
- and its promotor: accessibility of the sequences, the presence of TFs in
- the cell, histone modifications near the sequence, methilation in CpG sites
- on and next the sequence and the TAD confirmation.
-\end_layout
-
-\begin_layout Standard
-[TFs, cofactors and PIC]
-\end_layout
-
-\begin_layout Standard
-TFs bind both to the enhancers and to the promoters elements in specific
- locations in their sequences called TFBSs, which are motifs which are typical
- for a TF or a TF group.
- When the DNA is folded to allow the enhancer and promotor to interact,
- other cofactors proteins join upon attached TFs to form the transcription
- preinitiation complex (PIC).
- PIC are a very large assemblies of proteins, more than hundred in humans,
- which recruit the RNA Polymerase (RNA pol II) an enzyme which invokes the
- transcription process of the adjacent gene: it opens the double stranded
- DNA, so that one strand of exposed nucleotides becomes a template for RNA
- synthisation.
- 
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-[importance of TFBS, genetic diseases]
-\begin_inset Newline newline
-\end_inset
-
-In recent years, thousands of enhancers DNA sequence have been annotated
- in multiple organisms, and it was shown [citation: blue mice vista, ...] that
- the presence and accessibility of the TFBS is critical for the regulatory
- capability of enhancer elements.
- Multiple studies shows that genetic alternations in these elements, in
- some cases as little as a SNP, might affect the expression of it's target
- gene and are a major cause of human diseases 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Soldner"
-
-\end_inset
-
-[more citations needed].
- 
-\end_layout
-
-\begin_layout Standard
-
-\bar under
-[kmers, gc]
-\end_layout
-
-\begin_layout Standard
-[epigenetic data to identify enhancers]
-\end_layout
-
-\begin_layout Standard
-[identification of enhancers from sequence]
-\end_layout
-
-\begin_layout Standard
-[sequence classification, generative models, HMM]
-\end_layout
-
-\begin_layout Standard
-[sequences that could have been generated by HOP-HMM]
-\begin_inset Newline newline
-\end_inset
-
- 
 \begin_inset Newline newline
 \end_inset
 
