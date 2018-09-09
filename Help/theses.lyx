@@ -129,25 +129,66 @@ Background
 \end_layout
 
 \begin_layout Standard
-Enhancers are non-coding regulatory DNA sequences that are responsible for
- regulating gene expression.
- They are usually between 100-1000 bp, and when 
+Enhancers are non-coding regulatory DNA sequences that play a key role in
+ the regulation of gene expression.
+ In humans there are hundreds of thousands of enhancers, scattered in 98%
+ of the non-coding regions of the genome, and they are usually between 100-1000
+ bp long.
+ When activated, the DNA folding draws the enhancer spatially closer to
+ a regulatory element called promotor, resulting in the translation of a
+ gene adjacent to the promotor.
+ The enhancer's 
 \begin_inset Quotes eld
 \end_inset
 
-active
+target gene
 \begin_inset Quotes erd
 \end_inset
 
- due to various epi-genetic conditions, the DNA folding draws the enhancers
- spatially closer to different regulatory sequences called promotors.
- The promotors are adjacent to genes, and could be up to a megabase upstream
- or downstream and orientation independent to the enhancer and are usually
- in the same TAD as the enhancer.
-\begin_inset Newline newline
-\end_inset
+ (or target genes) is the expressed gene from this activation process.
+ It can be located up to a megabase upstream or downstream from their activating
+ enhancer (or enhancers), and are orientation independent to it.
+ 
+\end_layout
 
+\begin_layout Standard
+[TADs]
+\end_layout
 
+\begin_layout Standard
+Hi-C are techniques for measuring the spatial organization of chromatin
+ in the nucleus.
+ These procedures measure the number of occurrences were genome loci are
+ in proximity.
+ In recent years, Hi-C data was generated from multiple organisms (Dixon,
+ J.
+ R.
+ et al.
+ 2012; Rao, S.
+ S.
+ P.
+ et al.
+ 2014; Dixon, J.
+ R.
+ et al.
+ 2015; Sexton, T.
+ et al.
+ 2012), and shown that the genome is partitioned into topologically associating
+ domains (TADs), mostly under 10 mb long (F.
+ Ramírez 2018).
+ Within TADs sequence to sequence interaction are more frequent.
+ TADs boundaries are enriched with DNA-biding protein motifs, and their
+ location play a significant role in gene regulation.
+ Gene-enhancer interactions occur when both are in the same TAD, and deletion
+ of the motifs from TAD's boundaries may cause changes in the gene activation
+ leading to developmental abnormalities in mouse embryos (Lupiáñez DG, et
+ al.
+ 2015).
+ It has been argued (S.
+ Kadauke 2018) that the TADs are dynamic throughout the cell's life cycle,
+ and with the change of the TADs structure the enhancer-gene activation
+ couples may vary as well, suggesting the target gene is not predetermined
+ by the the enhancer's sequence.
 \end_layout
 
 \begin_layout Standard
@@ -155,27 +196,31 @@ active
 \end_layout
 
 \begin_layout Standard
-In both enhancers and to the promoters elements there are binding sites
- for TFs.
- Binding sites are a short series nucleotides usually between 5 to 8, sometimes
- with gaps, of which are motifs typical for a TF or a TF group.
- Multiple studies shows that genetic alternations in these elements, in
- some cases as little as a SNP, might affect the expression of it's target
- gene and are a major cause of human diseases (reviewed in I.
+TF usually bind to motifs on the DNA, which are short series of nucleotides,
+ sometimes with gaps called TFBS.
+ TFBSs are common in enhancer and promoter elements, and they are good predictor
+s for enhancers location and the type of cell it will be active in.
+\end_layout
+
+\begin_layout Standard
+Multiple studies have shown that genetic alternations in TFBS can affect
+ the expression of its target gene and are a major cause of human diseases
+ (reviewed in I.
  Miguel-Escalada 2015) [examples: (Soldner F.
  2016, Smemo S.
  2012, Benko S.
  2009, E.
  S.
  Emison, 2005, Lettice L.A 2003].
- When the DNA is folded to allow the enhancer and promotor to interact,
- other cofactors proteins are recruited to the TFs and cause nearby chromatin
- modification and transcription activation.
- The TFs, cofactors form a transcription preinitiation complex (PIC) which
- is a very large assemblies of proteins, more than hundred in humans, that
- recruit the RNA Polymerase (RNA pol II) to invokes the transcription process
- of the adjacent gene: it opens the double stranded DNA, so that one strand
- of nucleotides is exposed and becomes a template for RNA synthisation.
+ Folding of DNA allows the enhancer-promotor interactions, and recruiting
+ of other cofactor proteins to the already bounded TFs.
+ Some of the recruited cofactors cause nearby chromatin modification and
+ transcription activation.
+ The TFs and cofactors form a transcription preinitiation complex (PIC)
+ which is a very large assembly of proteins (more than one hundred in humans)
+ that recruit the RNA Polymerase (RNA pol II) to invokes the transcription
+ process of the adjacent gene: it opens the double stranded DNA, so that
+ one strand of nucleotides is exposed and becomes a template for RNA synthesis.
  
 \begin_inset Newline newline
 \end_inset
@@ -189,7 +234,7 @@ In both enhancers and to the promoters elements there are binding sites
 
 \begin_layout Standard
 Cells of different types and in different operation modes differ by gene
- expression patterns that is regulated by enhancers and promotors activity
+ expression patterns that are regulated by enhancers and promotors activity
  patterns.
  The activity status of enhancers is connected to multiple factors that
  are detectable on a genome scale.
@@ -210,7 +255,11 @@ histone marks
 \end_inset
 
  are predictive of enhancer position and activity status and can be assessed
- by chromatin immunoprecipitation followed by deep sequencing (ChIP–seq).
+ by chromatin immunoprecipitation followed by deep sequencing (ChIP–seq)
+ (Visel et al.
+ 2009; Firbi et al.
+ 2010; Fernandez et al.
+ 2012) .
  H3k4me1 and H3k27ac are among the predominant histone marks of active enhancers
 , where H3k4me1 are enriched on transcribed genes and 
 \begin_inset Quotes eld
@@ -244,7 +293,7 @@ Even though H3k27ac have been identified as an important mark for distinguishing
 \end_inset
 
 DNA methylation at 5-methycytosine has been involved in genome silencing
- in multiple processes (Jones, 2012), and has beed documented as largely
+ in multiple processes (Jones, 2012), and has been documented as largely
  correlated with gene expression inhibition when present in promotors.
  In enhancer elements, anticorrelation was found between DNA methylation
  density and enrichment of active enhancer histone marks (Koch and Andrau,
@@ -259,40 +308,46 @@ DNA methylation at 5-methycytosine has been involved in genome silencing
 \end_layout
 
 \begin_layout Standard
-[importance of TFBS, genetic diseases]
-\end_layout
-
-\begin_layout Standard
-In recent years, thousands of enhancers DNA sequences have been annotated
- in multiple organisms, and it was shown [citation: blue mice vista, ...] that
- the presence and accessibility of the TFBS is critical for the active regulator
-y capability of an enhancer.
-\end_layout
-
-\begin_layout Standard
 
 \bar under
-[kmers, gc]
+[ inter TFBS sequence, Conservation]
 \end_layout
 
 \begin_layout Standard
-Enhancers sequences has different nucleotides distribution than promotors,
- genes and other parts of the genome.
- This difference is noticeable even in kmer distribution, which is the distribut
-ion of different amount of preceding nucleotides up until 6.
+Conserved non-coding elements (CNE) reside in clusters, usually with low
+ gene density but with vicinity to genes.
+ Typically, CNE are structured in arrays called GRB, with a mean length
+ of 1.4 Mb (X.
+ Dong et al.
+ 2009).
+ The correlation between conservation of non-coding region and enhancer
+ functionality is not strong.
+ Some verified enhancers are weakly or not conserved between distant species
+ (M.
+ Friedli et al.2010; J.M.
+ Rosin et al.
+ 2013; L.
+ Taher 2011; D Boffelli, 2004, K.
+ Lindblad-Toh 2011) and some highly conserved areas in the mouse genome
+ are not associated to regulatory activity and their deletion and yielded
+ viable mice (N.
+ Ahituv et al.
+ 2007).
+ Nevertheless, an assay of elements with 100% sequence identity of over
+ 200 bp between human and mouse found that 50% showed enhancers activity
+ in mice (Visel et al., 2007).
+ The reason for such ultra-conservation of 200 bp sequences when the TFBS
+ is only 4-8 bp long is unclear.
+ It is possible that these conserved sequences are actually long assembly
+ of overlapping TFBS or that the enhancer has another function as a eRNA,
+ that the exact nature of its mechanisms is no understood (M.
+ Haeussler 2011, Andersson et al.
+ 2014).
+ 
 \end_layout
 
 \begin_layout Standard
-k-mer frequencies varies between enhancers and non regulatory 
-\begin_inset Quotes eld
-\end_inset
-
-backgound
-\begin_inset Quotes erd
-\end_inset
-
- DNA, and was used to classify enhancers from backgound using only the k-mer
- distribution (Inbar and tomy, gkm-SVM), 
+TODO: add a word on conservation of TFBS
 \end_layout
 
 \begin_layout Standard
@@ -300,12 +355,122 @@ backgound
 \end_layout
 
 \begin_layout Standard
-[Levin, VISTA] experiments shows that insertion of a sequence without any
- epigenetic information will activate an enhancer with a near by blue coloring
- gene.
+The currently most accurate method for predicting the location of tissue
+ specific enhancers, is analyzing the histone marks and TF and cofactors
+ presence using ChIP-seq from a cell line or from a tissue, combined with
+ DNase I hypersensative (DHS).
+ The main disadvantage of this method is this process is inherently limited
+ to the tissues we can extract and isolate for the epi-genetic examination.
+ Another disadvantage of this method is the need for live cells for the
+ verification of the regulatory activity of a sequence.
+ The persecute for an efficient computational method for predicting the
+ functional nature of sequences 
+\begin_inset Quotes eld
+\end_inset
+
+in-silico
+\begin_inset Quotes erd
+\end_inset
+
+ has produced positive, yet far from sufficient results in the last years,
+ as reviewed in (D.
+ Kleftogiannis et al.
+ 2016).
+\end_layout
+
+\begin_layout Standard
+[deep learning]
+\end_layout
+
+\begin_layout Standard
+There are several impressing results of predicting epi-genetic properties
+ of DNA elements given only their sequence using machine learning algorithms.
+ DeepSEA predicts chromatin modifications given a sequence, from which a
+ regulatory activity could be deduced, and Basset and deltaSVM predicts
+ accessibility.
+ The disadvantage of these method is their need for a training data of known
+ regulatory elements, which are known mainly from GWAS surveys done on 127
+ obtained human cell types in the Roadmap and ENCODE projects (Kundaje et
+ al.
+ 2015; Ernst et al.
+ 2011).
+ The number of different cell types in the human body is estimated to be
+ higher than 2200 (Hatano et al.
+ 2011, Diehl et al.
+ 2016), where then number and location of tissue specific enhancers of the
+ rest of the cell types is a mystery.
+\end_layout
+
+\begin_layout Standard
+[HMM]
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+[gkm-SVM]
+\end_layout
+
+\begin_layout Standard
+[sequence classification, generative models, HMM]
+\end_layout
+
+\begin_layout Standard
+[sequences that could have been generated by HOP-HMM]
+\end_layout
+
+\begin_layout Standard
+[PWMs and motif to classify tissue specific enhancers]
+\end_layout
+
+\begin_layout Standard
+[k-mer to classify tissue specific enhancers]
+\end_layout
+
+\begin_layout Standard
+[HMM to classify tissue specific enhancers]
+\end_layout
+
+\begin_layout Standard
+[other machine learning work to classify tissue specific enhancers]
+\end_layout
+
+\begin_layout Standard
+[Why the HOP-HMM approach to the problem differently]
+\end_layout
+
+\begin_layout Standard
+[other stories]
+\end_layout
+
+\begin_layout Standard
+There are other mechanisms and non classic scenarios that involve enhacners:
+ are intergenic enhancers, very long enhancers
+\end_layout
+
+\begin_layout Standard
+TODO: k-mer frequencies varies between enhancers and non regulatory 
+\begin_inset Quotes eld
+\end_inset
+
+background
+\begin_inset Quotes erd
+\end_inset
+
+ DNA, and was used to classify enhancers from backgound using only the k-mer
+ distribution (Inbar and Tommy), 
+\end_layout
+
+\begin_layout Standard
+TODO: [Levin, VISTA] experiments shows that insertion of a sequence without
+ any epigenetic information will activate an enhancer with a near by blue
+ coloring gene.
  This implies that for the newly introduced sequences to operate as an enhancer
  and target gene, all that is needed is its sequence in arbitrary location
  without additional epigenetic information.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -339,42 +504,6 @@ Several approaches have tackled this problem by modeling gene expression
  present at the sequence level, before the binding of regulators or the
  opening of the chromatin.
 \begin_inset Quotes erd
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-[identification of enhancers from sequence]
-\end_layout
-
-\begin_layout Standard
-[sequence classification, generative models, HMM]
-\end_layout
-
-\begin_layout Standard
-[sequences that could have been generated by HOP-HMM]
-\end_layout
-
-\begin_layout Standard
-[PWMs and motif to classify tissue specific enhancers]
-\end_layout
-
-\begin_layout Standard
-[k-mer to classify tissue specific enhancers]
-\end_layout
-
-\begin_layout Standard
-[HMM to classify tissue specific enhancers]
-\end_layout
-
-\begin_layout Standard
-[other machine learning work to classify tissue specific enhancers]
-\end_layout
-
-\begin_layout Standard
-[Why the HOP-HMM approach to the problem differently]
-\begin_inset Newline newline
 \end_inset
 
 
