@@ -94,6 +94,10 @@ Introduction
 \end_layout
 
 \begin_layout Standard
+[TODO]
+\end_layout
+
+\begin_layout Standard
 The TF inside the nucleus of specific tissues are thought to be a key factor
  in the activation of specific enhancer.
  The TFs form a transcription complex and are connected to the enhancer
@@ -379,7 +383,7 @@ in-silico
 \end_layout
 
 \begin_layout Standard
-[deep learning]
+[machine learning]
 \end_layout
 
 \begin_layout Standard
@@ -406,7 +410,15 @@ There are several impressing results of predicting epi-genetic properties
 \end_layout
 
 \begin_layout Standard
-
+Multiple signal processing algorithms have been used in computational biology,
+ and HMM is especially popular among them.
+ Hidden Markov model (HMM) is a statistical model proposed by Leonard Baum
+ (Baum et al.
+ 1966) and is based on the Markov model for modeling regions with alternating
+ frequencies of patterns and symbols.It was used in various engineering fields
+ since the 1980s especially in speech recognition, character recognition
+ and digital communication and was adopted in the computational biology
+ field.
 \end_layout
 
 \begin_layout Standard
@@ -1583,17 +1595,6 @@ Discussion
 
 \begin_layout Section*
 References
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset bibtex
-LatexCommand bibtex
-bibfiles "Theses"
-options "plainnat"
-
-\end_inset
-
-
 \end_layout
 
 \end_body
