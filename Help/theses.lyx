@@ -737,7 +737,7 @@ ed model
 \begin_layout Standard
 \begin_inset Formula 
 \[
-argmax_{\theta}\mathcal{L}\left(\theta|\overrightarrow{X}^{N}\right)=argmax_{\theta}\sum_{i\in[N]}log\left(P_{\theta}(x_{i})\right)
+argmax_{\theta}\mathcal{L}\left(\theta;\overrightarrow{X}^{N}\right)=argmax_{\theta}\sum_{i\in[N]}log\left(P_{\theta}(x_{i})\right)
 \]
 
 \end_inset
@@ -753,7 +753,7 @@ argmax_{\theta}\mathcal{L}\left(\theta|\overrightarrow{X}^{N}\right)=argmax_{\th
 
 , we would like to find the posterior probability of each individual hidden
  state, 
-\begin_inset Formula $P_{\theta}\left(y_{t}|\overrightarrow{X}^{N}\right)$
+\begin_inset Formula $P_{\theta}\left(y_{i}|\overrightarrow{X}^{N}\right)$
 \end_inset
 
 
@@ -773,13 +773,13 @@ argmax_{\theta}\mathcal{L}\left(\theta|\overrightarrow{X}^{N}\right)=argmax_{\th
 \end_layout
 
 \begin_layout Standard
-Goal 1 can be achieved by using the Baum-Welch algorithm, named after Leonard
- E.
+Goal 1 and 2 can be achieved by using the Baum-Welch algorithm, named after
+ Leonard E.
  Baum and Lloyd R.
  Welch who developed it and the HMM it solves.
- It applies the well known EM algorithm to infer HMM parameters which improves
- model's parameters to maximize the likelihood relying on the posterior
- probability, and then calculates
+ The algorithm applies the well known EM algorithm to infer HMM parameters
+ and the posterior probability.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -808,6 +808,10 @@ n along this hidden sequence have a 0 probability.
 \end_layout
 
 \begin_layout Standard
+E-step:
+\end_layout
+
+\begin_layout Standard
 an EM iterative algorithm where in each iteration t the probability of being
  in a hidden state at position i is calculated 
 \begin_inset Newline newline
@@ -822,6 +826,10 @@ an EM iterative algorithm where in each iteration t the probability of being
 \end_inset
 
  
+\end_layout
+
+\begin_layout Standard
+M-step:
 \end_layout
 
 \begin_layout Standard
