@@ -200,15 +200,8 @@ Hi-C are techniques for measuring the spatial organization of chromatin
 \end_layout
 
 \begin_layout Standard
-The binding of TFs to the DNA is a basic and important component in DNA
- regulation.
- The mechanism involving the selective binding of TF to specific DNA sequences
- is still unknown (D Shlyueva, 2014; M Levo 2014).
- The most commonly used method to model the DNA-TF binding specificity,
- or TF binding site (TFBS), is position weight matrix (PWM) (G.
- D.
- Stromo, 2000) , which uses a matrix that holds the nucleotide probability
- per position.
+TF usually bind to motifs on the DNA, which are short series of nucleotides,
+ sometimes with gaps called TFBS.
  TFBSs are common in enhancer and promoter elements, and they are good predictor
 s for enhancers location and the type of cell it will be active in.
 \end_layout
@@ -476,12 +469,7 @@ background
 \end_inset
 
  DNA, and was used to classify enhancers from backgound using only the k-mer
- distribution (Inbar and Tommy), also add Remo Rohs paper on 3d shape of
- DNA near binding sites 
-\end_layout
-
-\begin_layout Standard
-TODO: add 
+ distribution (Inbar and Tommy), 
 \end_layout
 
 \begin_layout Standard
@@ -539,43 +527,24 @@ Methods
 \end_layout
 
 \begin_layout Standard
-Markov model is a stochastic model named after the Russian mathematician
- Andrey Markov who developed it (A.A.
- Markov, 1906).
- In this model, at any time the system is at one of 
-\begin_inset Formula $m$
-\end_inset
-
- states 
+Markov model (A.A.
+ Markov, 1906) is a stochastic model named after Andrey Markov a Russian
+ mathematician.
+ In a Markov model, at any time the system is at one of m states 
 \begin_inset Formula $\left\{ S_{1},...,S_{m}\right\} $
 \end_inset
 
-.
- The system travels over the states in a process called Markov process,
- and the sequence of states visited during this process is called a Makov
- chain.
- The first state in the Markov process is sampled from the model's stochastic
- vector 
-\begin_inset Formula $\pi,$
-\end_inset
-
- i.e.
- 
+, where the first state is sampled from a distribution 
 \begin_inset Formula $\pi_{i}=P\left(y_{0}=S_{i}\right)$
 \end_inset
 
- and the probability of a transitions between the states in each step is
- described by a stochastic matrix 
-\begin_inset Formula $T$
-\end_inset
-
- i.e.
- 
+ and the probability of transitions between the states is denoted by T 
 \begin_inset Formula $T_{i,j}=P\left(y_{t}=S_{i}|y_{t-1}=S_{j}\right)$
 \end_inset
 
 .
- 
+ The system's travel over the states is called a Markov process, and the
+ sequence of states visited in the process is called a Makov chain.
 \begin_inset Newline newline
 \end_inset
 
@@ -597,13 +566,12 @@ Markov model is a stochastic model named after the Russian mathematician
 
 \series bold
 \emph on
-Figure: Markov model with 4 states: 
+Figure: Markov model with 4 states, marked as 
 \begin_inset Formula $S_{1},S_{2},S_{3},S_{4}$
 \end_inset
 
- where all the possible transitions are marked.
- Two of all possible transition probabilities are written.
- The stochastic matrix T describes the transition distributions, where 
+ with two of all possible transition probabilities written.
+ T matrix describes the transition distributions, where 
 \begin_inset Formula $T_{i,*}$
 \end_inset
 
@@ -615,27 +583,21 @@ Figure: Markov model with 4 states:
 \end_layout
 
 \begin_layout Standard
-Hidden Markov model (HMM) is a system that passes between hidden states
- in a Markov process, and while doing so it emits variables called observed
+Hidden Markov model (HMM) is a system that travels over hidden states in
+ a Markov process, and while doing so it emits variables called observed
  variables.
- In this process, a single observed variable is emitted per system's step,
- and so the observed sequence is generated with the same length as the hidden
- Markov chain.
- For each emission an observed variable 
+ In this generation process, a single observed variable is emitted per system's
+ step, and so the observed sequence is generated with the same length as
+ the hidden Markov chain.
+ The observed variables 
 \begin_inset Formula $V_{1},...,V_{n}$
 \end_inset
 
- is sampled from an emission matrix 
-\begin_inset Formula $E$
-\end_inset
-
- i.e.
- 
+ are sampled from an emission distribution E 
 \begin_inset Formula $E_{i,j}=P(x_{t}=V_{j}|y_{t}=S_{i})$
 \end_inset
 
-, which describes the distribution of the emission of observed variables
- conditioned on the system's hidden state.
+, that is conditioned on the system's hidden state.
  Similarly to the Markov model, the distribution to the first hidden state
  is marked as 
 \begin_inset Formula $\pi$
@@ -646,6 +608,28 @@ Hidden Markov model (HMM) is a system that passes between hidden states
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Standard
+For example, assuming the DNA are composed of genes enhancers and background
+ regions, with each having different nucleotide frequency, then we can say
+ that the DNA sequence was generated by a HMM with underlying sequence of
+ 4 hidden states: gene, promoter, enhancer and background where each has
+ its own nucleotide frequency.
+ The emitted observed DNA sequence X is determined by the underlying hidden
+ sequence Y that describes the 
+\begin_inset Quotes eld
+\end_inset
+
+mode
+\begin_inset Quotes erd
+\end_inset
+
+ of the sequence in each position.
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -663,34 +647,16 @@ Hidden Markov model (HMM) is a system that passes between hidden states
 \series bold
 \emph on
 Fig: a HMM chain with length of 5.
- The underlying sequence of hidden states Y (up) are generated in a Markov
- process where each state emits an observed variable, sampled from the state's
- emission distribution.
- 
+ The underlying hidden states (up) are generated in a Mrokov process and
+ each state emits an observed variable, sampled from the state's emission
+ probability.
 \end_layout
 
 \begin_layout Standard
-When applying the HMM to a DNA sequence, we need to assume the DNA is composed
- of regions with different nucleotide frequency, for example: genes, promoters,
- enhancers, and background.
- We can therefore say that the DNA sequence was generated by a HMM with
- underlying sequence of 4 matching hidden states: gene, promoter, enhancer,
- and background, where each has its own nucleotide frequency specified in
- the emission matrix E.
- The emitted observed DNA sequence X is determined by the underlying hidden
- sequence Y that describes the 
-\begin_inset Quotes eld
-\end_inset
 
-mode
-\begin_inset Quotes erd
-\end_inset
-
-, or region type, of the sequence in each position.
-\begin_inset Newline newline
-\end_inset
-
-
+\series bold
+\bar under
+Goals
 \end_layout
 
 \begin_layout Standard
@@ -699,17 +665,12 @@ As a generative model, HMM relies on the assumption that the observed DNA
 \begin_inset Formula $\overrightarrow{X}^{N}=x_{1},...,x_{N}$
 \end_inset
 
-, which is a sequence of A,C,G and T nucleotides, was generated by a parameteriz
-ed model 
+ was generated by a parameterized model 
 \begin_inset Formula $\theta$
 \end_inset
 
 , and has an hidden state sequence 
 \begin_inset Formula $\overrightarrow{Y}^{N}=y_{1},...,y_{N}$
-\end_inset
-
- of states 
-\begin_inset Formula $S_{1},...,S_{m}$
 \end_inset
 
  that was generated alongside it.
@@ -737,7 +698,7 @@ ed model
 \begin_layout Standard
 \begin_inset Formula 
 \[
-argmax_{\theta}\mathcal{L}\left(\theta;\overrightarrow{X}^{N}\right)=argmax_{\theta}\sum_{i\in[N]}log\left(P_{\theta}(x_{i})\right)
+argmax_{\theta}\mathcal{L}\left(\theta|\overrightarrow{X}^{N}\right)=argmax_{\theta}\sum_{i\in[N]}log\left(P_{\theta}(x_{i})\right)
 \]
 
 \end_inset
@@ -753,7 +714,7 @@ argmax_{\theta}\mathcal{L}\left(\theta;\overrightarrow{X}^{N}\right)=argmax_{\th
 
 , we would like to find the posterior probability of each individual hidden
  state, 
-\begin_inset Formula $P_{\theta}\left(y_{i}|\overrightarrow{X}^{N}\right)$
+\begin_inset Formula $P_{\theta}\left(y_{t}|X\right)$
 \end_inset
 
 
@@ -765,50 +726,132 @@ argmax_{\theta}\mathcal{L}\left(\theta;\overrightarrow{X}^{N}\right)=argmax_{\th
 \begin_inset Formula $\theta$
 \end_inset
 
-, we would like to find the most probable hidden sequence 
-\begin_inset Formula $argmax_{\overrightarrow{Y}^{N}}P_{\theta}\left(\overrightarrow{Y}^{N}|\overrightarrow{X}^{N}\right)$
+, we would like to find the most probable hidden sequence Y, 
+\begin_inset Formula $argmax_{\overrightarrow{Y}^{N}}\mathcal{L}\left(\overrightarrow{Y}^{N}|\overrightarrow{X}^{N};\theta\right)$
 \end_inset
 
  
 \end_layout
 
 \begin_layout Standard
-Goal 1 and 2 can be achieved by using the Baum-Welch algorithm, named after
- Leonard E.
+We will see that goal 1 and 2 can be achieved by using the Baum-Welch algorithm,
+ named after Leonard E.
  Baum and Lloyd R.
- Welch who developed it and the HMM it solves.
- The algorithm applies the well known EM algorithm to infer HMM parameters
- and the posterior probability.
- 
+ Welch who developed it and the HMM it solves during the 1960s and 1970s.
+ It applies the well known EM algorithm to that infers the maximize the
+ likelihood HMM parameters and then the posterior probability, iteratively.
+ Goal 3 could then be achieved by using the Viterbi algorithm on the posterior
+ probability, named after Andrew Viterbi who proposed it in 1967.
+\end_layout
+
+\begin_layout Subsection*
+
+\bar under
+Baum-Welch Algorithm, EM for HMM
 \end_layout
 
 \begin_layout Standard
-At first glance one might think that once the 2nd goal is achieved, the
- calculation of the 3rd goal is trivial: with the posterior probability
+In the maximal-likelihood estimation problem before us, we have the observed
  
-\begin_inset Formula $P_{\theta}\left(y_{t}|\overrightarrow{X}^{N}\right)$
+\begin_inset Formula $X$
 \end_inset
 
- at hand, the most probable hidden sequence might naively be the maximal
- posterior probability 
-\begin_inset Formula $max_{i\in[m]}\left(P_{\theta}\left(y_{t}=i|\overrightarrow{X}^{N}\right)\right)$
+ and we would like find the parameters that maximize the likelihood of it,
+ 
+\begin_inset Formula $\theta^{*}=argmax_{\theta}L\left(\theta|X\right)$
 \end_inset
 
- for each position t independently.
- But this is incorrect, since the transition probability states the dependency
- of adjacent hidden states, and such a naively chosen hidden sequence might
- have a suboptimal probability, and even a probability 0 if one of the transitio
-n along this hidden sequence have a 0 probability.
- For this reason the Viterbi algorithm is used, to find the hidden sequence
- with the maximal posterior probability.
+.
+ This likelihood function 
+\begin_inset Formula $L\left(\theta|X\right)$
+\end_inset
+
+, is called the incomplete-data likelihood function, is not enough for our
+ task of it's optimization, hence we must assume a the existence of hidden
+ variables Y.
+ The strategy of the EM algorithm is to optimize the expected value of the
+ complete-data log-likelihood 
+\begin_inset Formula $P\left(X,Y|\theta\right)$
+\end_inset
+
+ while assuming 
 \end_layout
 
 \begin_layout Standard
-#########################################
+
 \end_layout
 
 \begin_layout Standard
-E-step:
+fixed observed X (the DNA sequence) and 
+\begin_inset Formula $\theta_{t}$
+\end_inset
+
+ (the model's parameters from previous iteration).
+ This likelihood function is in fact a random variable since 
+\begin_inset Formula $Y$
+\end_inset
+
+ is a random unknown variables that were sampled by a model with parameters
+ 
+\begin_inset Formula $\theta$
+\end_inset
+
+.
+ We can 
+\end_layout
+
+\begin_layout Standard
+we define: 
+\begin_inset Formula 
+\[
+Q\left(\theta,\theta_{t}\right)=E_{Y}\left[log\left(P\left(X,Y|\theta\right)\right)|X,\theta_{t}\right]=\sum_{Y\in\left[m\right]^{N}}log\left(P\left(X,Y|\theta\right)\right)P\left(X,Y|\theta_{t}\right)
+\]
+
+\end_inset
+
+ where:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P(X,Y|\theta)=\pi_{y_{0}}\prod_{t=1}^{N}T_{y_{t-1},y_{t}}E_{y_{t},x_{t}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\bar under
+E step
+\series default
+\bar default
+,
+\end_layout
+
+\begin_layout Standard
+################################################################
+\end_layout
+
+\begin_layout Standard
+http://imaging.mrc-cbu.cam.ac.uk/methods/BayesianStuff?action=AttachFile&do=get&targ
+et=bilmes-em-algorithm.pdf
+\end_layout
+
+\begin_layout Standard
+Page 11 and page 2
+\end_layout
+
+\begin_layout Standard
+################################################################
+\end_layout
+
+\begin_layout Standard
+The EM algorithm 
 \end_layout
 
 \begin_layout Standard
@@ -826,10 +869,6 @@ an EM iterative algorithm where in each iteration t the probability of being
 \end_inset
 
  
-\end_layout
-
-\begin_layout Standard
-M-step:
 \end_layout
 
 \begin_layout Standard
