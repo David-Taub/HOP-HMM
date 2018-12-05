@@ -106,7 +106,7 @@ The TF inside the nucleus of specific tissues are thought to be a key factor
  cell specific enhancer sequences.
  show heat map of AUC-ROC results.
  Between these TFBS, k-mer frequencies varies between enhancers and non
- regulatory 
+ regulatory
 \begin_inset Quotes eld
 \end_inset
 
@@ -141,7 +141,7 @@ Enhancers are non-coding regulatory DNA sequences that play a key role in
  When activated, the DNA folding draws the enhancer spatially closer to
  a regulatory element called promoter, resulting in the translation of a
  gene adjacent to the promoter.
- The enhancer's 
+ The enhancer's
 \begin_inset Quotes eld
 \end_inset
 
@@ -152,7 +152,6 @@ target gene
  (or target genes) is the expressed gene from this activation process.
  It can be located up to a megabase upstream or downstream from their activating
  enhancer (or enhancers), and are orientation independent to it.
- 
 \end_layout
 
 \begin_layout Standard
@@ -225,7 +224,6 @@ Multiple studies have shown that genetic alternations in TFBS can affect
  that recruit the RNA Polymerase (RNA pol II) to invokes the transcription
  process of the adjacent gene: it opens the double stranded DNA, so that
  one strand of nucleotides is exposed and becomes a template for RNA synthesis.
- 
 \begin_inset Newline newline
 \end_inset
 
@@ -233,7 +231,7 @@ Multiple studies have shown that genetic alternations in TFBS can affect
 \begin_inset Newline newline
 \end_inset
 
-[enhancer status, chromatine methylation and accessibility] 
+[enhancer status, chromatine methylation and accessibility]
 \end_layout
 
 \begin_layout Standard
@@ -242,7 +240,6 @@ Cells of different types and in different operation modes differ by gene
  patterns.
  The activity status of enhancers is connected to multiple factors that
  are detectable on a genome scale.
- 
 \begin_inset Newline newline
 \end_inset
 
@@ -250,7 +247,7 @@ Cells of different types and in different operation modes differ by gene
 \begin_inset Newline newline
 \end_inset
 
-Chromatin modifications signatures, or 
+Chromatin modifications signatures, or
 \begin_inset Quotes eld
 \end_inset
 
@@ -265,7 +262,7 @@ histone marks
  2010; Fernandez et al.
  2012) .
  H3k4me1 and H3k27ac are among the predominant histone marks of active enhancers
-, where H3k4me1 are enriched on transcribed genes and 
+, where H3k4me1 are enriched on transcribed genes and
 \begin_inset Quotes eld
 \end_inset
 
@@ -279,7 +276,6 @@ primed
  Other histone marks that are present on active enhancers and are used for
  their detection are H3k9ac (Ernst et al., 2011; Karmodiya et al., 2012; Krebs
  et al., 2011; Zentner et al., 2011) and H3K18ac (Jin et al., 2011).
- 
 \begin_inset Newline newline
 \end_inset
 
@@ -347,7 +343,6 @@ Conserved non-coding elements (CNE) reside in clusters, usually with low
  that the exact nature of its mechanisms is no understood (M.
  Haeussler 2011, Andersson et al.
  2014).
- 
 \end_layout
 
 \begin_layout Standard
@@ -368,7 +363,7 @@ The currently most accurate method for predicting the location of tissue
  Another disadvantage of this method is the need for live cells for the
  verification of the regulatory activity of a sequence.
  The persecute for an efficient computational method for predicting the
- functional nature of sequences 
+ functional nature of sequences
 \begin_inset Quotes eld
 \end_inset
 
@@ -460,7 +455,7 @@ There are other mechanisms and non classic scenarios that involve enhacners:
 \end_layout
 
 \begin_layout Standard
-TODO: k-mer frequencies varies between enhancers and non regulatory 
+TODO: k-mer frequencies varies between enhancers and non regulatory
 \begin_inset Quotes eld
 \end_inset
 
@@ -469,7 +464,7 @@ background
 \end_inset
 
  DNA, and was used to classify enhancers from backgound using only the k-mer
- distribution (Inbar and Tommy), 
+ distribution (Inbar and Tommy),
 \end_layout
 
 \begin_layout Standard
@@ -479,12 +474,11 @@ TODO: [Levin, VISTA] experiments shows that insertion of a sequence without
  This implies that for the newly introduced sequences to operate as an enhancer
  and target gene, all that is needed is its sequence in arbitrary location
  without additional epigenetic information.
- 
 \end_layout
 
 \begin_layout Standard
 From (C.
- Bessière et al 2018, 
+ Bessière et al 2018,
 \begin_inset Quotes eld
 \end_inset
 
@@ -530,15 +524,15 @@ Methods
 Markov model (A.A.
  Markov, 1906) is a stochastic model named after Andrey Markov a Russian
  mathematician.
- In a Markov model, at any time the system is at one of m states 
+ In a Markov model, at any time the system is at one of m states
 \begin_inset Formula $\left\{ S_{1},...,S_{m}\right\} $
 \end_inset
 
-, where the first state is sampled from a distribution 
-\begin_inset Formula $\pi_{i}=P\left(y_{0}=S_{i}\right)$
+, where the first state is sampled from a distribution
+\begin_inset Formula $\pi_{i}=P\left(y_{1}=S_{i}\right)$
 \end_inset
 
- and the probability of transitions between the states is denoted by T 
+ and the probability of transitions between the states is denoted by T
 \begin_inset Formula $T_{i,j}=P\left(y_{t}=S_{i}|y_{t-1}=S_{j}\right)$
 \end_inset
 
@@ -566,16 +560,16 @@ Markov model (A.A.
 
 \series bold
 \emph on
-Figure: Markov model with 4 states, marked as 
+Figure: Markov model with 4 states, marked as
 \begin_inset Formula $S_{1},S_{2},S_{3},S_{4}$
 \end_inset
 
  with two of all possible transition probabilities written.
- T matrix describes the transition distributions, where 
+ T matrix describes the transition distributions, where
 \begin_inset Formula $T_{i,*}$
 \end_inset
 
- is the distribution of the system's next step when in 
+ is the distribution of the system's next step when in
 \begin_inset Formula $S_{i}$
 \end_inset
 
@@ -589,21 +583,21 @@ Hidden Markov model (HMM) is a system that travels over hidden states in
  In this generation process, a single observed variable is emitted per system's
  step, and so the observed sequence is generated with the same length as
  the hidden Markov chain.
- The observed variables 
+ The observed variables
 \begin_inset Formula $V_{1},...,V_{n}$
 \end_inset
 
- are sampled from an emission distribution E 
+ are sampled from an emission distribution E
 \begin_inset Formula $E_{i,j}=P(x_{t}=V_{j}|y_{t}=S_{i})$
 \end_inset
 
 , that is conditioned on the system's hidden state.
  Similarly to the Markov model, the distribution to the first hidden state
- is marked as 
+ is marked as
 \begin_inset Formula $\pi$
 \end_inset
 
- and the transition distribution is marked as 
+ and the transition distribution is marked as
 \begin_inset Formula $T$
 \end_inset
 
@@ -617,7 +611,7 @@ For example, assuming the DNA are composed of genes enhancers and background
  4 hidden states: gene, promoter, enhancer and background where each has
  its own nucleotide frequency.
  The emitted observed DNA sequence X is determined by the underlying hidden
- sequence Y that describes the 
+ sequence Y that describes the
 \begin_inset Quotes eld
 \end_inset
 
@@ -661,21 +655,21 @@ Goals
 
 \begin_layout Standard
 As a generative model, HMM relies on the assumption that the observed DNA
- sequence 
-\begin_inset Formula $\overrightarrow{X}^{N}=x_{1},...,x_{N}$
+ sequence
+\begin_inset Formula $\overrightarrow{X}^{L}=x_{1},...,x_{L}$
 \end_inset
 
- was generated by a parameterized model 
+ was generated by a parameterized model
 \begin_inset Formula $\theta$
 \end_inset
 
-, and has an hidden state sequence 
-\begin_inset Formula $\overrightarrow{Y}^{N}=y_{1},...,y_{N}$
+, and has an hidden state sequence
+\begin_inset Formula $\overrightarrow{Y}^{L}=y_{1},...,y_{L}$
 \end_inset
 
  that was generated alongside it.
- Given an observed sequence 
-\begin_inset Formula $\overrightarrow{X}^{N}$
+ Given an observed sequence
+\begin_inset Formula $\overrightarrow{X}^{L}$
 \end_inset
 
 , our three goals here are:
@@ -683,12 +677,12 @@ As a generative model, HMM relies on the assumption that the observed DNA
 
 \begin_layout Standard
 1.
- Finding model parameters 
+ Finding model parameters
 \begin_inset Formula $\theta$
 \end_inset
 
  that fits the most to the observed sequence.
- Formally, finding the 
+ Formally, finding the
 \begin_inset Formula $\theta$
 \end_inset
 
@@ -696,9 +690,9 @@ As a generative model, HMM relies on the assumption that the observed DNA
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \[
-argmax_{\theta}\mathcal{L}\left(\theta|\overrightarrow{X}^{N}\right)=argmax_{\theta}\sum_{i\in[N]}log\left(P_{\theta}(x_{i})\right)
+argmax_{\theta}\mathcal{L}\left(\theta|\overrightarrow{X}^{L}\right)=argmax_{\theta}\sum_{i\in[N]}log\left(P_{\theta}(x_{i})\right)
 \]
 
 \end_inset
@@ -708,12 +702,12 @@ argmax_{\theta}\mathcal{L}\left(\theta|\overrightarrow{X}^{N}\right)=argmax_{\th
 
 \begin_layout Standard
 2.
- Using the maximum likelihood 
+ Using the maximum likelihood
 \begin_inset Formula $\theta$
 \end_inset
 
 , we would like to find the posterior probability of each individual hidden
- state, 
+ state,
 \begin_inset Formula $P_{\theta}\left(y_{t}|X\right)$
 \end_inset
 
@@ -722,15 +716,15 @@ argmax_{\theta}\mathcal{L}\left(\theta|\overrightarrow{X}^{N}\right)=argmax_{\th
 
 \begin_layout Standard
 3.
- Using the maximum likelihood 
+ Using the maximum likelihood
 \begin_inset Formula $\theta$
 \end_inset
 
-, we would like to find the most probable hidden sequence Y, 
-\begin_inset Formula $argmax_{\overrightarrow{Y}^{N}}\mathcal{L}\left(\overrightarrow{Y}^{N}|\overrightarrow{X}^{N};\theta\right)$
+, we would like to find the most probable hidden sequence Y,
+\begin_inset Formula $argmax_{\overrightarrow{Y}^{L}}\mathcal{L}\left(\overrightarrow{Y}^{L}|\overrightarrow{X}^{L};\theta\right)$
 \end_inset
 
- 
+
 \end_layout
 
 \begin_layout Standard
@@ -752,70 +746,352 @@ Baum-Welch Algorithm, EM for HMM
 
 \begin_layout Standard
 In the maximal-likelihood estimation problem before us, we have the observed
- 
 \begin_inset Formula $X$
 \end_inset
 
- and we would like find the parameters that maximize the likelihood of it,
- 
-\begin_inset Formula $\theta^{*}=argmax_{\theta}L\left(\theta|X\right)$
+ and we would ultimately like find the parameters that maximize the likelihood
+ of it,
+\begin_inset Formula
+\[
+\theta^{*}=argmax_{\theta}L\left(\theta|X\right)
+\]
+
 \end_inset
 
-.
- This likelihood function 
+
+\end_layout
+
+\begin_layout Standard
+This likelihood function
 \begin_inset Formula $L\left(\theta|X\right)$
 \end_inset
 
-, is called the incomplete-data likelihood function, is not enough for our
- task of it's optimization, hence we must assume a the existence of hidden
- variables Y.
- The strategy of the EM algorithm is to optimize the expected value of the
- complete-data log-likelihood 
-\begin_inset Formula $P\left(X,Y|\theta\right)$
-\end_inset
-
- while assuming 
+, also called the incomplete-data likelihood function, could be written,
+ using the total probability law, as :
 \end_layout
 
 \begin_layout Standard
+\begin_inset Formula
+\begin{equation}
+L\left(\theta|X\right)=P(X|\theta)=\sum_{y\in\left[m\right]^{N}}P\left(X,y|\theta\right)
+\end{equation}
+
+\end_inset
+
 
 \end_layout
 
 \begin_layout Standard
-fixed observed X (the DNA sequence) and 
-\begin_inset Formula $\theta_{t}$
+where the probability on the right side
+\begin_inset Formula $P(X,Y|\theta)=L(\theta|X,Y)$
 \end_inset
 
- (the model's parameters from previous iteration).
- This likelihood function is in fact a random variable since 
-\begin_inset Formula $Y$
+ is called the complete-data likelihood function.
+ In the case of the basic HMM the complete-data likelihood function is calculate
+d:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula
+\begin{equation}
+P(X,y|\theta)=\pi_{y_{1}}\prod_{i=1}^{N}T_{y_{i-1},y_{i}}E_{y_{i},x_{i}}
+\end{equation}
+
 \end_inset
 
- is a random unknown variables that were sampled by a model with parameters
- 
+
+\end_layout
+
+\begin_layout Standard
+Note: while in our variation HOP-HMM (describe in later chapters [TODO:
+ write specific chapter numbers]), we assume different transitions and emissions
+ hence requires different calculation, but otherwise the rest of the EM
+ algorithm holds.
+\end_layout
+
+\begin_layout Standard
+Unfortunately, optimizing or calculating the incomplete-data likelihood
+ in (1) involves a summation of exponential-by-N elements (N is the length
+ of the DNA sequence), which is infeasible.
+ Instead, the strategy of the EM algorithm is to optimize the expected value
+ of the complete-data log-likelihood
+\begin_inset Formula $log\left(P\left(X,Y|\theta^{'}\right)\right)$
+\end_inset
+
+ where
+\begin_inset Formula $\theta^{'}$
+\end_inset
+
+ is the model's parameters from previous EM iteration (or guessed parameters
+ in the first iteration) and while assuming a fixed observed X, as it is
+ our DNA sequence.
+ For this task we can formally define our target function Q:
+\begin_inset Formula
+\begin{equation}
+Q\left(\theta,\theta^{'}\right)=E_{Y}\left[log\left(P\left(X,Y|\theta\right)\right)|X,\theta^{'}\right]=\sum_{y\in\left[m\right]^{N}}log\left(P\left(X,y|\theta\right)\right)P\left(X,y|\theta^{'}\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Every EM iteration is built of two parts: the E-step and the M-step.
+ In the E-step we calculate the Q function and in the M-step we infer the
 \begin_inset Formula $\theta$
 \end_inset
 
-.
- We can 
+ that maximizes it.
+ Although this seemingly still requires an exponential summation, we can
+ use a dynamic programming approach to overpass it, with the cost of
+\begin_inset Formula $O(N\cdot m)$
+\end_inset
+
+ memory uasge.
 \end_layout
 
 \begin_layout Standard
-we define: 
-\begin_inset Formula 
+Using equations (2) and (3) allows us to split the Q function to three independe
+nt parts.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula
+\begin{align*}
+Q\left(\theta,\theta^{'}\right)= & \sum_{y\in\left[m\right]^{N}}log\pi_{y_{1}}P\left(X,y|\theta^{'}\right)\\
++ & \sum_{y\in\left[m\right]^{N}}\left(\sum_{t\in2...L}logT_{y_{t-1},y_{t}}\right)P\left(X,y|\theta^{'}\right)\\
++ & \sum_{y\in\left[m\right]^{N}}\left(\sum_{t\in[L]}logE_{y_{t},x_{t}}\right)P\left(X,y|\theta^{'}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+then by manipulating the summation and the state sequence cases could be
+ simplified to
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula
+\begin{align*}
+Q\left(\theta,\theta^{'}\right)= & \sum_{j\in[m]}log\pi_{j}P\left(X,y_{1}=j|\theta^{'}\right)\\
++ & \sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}P\left(X,y_{t-1}=j_{1},y_{t}=j_{2}|\theta^{'}\right)\\
++ & \sum_{t\in[L]}\sum_{j\in[m]}logE_{j,x_{t}}P\left(X,y_{t}=j|\theta^{'}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+the probabilities occurring in the parts are calculated in the E-step using
+ the forward and backward algorithms.
+ In the M-step each of the three parts is maximized independently using
+ a Lagrange multipliers, under the following probability constrains:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\sum_{j\in[m]}\pi_{j}=1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\sum_{j_{2}\in[m]}T_{j_{1},j_{2}}=1$
+\end_inset
+
+ for all
+\begin_inset Formula $j_{1}\in[m]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\sum_{b\in[n]}E_{j,b}=1$
+\end_inset
+
+ for all
+\begin_inset Formula $j\in[n]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where m is the number of different hidden states and n is the number of
+ different observed variables (4 in our case of DNA)
+\end_layout
+
+\begin_layout Standard
+The first part is maximized using Lagrange multiplier
+\begin_inset Formula $\lambda$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula
 \[
-Q\left(\theta,\theta_{t}\right)=E_{Y}\left[log\left(P\left(X,Y|\theta\right)\right)|X,\theta_{t}\right]=\sum_{Y\in\left[m\right]^{N}}log\left(P\left(X,Y|\theta\right)\right)P\left(X,Y|\theta_{t}\right)
+\frac{\partial}{\partial\pi_{j}}\left(\sum_{j\in[m]}log\pi_{j}P\left(X,y_{1}=j|\theta^{'}\right)+\lambda\left(\sum_{j\in[m]}\pi_{j}-1\right)\right)=0
 \]
 
 \end_inset
 
- where:
+
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+we derive the equations and get
+\begin_inset Formula $\frac{P\left(X,y_{1}=j|\theta^{'}\right)}{\pi_{j}}=-\lambda$
+\end_inset
+
+ then sum them to receive
+\begin_inset Formula $\lambda=P\left(X|\theta^{'}\right)$
+\end_inset
+
+ and assign it and deduce:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula
+\begin{equation}
+\pi_{j}=\frac{P\left(X,y_{1}=j|\theta^{'}\right)}{P\left(X|\theta^{'}\right)}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we follow this method similarly in the second and third parts, from which
+ we receive:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula
+\begin{equation}
+T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P\left(X,y_{t-1}=j_{1},y_{t}=j_{2}|\theta^{'}\right)}{\sum_{t\in2...L}P\left(X,y_{t-1}=j_{1}|\theta^{'}\right)}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula
+\begin{equation}
+E_{j,b}=\frac{\sum_{t\in[L]}P\left(X,y_{t}=j|\theta^{'}\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P\left(X,y_{t}=j|\theta^{'}\right)}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where
+\begin_inset Formula $\boldsymbol{1}_{b}(x_{t})=\begin{cases}
+1 & b=x_{t}\\
+0 & otherwise
+\end{cases}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After stating the intentions of each EM iteration in (4), (5) and (6), we
+ now need to calculated them in order to successfully learn the HMM parameters.
+\end_layout
+
+\begin_layout Standard
+With the Forward Algorithm (Rabiner, 1989) we calculate the distribution
+ of the t'th hidden-state, considering the observations from the beginning
+ of the sequence until the t'th letter.
+ We dynamically calculate
+\begin_inset Formula $\alpha_{j,t}$
+\end_inset
+
+ for
+\begin_inset Formula $j\in[m]$
+\end_inset
+
+ iterating over
+\begin_inset Formula $t=1,2,...,L$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+the initial dynamical iteration for
+\begin_inset Formula $t=1$
+\end_inset
+
+ is
+\begin_inset Formula $\alpha_{j,1}=P\left(y_{1}=j,x_{1}\right)=\pi_{j}\cdot\underset{i}{\sum}E_{j,x_{1}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+####################################################
+\end_layout
+
+\begin_layout Standard
+For
+\begin_inset Formula $t\in\{1...L\}$
+\end_inset
+
+ the table is filled dynamically:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula
+\begin{align*}
+\alpha_{j,t}= & P(y_{t}=(j,0),x_{1:t})=\\
+= & \underset{\text{base-state transitions}}{\underbrace{\sum_{j'\in\{1,...,m\}}\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1}^{i},...,x_{t}^{i}}}}\\
++ & \underset{\text{sub-state transitions}}{\underbrace{\sum_{l\in\{1,...,k\}}\alpha_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Explanation:
+\end_layout
+
+\begin_layout Standard
+From the law of total probability, the probability
+\begin_inset Formula $\alpha_{j,t}$
+\end_inset
+
+ is the sum of probabilities of all the possible transition that ended in
+ the base-state (j,0).
+ The possible transitions are base-state to base-state transitions and sub-state
+ to base-state transitions.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula
 \[
-P(X,Y|\theta)=\pi_{y_{0}}\prod_{t=1}^{N}T_{y_{t-1},y_{t}}E_{y_{t},x_{t}}
+\alpha_{j,t}=P\left(y_{t}=(j,0),x_{1:t}\right)=
 \]
 
 \end_inset
@@ -824,13 +1100,37 @@ P(X,Y|\theta)=\pi_{y_{0}}\prod_{t=1}^{N}T_{y_{t-1},y_{t}}E_{y_{t},x_{t}}
 \end_layout
 
 \begin_layout Standard
+\begin_inset Formula
+\[
+=\underset{\text{base-state transitions}}{\underbrace{\underset{j'\in\{1,...,m\}}{\sum}P\left(y_{t-1}=(j',0),y_{t}=(j,0),x_{1:t}\right)}}+\underset{\text{sub-state transitions}}{\underbrace{\underset{l\in\{1,...,k\}}{\sum}P\left(y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)}}
+\]
 
-\series bold
-\bar under
-E step
-\series default
-\bar default
-,
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Develop of a sub-state transition using the chain rule:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula
+\begin{align*}
+P\left(y_{t-|W_{l}|:t-1}=(j',l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)= & \,P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot\\
+ & \cdot P\left(y_{t-|W_{l}|:t-1}=(j,l)|y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\\
+ & \cdot P\left(x_{t-|W_{l}|:t-1}|y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\\
+ & \cdot P\left(x_{t}|y_{t}=(j,0),x_{1:t-1},y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0)\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+[TODO: copy from later parts only the hmm relevant, cover the basic practical
+ parts and then leave only the variation HOPHMM part for the next parts]
 \end_layout
 
 \begin_layout Standard
@@ -847,49 +1147,29 @@ Page 11 and page 2
 \end_layout
 
 \begin_layout Standard
-################################################################
+####################################################
 \end_layout
 
 \begin_layout Standard
-The EM algorithm 
-\end_layout
-
-\begin_layout Standard
-an EM iterative algorithm where in each iteration t the probability of being
- in a hidden state at position i is calculated 
+The probability of being in a hidden state at position i is calculated
 \begin_inset Newline newline
 \end_inset
 
 
-\begin_inset Formula 
+\begin_inset Formula
 \[
-\gamma_{t}=P_{\theta_{t}}(y_{i}|x_{1:n})
+\gamma=P_{\theta^{'}}(y|x_{1:n})
 \]
 
 \end_inset
 
- 
+
 \end_layout
 
-\begin_layout Standard
-using the forward and backward dynamic algorithms, and them the maximum
- likelihood 
-\begin_inset Formula $\theta_{t+1}$
-\end_inset
+\begin_layout Part*
 
- is calculated using this probabilities 
-\begin_inset Formula 
-\[
-\theta_{t+1}=argmax_{\theta}(\gamma_{t}|\theta)
-\]
-
-\end_inset
-
- 
-\end_layout
-
-\begin_layout Standard
-[Generalized Hidden Markov Model (GHMM)]
+\bar under
+HOP-HMM
 \end_layout
 
 \begin_layout Standard
@@ -915,34 +1195,33 @@ A model that contains states that emit motifs sampled from PWMs was previously
  sequence.
  Similarly to HMM, it assumes an underlying hidden sequence is present that
  are sampled from a Markov chain.
- 
 \end_layout
 
 \begin_layout Standard
 HOP-HMM is a high-order emission base-states and PWM emission sub-states
- HMM from a dataset of N observations sequences 
-\begin_inset Formula $\mathcal{X}=\left(X_{1},...,X_{N}\right)$
+ HMM from a dataset of N observations sequences
+\begin_inset Formula $\mathcal{X}=\left(X_{1},...,x_{L}\right)$
 \end_inset
 
- where each observation sequence is L nucleotides long 
+ where each observation sequence is L nucleotides long
 \begin_inset Formula $X_{i}=\left(x_{1}^{i},...,x_{L}^{i}\right)$
 \end_inset
 
 .
- We assume an underlying hidden variable sequences 
-\begin_inset Formula $\mathcal{Y}=\left(Y_{1},...,Y_{N}\right)$
+ We assume an underlying hidden variable sequences
+\begin_inset Formula $\mathcal{Y}=\left(Y_{1},...,y_{L}\right)$
 \end_inset
 
- where each underlying sequence is also L variables long 
+ where each underlying sequence is also L variables long
 \begin_inset Formula $Y_{i}=y_{1}^{i},...,y_{L}^{i}$
 \end_inset
 
 .
- Let the space of underlying states be 
+ Let the space of underlying states be
 \begin_inset Formula $\Upsilon=\left\{ 1,2,...,m\right\} \times\left\{ 0,1,...,k\right\} $
 \end_inset
 
- 
+
 \begin_inset Newline newline
 \end_inset
 
@@ -961,11 +1240,7 @@ TOMMY:
 quite abstract and hard to follow.
  try to be more concrete.
  See above.
- Add Figure!
-\end_layout
-
-\begin_layout Standard
-not clear enough.
+ Add Figure! not clear enough.
  I think your best option is to separate the figure into two parts, like
  I said before.
  Begin by a single "layer" and first describe the automaton and the transition
@@ -986,33 +1261,33 @@ Emission and Transition
 \begin_layout Standard
 Underlying states emit the observed sequence are of two types: base-states
  and their sub-states.
- We mark the j'th base-state as 
+ We mark the j'th base-state as
 \begin_inset Formula $(j,0)$
 \end_inset
 
- for 
+ for
 \begin_inset Formula $j\in\{1,...,m\}$
 \end_inset
 
- and its l'th sub-state as 
+ and its l'th sub-state as
 \begin_inset Formula $(j,l)$
 \end_inset
 
- for 
+ for
 \begin_inset Formula $l\in\{1,...,k\}$
 \end_inset
 
 .
  Denote the base-state emission order by o, meaning a base-state emits a
- letter sampled from an emission matrix 
+ letter sampled from an emission matrix
 \series bold
 
 \begin_inset Formula $E$
 \end_inset
 
- 
+
 \series default
-that depends on previous 
+that depends on previous
 \begin_inset Formula $o-1$
 \end_inset
 
@@ -1028,15 +1303,17 @@ Sub-state emits multiple letters sampled from a PWM that is fixed and isn't
 
  the PWM of the l'th sub-states, which is shared between the l'th sub-states
  of all base-states.
- 
 \begin_inset Newline newline
 \end_inset
 
- 
+
 \begin_inset Newline newline
 \end_inset
 
- 
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset Graphics
 	filename Figures/Slide4.eps
 	scale 40
@@ -1047,7 +1324,7 @@ Sub-state emits multiple letters sampled from a PWM that is fixed and isn't
 \begin_inset Newline newline
 \end_inset
 
- 
+
 \series bold
 \shape italic
 Figure 4: emission and transition process between base-state.
@@ -1061,7 +1338,7 @@ Figure 4: emission and transition process between base-state.
 \begin_inset Newline newline
 \end_inset
 
- 
+
 \begin_inset Newline newline
 \end_inset
 
@@ -1069,12 +1346,11 @@ Figure 4: emission and transition process between base-state.
 \end_layout
 
 \begin_layout Standard
-After emitting a single letter, the j'th base-state has a probability 
+After emitting a single letter, the j'th base-state has a probability
 \begin_inset Formula $F_{j}$
 \end_inset
 
  to make a transition into one of its sub-state and emit a motif and probability
- 
 \begin_inset Formula $1-F_{j}$
 \end_inset
 
@@ -1107,7 +1383,6 @@ After emitting a single letter, the j'th base-state has a probability
 Figure 1: The hidden variable states graph of the HOP-HMM.
  The left hexagons represent base-states, and the circles in the right part
  of each row's represent its sub-states.
- 
 \series default
 \shape default
 
@@ -1165,7 +1440,7 @@ Figure 3: PWM emission of sub-states.
 \begin_inset Newline newline
 \end_inset
 
- 
+
 \begin_inset Newline newline
 \end_inset
 
@@ -1180,22 +1455,22 @@ Parameters
 \end_layout
 
 \begin_layout Standard
-An HOP-HMM 
+An HOP-HMM
 \begin_inset Formula $\theta=\{\pi,E,T,G,F\}$
 \end_inset
 
- is parameterized by: 
+ is parameterized by:
 \end_layout
 
 \begin_layout Itemize
 \begin_inset Formula $\pi:\text{ }m\times1$
 \end_inset
 
- initial base-state distribution vector 
+ initial base-state distribution vector
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \[
 \pi_{j}=P(y_{1}=j)
 \]
@@ -1209,13 +1484,24 @@ An HOP-HMM
 \begin_inset Formula $E:\text{ }m\times\underset{o\ times}{\underbrace{4\times4\times...\times4}}$
 \end_inset
 
- the base-state high-order emission probability matrix 
+ the base-state high-order emission probability matrix
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \[
 E_{j,x_{t-o+1},x_{t-o+2},...,x_{t}}=P\left(x_{t}|y_{t}=(j,0),x_{t-o+1},...,x_{t-1}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula
+\[
+T_{j_{1},j_{2}}=P\left(y_{t+1}=(j_{2},0)|y_{t}=(j_{1},0)\right)
 \]
 
 \end_inset
@@ -1227,29 +1513,18 @@ E_{j,x_{t-o+1},x_{t-o+2},...,x_{t}}=P\left(x_{t}|y_{t}=(j,0),x_{t-o+1},...,x_{t-
 \begin_inset Formula $T:\text{ }m\times m$
 \end_inset
 
- the transition probability matrix 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\[
-T_{j_{1},j_{2}}=P\left(y_{t+1}=(j_{2},0)|y_{t}=(j_{1},0)\right)
-\]
-
-\end_inset
-
-
+ the transition probability matrix
 \end_layout
 
 \begin_layout Itemize
 \begin_inset Formula $G:\text{ }m\times k$
 \end_inset
 
- the sub-state entry probability matrix 
+ the sub-state entry probability matrix
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \[
 G_{j,l}=P\left(y_{t+1:t+|W_{l}|}=(j,l)|y_{t}=(j,0)\right)
 \]
@@ -1268,16 +1543,16 @@ HOP-EM Algorithm
 \end_layout
 
 \begin_layout Standard
-Denote 
+Denote
 \begin_inset Formula $L_{M}(\overline{x})$
 \end_inset
 
- as the likelihood of motif 
+ as the likelihood of motif
 \begin_inset Formula $\overline{x}$
 \end_inset
 
  , i.e.
- the probability that 
+ the probability that
 \begin_inset Formula $\overline{x}$
 \end_inset
 
@@ -1285,7 +1560,7 @@ Denote
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \[
 L_{M}(\overline{x})=P(\overline{x}|M)=\underset{i\in\{1,...,|\overline{x}|\}}{\prod}M_{\overline{x}_{i},i,}
 \]
@@ -1300,7 +1575,7 @@ HMM problem:
 \end_layout
 
 \begin_layout Standard
-Given the observation sequence X, and a model 
+Given the observation sequence X, and a model
 \begin_inset Formula $\theta=(\pi,E,T,G)$
 \end_inset
 
@@ -1309,7 +1584,6 @@ Given the observation sequence X, and a model
 
 \begin_layout Standard
 How can we compute the probability of the hidden states at each position
- 
 \begin_inset Formula $P(y_{t}|X,\theta)$
 \end_inset
 
@@ -1317,15 +1591,15 @@ How can we compute the probability of the hidden states at each position
 \end_layout
 
 \begin_layout Standard
-How can we calculate 
+How can we calculate
 \begin_inset Formula $P(X|\theta)$
 \end_inset
 
-, and what model 
+, and what model
 \begin_inset Formula $\theta'$
 \end_inset
 
- maximizes the 
+ maximizes the
 \begin_inset Formula $P(X|\theta)$
 \end_inset
 
@@ -1346,24 +1620,23 @@ As in the Forward Algorithm (Rabiner, 1989) we calculate the distribution
  of the sequence until the t'th letter.
  In this version, it is enough to calculate only the probability of being
  in the base-states and not the sub-states, i.e.
- 
 \begin_inset Formula $\alpha_{j,t}=P\left(y_{t}=(j,0),x_{1:t}\right)$
 \end_inset
 
 .
- We calculate 
+ We calculate
 \begin_inset Formula $\alpha_{j,t}$
 \end_inset
 
- iterating over 
+ iterating over
 \begin_inset Formula $t=1,2,...,L$
 \end_inset
 
- where the initial for 
+ where the initial for
 \begin_inset Formula $t=1$
 \end_inset
 
-: 
+:
 \begin_inset Formula $\alpha_{j,1}=P\left(y_{1}=(j,0),x_{1}\right)=\pi_{j}\cdot\underset{i_{1},...,i_{o-1}}{\sum}E_{j,i_{1},...,i_{o-1},x_{1}}$
 \end_inset
 
@@ -1371,7 +1644,7 @@ As in the Forward Algorithm (Rabiner, 1989) we calculate the distribution
 \end_layout
 
 \begin_layout Standard
-For 
+For
 \begin_inset Formula $t\in\{1...L\}$
 \end_inset
 
@@ -1379,7 +1652,7 @@ For
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \begin{align*}
 \alpha_{j,t}= & P(y_{t}=(j,0),x_{1:t})=\\
 = & \underset{\text{base-state transitions}}{\underbrace{\sum_{j'\in\{1,...,m\}}\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1}^{i},...,x_{t}^{i}}}}\\
@@ -1396,7 +1669,7 @@ Explanation:
 \end_layout
 
 \begin_layout Standard
-From the law of total probability, the probability 
+From the law of total probability, the probability
 \begin_inset Formula $\alpha_{j,t}$
 \end_inset
 
@@ -1407,7 +1680,7 @@ From the law of total probability, the probability
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \[
 \alpha_{j,t}=P\left(y_{t}=(j,0),x_{1:t}\right)=
 \]
@@ -1418,7 +1691,7 @@ From the law of total probability, the probability
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \[
 =\underset{\text{base-state transitions}}{\underbrace{\underset{j'\in\{1,...,m\}}{\sum}P\left(y_{t-1}=(j',0),y_{t}=(j,0),x_{1:t}\right)}}+\underset{\text{sub-state transitions}}{\underbrace{\underset{l\in\{1,...,k\}}{\sum}P\left(y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)}}
 \]
@@ -1433,7 +1706,7 @@ Develop of a sub-state transition using the chain rule:
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \begin{align*}
 P\left(y_{t-|W_{l}|:t-1}=(j',l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)= & \,P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot\\
  & \cdot P\left(y_{t-|W_{l}|:t-1}=(j,l)|y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\\
@@ -1447,27 +1720,27 @@ P\left(y_{t-|W_{l}|:t-1}=(j',l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)= & \,P\left
 \end_layout
 
 \begin_layout Standard
-Because of 
+Because of
 \begin_inset Formula $x_{t}$
 \end_inset
 
- is dependent on only 
+ is dependent on only
 \begin_inset Formula $y_{t}$
 \end_inset
 
- (and also 
+ (and also
 \begin_inset Formula $x_{t-o:t-1}$
 \end_inset
 
- if 
+ if
 \begin_inset Formula $y_{t}$
 \end_inset
 
- is a base-state) and 
+ is a base-state) and
 \begin_inset Formula $y_{t}$
 \end_inset
 
- is dependent on only 
+ is dependent on only
 \begin_inset Formula $y_{t-1}$
 \end_inset
 
@@ -1475,7 +1748,7 @@ Because of
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \begin{align*}
 P\left(y_{t-|W_{l}|:t-1}=(j',l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)= & \,P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\\
  & \cdot P\left(y_{t-|W_{l}|:t-1}=(j,l)|y_{t-|W_{l}|-1}=(j,0)\right)\\
@@ -1489,11 +1762,11 @@ P\left(y_{t-|W_{l}|:t-1}=(j',l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)= & \,P\left
 \end_layout
 
 \begin_layout Standard
-We can now replace the received terms with the components of 
+We can now replace the received terms with the components of
 \begin_inset Formula $\theta$
 \end_inset
 
- and with already filled 
+ and with already filled
 \begin_inset Formula $\alpha$
 \end_inset
 
@@ -1501,7 +1774,7 @@ We can now replace the received terms with the components of
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \[
 P\left(y_{t-|W_{l}|:t-1}^{i}=(j,l),y_{t-|W_{l}|-1}^{i}=(j,0),x_{1:t}^{i}\right)=\alpha_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}
 \]
@@ -1521,7 +1794,7 @@ This process is similar to the base-state transition.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \[
 P\left(y_{t-1}=(j',0),y_{t}=(j,0),x_{1:t}\right)=P\left(y_{t-1}=(j',0),x_{1:t-1}\right)\cdot P\left(y_{t}=(j,0)|y_{t-1}=(j',0),x_{1:t-1}\right)\cdot P\left(x_{t}|y_{t}=(j,0),y_{t-1}=(j',0),x_{1:t-1}\right)=
 \]
@@ -1536,7 +1809,7 @@ Using the conditional independencies to simplify the probabilities:
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \[
 =P(y_{t-1}=(j',0),x_{1:t-1})\cdot P\left(y_{t}=(j,0)|y_{t-1}=(j',0)\right)\cdot P\left(x_{t}|y_{t}=(j,0),x_{1:t-1}\right)=\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1},...,x_{t}}
 \]
@@ -1554,7 +1827,7 @@ Backward Algorithm
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \begin{align*}
 \beta_{j,t}= & P\left(x_{t+1:L}|y_{t}=(j,0)\right)=\\
 = & \underset{\text{base-state transitions}}{\underbrace{\sum_{j'\in\{1,...,m\}}\beta_{j',t+1}\cdot E_{u,x_{t-o+2},...,x_{t+1}}\cdot T_{j,j'}}}\\
@@ -1577,7 +1850,7 @@ Law of total probabilty:
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \[
 P\left(x_{t+1:L}|y_{t}=(j,0)\right)=
 \]
@@ -1588,7 +1861,7 @@ P\left(x_{t+1:L}|y_{t}=(j,0)\right)=
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \[
 =\underset{\text{base-state transition}}{\underbrace{\sum_{j'}P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0)\right)}}+\underset{\text{sub-state transition}}{\underbrace{\sum_{l}P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{t+1:L}|y_{t}=(j,0)\right)}}
 \]
@@ -1603,7 +1876,7 @@ For the base-state transition term,using the chain rule:
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \begin{align*}
 P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0)\right)= & P\left(x_{t+2:L}|y_{t+1}=(j',0),y_{t}=(j,0),x_{t+1}\right)\\
  & \cdot P\left(x_{t+1}|y_{t+1}=(j',0),y_{t}=(j,0)\right)\\
@@ -1620,7 +1893,7 @@ Using the conditional independencies to simplify the probabilities:
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \begin{align*}
 P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0)\right)= & P\left(x_{t+2:L}|y_{t+1}=(j',0)\right)\\
  & \cdot P\left(x_{t+1}|y_{t+1}=(j',0),y_{t}=(j,0)\right)\\
@@ -1645,7 +1918,7 @@ For the sub-state transition term, using the chain rule:
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \begin{align*}
 P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{t+1:L}|y_{t}=(j,0)\right)= & P\left(x_{t+\left|W_{l}\right|+2:L}|x_{t+1:t+\left|W_{l}\right|+1},y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),y_{t}=(j,0)\right)\\
  & \cdot P\left(x_{t+\left|W_{l}\right|+1}|x_{t+1:t+\left|W_{l}\right|},y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),y_{t}=(j,0)\right)\\
@@ -1663,7 +1936,7 @@ Using the conditional independencies to simplify the probabilities:
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \begin{align*}
 P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{t+1:L}|y_{t}=(j,0)\right)= & P\left(x_{t+\left|W_{l}\right|+2:L}|y_{t+\left|W_{l}\right|+1}=(j,0)\right)\\
  & \cdot P\left(x_{t+\left|W_{l}\right|+1}|y_{t+\left|W_{l}\right|+1}=(j,0)\right)\\
@@ -1689,7 +1962,7 @@ First we calculate auxiliary variables:
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \begin{align*}
 \psi_{i,j,l,t}= & P\left(y_{t}^{i}=(j,0),y_{t+1:t+|W_{l}|}^{i}=(j,l),y_{t+|W_{l}|+1}^{i}=(j,0),X_{i}\right)\\
 = & \alpha_{i,j,t}\cdot F_{j}\cdot G_{j,l}\cdot L_{W_{l,}}\left(x_{t+1}^{i},...,x_{t+|W_{l}|}^{i}\right)\cdot E_{j,x_{t+|W_{l}|-o+2}^{i},...,x_{t+|W_{l}|+1}^{i}}\cdot\beta_{i,j,t+|W_{l}|+1}
@@ -1705,7 +1978,7 @@ First we calculate auxiliary variables:
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \begin{align*}
 \gamma_{i,j,t}= & P\left(y_{t}^{i}=(j,0)|X_{i}\right)=\frac{P\left(y_{t}^{i}=(j,0),X_{i}\right)}{P\left(X_{i}\right)}\\
 = & \frac{\alpha_{i,j,t}\cdot\beta_{i,j,t}}{\underset{j'\in\{1,...,m\}}{\sum}\left(\alpha_{i,j',t}\cdot\beta_{i,j',t}+\underset{l\in\{1,...,k\}}{\sum}\underset{s\in\{1,...,|W_{l}|\}}{\sum}\psi_{i,j',l,t-s}\right)}
@@ -1717,16 +1990,16 @@ First we calculate auxiliary variables:
 \begin_inset Newline newline
 \end_inset
 
- 
+
 \begin_inset Newline newline
 \end_inset
 
- 
+
 \begin_inset Newline newline
 \end_inset
 
- 
-\begin_inset Formula 
+
+\begin_inset Formula
 \[
 P\left(y_{t}=(j,0),x_{1:L}\right)=P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{1:t},y_{t}=(j,0)\right)\approx P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|y_{t}=(j,0)\right)=\alpha_{j.t}\cdot\beta_{j,t}
 \]
@@ -1737,7 +2010,7 @@ P\left(y_{t}=(j,0),x_{1:L}\right)=P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \[
 \approx=
 \]
@@ -1755,7 +2028,7 @@ P\left(y_{t}=(j,0),x_{1:L}\right)=P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(
 \begin_inset Newline newline
 \end_inset
 
- 
+
 \begin_inset Newline newline
 \end_inset
 
@@ -1763,7 +2036,7 @@ P\left(y_{t}=(j,0),x_{1:L}\right)=P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(
 \end_layout
 
 \begin_layout Standard
-TODO: does different t gives different 
+TODO: does different t gives different
 \begin_inset Formula $P\left(x_{1:L}\right)=\underset{j'\in\{1,...,m\}}{\sum}\alpha_{i,j',t}\cdot\beta_{i,j',t}$
 \end_inset
 
@@ -1771,7 +2044,7 @@ TODO: does different t gives different
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \begin{align*}
 \xi_{i,j_{1},j_{2},t}= & P\left(y_{t}^{i}=(j_{1},0),y_{t+1}^{i}=(j_{2},0)|X_{i}\right)=\frac{P\left(y_{t}^{i}=(j_{1},0),y_{t+1}^{i}=(j_{2},0),X\right)}{P\left(X_{i}\right)}\\
 \\
@@ -1788,7 +2061,7 @@ TODO: does different t gives different
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
+\begin_inset Formula
 \begin{align*}
 \eta_{i,j,l,t}= & P\left(y_{t}^{i}=(j,0),y_{t+1:t+|W_{l}|}^{i}=(j,l)|X_{i}\right)\\
 = & \frac{P\left(y_{t}^{i}=(j,0),y_{t+1:t+|W_{l}|}^{i}=(j,l),X_{i}\right)}{P\left(X_{i}\right)}\\
@@ -1801,7 +2074,7 @@ TODO: does different t gives different
 \end_layout
 
 \begin_layout Standard
-We use the temporary auxiliary variables to calculate the 
+We use the temporary auxiliary variables to calculate the
 \begin_inset Formula $\theta_{max}$
 \end_inset
 
@@ -1848,15 +2121,15 @@ TODO: add mid steps to the calculation to make more readable
 \begin_inset Newline newline
 \end_inset
 
- 
+
 \begin_inset Newline newline
 \end_inset
 
- 
+
 \begin_inset Newline newline
 \end_inset
 
- 
+
 \begin_inset Newline newline
 \end_inset
 
@@ -1904,7 +2177,7 @@ Possible Applications
 
 \begin_layout Standard
 labeled enhancer seqs from multiple motifs-> EM to learn E M F per floor
- + setting 
+ + setting
 \begin_inset Formula $T=\mathbb{I}_{m\times m}$
 \end_inset
 
