@@ -1186,8 +1186,7 @@ which is the probability that a sequence
 \begin_inset Formula $x_{t+1:L}$
 \end_inset
 
- was emitted and the hidden states series began at position t with the hidden
- state j.
+ was emitted given the hidden state at position t had value j.
 \end_layout
 
 \begin_layout Standard
@@ -1199,7 +1198,7 @@ Filling the
 \begin_inset Formula $t=L,L-1,...,1$
 \end_inset
 
-, for all 
+, and for all 
 \begin_inset Formula $j\in[m]$
 \end_inset
 
@@ -1257,7 +1256,7 @@ This matrix building process is similarly explained by:
 \begin_layout Standard
 \begin_inset Formula 
 \[
-=\sum_{j'\in[m]}\beta_{j',t+1}\cdot E_{u,x_{t-o+2},...,x_{t+1}}\cdot T_{j,j'}
+=\sum_{j'\in[m]}\beta_{j',t+1}\cdot E_{j',x_{t+1}}\cdot T_{j,j'}
 \]
 
 \end_inset
@@ -1288,7 +1287,7 @@ Page 11 and page 2
 \end_layout
 
 \begin_layout Standard
-We now have all that is need to calculate the terms 
+We now have all that is needed to calculate the terms 
 \family roman
 \series medium
 \shape up
@@ -1296,7 +1295,6 @@ We now have all that is need to calculate the terms
 \emph off
 \bar no
 \strikeout off
-\xout off
 \uuline off
 \uwave off
 \noun off
@@ -1321,7 +1319,6 @@ We now have all that is need to calculate the terms
 \emph default
 \bar default
 \strikeout default
-\xout default
 \uuline default
 \uwave default
 \noun default
