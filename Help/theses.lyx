@@ -178,13 +178,13 @@ Hi-C are techniques for measuring the spatial organization of chromatin
  et al.
  2012), and shown that the genome is partitioned into topologically associating
  domains (TADs), mostly under 10 mb long (F.
- RamÃ­rez 2018).
+ Ramírez 2018).
  Within TADs sequence to sequence interaction are more frequent.
  TADs boundaries are enriched with DNA-biding protein motifs, and their
  location play a significant role in gene regulation.
  Gene-enhancer interactions occur when both are in the same TAD, and deletion
  of the motifs from TAD's boundaries may cause changes in the gene activation
- leading to developmental abnormalities in mouse embryos (LupiÃ¡Ã±ez DG, et
+ leading to developmental abnormalities in mouse embryos (Lupiáñez DG, et
  al.
  2015).
  It has been argued (S.
@@ -256,7 +256,7 @@ histone marks
 \end_inset
 
  are predictive of enhancer position and activity status and can be assessed
- by chromatin immunoprecipitation followed by deep sequencing (ChIPâ€“seq)
+ by chromatin immunoprecipitation followed by deep sequencing (ChIP–seq)
  (Visel et al.
  2009; Firbi et al.
  2010; Fernandez et al.
@@ -478,7 +478,7 @@ TODO: [Levin, VISTA] experiments shows that insertion of a sequence without
 
 \begin_layout Standard
 From (C.
- BessiÃ¨re et al 2018,
+ Bessière et al 2018,
 \begin_inset Quotes eld
 \end_inset
 
@@ -948,11 +948,11 @@ The first part is maximized using Lagrange multiplier
 \end_layout
 
 \begin_layout Standard
-we derive the equations and get
+we derive the equations and get 
 \begin_inset Formula $\frac{P\left(X,y_{1}=j|\theta^{'}\right)}{\pi_{j}}=-\lambda$
 \end_inset
 
- then sum them to receive
+ then sum them to receive 
 \begin_inset Formula $\lambda=P\left(X|\theta^{'}\right)$
 \end_inset
 
@@ -962,7 +962,7 @@ we derive the equations and get
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-\pi_{j}=\frac{P\left(X,y_{1}=j|\theta^{'}\right)}{P\left(X|\theta^{'}\right)}
+\pi_{j}=\frac{P\left(X,y_{1}=j|\theta^{'}\right)}{P\left(X|\theta^{'}\right)}=P\left(y_{1}=j|X,\theta^{'}\right)
 \end{equation}
 
 \end_inset
@@ -978,7 +978,7 @@ we follow this method similarly in the second and third parts, from which
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P\left(X,y_{t-1}=j_{1},y_{t}=j_{2}|\theta^{'}\right)}{\sum_{t\in2...L}P\left(X,y_{t-1}=j_{1}|\theta^{'}\right)}
+T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P\left(X,y_{t-1}=j_{1},y_{t}=j_{2}|\theta^{'}\right)}{\sum_{t\in2...L}P\left(X,y_{t-1}=j_{1}|\theta^{'}\right)}=\frac{\sum_{t\in2...L}P\left(y_{t-1}=j_{1},y_{t}=j_{2}|X,\theta^{'}\right)}{\sum_{t\in2...L}P\left(y_{t-1}=j_{1}|X,\theta^{'}\right)}
 \end{equation}
 
 \end_inset
@@ -993,7 +993,7 @@ and
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-E_{j,b}=\frac{\sum_{t\in[L]}P\left(X,y_{t}=j|\theta^{'}\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P\left(X,y_{t}=j|\theta^{'}\right)}
+E_{j,b}=\frac{\sum_{t\in[L]}P\left(X,y_{t}=j|\theta^{'}\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P\left(X,y_{t}=j|\theta^{'}\right)}=\frac{\sum_{t\in[L]}P\left(y_{t}=j|X,\theta^{'}\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P\left(y_{t}=j|X,\theta^{'}\right)}=
 \end{equation}
 
 \end_inset
@@ -1009,25 +1009,43 @@ where
 \end{cases}$
 \end_inset
 
-
+ 
 \end_layout
 
 \begin_layout Standard
 After stating the intentions of each EM iteration in (4), (5) and (6), we
  now need to calculated them in order to successfully learn the HMM parameters.
+ Specifically, notice that it is enough to calculate the terms 
+\begin_inset Formula $P\left(y_{t}=j|X,\theta^{'}\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $P\left(y_{t-1}=j_{1},y_{t}=j_{2}|X,\theta^{'}\right)$
+\end_inset
+
+ to resolve all the parameters update states in (4), (5) and (6).
 \end_layout
 
 \begin_layout Standard
-With the Forward Algorithm (Rabiner, 1989) we dynamically calculate a matrix
- 
+The Forward Backward Algorithm (Rabiner, 1989) is a method to dynamically
+ calculate two matrices, 
 \begin_inset Formula $\alpha$
 \end_inset
 
- of 
+ and 
+\begin_inset Formula $\beta,$
+\end_inset
+
+ both of size 
 \begin_inset Formula $m\times L$
 \end_inset
 
- for which: 
+.
+ The forward probabilities matrix 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ holds: 
 \end_layout
 
 \begin_layout Standard
@@ -1038,15 +1056,31 @@ With the Forward Algorithm (Rabiner, 1989) we dynamically calculate a matrix
 
 \end_inset
 
-The calculation is done iterating over 
+
+\end_layout
+
+\begin_layout Standard
+which is, in other words, that 
+\begin_inset Formula $\alpha_{j,t}$
+\end_inset
+
+ is the probability that a sequence 
+\begin_inset Formula $x_{1:t}$
+\end_inset
+
+ was emitted and the hidden states series ended with the hidden state j.
+\end_layout
+
+\begin_layout Standard
+The calculation is done by iterating over 
 \begin_inset Formula $t=1,2,...,L$
 \end_inset
 
-, for all 
+, in each iteration filling all 
 \begin_inset Formula $j\in[m]$
 \end_inset
 
- in each iteration, as following:
+ matrix cells as following:
 \end_layout
 
 \begin_layout Standard
@@ -1064,9 +1098,8 @@ for\,t=2,...,L:\\
 \end_layout
 
 \begin_layout Standard
-The building of the table is based on the law of total probability and the
- independencies of the variables in HMM, i.e.
- each hidden variable 
+The building of the table is based on the HMM basic assumptions that each
+ hidden state 
 \begin_inset Formula $y_{t}$
 \end_inset
 
@@ -1074,43 +1107,158 @@ The building of the table is based on the law of total probability and the
 \begin_inset Formula $y_{t-1}$
 \end_inset
 
-.:
+ and that each observed variable 
+\begin_inset Formula $x_{t}$
+\end_inset
+
+ is dependent only on its hidden state that emitted it 
+\begin_inset Formula $y_{t}$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $\alpha_{j,t}=P\left(y_{t}=j,x_{1:t}\right)=P\left(x_{t}|y_{t}=j,x_{1:t-1}\right)\cdot P\left(y_{t}=j,x_{1:t-1}\right)=$
+\begin_inset Formula 
+\[
+\alpha_{j,t}=P\left(y_{t}=j,x_{1:t}\right)=P\left(x_{t}|y_{t}=j,x_{1:t-1}\right)\cdot P\left(y_{t}=j,x_{1:t-1}\right)=
+\]
+
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $=P\left(x_{t}|y_{t}=j\right)\cdot\sum_{j'\in[m]}P\left(y_{t}=j,y_{t-1}=j',x_{1:t-1}\right)=P\left(x_{t}|y_{t}=j\right)\cdot\sum_{j'\in[m]}P\left(y_{t}=j|y_{t-1}=j'\right)\cdot P\left(y_{t-1}=j',x_{1:t-1}\right)=$
+\begin_inset Formula 
+\[
+=P\left(x_{t}|y_{t}=j\right)\cdot\sum_{j'\in[m]}P\left(y_{t}=j,y_{t-1}=j',x_{1:t-1}\right)=
+\]
+
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $=E_{j,x_{t}}\cdot\sum_{j'\in[m]}T_{j',j}\cdot\alpha_{j',t-1}$
+\begin_inset Formula 
+\[
+=P\left(x_{t}|y_{t}=j\right)\cdot\sum_{j'\in[m]}P\left(y_{t}=j|y_{t-1}=j'\right)\cdot P\left(y_{t-1}=j',x_{1:t-1}\right)=
+\]
+
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
-is the sum of probabilities of all the possible transition that ended in
- the state j.
+\begin_inset Formula 
+\[
+=E_{j,x_{t}}\cdot\sum_{j'\in[m]}T_{j',j}\cdot\alpha_{j',t-1}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The backwards probabilities matrix 
+\begin_inset Formula $\beta$
+\end_inset
+
+ holds:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\beta_{j,t}=P\left(x_{t+1:L}|y_{t}=j\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which is the probability that a sequence 
+\begin_inset Formula $x_{t+1:L}$
+\end_inset
+
+ was emitted and the hidden states series began at position t with the hidden
+ state j.
+\end_layout
+
+\begin_layout Standard
+Filling the 
+\begin_inset Formula $\beta$
+\end_inset
+
+ is done in the opposite direction 
+\begin_inset Formula $t=L,L-1,...,1$
+\end_inset
+
+, for all 
+\begin_inset Formula $j\in[m]$
+\end_inset
+
+ as following:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-P\left(y_{t-|W_{l}|:t-1}=(j',l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)= & \,P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot\\
- & \cdot P\left(y_{t-|W_{l}|:t-1}=(j,l)|y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\\
- & \cdot P\left(x_{t-|W_{l}|:t-1}|y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\\
- & \cdot P\left(x_{t}|y_{t}=(j,0),x_{1:t-1},y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0)\right)
+for\,t=L:\\
+ & \beta_{j,t}=\frac{1}{m}\\
+for\,t=L-1,...,1:\\
+ & \beta_{j,t}=\sum_{j'\in[m]}\beta_{j',t+1}\cdot T_{j,j'}\cdot E_{j',x_{t}}
 \end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This matrix building process is similarly explained by:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\beta_{j,t}=P\left(x_{t+1:L}|y_{t}=j\right)=\sum_{j'\in[m]}P\left(y_{t+1}=j',x_{t+1:L}|y_{t}=j\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\sum_{j'\in[m]}P\left(x_{t+2:L}|y_{t}=j\right)\cdot P\left(x_{t+1}|y_{t}=j,y_{t+1}=j'\right)\cdot P\left(y_{t+1}=j'|y_{t}=j\right)=
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+=\sum_{j'\in[m]}P\left(x_{t+2:L}|y_{t+1}=j'\right)\cdot P\left(x_{t+1}|y_{t+1}=j'\right)\cdot P\left(y_{t+1}=j'|y_{t}=j\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\sum_{j'\in[m]}\beta_{j',t+1}\cdot E_{u,x_{t-o+2},...,x_{t+1}}\cdot T_{j,j'}
+\]
 
 \end_inset
 
@@ -1140,19 +1288,68 @@ Page 11 and page 2
 \end_layout
 
 \begin_layout Standard
-The probability of being in a hidden state at position i is calculated
+We now have all that is need to calculate the terms 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $P\left(y_{t}=j|X,\theta^{'}\right)$
+\end_inset
+
+, denoted as 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ a matrix of size 
+\begin_inset Formula $L\times m$
+\end_inset
+
+: 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
 \begin_inset Newline newline
 \end_inset
 
 
 \begin_inset Formula 
 \[
-\gamma=P_{\theta^{'}}(y|x_{1:n})
+\gamma_{t,j}=P\left(y_{t}=j|X,\theta^{'}\right)=\frac{P\left(y_{t}=j,X|\theta^{'}\right)}{P\left(X|\theta^{'}\right)}=
 \]
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\frac{P\left(y_{t}=j,x_{1:t}\right)P\left(x_{t+1:L}|y_{t}=j\right)}{\sum P\left(y_{t}=j,x_{1:t}\right)P\left(x_{t+1:L}|y_{t}=j\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{\sum_{j'\in[m]}\alpha_{j',t}\cdot\beta_{j',t}}
+\]
+
+\end_inset
+
+ 
 \end_layout
 
 \begin_layout Part*
