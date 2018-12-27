@@ -1453,13 +1453,14 @@ HOP-HMM
 \end_layout
 
 \begin_layout Standard
-HOP-HMM models the structure of enhancers containing TFBSs inside them.
- In this model, there are two types of states: PWM sub state, and base states,
- where each type of enhancer has its own base state, and the base can transfer
- into one of it's PWM sub states.
- Each PWM sub state emits a single motif sampled from its PWM, which is
+Here we present HOP-HMM, a varient model of HMM, that is well fitted to
+ utilize the structure of enhancers containing TFBSs inside them.
+ The base feature of HOP-HMM is its two types of hidden states: PWM sub-state,
+ and base-states, where each type of enhancer has its own base-state which
+ can transfer into one of it's PWM sub-states.
+ Each PWM sub-state emits a single motif sampled from its PWM, which is
  fixed and is given to the model.
- The base states emit a single letter each time, where the emission is condition
+ The base-states emit a single letter each time, where the emission is condition
 al to the previous k letters emitted.
  This method is useful to express both the lack of frequent long motifs
  in the inter-TFBS parts of the enhancer, and the motifs that are not in
@@ -1480,7 +1481,7 @@ A model that contains states that emit motifs sampled from PWMs was previously
 \begin_layout Standard
 HOP-HMM is a high-order emission base-states and PWM emission sub-states
  HMM from a dataset of N observations sequences
-\begin_inset Formula $\mathcal{X}=\left(X_{1},...,x_{L}\right)$
+\begin_inset Formula $\mathcal{X}=\left(x_{1},...,x_{L}\right)$
 \end_inset
 
  where each observation sequence is L nucleotides long
@@ -1535,43 +1536,131 @@ quite abstract and hard to follow.
 
 \series bold
 \bar under
+HOP-HMM Denotations
+\end_layout
+
+\begin_layout Standard
+o - order of base-state emission, emit distribution of variable depends
+ on 
+\begin_inset Formula $o-1$
+\end_inset
+
+ last variables (hyper parameter)
+\end_layout
+
+\begin_layout Standard
+m - number of base-states (hyper parameter)
+\end_layout
+
+\begin_layout Standard
+k - number of sub-states for each base-state (hyper parameter)
+\end_layout
+
+\begin_layout Standard
+L - length of the DNA sequence (data given to the algorithm)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $Y=y_{1},...,y_{L}$
+\end_inset
+
+ - hidden states sequence (unknown feature of the data, estimated by the
+ Viterbi algorithm)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $y_{i}\in[m]\times[k]\cup0$
+\end_inset
+
+ - hidden state (unknown feature of the data, estimated by the Viterbi algorithm
+)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $X=x_{1},...,x_{L}$
+\end_inset
+
+ - observable variables sequence, which is the DNA sequence (data given
+ to the algorithm)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $x_{i}\in\{A,C,G,T\}$
+\end_inset
+
+ - observable variable, nucleotide (data given to the algorithm)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $W_{i}$
+\end_inset
+
+ - the PWM of the i'th sub-state of all base-states in the model (hyper
+ parameter)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\theta=\{\pi,E,T,G\}$
+\end_inset
+
+ - parameters of the HOP-HMM (learned parameters)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\pi\in[0-1]^{m}$
+\end_inset
+
+ - initial hidden base-state, probability vector (learned parameters)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $E\in[0-1]^{m\times\underset{o\ times}{\underbrace{4\times...\times4}}}$
+\end_inset
+
+ - base-state emission on single variable, probability tensor (learned parameter
+s)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $G-$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $T-$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\bar under
 Emission and Transition
 \end_layout
 
 \begin_layout Standard
-Underlying states emit the observed sequence are of two types: base-states
- and their sub-states.
- We mark the j'th base-state as
+For the two types of hidden states in the HOP-HMM model, we will use a notation
+ of two indices to describe a hidden state: one for its enhancer type and
+ one to indicate wheather it's a base-states or a sub-states.
+ For example, for a model with m types of enhancers we mark the j'th enhancer
+ base-state as 
 \begin_inset Formula $(j,0)$
 \end_inset
 
- for
-\begin_inset Formula $j\in[m]$
-\end_inset
-
- and its l'th sub-state as
+ and its l'th sub-state as 
 \begin_inset Formula $(j,l)$
 \end_inset
 
- for
-\begin_inset Formula $l\in\{1,...,k\}$
+ for 
+\begin_inset Formula $l\in[k]$
 \end_inset
 
 .
- Denote the base-state emission order by o, meaning a base-state emits a
- letter sampled from an emission matrix
-\series bold
-
-\begin_inset Formula $E$
-\end_inset
-
-
-\series default
-that depends on previous
-\begin_inset Formula $o-1$
-\end_inset
-
- letters.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1587,46 +1676,14 @@ Sub-state emits multiple letters sampled from a PWM that is fixed and isn't
 \end_inset
 
 
-\begin_inset Newline newline
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
-\begin_inset Graphics
-	filename Figures/Slide4.eps
-	scale 40
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series bold
-\shape italic
-Figure 4: emission and transition process between base-state.
- The upper flow represent transition from base-state to the same base-state,
- through a sub-state that emits a motif.
- The lower flow represent transition between two base-state using the T
- transition matrix, similar to the conventional HMM.
-\series default
-\shape default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-After emitting a single letter, the j'th base-state has a probability
+As in HMM, the model travel between the hidden states as a Marcov process
+ using the transition matrix T.
+ Here, not all transitions are possible, and the transition is sampled from
+ G matrix as well.
+ thereAfter emitting a single letter,- the j'th base-state has a probability
 \begin_inset Formula $F_{j}$
 \end_inset
 
@@ -1736,7 +1793,7 @@ Parameters
 
 \begin_layout Standard
 An HOP-HMM
-\begin_inset Formula $\theta=\{\pi,E,T,G,F\}$
+\begin_inset Formula $\theta=\{\pi,E,T,G\}$
 \end_inset
 
  is parameterized by:
