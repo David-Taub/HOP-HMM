@@ -524,15 +524,15 @@ Methods
 Markov model (A.A.
  Markov, 1906) is a stochastic model named after Andrey Markov a Russian
  mathematician.
- In a Markov model, at any time the system is at one of m states
+ In a Markov model, at any time the system is at one of m states 
 \begin_inset Formula $\left\{ S_{1},...,S_{m}\right\} $
 \end_inset
 
-, where the first state is sampled from a distribution
+, where the first state is sampled from a distribution 
 \begin_inset Formula $\pi_{i}=P\left(y_{1}=S_{i}\right)$
 \end_inset
 
- and the probability of transitions between the states is denoted by T
+ and the probability of transitions between the states is denoted by T 
 \begin_inset Formula $T_{i,j}=P\left(y_{t}=S_{i}|y_{t-1}=S_{j}\right)$
 \end_inset
 
@@ -818,7 +818,7 @@ Unfortunately, optimizing or calculating the incomplete-data likelihood
 \begin_inset Formula $log\left(P\left(X,Y|\theta^{'}\right)\right)$
 \end_inset
 
- where
+ where 
 \begin_inset Formula $\theta^{'}$
 \end_inset
 
@@ -993,7 +993,7 @@ and
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-E_{j,b}=\frac{\sum_{t\in[L]}P\left(X,y_{t}=j|\theta^{'}\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P\left(X,y_{t}=j|\theta^{'}\right)}=\frac{\sum_{t\in[L]}P\left(y_{t}=j|X,\theta^{'}\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P\left(y_{t}=j|X,\theta^{'}\right)}=
+E_{j,b}=\frac{\sum_{t\in[L]}P\left(X,y_{t}=j|\theta^{'}\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P\left(X,y_{t}=j|\theta^{'}\right)}=\frac{\sum_{t\in[L]}P\left(y_{t}=j|X,\theta^{'}\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P\left(y_{t}=j|X,\theta^{'}\right)}
 \end{equation}
 
 \end_inset
@@ -1015,15 +1015,27 @@ where
 \begin_layout Standard
 After stating the intentions of each EM iteration in (4), (5) and (6), we
  now need to calculated them in order to successfully learn the HMM parameters.
- Specifically, notice that it is enough to calculate the terms 
-\begin_inset Formula $P\left(y_{t}=j|X,\theta^{'}\right)$
+ Specifically, notice that to resolve all the parameters update states in
+ (4), (5) and (6), it is enough to calculate the two terms: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+P\left(y_{t}=j|X,\theta^{'}\right)
+\end{equation}
+
 \end_inset
 
- and 
-\begin_inset Formula $P\left(y_{t-1}=j_{1},y_{t}=j_{2}|X,\theta^{'}\right)$
+
+\begin_inset Formula 
+\begin{equation}
+P\left(y_{t-1}=j_{1},y_{t}=j_{2}|X,\theta^{'}\right)
+\end{equation}
+
 \end_inset
 
- to resolve all the parameters update states in (4), (5) and (6).
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1270,24 +1282,15 @@ This matrix building process is similarly explained by:
 \end_layout
 
 \begin_layout Standard
-################################################################
-\end_layout
+Having the forward and backward probability matrices 
+\begin_inset Formula $\alpha$
+\end_inset
 
-\begin_layout Standard
-http://imaging.mrc-cbu.cam.ac.uk/methods/BayesianStuff?action=AttachFile&do=get&targ
-et=bilmes-em-algorithm.pdf
-\end_layout
+ and 
+\begin_inset Formula $\beta$
+\end_inset
 
-\begin_layout Standard
-Page 11 and page 2
-\end_layout
-
-\begin_layout Standard
-####################################################
-\end_layout
-
-\begin_layout Standard
-We now have all that is needed to calculate the terms 
+, we now have all that is needed to calculate 
 \family roman
 \series medium
 \shape up
@@ -1299,35 +1302,36 @@ We now have all that is needed to calculate the terms
 \uwave off
 \noun off
 \color none
+(8) and (9), using once more the HMM conditional independence in our calculation
+s.
+ 
+\end_layout
 
-\begin_inset Formula $P\left(y_{t}=j|X,\theta^{'}\right)$
-\end_inset
+\begin_layout Standard
 
-, denoted as 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+We denote the terms values of (8) as 
 \begin_inset Formula $\gamma$
 \end_inset
 
- a matrix of size 
+, a matrix of size 
 \begin_inset Formula $L\times m$
 \end_inset
 
-: 
-\family default
-\series default
-\shape default
-\size default
-\emph default
-\bar default
-\strikeout default
-\uuline default
-\uwave default
-\noun default
-\color inherit
+:
+\end_layout
 
-\begin_inset Newline newline
-\end_inset
-
-
+\begin_layout Standard
 \begin_inset Formula 
 \[
 \gamma_{t,j}=P\left(y_{t}=j|X,\theta^{'}\right)=\frac{P\left(y_{t}=j,X|\theta^{'}\right)}{P\left(X|\theta^{'}\right)}=
@@ -1341,12 +1345,105 @@ We now have all that is needed to calculate the terms
 \begin_layout Standard
 \begin_inset Formula 
 \[
-=\frac{P\left(y_{t}=j,x_{1:t}\right)P\left(x_{t+1:L}|y_{t}=j\right)}{\sum P\left(y_{t}=j,x_{1:t}\right)P\left(x_{t+1:L}|y_{t}=j\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{\sum_{j'\in[m]}\alpha_{j',t}\cdot\beta_{j',t}}
+=\frac{P\left(y_{t}=j,x_{1:t}\right)\cdot P\left(x_{t+1:L}|y_{t}=j\right)}{\sum_{j'\in[m]}P\left(y_{t}=j',x_{1:t}\right)\cdot P\left(x_{t+1:L}|y_{t}=j'\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{\sum_{j'\in[m]}\alpha_{j',t}\cdot\beta_{j',t}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+And we denote the values of (9) as 
+\begin_inset Formula $\xi$
+\end_inset
+
+, a matrix of size 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset Formula $L-1\times m\times m$
+\end_inset
+
+ :
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\xi_{t,j_{1},j_{2}}=P\left(y_{t-1}=j_{1},y_{t}=j_{2}|X,\theta^{'}\right)=\frac{P\left(y_{t-1}=j_{1},y_{t]}=j_{2},X|\theta^{'}\right)}{P\left(X|\theta^{'}\right)}=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\frac{P\left(y_{t-1}=j_{1},x_{1:t-1}\right)\cdot P\left(y_{t}=j_{2}|y_{t-1}=j_{1}\right)\cdot P\left(x_{t}|y_{t}=j_{2}\right)\cdot P\left(x_{t+1:L}|y_{t}=j_{2}\right)}{\sum_{j'\in[m]}P\left(y_{t}=j,x_{1:t}\right)\cdot P\left(x_{t+1:L}|y_{t}=j\right)}=\frac{\alpha_{j_{1},t-1}\cdot T_{j_{1},j_{2},}\cdot E_{j_{2},x_{t}}\cdot\beta_{j',t}}{\sum_{j'\in[m]}\alpha_{j',t}\cdot\beta_{j',t}}
 \]
 
 \end_inset
 
  
+\end_layout
+
+\begin_layout Standard
+Although simple and efficient, HMM has potential disadvantage when applied
+ on DNA sequences.
+ The major disadvantage is the inherit property of Markovian models, the
+ lack of memory.
+ For the task of emitting a motif, where each position has a different emission
+ distribution, a HMM model would need to contain different hidden states
+ per position in the motif.
+ This means that for an HMM to be able to emit even a small number of short
+ motifs, it needs to hold a large number of states that require learning
+ a large number of parameters, e.g.
+ for the ability to emit 50 motifs of length 5, an HMM needs to have over
+ 60,000 parameters.
+ Furthermore, for the more complex task of modeling multiple enhancer types
+ and backgrounds states, that each have different probability to emit their
+ motifs and have unique k-order emission distribution when not in those
+ motifs, a the number of parameters required might introduce an overfitting
+ issue.
+ A possible solution could be to restrict the learned parameters after each
+ EM iteration by forcing most of the parameters to be zero.
+ them, in a way that will direct the 
+\end_layout
+
+\begin_layout Standard
+#####################################################################
+\end_layout
+
+\begin_layout Itemize
+Unable to learn motifs.
+\end_layout
+
+\begin_layout Itemize
+difficulty in understnading global context of a sequence.
 \end_layout
 
 \begin_layout Part*
@@ -1391,7 +1488,7 @@ HOP-HMM is a high-order emission base-states and PWM emission sub-states
 \end_inset
 
 .
- We assume an underlying hidden variable sequences
+ We assume an underlying hidden variable sequences 
 \begin_inset Formula $\mathcal{Y}=\left(Y_{1},...,y_{L}\right)$
 \end_inset
 
