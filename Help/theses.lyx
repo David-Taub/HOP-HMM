@@ -26,7 +26,8 @@
 \font_tt_scale 100 100
 \graphics default
 \default_output_format default
-\output_sync 0
+\output_sync 1
+\output_sync_macro "\synctex=1"
 \bibtex_command default
 \index_command default
 \paperfontsize default
@@ -106,7 +107,7 @@ The TF inside the nucleus of specific tissues are thought to be a key factor
  cell specific enhancer sequences.
  show heat map of AUC-ROC results.
  Between these TFBS, k-mer frequencies varies between enhancers and non
- regulatory
+ regulatory 
 \begin_inset Quotes eld
 \end_inset
 
@@ -178,13 +179,11 @@ Hi-C are techniques for measuring the spatial organization of chromatin
  et al.
  2012), and shown that the genome is partitioned into topologically associating
  domains (TADs), mostly under 10 mb long (F.
- Ramírez 2018).
  Within TADs sequence to sequence interaction are more frequent.
  TADs boundaries are enriched with DNA-biding protein motifs, and their
  location play a significant role in gene regulation.
  Gene-enhancer interactions occur when both are in the same TAD, and deletion
  of the motifs from TAD's boundaries may cause changes in the gene activation
- leading to developmental abnormalities in mouse embryos (Lupiáñez DG, et
  al.
  2015).
  It has been argued (S.
@@ -256,7 +255,6 @@ histone marks
 \end_inset
 
  are predictive of enhancer position and activity status and can be assessed
- by chromatin immunoprecipitation followed by deep sequencing (ChIP–seq)
  (Visel et al.
  2009; Firbi et al.
  2010; Fernandez et al.
@@ -478,7 +476,6 @@ TODO: [Levin, VISTA] experiments shows that insertion of a sequence without
 
 \begin_layout Standard
 From (C.
- Bessière et al 2018,
 \begin_inset Quotes eld
 \end_inset
 
@@ -1403,47 +1400,75 @@ And we denote the values of (9) as
 \begin_layout Standard
 \begin_inset Formula 
 \[
-=\frac{P\left(y_{t-1}=j_{1},x_{1:t-1}\right)\cdot P\left(y_{t}=j_{2}|y_{t-1}=j_{1}\right)\cdot P\left(x_{t}|y_{t}=j_{2}\right)\cdot P\left(x_{t+1:L}|y_{t}=j_{2}\right)}{\sum_{j'\in[m]}P\left(y_{t}=j,x_{1:t}\right)\cdot P\left(x_{t+1:L}|y_{t}=j\right)}=\frac{\alpha_{j_{1},t-1}\cdot T_{j_{1},j_{2},}\cdot E_{j_{2},x_{t}}\cdot\beta_{j',t}}{\sum_{j'\in[m]}\alpha_{j',t}\cdot\beta_{j',t}}
+=\frac{P\left(y_{t-1}=j_{1},x_{1:t-1}\right)\cdot P\left(y_{t}=j_{2}|y_{t-1}=j_{1}\right)\cdot P\left(x_{t}|y_{t}=j_{2}\right)\cdot P\left(x_{t+1:L}|y_{t}=j_{2}\right)}{\sum_{j'\in[m]}P\left(y_{t}=j,x_{1:t}\right)\cdot P\left(x_{t+1:L}|y_{t}=j\right)}=
 \]
 
 \end_inset
 
- 
+
 \end_layout
 
 \begin_layout Standard
-Although simple and efficient, HMM has potential disadvantage when applied
- on DNA sequences.
- The major disadvantage is the inherit property of Markovian models, the
- lack of memory.
+\begin_inset Formula 
+\[
+=\frac{\alpha_{j_{1},t-1}\cdot T_{j_{1},j_{2},}\cdot E_{j_{2},x_{t}}\cdot\beta_{j',t}}{\sum_{j'\in[m]}\alpha_{j',t}\cdot\beta_{j',t}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+
+\bar under
+HMM Limitations
+\end_layout
+
+\begin_layout Standard
+[preposition, motivation, regularization]
+\end_layout
+
+\begin_layout Standard
+Although HMM is simple and efficient, applying it on DNA sequences has a
+ major disadvantage which is the inherit Markovian lack-of-memory property.
+ This property means that on every step of the system, the next state is
+ dependent only on the previous state, without further history consideration.
  For the task of emitting a motif, where each position has a different emission
- distribution, a HMM model would need to contain different hidden states
- per position in the motif.
+ distribution depending on the location in the motif, a HMM model would
+ need to contain different hidden states per position in the motif.
  This means that for an HMM to be able to emit even a small number of short
  motifs, it needs to hold a large number of states that require learning
  a large number of parameters, e.g.
  for the ability to emit 50 motifs of length 5, an HMM needs to have over
  60,000 parameters.
- Furthermore, for the more complex task of modeling multiple enhancer types
- and backgrounds states, that each have different probability to emit their
- motifs and have unique k-order emission distribution when not in those
- motifs, a the number of parameters required might introduce an overfitting
- issue.
- A possible solution could be to restrict the learned parameters after each
- EM iteration by forcing most of the parameters to be zero.
- them, in a way that will direct the 
+ Furthermore, the enhancer modeling task at hand is even more complex, since
+ we would like to model multiple enhancers and backgrounds states, each
+ having different probability of emitting motifs and unique k-order emission
+ distribution when not in those motifs.
+ For ours, or other, data prior assumption the required number of model's
+ parameters might be large enough to introduce problems such as unfeasible
+ memory complexity and overfitting the fixed-sized genome data.
+ 
 \end_layout
 
 \begin_layout Standard
-#####################################################################
-\end_layout
-
-\begin_layout Itemize
-Unable to learn motifs.
-\end_layout
-
-\begin_layout Itemize
-difficulty in understnading global context of a sequence.
+A common way to avoid overfitting the data when training machine learning
+ models is regularization the model's parameters, a method we can incorporate
+ while training HMM as well.
+ A possible regularization is  constraint on the learned transition matrix
+ T to be sparse.
+ Similarly, the proposed HOP-HMM addresses both the memory issue and the
+ overfitting issue while remaining equivalent to a regularized HMM with
+ a large number of states.
+ Namely, most of the transition probabilities are fixed to zero and therefore
+ never stored in memory, and some of the emission probabilities are predetermine
+d and are fixed during the training\SpecialChar endofsentence
+.
+ This allows us to learn a model with the enhancer prior assumptions of
+ motifs and high-order emission without overfitting, and with reasonable
+ memory complexity.
+ 
 \end_layout
 
 \begin_layout Part*
@@ -1453,18 +1478,77 @@ HOP-HMM
 \end_layout
 
 \begin_layout Standard
-Here we present HOP-HMM, a varient model of HMM, that is well fitted to
+[introduction]
+\end_layout
+
+\begin_layout Standard
+Here we present HOP-HMM, a variant model of HMM, that is well fitted to
  utilize the structure of enhancers containing TFBSs inside them.
  The base feature of HOP-HMM is its two types of hidden states: PWM sub-state,
- and base-states, where each type of enhancer has its own base-state which
- can transfer into one of it's PWM sub-states.
- Each PWM sub-state emits a single motif sampled from its PWM, which is
- fixed and is given to the model.
- The base-states emit a single letter each time, where the emission is condition
-al to the previous k letters emitted.
- This method is useful to express both the lack of frequent long motifs
- in the inter-TFBS parts of the enhancer, and the motifs that are not in
- the fixed given set of PWMs of the HOP-HMM model.
+ and base-states, where each type of sequence type is represented by a 
+\begin_inset Quotes eld
+\end_inset
+
+layer
+\begin_inset Quotes erd
+\end_inset
+
+ or row of states in figure 1, a base-state that can transfer into one of
+ it's PWM sub-states.
+ When generating the DNA sequence, the model travel between the layers and
+ creates a sequence built as a mix of several types with different motif
+ frequencies.
+ Each layer on its own creates a series of nucleotides emitted from the
+ base-state, While most layers represent an enhancer types, some layers
+ are predefined as background sequences, and their probability to transfer
+ into a sub-state is restricted.
+\end_layout
+
+\begin_layout Standard
+We use two indices to describe a hidden state, one for its layer index and
+ one to indicate whether it's a base-states or a sub-states.
+ In a model with m layers and k PWMs, we mark the j'th layer base-state
+ as 
+\begin_inset Formula $(j,0)$
+\end_inset
+
+ and its l'th sub-state as 
+\begin_inset Formula $(j,l)$
+\end_inset
+
+ for 
+\begin_inset Formula $l\in[k]$
+\end_inset
+
+, in total there are m base-states and 
+\begin_inset Formula $m\cdot k$
+\end_inset
+
+ sub-states.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/Slide1.eps
+	scale 50
+	clip
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Figure 1: The hidden variable states graph of the HOP-HMM.
+ Each row represents a sequence type, where the left hexagons are base-states
+ and the circles to the right are their sub-states.
+ Not all transitions are possible, and moving between the layers is possible
+ only by a base-state to base-state transition.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1479,29 +1563,96 @@ A model that contains states that emit motifs sampled from PWMs was previously
 \end_layout
 
 \begin_layout Standard
-HOP-HMM is a high-order emission base-states and PWM emission sub-states
- HMM from a dataset of N observations sequences
-\begin_inset Formula $\mathcal{X}=\left(x_{1},...,x_{L}\right)$
+[PWM emission]
+\end_layout
+
+\begin_layout Standard
+On initialization the HOP-HMM is given k PWMs 
+\begin_inset Formula $W_{1},W_{2},...,W_{k}$
 \end_inset
 
- where each observation sequence is L nucleotides long
-\begin_inset Formula $X_{i}=\left(x_{1}^{i},...,x_{L}^{i}\right)$
+ that remain fixed and aren't learned during training.
+ The PWMs are each shared with m sub-states, e.g.
+ the PWM 
+\begin_inset Formula $W_{l}$
 \end_inset
 
-.
- We assume an underlying hidden variable sequences 
-\begin_inset Formula $\mathcal{Y}=\left(Y_{1},...,y_{L}\right)$
+, where 
+\begin_inset Formula $l\in[k]$
 \end_inset
 
- where each underlying sequence is also L variables long
-\begin_inset Formula $Y_{i}=y_{1}^{i},...,y_{L}^{i}$
+, is shared between subs-states 
+\begin_inset Formula $(1,l),(2,l),...,(m,l)$
 \end_inset
 
-.
- Let the space of underlying states be
-\begin_inset Formula $\Upsilon=\left\{ 1,2,...,m\right\} \times\left\{ 0,1,...,k\right\} $
+ and is used for the sub-state emission sampling.
+ The PWMs vary in their column amounts (as the different TFBSs vary in length),
+ where each column represents a nucleotide distribution at that position.
+ When the model enters a sub-state, it emits a motif by sampling from a
+ PWM column by column independently, as described in Figure 3.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/Slide3.JPG
+	scale 50
+
 \end_inset
 
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Figure 3: PWM emission of sub-states.
+ PWMs are a set of per-position nucleotide emission probabilities, that
+ are sampled independently to create a TFBS motif.
+\end_layout
+
+\begin_layout Standard
+[Base-state emission]
+\end_layout
+
+\begin_layout Standard
+The base-states, denoted as 
+\begin_inset Formula $(1,0),(2,0),...,(m,0)$
+\end_inset
+
+, are responsible for the emission of inter-TFBS parts of the enhancer.
+ Similarly to regular states in HMM, base-states emit single nucleotides,
+ where their emission is conditional on the previous of letters emitted
+ in the DNA sequence.
+ This method is useful to express both the lack of frequent long motifs
+ areas in the enhancers.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Graphics
+	filename Figures/Slide2.JPG
+	scale 50
+	clip
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\shape italic
+Figure 2: high-order emission of base-states.
+ Each emission is dependent on the hidden base-state and o-1 previous observatio
+ns.
+\series default
+\shape default
 
 \begin_inset Newline newline
 \end_inset
@@ -1510,26 +1661,53 @@ HOP-HMM is a high-order emission base-states and PWM emission sub-states
 \end_layout
 
 \begin_layout Standard
-[sequences that could have been generated by HOP-HMM]
+
+\series bold
+\bar under
+Transition
 \end_layout
 
 \begin_layout Standard
-TOMMY:
+##############################
 \end_layout
 
 \begin_layout Standard
-quite abstract and hard to follow.
- try to be more concrete.
- See above.
- Add Figure! not clear enough.
- I think your best option is to separate the figure into two parts, like
- I said before.
- Begin by a single "layer" and first describe the automaton and the transition
- probabilities (maybe with a matrix).
- Then show the generated sequence with the (hidden) states above.
- You can also plot the dependencies among them (Markovian model).
- Then make the model more complex, and keeping explaining with automaton
- figures.
+In HOP-HMM, every state can only transit into a small subset of states,
+ and since most of the possible transition are not allowed, a single transition
+ matrix from all states to all states would be sparse.
+ Instead, as described in figure 4, we hold only the possible transition
+ probabilities in two matrices, representing the two types of allowed transition
+s: T for base-state to base-state transition and G for base-state to sub-state
+ transition.
+ When in a base-state, after the single observable variable emission, the
+ model samples its next state from a probability vector that is a concatenation
+ of a row in T and a row in G.
+ If a sub-state is chosen, after the sub-state's motif emission, the model
+ returns back to the base-state to emit another single observable variable
+ and so on.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Graphics
+	filename Figures/HOP-HMM transition matrices.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\emph on
+Figure 4: a compact way to hold the allowed transition probabilities.
+ Concatenation of a row in T and G holds the probability of the next state
+ given the current one.
 \end_layout
 
 \begin_layout Standard
@@ -1622,166 +1800,17 @@ s)
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $G-$
+\begin_inset Formula $G\in[0-1]^{m\times k}$
 \end_inset
 
-
+ - base-state to sub-state transition probability matrix (learned parameters)
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $T-$
+\begin_inset Formula $T\in[0-1]^{m\times m}$
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\bar under
-Emission and Transition
-\end_layout
-
-\begin_layout Standard
-For the two types of hidden states in the HOP-HMM model, we will use a notation
- of two indices to describe a hidden state: one for its enhancer type and
- one to indicate wheather it's a base-states or a sub-states.
- For example, for a model with m types of enhancers we mark the j'th enhancer
- base-state as 
-\begin_inset Formula $(j,0)$
-\end_inset
-
- and its l'th sub-state as 
-\begin_inset Formula $(j,l)$
-\end_inset
-
- for 
-\begin_inset Formula $l\in[k]$
-\end_inset
-
-.
- 
-\end_layout
-
-\begin_layout Standard
-Sub-state emits multiple letters sampled from a PWM that is fixed and isn't
- learned in the training.
- Denote
-\begin_inset Formula $W_{l}$
-\end_inset
-
- the PWM of the l'th sub-states, which is shared between the l'th sub-states
- of all base-states.
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-As in HMM, the model travel between the hidden states as a Marcov process
- using the transition matrix T.
- Here, not all transitions are possible, and the transition is sampled from
- G matrix as well.
- thereAfter emitting a single letter,- the j'th base-state has a probability
-\begin_inset Formula $F_{j}$
-\end_inset
-
- to make a transition into one of its sub-state and emit a motif and probability
-\begin_inset Formula $1-F_{j}$
-\end_inset
-
- to make a transition into one of the base-states and emit a single letter.
- The distribution of transitions between base-states is set by T matrix,
- and between base-state to its sub-states by G matrix.
- After emitting a motif in a sub-state, the next state will be the sub-state's
- base-state where it will emit a single letter.
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Graphics
-	filename Figures/Slide1.eps
-	scale 50
-	clip
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Figure 1: The hidden variable states graph of the HOP-HMM.
- The left hexagons represent base-states, and the circles in the right part
- of each row's represent its sub-states.
-\series default
-\shape default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Graphics
-	filename Figures/Slide2.JPG
-	scale 50
-	clip
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Figure 2: high-order emission of base-states.
- Each emission is dependent on the hidden base-state and o-1 previous observatio
-ns.
-\series default
-\shape default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Graphics
-	filename Figures/Slide3.JPG
-	scale 50
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\shape italic
-Figure 3: PWM emission of sub-states.
-\series default
-\shape default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
+ - base-state to base-state transition probability matrix (learned parameters)
 \end_layout
 
 \begin_layout Standard
