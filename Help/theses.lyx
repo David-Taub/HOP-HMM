@@ -1659,7 +1659,7 @@ The base-states, denoted as
 \end_inset
 
  and the distribution used for emission sampling is 
-\begin_inset Formula $\sum_{i\in[4]}E_{j,i,x_{1},...,x_{t-1}}$
+\begin_inset Formula $\sum_{i\in[4]}\frac{E_{j,i,x_{1},...,x_{t-1}}}{4}$
 \end_inset
 
 .
@@ -1972,9 +1972,12 @@ The calculation is done by iterating over
 \begin{align*}
 for\,t=1:\\
  & \alpha_{j,t}=\pi_{j}\cdot\underset{i_{1},...,i_{o-1}}{\sum}E_{j,i_{1},...,i_{o-1},x_{1}}\\
-for\,t=2,...,L:\\
- & \alpha_{j,t}=\underset{\text{base-state transitions}}{\underbrace{\sum_{j'\in[m]}\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1}^{i},...,x_{t}^{i}}}}\\
- & +\underset{\text{sub-state transitions}}{\underbrace{\sum_{l\in\{1,...,k\}}\alpha_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}}}
+for\,t=2...o-1:\\
+ & \alpha_{j,t}=\underset{\text{base-state transitions}}{\underbrace{\sum_{j'\in[m]}\alpha_{j',t-1}\cdot T_{j',j}\cdot\underset{i_{1},...,i_{o-t}}{\sum}\frac{E_{j,x_{i_{1}},..,.x_{i_{o-t}},x_{1},...,x_{t}}}{4^{o-t}}}}\\
+ & +\underset{\text{sub-state transitions}}{\underbrace{\sum_{l\in[k]\cap\{i|t>|W_{i}|+1\}}\alpha_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|},...,x_{t-1}\right)\cdot\underset{i_{1},...,i_{o-t}}{\sum}\frac{E_{j,x_{i_{1}},..,.x_{i_{o-t}},x_{1},...,x_{t}}}{4^{o-t}}}}\\
+for\,t=o,...,L:\\
+ & \alpha_{j,t}=\underset{\text{base-state transitions}}{\underbrace{\sum_{j'\in[m]}\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1},...,x_{t}}}}\\
+ & +\underset{\text{sub-state transitions}}{\underbrace{\sum_{l\in[k]\cap\{i|t>|W_{i}|+1\}}\alpha_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}}}
 \end{align*}
 
 \end_inset
