@@ -24,8 +24,8 @@ end
 
 % res - N x L
 % Xs1H - N x L x n
+% PWMs - k x n x J
 function res = PWMLogLikelihoodFor(PWMs, lengths, Xs1H, pwmId)
-    % PWMs - k x n x J
     N = size(Xs1H, 1);
     L = size(Xs1H, 2);
     res = ones(N, L) .* eps;
@@ -34,7 +34,7 @@ function res = PWMLogLikelihoodFor(PWMs, lengths, Xs1H, pwmId)
     % 1 x length x n -> N x length x n
     pwm = repmat(pwm, [N, 1, 1]);
     for i = 1:L - lengths(pwmId) + 1
-        res(:, i) = prod(sum(pwm .* Xs1H(:, i:i+lengths(pwmId) - 1, :), 3), 2);
+        res(:, i) = prod(sum(pwm .* Xs1H(:, i:i + lengths(pwmId) - 1, :), 3), 2);
     end
     res = log(res);
 end
