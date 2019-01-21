@@ -1947,8 +1947,69 @@ where
 \end_layout
 
 \begin_layout Standard
-For optimizing this Q function, similarly as in the regular Baum-Welch algorithm
-, we now need to calculate the following terms:
+The 
+\begin_inset Formula $\theta$
+\end_inset
+
+ which optimizes Q, i.e.
+ 
+\begin_inset Formula $\theta_{max}=argmax_{\theta}Q(\theta,\theta')$
+\end_inset
+
+, is built similarly as in the regular Baum-Welch algorithm, as following:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\pi_{j}=\frac{P\left(X,y_{1}=(j,0)|\theta^{'}\right)}{P\left(X|\theta^{'}\right)}=P\left(y_{1}=(j,0)|X,\theta^{'}\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P\left(X,y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|\theta^{'}\right)}{\sum_{t\in2...L}P\left(X,y_{t-1}=(j_{1},0)|\theta^{'}\right)}=\frac{\sum_{t\in2...L}P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|X,\theta^{'}\right)}{\sum_{t\in2...L}P\left(y_{t-1}=(j_{1},0)|X,\theta^{'}\right)}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+G_{j,l}=\frac{\sum_{t\in2...L}P\left(X,y_{t-1}=(j,0),y_{t}=(j,l)|\theta^{'}\right)}{\sum_{t\in2...L}P\left(X,y_{t-1}=(j,0)|\theta^{'}\right)}=\frac{\sum_{t\in2...L}P\left(y_{t-1}=(j,0),y_{t}=(j,l)|X,\theta^{'}\right)}{\sum_{t\in2...L}P\left(y_{t-1}=(j,0)|X,\theta^{'}\right)}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+E_{j,b_{1},...,b_{o}}=\frac{\sum_{t\in o,...,L}P\left(X,y_{t}=(j,0)|\theta^{'}\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P\left(X,y_{t}=(j,0)|\theta^{'}\right)}=\frac{\sum_{t\in o,...,L}P\left(y_{t}=(j,0)|X,\theta^{'}\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P\left(y_{t}=(j,0)|X,\theta^{'}\right)}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Hence to complete the EM iteration, the three missing components in (9),(10),(11
+),(12) are:
 \begin_inset Newline newline
 \end_inset
 
@@ -1987,8 +2048,10 @@ P\left(y_{t-1}=(j,0),y_{t}=(j,l)|X,\theta^{'}\right)
 \end_layout
 
 \begin_layout Standard
-For the calculation of these terms, we will need to calculate the probability
- of being in the base-states:
+For the calculation of these probabilities, we will need to calculate the
+ forward and backward probabilities, and then few other auxiliary terms.
+ The forward and backward probabilities are only for indicating the sequence
+ entering-to and exiting-from base-states:
 \end_layout
 
 \begin_layout Standard
@@ -2458,7 +2521,7 @@ P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{t+
 
 \series bold
 \bar under
-M-Step
+Auxiliary Probabilities 
 \end_layout
 
 \begin_layout Standard
@@ -2484,8 +2547,8 @@ First, we calculate the probability of sub-state starting at a given position,
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-\psi_{j,l,t}= & P\left(y_{t}=(j,0),y_{t+1:t+|W_{l}|}=(j,l),y_{t+|W_{l}|+1}=(j,0),X\right)=\\
-= & P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(y_{t+1:t+|W_{l}|}=(j,l)|y_{t}=(j,0)\right)\\
+\psi_{j,l,t}= & P\left(y_{t}=(j,0),y_{t+1}=(j,l),X\right)=\\
+= & P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(y_{t+1}=(j,l)|y_{t}=(j,0)\right)\\
  & \cdot P\left(x_{t+1:t+\left|W_{l}\right|}|y_{t+1:t+\left|W_{l}\right|}=(j,l)\right)\\
  & \cdot P\left(x_{t+\left|W_{l}\right|+1}|y_{t+\left|W_{l}\right|+1}=(j,0)\right)\\
  & \text{\cdot}P\left(x_{t+|W_{l}|+2:L}|y_{t+|W_{l}|+1}=(j,0)\right)=\\
@@ -2537,8 +2600,8 @@ where t here is set arbitrary from
 \end_layout
 
 \begin_layout Standard
-Second, the probability of the base-state at a given position given the
- sequence X, denoted as 
+Second, the probability (13) of the base-state at a given position given
+ the sequence X, denoted as 
 \begin_inset Formula $\gamma$
 \end_inset
 
@@ -2561,7 +2624,7 @@ Second, the probability of the base-state at a given position given the
 \end_layout
 
 \begin_layout Standard
-Third, the probability of being at a base-state to base-state transition
+Third, the probability (14) of being at a base-state to base-state transition
  given the sequence X, denoted as 
 \begin_inset Formula $\xi$
 \end_inset
@@ -2576,8 +2639,8 @@ Third, the probability of being at a base-state to base-state transition
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-\xi_{j_{1},j_{2},t}= & P\left(y_{t}=(j_{1},0),y_{t+1}=(j_{2},0)|X_{i}\right)=\frac{P\left(y_{t}=(j_{1},0),y_{t+1}=(j_{2},0),X\right)}{P\left(X\right)}=\\
-= & \frac{\alpha_{j_{1},t}\cdot T_{j_{1},j_{2}}\cdot E_{j_{2},x_{t-o+2},...,x_{t+1}}\cdot\beta_{j_{2},t+1}}{P\left(X\right)}
+\xi_{j_{1},j_{2},t}= & P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|X_{i}\right)=\frac{P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0),X\right)}{P\left(X\right)}=\\
+= & \frac{\alpha_{j_{1},t-1}\cdot T_{j_{1},j_{2}}\cdot E_{j_{2},x_{t-o+1},...,x_{t}}\cdot\beta_{j_{2},t}}{P\left(X\right)}
 \end{align*}
 
 \end_inset
@@ -2586,7 +2649,7 @@ Third, the probability of being at a base-state to base-state transition
 \begin_inset Newline newline
 \end_inset
 
-Finally, the probability of being at a base-state to base-state transition
+Finally, the probability (15) of being at a base-state to base-state transition
  given the sequence X, denoted as 
 \begin_inset Formula $\xi$
 \end_inset
@@ -2601,71 +2664,85 @@ Finally, the probability of being at a base-state to base-state transition
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-\eta_{j,l,t}= & P\left(y_{t}=(j,0),y_{t+1:t+|W_{l}|}=(j,l)|X\right)=\frac{\psi_{j,l,t}}{P\left(X\right)}
+\eta_{j,l,t}= & P\left(y_{t-1}=(j,0),y_{t}=(j,l)|X\right)=\frac{\psi_{j,l,t}}{P\left(X\right)}
 \end{align*}
 
 \end_inset
 
- ##############
+
 \end_layout
 
 \begin_layout Standard
-We use the temporary auxiliary variables to calculate the
+
+\series bold
+\bar under
+M-step
+\end_layout
+
+\begin_layout Standard
+With (13), (14), (15) at hand, we can calculate 
 \begin_inset Formula $\theta_{max}$
 \end_inset
 
- that maximizes likelihood of the observations.
+ by assigning them at (9), (10), (11), (12).
+ Namely:
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $E_{j,b_{1},b_{2},...,b_{o}}=\frac{\underset{i\in[N]\,t\in[L]}{\sum}\gamma_{i,j,t}\cdot\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1}^{i},...,x_{t}^{i})}{\underset{i\in[N]\,t\in[L]}{\sum}\gamma_{i,j,t}}$
-\end_inset
+\begin_inset Formula 
+\[
+\pi_{j}=\gamma_{j,1}
+\]
 
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $T_{j_{1},j_{2}}=\frac{\underset{i\in[N]\,t\in[L]}{\sum}\xi_{i,j_{1},j_{2},t}}{\underset{i\in[N]\,t\in[L]}{\sum}\gamma_{i,j_{1},t}}$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $F_{j}=\frac{\underset{i\in[N]\,t\in[L]\,l\in[k]}{\sum}\eta_{i,j,l,t}}{\underset{i\in[N]\,t\in[L]}{\sum}\gamma_{i,j,t}}$
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $G_{j,l}=\frac{\underset{i\in[N]\,t\in[L]}{\sum}\eta_{i,j,l,t}}{\underset{i\in[N]\,t\in[L],\,l'\in[k]}{\sum}\eta_{i,j,l',t}}$
+\begin_inset Formula 
+\[
+E_{j,b_{1},b_{2},...,b_{o}}=\frac{\sum_{t\in o,...,L}\gamma_{j,t}\cdot\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1},...,x_{t})}{\sum_{t\in o,...,L}\gamma_{j,t}}
+\]
+
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $\pi_{j}=\frac{\gamma_{i,j,1}}{\underset{i\in[N]\,j'\in[m]}{\sum}\gamma_{i,j',1}}$
+\begin_inset Formula 
+\[
+T_{j_{1},j_{2}}=\frac{\underset{t\in2,...,L}{\sum}\xi_{j_{1},j_{2},t}}{\underset{t\in1,...,L-1}{\sum}\gamma_{j_{1},t}}
+\]
+
 \end_inset
 
 
-\begin_inset Newline newline
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+G_{j,l}=\frac{\underset{t\in2,...,L}{\sum}\eta_{j,l,t}}{\underset{t\in1,...,L-1}{\sum}\gamma_{j_{1},t}}
+\]
+
 \end_inset
 
+[multiple sequences learning]
+\end_layout
 
-\begin_inset Newline newline
-\end_inset
+\begin_layout Standard
+For readability, the algorithm was described for learning a single sequence
+ of observable variables.
+ For learning multiple sequences at once, we will use the same method as
+ introduced in the original paper of Baum-Welch algorithm (Rabiner, 1989),
+ which is essentially summing each component during the method over all
+ sequences whenever possible.
+\end_layout
 
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
- [Roadmap enhancers preprocessing]
+\begin_layout Standard
+[Roadmap enhancers preprocessing]
 \end_layout
 
 \begin_layout Standard
