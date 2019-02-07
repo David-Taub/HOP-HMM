@@ -112,10 +112,10 @@ backgound
 \begin_inset Quotes erd
 \end_inset
 
- DNA, and was used to classify enhancers from backgound using only the k-mer
- distribution (Inbar and tomy, gkm-SVM), and is thought to play a role in
- spacial properties, nucleosome location and cleavage that cause accessibility
- of near-by TFBS.
+ DNA, and was used to classify enhancers from background using only the
+ k-mer distribution (Inbar and tomy, gkm-SVM), and is thought to play a
+ role in spacial properties, nucleosome location and cleavage that cause
+ accessibility of near-by TFBS.
  Using 44 out of 127 epigenetic data of Roadmap Project to select tissue
  specific enhancer sequences dataset.
  In our method, we look for different TFBS and k-mer presence in sequences
@@ -130,16 +130,29 @@ Background
 
 \series bold
 \bar under
-DNA
+The Genome
 \end_layout
 
 \begin_layout Standard
-The DNA contains the inherited information that defines the complex structure
- and function of an organism.
- Proteins carry various roles in the operation of the organism cells, and
- their structure is encoded inside genetic segments in the DNA called genes.
+The genome of every organism contains the inherited information that defines
+ its complex structure and function.
+ The genome is built out of Deoxyribonucleic acid (DNA) molecule, that is
+ a built out of two chains of nucleotides units that form a double helix
+ shape.
+ Each nucleotide is built our of 4 different types bases: cytosine, guanine,
+ adenine or thymine or in short A,C,G and T.
+ The nucleotides are organized in pairs called base pairs where each of
+ the paired nucleotides are complimentary to each other and provide redundancy.
+ 
+\end_layout
+
+\begin_layout Standard
+Proteins are macromolecoles, which carry various roles and functions within
+ organisms.
+ They are built out of 20 different amino acids, which order and structure
+ is encoded inside genetic segments in the genome called genes.
  Through the transcription and translation processes, the genes are expressed
- and result in the formation of the proteins.
+ and result in the formation of proteins.
  In the transcription process the gene is read and transcribed into a single
  strand sequence of RNA.
  Later, the RNA molecules are translated into a sequence of amino acids
@@ -147,16 +160,26 @@ The DNA contains the inherited information that defines the complex structure
 \end_layout
 
 \begin_layout Standard
-The complexity of the organism is not a product of the number of genes in
- its genome, but their regulation.
- For example, both humans and C.
- Elegans roundworms has about 19,000 genes (Ezkurdia et al.
+
+\series bold
+\bar under
+Genes
+\end_layout
+
+\begin_layout Standard
+Genes are built out of introns and exons, where only the exons becomes the
+ RNA molecules that are translated into proteins.
+ The complexity of the organism is not a product of the number of genes
+ in its genome, but their regulation.
+ For example, both humans and Caenorhabditis elegans roundworms has about
+ 19,000 genes (Ezkurdia et al.
  2014; The C.
  elegans Sequencing Consortium 1998).
- In fact, only less than 2% of the DNA resides inside the protein-coding
- parts of the segments, also called exome.
- The gene expression regulation is complex and not fully understood, and
- it is estimated to involve 10-20% of the human genome (Pennacchio et al.
+ Out of the human genome, that is about 3 billion long, 27.5% genes are Only
+ 1% of the human genome are sequences that compose the exome, a collection
+ of all protein-coding regions (Ng et al.
+ 2009), whereas the the gene regulations and it is estimated to involve
+ 10-20% of the human genome (Pennacchio et al.
  2015).
  Multiple protein are known to attach onto the DNA molecule, and affect
  the gene expression.
@@ -171,7 +194,8 @@ The complexity of the organism is not a product of the number of genes in
 \end_layout
 
 \begin_layout Standard
-[tommy: ref this https://www.nature.com/articles/ng.1006 for distal regulation]
+[tommy: ref this http://www.cs.huji.ac.il/~tommy/Papers/May+al-NatGen2011.pdf
+ for distal enhancers of the heart]
 \end_layout
 
 \begin_layout Standard
@@ -184,8 +208,8 @@ Enhancers
 \begin_layout Standard
 Enhancers are non-coding regulatory DNA sequences that play a key role in
  the regulation of gene expression.
- In humans there are hundreds of thousands of enhancers, scattered in 98%
- of the non-coding regions of the genome, and they are usually between 100-1000
+ In humans there are hundreds of thousands of enhancers, scattered over
+ the non-coding regions of the genome, and they are usually between 100-1000
  bp long.
  When activated, the DNA folding draws the enhancer spatially closer to
  a regulatory element called promoter, resulting in the translation of a
@@ -321,8 +345,8 @@ histone marks
  2009; Firbi et al.
  2010; Fernandez et al.
  2012) .
- H3k4me1 and H3k27ac are among the predominant histone marks of active enhancers
-, where H3k4me1 are enriched on transcribed genes and 
+ H3K4me1 and H3K27ac are among the predominant histone marks of active enhancers
+, where H3K4me1 are enriched on transcribed genes and 
 \begin_inset Quotes eld
 \end_inset
 
@@ -330,31 +354,56 @@ primed
 \begin_inset Quotes erd
 \end_inset
 
- enhancers prior activation (calo et al 2013), and is thought to precede
- the H3k27ac modification (Creyghton et al., 2010; Rada-Iglesias et al., 2011;
+ enhancers prior activation (calo et al.2013), and is thought to precede
+ the H3K27ac modification (Creyghton et al., 2010; Rada-Iglesias et al., 2011;
  Zentner et al., 2011) which is known to occur during the activation.
  Other histone marks that are present on active enhancers and are used for
- their detection are H3k9ac (Ernst et al., 2011; Karmodiya et al., 2012; Krebs
+ their detection are H3K9ac (Ernst et al., 2011; Karmodiya et al., 2012; Krebs
  et al., 2011; Zentner et al., 2011) and H3K18ac (Jin et al., 2011).
 \begin_inset Newline newline
 \end_inset
 
-Even though H3k27ac have been identified as an important mark for distinguishing
+Even though H3K27ac have been identified as an important mark for distinguishing
  active enhancers from poised enhancers (Creyghton et al.
- 2010), it is not enough as its own since when present alongside H3k4me3
+ 2010), it is not enough as its own since when present alongside H3K4me3
  it is an indication for active promoters [Heintzman et al., 2007].
- In contrast, H3k27ac absence and H3k4me1and H3k27me3 enrichment are typical
+ In contrast, H3K27ac absence and H3K4me1and H3K27me3 enrichment are typical
  for poised enhancers (Creyghton et al, 2010).
 \begin_inset Newline newline
 \end_inset
 
 
-\begin_inset Newline newline
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/Enhancers_status.png
+	scale 50
+
 \end_inset
 
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\bar under
+Figure:
+\series default
+\bar default
+ The accessibility of the enhancer's sequence and its surrounding histone
+ marks are connected to its regulatory activity state.
+ On the upper part an active enhancer sequence that is accessible for protein
+ interaction needed for transcription, where as on the lower part an inactive
+ enhancer is inaccessible since it is wrapped around a nucleosome, .
+\end_layout
+
+\begin_layout Standard
 DNA methylation at 5-methycytosine has been involved in genome silencing
- in multiple processes (Jones, 2012), and has been documented as largely
- correlated with gene expression inhibition when present in promoters.
+ in multiple processes (Jones et al.
+ 2012), and has been documented as largely correlated with gene expression
+ inhibition when present in promoters.
  In enhancer elements, anticorrelation was found between DNA methylation
  density and enrichment of active enhancer histone marks (Koch and Andrau,
  2011; Schmidl et al., 2009; Stadler et al., 2011; Thurman et al., 2012) and
@@ -368,6 +417,10 @@ DNA methylation at 5-methycytosine has been involved in genome silencing
 \end_layout
 
 \begin_layout Standard
+[Tommy: figure of epigenetics]
+\end_layout
+
+\begin_layout Standard
 
 \bar under
 [ inter TFBS sequence, Conservation]
@@ -377,21 +430,15 @@ DNA methylation at 5-methycytosine has been involved in genome silencing
 Conserved non-coding elements (CNE) reside in clusters, usually with low
  gene density but with vicinity to genes.
  Typically, CNE are structured in arrays called GRB, with a mean length
- of 1.4 Mb (X.
- Dong et al.
+ of 1.4 Mb (Dong et al.
  2009).
  The correlation between conservation of non-coding region and enhancer
  functionality is not strong.
  Some verified enhancers are weakly or not conserved between distant species
- (M.
- Friedli et al.2010; J.M.
- Rosin et al.
- 2013; L.
- Taher 2011; D Boffelli, 2004, K.
- Lindblad-Toh 2011) and some highly conserved areas in the mouse genome
- are not associated to regulatory activity and their deletion and yielded
- viable mice (N.
- Ahituv et al.
+ (Friedli et al.2010; Rosin et al.
+ 2013; Taher 2011; Boffelli, 2004, Lindblad-Toh 2011) and some highly conserved
+ areas in the mouse genome are not associated to regulatory activity and
+ their deletion and yielded viable mice (Ahituv et al.
  2007).
  Nevertheless, an assay of elements with 100% sequence identity of over
  200 bp between human and mouse found that 50% showed enhancers activity
@@ -400,8 +447,9 @@ Conserved non-coding elements (CNE) reside in clusters, usually with low
  is only 4-8 bp long is unclear.
  It is possible that these conserved sequences are actually long assembly
  of overlapping TFBS or that the enhancer has another function as a eRNA,
- that the exact nature of its mechanisms is no understood (M.
- Haeussler 2011, Andersson et al.
+ that the exact nature of its mechanisms is no understood (Haeussler et
+ al.
+ 2011, Andersson et al.
  2014).
 \end_layout
 
@@ -432,8 +480,7 @@ in-silico
 \end_inset
 
  has produced positive, yet far from sufficient results in the last years,
- as reviewed in (D.
- Kleftogiannis et al.
+ as reviewed in (Kleftogiannis et al.
  2016).
 \end_layout
 
@@ -529,6 +576,16 @@ Multiple signal processing algorithms have been used in computational biology,
 \end_layout
 
 \begin_layout Standard
+[Tommy: start with a 2 states before, for gentle intro.
+ add the generative model part]
+\end_layout
+
+\begin_layout Standard
+[tommy: add a part about data representation: kmer based features, svm or
+ one hot encoding to cnn]
+\end_layout
+
+\begin_layout Standard
 There are other mechanisms and non classic scenarios that involve enhacners:
  are intergenic enhancers, very long enhancers
 \end_layout
@@ -590,6 +647,10 @@ Several approaches have tackled this problem by modeling gene expression
 
 \end_layout
 
+\begin_layout Standard
+[tommy: insert here a part about the goal of the research: identify enhancers
+\end_layout
+
 \begin_layout Section*
 Methods
 \end_layout
@@ -617,14 +678,18 @@ Markov model (A.A.
 .
  The system's travel over the states is called a Markov process, and the
  sequence of states visited in the process is called a Makov chain.
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
+\begin_layout Standard
+[Tommy: 4 is confusing, try 3]
+\end_layout
 
-\begin_inset Newline newline
-\end_inset
+\begin_layout Standard
+[tommy: describe the likelihood of the model, starting from 1st state times
+ all the transitions]
+\end_layout
 
-
+\begin_layout Standard
 \begin_inset Graphics
 	filename Figures/Markov_state.png
 	scale 40
@@ -715,11 +780,22 @@ mode
 \end_layout
 
 \begin_layout Standard
+[tommy: show an example of two states machine, moving between the states,
+ generating a sequence that is 1 state then moving to another state an coming
+ back.
+ also more about the likelihood 
+\begin_inset Formula $L=P(x)=\sum_{Y}p(Y|X)P(Y)$
+\end_inset
+
+]
+\end_layout
+
+\begin_layout Standard
 
 \series bold
 \emph on
 Fig: a HMM chain with length of 5.
- The underlying hidden states (up) are generated in a Mrokov process and
+ The underlying hidden states (up) are generated in a Marokov process and
  each state emits an observed variable, sampled from the state's emission
  probability.
 \end_layout
@@ -729,6 +805,30 @@ Fig: a HMM chain with length of 5.
 \series bold
 \bar under
 Goals
+\end_layout
+
+\begin_layout Standard
+[tommy: alternative goals: 
+\end_layout
+
+\begin_layout Standard
+1.
+ estimating parameters theta with fully observed sequences Y and X.
+\end_layout
+
+\begin_layout Standard
+2.
+ given theta, infer hidden states (post max and viterbi)
+\end_layout
+
+\begin_layout Standard
+3.
+ learning the parameters (hidden states)
+\end_layout
+
+\begin_layout Standard
+4.
+ structure learning, what is the best hyper parameters]
 \end_layout
 
 \begin_layout Standard
@@ -823,10 +923,15 @@ HOP-HMM
 \end_layout
 
 \begin_layout Standard
+[Tommy: Add a part about the histone code]
+\end_layout
+
+\begin_layout Standard
 [tommy: add here gentle intro: seq with single motif.
  figure of automat, figure of seq.
  then do same with multi motifs.
  then do with multi layers.
+ Also a part about PWMs]
 \end_layout
 
 \begin_layout Standard
@@ -881,6 +986,11 @@ We use two indices to describe a hidden state, one for its layer index and
 \end_layout
 
 \begin_layout Standard
+[Tommy: add an indication for a different emission of the states in the
+ figure ]
+\end_layout
+
+\begin_layout Standard
 \begin_inset Graphics
 	filename Figures/Slide1.eps
 	scale 50
@@ -905,11 +1015,10 @@ Figure 1: The hidden variable states graph of the HOP-HMM.
 
 \begin_layout Standard
 A model that contains states that emit motifs sampled from PWMs was previously
- demonstrated (as described in [T.
- Kaplan et al 2011]) and as such it is considered a generalized hidden Markov
- model (gHMM) is a variant of HMM in which states may emit multiple letters.other
- states that emit letters depending on previous letters in the observed
- sequence.
+ demonstrated (as described in [Kaplan et al.
+ 2011]) and as such it is considered a generalized hidden Markov model (gHMM)
+ is a variant of HMM in which states may emit multiple letters.other states
+ that emit letters depending on previous letters in the observed sequence.
  Similarly to HMM, it assumes an underlying hidden sequence is present that
  are sampled from a Markov chain.
 \end_layout
@@ -958,7 +1067,7 @@ On initialization the HOP-HMM is given k PWMs
 
 \end_inset
 
-
+[tommy: remove the indices?]
 \end_layout
 
 \begin_layout Standard
@@ -2894,7 +3003,7 @@ theta values where it should go on the diagonal, real vs learned]
 \end_layout
 
 \begin_layout Standard
-[tommy: aligned heatmap sequences with the peak of the h3k27ac and post.
+[tommy: aligned heatmap sequences with the peak of the H3K27ac and post.
  prob., are they similar?]
 \end_layout
 
@@ -2913,7 +3022,7 @@ per nucleotide binary classification (background vs enhancer)
 \end_inset
 
  of enhancers where i is the state of the enhancer, pick only the 2000+-
- around the enhancer's peak, where the center is the max of the H3k27ac
+ around the enhancer's peak, where the center is the max of the H3K27ac
  signal, showing the sequences are most likely enhancers surrounded by non
  enhancers .
  
@@ -2929,7 +3038,7 @@ per sequence mutli-class classification (background vs enhancer)
 \begin_inset Formula $\gamma$
 \end_inset
 
- of enhancers, where the center is the max of the H3k27ac, showing the sequences
+ of enhancers, where the center is the max of the H3K27ac, showing the sequences
  are most likely enhancers surrounded by non enhancers 
 \end_layout
 
