@@ -167,35 +167,28 @@ Genes
 \end_layout
 
 \begin_layout Standard
-Genes are built out of introns and exons, where only the exons becomes the
- RNA molecules that are translated into proteins.
- The complexity of the organism is not a product of the number of genes
- in its genome, but their regulation.
- For example, both humans and Caenorhabditis elegans roundworms has about
- 19,000 genes (Ezkurdia et al.
+Gene sequences are built out fragmented introns and exons, where only the
+ exons becomes the RNA molecules that translates into proteins while the
+ introns are spliced away beforehand.
+ Although the exons alone hold the recipe for the construction of the organism's
+ proteins, the complexity of the organism is not a product of their number
+ or their length.
+ For example, the humans and Caenorhabditis elegans roundworms both have
+ about 19,000 genes (Ezkurdia et al.
  2014; The C.
- elegans Sequencing Consortium 1998).
- Out of the human genome, that is about 3 billion long, 27.5% genes are Only
- 1% of the human genome are sequences that compose the exome, a collection
- of all protein-coding regions (Ng et al.
- 2009), whereas the the gene regulations and it is estimated to involve
- 10-20% of the human genome (Pennacchio et al.
- 2015).
- Multiple protein are known to attach onto the DNA molecule, and affect
- the gene expression.
+ elegans Sequencing Consortium 1998), with roughly the same total exon length
+ and number, although the human body is vastly more diverse and complex.
+ The source for the organisms complexity differences is attributed to the
+ gene regulation mechanism.
+ The human genome is 3.23 Gb long, and it is estimated that gene regulation
+ involves 10-20% of it (Pennacchio et al.
+ 2015), compared to 1% that are exon regions (Ng et al.
+ 2009).
  
 \end_layout
 
 \begin_layout Standard
-[tommy: make sure we write about: enhacners are similar to promoters but
- further away from the gene.
- enhancer has background dist + motives, chromatin and accessibility, how
- many choromatines, how are they found, histone code]
-\end_layout
 
-\begin_layout Standard
-[tommy: ref this http://www.cs.huji.ac.il/~tommy/Papers/May+al-NatGen2011.pdf
- for distal enhancers of the heart]
 \end_layout
 
 \begin_layout Standard
@@ -206,48 +199,29 @@ Enhancers
 \end_layout
 
 \begin_layout Standard
-Enhancers are non-coding regulatory DNA sequences that play a key role in
- the regulation of gene expression.
+Enhancers are are non-coding regulatory DNA sequences that play a key role
+ in the regulation transcription of genes.
  In humans there are hundreds of thousands of enhancers, scattered over
  the non-coding regions of the genome, and they are usually between 100-1000
  bp long.
  When activated, the DNA folding draws the enhancer spatially closer to
- a regulatory element called promoter, resulting in the translation of a
- gene adjacent to the promoter.
+ another type of regulatory element called promoter, resulting in the translatio
+n of a gene adjacent to the promoter (see figure 1).
  The enhancer's target gene is the expressed gene from this activation process.
  It can be located up to a megabase upstream or downstream from their activating
- enhancer (or enhancers), and are orientation independent to it.
+ enhancer (May et al.
+ 2011), and are orientation independent to it.
  Moreover, the gene-enhancer connection is not exclusive, and the common
  case is that each enhancer has several target genes and vice versa (Fishilevich
  et al.
  2017).
- 
 \end_layout
 
 \begin_layout Standard
-TF usually bind to motifs on the DNA, which are short series of nucleotides,
- sometimes with gaps called TFBS.
- TFBSs are common in enhancer and promoter elements.
- The enrichment of TFBS is a good predictor for the location of regulatory
- regions and the type of cell they will be active in.
- Multiple studies have shown that genetic alternations in TFBS can affect
- the expression of its target gene and are a major cause of human diseases
- (reviewed in I.
- Miguel-Escalada 2015) [examples: (Soldner F.
- 2016, Smemo S.
- 2012, Benko S.
- 2009, E.
- S.
- Emison, 2005, Lettice L.A 2003].
- Folding of DNA allows the enhancer-promoter interactions, and recruiting
- of other cofactor proteins to the already bounded TFs.
- Some of the recruited cofactors cause nearby chromatin modification and
- transcription activation.
- The TFs and cofactors form a transcription preinitiation complex (PIC)
- which is a very large assembly of proteins (more than one hundred in humans)
- that recruit the RNA Polymerase (RNA pol II) to invokes the transcription
- process of the adjacent gene: it opens the double stranded DNA, so that
- one strand of nucleotides is exposed and becomes a template for RNA synthesis.
+[tommy: make sure we write about: enhacners are similar to promoters but
+ further away from the gene.
+ enhancer has background dist + motives, chromatin and accessibility, how
+ many choromatines, how are they found, histone code]
 \end_layout
 
 \begin_layout Standard
@@ -276,6 +250,56 @@ Figure:
 
 \begin_layout Standard
 
+\series bold
+\bar under
+Transcription Factor Binding
+\end_layout
+
+\begin_layout Standard
+Transcription factors (TF) are proteins that bind to the DNA, and together
+ with other co-factor proteins initiate the gene transcription process.
+ TFs tend to bind to certain transcription factor binding sites (TFBS),
+ which are motifs of nucleotides on the DNA.
+ On genome-wide association studies (GWAS) done with ChIP-seq method, different
+ TFs have different TFBS sequence distributions they are observed attached
+ to.
+\end_layout
+
+\begin_layout Standard
+The enrichment of TFBS is a good predictor for the location of regulatory
+ regions and the type of cell they will be active in.
+ Multiple studies have shown that genetic alternations in TFBS can affect
+ the expression of its target gene and are a major cause of human diseases
+ (reviewed in I.
+ Miguel-Escalada 2015) [examples: (Soldner F.
+ 2016, Smemo S.
+ 2012, Benko S.
+ 2009, E.
+ S.
+ Emison, 2005, Lettice L.A 2003].
+ Folding of DNA allows the enhancer-promoter interactions, and recruiting
+ of other cofactor proteins to the already bounded TFs.
+ Some of the recruited cofactors cause nearby chromatin modification and
+ transcription activation.
+ The TFs and cofactors form a transcription preinitiation complex (PIC)
+ which is a very large assembly of proteins (more than one hundred in humans)
+ that recruit the RNA Polymerase (RNA pol II) to invokes the transcription
+ process of the adjacent gene: it opens the double stranded DNA, so that
+ one strand of nucleotides is exposed and becomes a template for RNA synthesis.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\bar under
+PWMs
+\end_layout
+
+\begin_layout Standard
+sometimes with gaps and with average length of 12 bp (Kulakovskiy et al.
+ 2011).
+ TFBSs are common in enhancer and promoter elements.
+ 
 \series bold
 \bar under
 Accessibility
