@@ -255,14 +255,21 @@ Transcription Factor Binding
 Transcription factors (TF) are proteins that bind to the DNA, and together
  with other co-factor proteins initiate the gene transcription process.
  TFs tend to bind to certain transcription factor binding sites (TFBS),
- which are motifs of nucleotides on the DNA.
+ which are motifs of nucleotides on the DNA with average length of 12 bp
+ in humans (Kulakovskiy et al.
+ 2011) that are conserved between species (Doniger et al.
+ 2005).
  On genome-wide association studies (GWAS) done with ChIP-seq method, different
- TFs have different distributions of TFBS they are observed attached to.
+ TFs have different distributions of TFBS they are observed attached to
+ (Khan et al.
+ JASPAR 2018; Gheorghe et al.
+ 2018).
 \end_layout
 
 \begin_layout Standard
-The enrichment of TFBS is a good predictor for the location of regulatory
- regions and the type of cell they will be active in.
+The enrichment of TFBS is a good predictor for the location of promoter
+ and enhancer regulatory regions and the type of cells they will be active
+ in.
  Multiple studies have shown that genetic alternations in TFBS can affect
  the expression of its target gene and are a major cause of different human
  diseases (reviewed in Miguel-Escalada 2015, Soldner 2016, Smemo S.
@@ -280,13 +287,6 @@ The enrichment of TFBS is a good predictor for the location of regulatory
 \end_layout
 
 \begin_layout Standard
-[TODO: insert somewhere that the TFBS has average length of 12 bp (Kulakovskiy
- et al.
- 2011).
- TFBSs are common in enhancer and promoter elements.]
-\end_layout
-
-\begin_layout Standard
 
 \series bold
 \bar under
@@ -297,22 +297,31 @@ PWMs
 Generating a compact model for estimating the binding potential of a DNA
  sequence to a TF, i.e.
  
-\begin_inset Formula $P(binding|x_{1:n})$
+\begin_inset Formula $P(x_{1:n}|binding)$
 \end_inset
 
 , is not trivial as might seem on first look.
- The challenge in this area is usually to predict the peaks of the ChIP-seq
- data given the DNA sequence.
- position weight matrix (PWM) is a simple method to address this task, yet
- very commonly used.
- The underlying simplistic assumption of the PWM model is that every position
- in a motif has an independent probability to attach to the TF, and therefore
- the total biding probability is a multiplication of all the per-position
- probabilities in the motif: 
-\begin_inset Formula $P(x_{1:n}|binding)=\prod_{i\in[n]}P(x_{i}|binding)$
+ The peaks of the ChIP-seq data are used as the ground truth of TF binding
+ locations, from which the model is built.
+ Position weight matrix (PWM) is a commonly used simplistic method to address
+ this task.
+ The underlying assumption of the PWM model is that every position in the
+ DNA sequence has an independent probability to attach to the TF, and therefore
+ the total binding probability is a multiplication of all the per-position
+ probabilities in the motif:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P(x_{1:n}|binding)=\prod_{i\in[n]}P(x_{i}|binding)
+\]
+
 \end_inset
 
-.
+Where n is the size of relevant sequence.
+ The size of the sequence that is affected by the binding event is derived
+ from the physical characteristics of the TF.
 \end_layout
 
 \begin_layout Standard
@@ -544,10 +553,6 @@ Conserved non-coding elements (CNE) reside in clusters, usually with low
  al.
  2011, Andersson et al.
  2014).
-\end_layout
-
-\begin_layout Standard
-TODO: add a word on conservation of TFBS
 \end_layout
 
 \begin_layout Standard
