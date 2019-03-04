@@ -410,7 +410,7 @@ Histone modifications
 \end_layout
 
 \begin_layout Itemize
-TADs patterns
+Topologically associating domain (TAD) patterns
 \end_layout
 
 \begin_layout Itemize
@@ -421,6 +421,21 @@ DNA methylation
 These mechanisms have measurable features that lie on top of the genome.
  Their combination is the main source of identification for enhancer regions
  in the genome.
+ Each cell has its own epigenetic features, in a binaric form, e.g.
+ a specific part of the genome can be either accessible, or not.
+ When several similar cells from the same tissue sample are measured, a
+ frequency or count of the feature is measured per DNA loci, and generates
+ epigenetic data.
+ The epigenetic data is commonly used as the ground truth indication for
+ enhancer sequences, as done for the human genome in the ENCODE project.
+\end_layout
+
+\begin_layout Standard
+[TODO: fix ENCODE cite above]
+\end_layout
+
+\begin_layout Standard
+[TODO: add figure: epigenetic data from genome browser]
 \end_layout
 
 \begin_layout Standard
@@ -428,6 +443,29 @@ These mechanisms have measurable features that lie on top of the genome.
 \series bold
 \bar under
 Accessibility
+\end_layout
+
+\begin_layout Standard
+In eukaryotes, the DNA is packed around a structure of 8 histone proteins,
+ together forming a nucleosome core.
+ The location of the nucleosome binding is not random over the DNA sequence,
+ but has a tendency for specific DNA binding sites (Cutter et al.
+ 2015).
+ DNA that is wrapped around a nucleosome has a lesser probability to interact
+ with proteins, as it is physically inaccessible.
+ Both the enhancer, the promoter and the gene need to be accessible for
+ a successful transcription.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\bar under
+TADs
+\end_layout
+
+\begin_layout Standard
+[TODO: rearrange]
 \end_layout
 
 \begin_layout Standard
@@ -440,24 +478,18 @@ Hi-C are techniques for measuring the spatial organization of chromatin
  2012; Rao et al.
  2014; Dixon et al.
  2015; Sexton et al.
- 2012), and shown that the genome is partitioned into topologically associating
- domains (TADs), mostly under 10 mb long (F.
+ 2012), and shown that the genome is partitioned into TADs, mostly under
+ 10 mb long.
  Within TADs sequence to sequence interaction are more frequent.
  TADs boundaries are enriched with DNA-biding protein motifs, and their
  location play a significant role in gene regulation.
  Gene-enhancer interactions occur when both are in the same TAD, and deletion
- of the motifs from TAD's boundaries may cause changes in the gene activation
- al.
- 2015).
- It has been argued (S.
- Kadauke 2018) that the TADs are dynamic throughout the cell's life cycle,
- and with the change of the TADs structure the enhancer-gene activation
- couples may vary as well, suggesting the target gene is not predetermined
- by the the enhancer's sequence.
-\end_layout
-
-\begin_layout Standard
-TODO: figure for accessible sequence 
+ of the motifs from TAD's boundaries may cause changes in the gene activation.
+ It has been argued (Kadauke et al.
+ 2018) that the TADs are dynamic throughout the cell's life cycle, and with
+ the change of the TADs structure the enhancer-gene activation couples may
+ vary as well, suggesting the target gene is not predetermined by the the
+ enhancer's sequence.
 \end_layout
 
 \begin_layout Standard
@@ -529,7 +561,7 @@ Figure:
  marks are connected to its regulatory activity state.
  On the upper part an active enhancer sequence that is accessible for protein
  interaction needed for transcription, where as on the lower part an inactive
- enhancer is inaccessible since it is wrapped around a nucleosome, .
+ enhancer is inaccessible since it is wrapped around a nucleosome.
 \end_layout
 
 \begin_layout Standard
