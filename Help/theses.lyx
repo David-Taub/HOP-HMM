@@ -429,14 +429,17 @@ Almost all cells in every organism contain its genome, but only part of
 \end_layout
 
 \begin_layout Standard
-The cell has epigenetic features which do no involve the nucleotides sequence
- directly but effect the gene expression pattern of the cell.
- The main epigenetic features regulation mechanisms that affect the activity
- of enhancer-gene interactions are:
+Several epigenetic features (which do not involve the nucleotides sequence
+ directly) correlate with enhancer regions in the genome and imply their
+ target-gene:
 \end_layout
 
 \begin_layout Itemize
 Accessibility
+\end_layout
+
+\begin_layout Itemize
+TF & cofactors binding
 \end_layout
 
 \begin_layout Itemize
@@ -452,7 +455,8 @@ DNA methylation
 \end_layout
 
 \begin_layout Standard
-These mechanisms have measurable features that lie on top of the genome.
+These properties and mechanisms have measurable features that lie on top
+ of the genome.
  Their combination is the main source of identification for enhancer regions
  in the genome.
  Each cell has its own epigenetic features, in a binaric form, e.g.
@@ -491,6 +495,13 @@ In eukaryotes, the DNA is packed around a structure of 8 histone proteins,
  a successful transcription.
 \end_layout
 
+\begin_layout Standard
+Since the scenario of TF binding on an enhancer requires an accessible DNA
+ region, I hypersensative sites are used for detecting a potential DNA cleavages
+ that have the potential of being regulatory elements, in usually a better
+ resolution than histone marks.
+\end_layout
+
 \begin_layout Paragraph
 
 \series bold
@@ -503,8 +514,11 @@ TADs
 \end_layout
 
 \begin_layout Standard
-Hi-C are techniques for measuring the spatial organization of chromatin
- in the nucleus.
+TADs are a sections of the genome where the DNA is self interact more frequently.
+ Enhancer-gene interactions have tendency to happen within the region of
+ TADs.
+ Hi-C are a set of techniques for measuring the spatial organization of
+ chromatin in the nucleus.
  These procedures measure the number of occurrences were genome loci are
  in proximity.
  In recent years, Hi-C data was generated from multiple organisms (Dixon
@@ -608,7 +622,7 @@ DNA Methylation
 \begin_layout Standard
 Here we covered the main known gene regulation mechanisms, but there are
  more regulation methods which have been researched, and are note negligible.
- DNA methylation at 5-methycytosine has been involved in genome silencing
+ DNA methylation at cytosine and CpG sites has been involved in genome silencing
  in multiple processes (Jones et al.
  2012), and has been documented as largely correlated with gene expression
  inhibition when present in promoters.
@@ -616,10 +630,7 @@ Here we covered the main known gene regulation mechanisms, but there are
  density and enrichment of active enhancer histone marks and TF binding
  (Stadler et al., 2011; Thurman et al., 2012), although the cause and consequence
  relationship underlying these correlations is not yet clear.
- Since the scenario of TF binding on an enhancer requires an accessible
- DNA region, I hypersensative sites are used for detecting a potential DNA
- cleavages that have the potential of being regulatory elements, in usually
- a better resolution than histone marks.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -632,15 +643,15 @@ Epigenetics limitation
 
 \begin_layout Standard
 The currently most accurate method for predicting the location of tissue
- specific enhancers, is analyzing the histone marks and TF and cofactors
- presence using ChIP-seq from a cell line or from a tissue, combined with
- DNase I hypersensative (DHS).
+ specific enhancers in a genome wide scale, is analyzing the histone marks
+ and TF and cofactors presence using ChIP-seq from a cell line or from a
+ tissue, combined with DNase I hypersensative (DHS).
  The main disadvantage of this method is this process is inherently limited
  to the tissues we can extract and isolate for the epigenetic examination.
  Another disadvantage of this method is the need for live cells for the
  verification of the regulatory activity of a sequence.
  The persecute for an efficient computational method for predicting the
- functional nature of sequences
+ functional nature of sequences 
 \begin_inset Quotes eld
 \end_inset
 
@@ -654,7 +665,7 @@ in-silico
 \end_layout
 
 \begin_layout Subsection*
-Computational Biologigy & Machine Learning 
+Computational Biology & Machine Learning 
 \end_layout
 
 \begin_layout Standard
