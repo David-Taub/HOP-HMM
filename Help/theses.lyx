@@ -473,7 +473,7 @@ These properties and mechanisms have measurable features that lie on top
 \end_layout
 
 \begin_layout Standard
-[TODO: add figure: epigenetic data from genome browser]
+[Tommy: figure of epigenetics, genome browser tracks on top of the DNA]
 \end_layout
 
 \begin_layout Paragraph
@@ -548,36 +548,42 @@ Histone Marks
 \end_layout
 
 \begin_layout Standard
-[tommy: add about the histone code]
-\end_layout
-
-\begin_layout Standard
 Chromatin modifications signatures, also called histone marks, are predictive
  of enhancer position and activity status and can be assessed (Visel et
  al.
  2009; Firbi et al.
  2010; Fernandez et al.
- 2012) .
- H3K4me1 and H3K27ac are among the predominant histone marks of active enhancers
-, where H3K4me1 are enriched on transcribed genes and 
+ 2012).
+ The histone marks are considered to contain a certain 
 \begin_inset Quotes eld
 \end_inset
 
-primed
+histone code
 \begin_inset Quotes erd
 \end_inset
 
- enhancers prior activation (calo et al.2013), and is thought to precede
- the H3K27ac modification (Creyghton et al., 2010; Rada-Iglesias et al., 2011;
- Zentner et al., 2011) which is known to occur during the activation.
+ which encode complex information, additionally to the DNA, regarding the
+ transcription regulation and other aspects.
+ Comparing to other epigenetic information, and especially DNA methylation
+ (Przybilla et al.
+ 2012), chromatin modifications have a short time-scale of seconds or hours
+ (Hayashi-Takanaka et al., 2011), hence they are considered part of the dynamic
+ changes of the cell's modes.
+ 
+\end_layout
+
+\begin_layout Standard
+H3K4me1 and H3K27ac are among the predominant histone marks of active enhancers,
+ where H3K4me1 are enriched on transcribed genes and enhancers prior to
+ activation (calo et al.
+ 2013), and is thought to precede the H3K27ac modification (Creyghton et
+ al., 2010; Rada-Iglesias et al., 2011; Zentner et al., 2011) which is known
+ to occur during the activation.
  Other histone marks that are present on active enhancers and are used for
  their detection are H3K9ac (Ernst et al., 2011; Karmodiya et al., 2012; Krebs
  et al., 2011; Zentner et al., 2011) and H3K18ac (Jin et al., 2011).
-\begin_inset Newline newline
-\end_inset
-
-Even though H3K27ac have been identified as an important mark for distinguishing
- active enhancers from poised enhancers (Creyghton et al.
+ Even though H3K27ac have been identified as an important mark for distinguishin
+g active enhancers from poised enhancers (Creyghton et al.
  2010), it is not enough as its own since when present alongside H3K4me3
  it is an indication for active promoters [Heintzman et al., 2007].
  In contrast, H3K27ac absence and H3K4me1and H3K27me3 enrichment are typical
@@ -631,10 +637,6 @@ Here we covered the main known gene regulation mechanisms, but there are
  (Stadler et al., 2011; Thurman et al., 2012), although the cause and consequence
  relationship underlying these correlations is not yet clear.
  
-\end_layout
-
-\begin_layout Standard
-[Tommy: figure of epigenetics]
 \end_layout
 
 \begin_layout Paragraph
