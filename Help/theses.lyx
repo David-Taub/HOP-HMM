@@ -1609,10 +1609,6 @@ Baum-Welch Algorithm
 \end_layout
 
 \begin_layout Subparagraph*
-[TOMMY: put this after HOP HMM desc]
-\end_layout
-
-\begin_layout Subparagraph*
 In the maximal-likelihood estimation problem before us, we have the observed
 \begin_inset Formula $X$
 \end_inset
