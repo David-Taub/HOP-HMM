@@ -684,16 +684,12 @@ in-silico
 Computational Biology & Machine Learning 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [tommy: add a chapter about other methods.
  explain more deeply about each of these, add data representation chapter]
 \end_layout
 
-\begin_layout Standard
-[Tommy: add multiple figures to the background chapter]
-\end_layout
-
-\begin_layout Standard
+\begin_layout Subparagraph*
 [tommy: write about the tradeoff and benefits of high order emission comparing
  to high order transition]
 \end_layout
@@ -787,13 +783,20 @@ The DNA sequence, when read from cells, is usually stored in files, such
  as .fa, as a sequence of letters A,C,G and T.
  For an algorithm to process it, the characters are mapped into integers
  1,2,3 and 4 respectively.
- For many algorithms, such as our HOP-BW, it is more suitable to represent
- the DNA sequence in a one-hot encoding as described in figure 3.
+ For many algorithms, such as our HOP-Baum-Welch, it is more suitable to
+ represent the DNA sequence in a one-hot encoding as described in figure
+ 3.
+ 
 \end_layout
 
-\begin_layout Subparagraph
-[tommy: add a part about : kmer based features, svm or one hot encoding
- to cnn]
+\begin_layout Standard
+A common feature extraction technique is representing a DNA sequence as
+ a vector of the in-sequence frequencies of all the possible kmer as used
+ in gkm-SVM.
+ In this technique, similarly to the bag of words technique in text analysis
+ and natural language processing, the order of the kmer locations is sacrificed
+ for a more meaning-oriented, structured and fixed-length data encoding.
+ 
 \end_layout
 
 \begin_layout Subparagraph
