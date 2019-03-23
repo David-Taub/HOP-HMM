@@ -689,11 +689,6 @@ Computational Biology & Machine Learning
  explain more deeply about each of these, add data representation chapter]
 \end_layout
 
-\begin_layout Subparagraph*
-[tommy: write about the tradeoff and benefits of high order emission comparing
- to high order transition]
-\end_layout
-
 \begin_layout Standard
 There are several achievements in the task of predicting epigenetic properties
  of DNA elements given only their sequence using machine learning algorithms.
@@ -936,6 +931,10 @@ Figure: Markov model with 4 states, marked as
 .
 \end_layout
 
+\begin_layout Subsection*
+Hidden Markov model 
+\end_layout
+
 \begin_layout Standard
 Hidden Markov model (HMM) is a system that travels over hidden states in
  a Markov process, and while doing so it emits variables called observed
@@ -1133,14 +1132,80 @@ We will see that goal 1 and 2 can be achieved by using the Baum-Welch algorithm,
  probability, named after Andrew Viterbi who proposed it in 1967.
 \end_layout
 
+\begin_layout Paragraph*
+
+\bar under
+HMM Limitations
+\end_layout
+
+\begin_layout Standard
+[preposition, motivation, regularization]
+\end_layout
+
+\begin_layout Standard
+Although HMM is simple and efficient, applying it on DNA sequences has a
+ major disadvantage which is the inherit Markovian lack-of-memory property.
+ This property means that on every step of the system, the next state is
+ dependent only on the previous state, without further history consideration.
+ For the task of emitting a motif, where each position has a different emission
+ distribution depending on the location in the motif, a HMM model would
+ need to contain different hidden states per position in the motif.
+ This means that for an HMM to be able to emit even a small number of short
+ motifs, it needs to hold a large number of states that require learning
+ a large number of parameters, e.g.
+ for the ability to emit 50 motifs of length 5, an HMM needs to have over
+ 60,000 parameters.
+ Furthermore, the enhancer modeling task at hand is even more complex, since
+ we would like to model multiple enhancers and backgrounds states, each
+ having different probability of emitting motifs and unique k-order emission
+ distribution when not in those motifs.
+ For our data structure prior assumption the required number of model's
+ parameters would have been about 
+\begin_inset Formula $10^{7}$
+\end_inset
+
+, large enough to introduce problems such as unfeasible memory complexity
+ and overfitting the fixed-sized genome data.
+ 
+\end_layout
+
+\begin_layout Standard
+A common way to avoid overfitting the data when training machine learning
+ models is regularization the model's parameters, a method we can incorporate
+ while training HMM as well.
+ A possible regularization is  constraint on the learned transition matrix
+ T to be sparse.
+ Similarly, the proposed HOP-HMM addresses both the memory issue and the
+ overfitting issue while remaining equivalent to a regularized HMM with
+ a large number of states.
+ Namely, most of the transition probabilities are fixed to zero and therefore
+ never stored in memory, and some of the emission probabilities are predetermine
+d and are fixed during the training\SpecialChar endofsentence
+.
+ This allows us to learn a model with the enhancer prior assumptions of
+ motifs and high-order emission without overfitting, and with reasonable
+ memory complexity.
+\end_layout
+
+\begin_layout Standard
+There is a tradeoff regarding the use of high-order emission compared to
+ high-order transition, or in other words whether the transition or the
+ emission probability is conditional to the previous states and emissions.
+ Both can emit sequences with structure of higher order, for example both
+ can describe a sequence where C will never come after T, as well as sequences
+ containing kmers, etc.
+ The high-order transition allows more freedom and specificity in the shape
+ of a per-location probability of a transition to another, unrelated state
+ depending on previous states, with the cost of more parameters.
+ This transition seemed unnecessary since we assumed the transition to another
+ state, or enhancer in our case, is only loosely conditional to the last
+ several emissions.
+\end_layout
+
 \begin_layout Subsection*
 
 \bar under
 HOP-HMM
-\end_layout
-
-\begin_layout Subparagraph*
-[Tommy: Add a part about the histone code]
 \end_layout
 
 \begin_layout Subparagraph*
@@ -1169,7 +1234,7 @@ layer
  creates a sequence built as a mix of several types with different motif
  frequencies.
  Each layer on its own creates a series of nucleotides emitted from the
- base-state, While most layers represent an enhancer types, some layers
+ base-state, while most layers represent an enhancer types, some layers
  are predefined as background sequences, and their probability to transfer
  into a sub-state is restricted.
 \end_layout
@@ -1198,9 +1263,9 @@ We use two indices to describe a hidden state, one for its layer index and
  
 \end_layout
 
-\begin_layout Standard
-[Tommy: add an indication for a different emission of the states in the
- figure ]
+\begin_layout Subparagraph*
+[Tommy: in the figure, add an indication for a different emission of the
+ states in the figure ]
 \end_layout
 
 \begin_layout Standard
@@ -1370,7 +1435,7 @@ ns.
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Paragraph*
 
 \series bold
 \bar under
@@ -1529,7 +1594,7 @@ L - length of the DNA sequence (data given to the algorithm)
 
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Part*
 
 \bar under
 Baum-Welch Algorithm
@@ -2252,59 +2317,11 @@ And we denote the values of (9) as
 
 \end_layout
 
-\begin_layout Paragraph*
-
-\bar under
-HMM Limitations
-\end_layout
-
 \begin_layout Standard
-[preposition, motivation, regularization]
-\end_layout
-
-\begin_layout Standard
-Although HMM is simple and efficient, applying it on DNA sequences has a
- major disadvantage which is the inherit Markovian lack-of-memory property.
- This property means that on every step of the system, the next state is
- dependent only on the previous state, without further history consideration.
- For the task of emitting a motif, where each position has a different emission
- distribution depending on the location in the motif, a HMM model would
- need to contain different hidden states per position in the motif.
- This means that for an HMM to be able to emit even a small number of short
- motifs, it needs to hold a large number of states that require learning
- a large number of parameters, e.g.
- for the ability to emit 50 motifs of length 5, an HMM needs to have over
- 60,000 parameters.
- Furthermore, the enhancer modeling task at hand is even more complex, since
- we would like to model multiple enhancers and backgrounds states, each
- having different probability of emitting motifs and unique k-order emission
- distribution when not in those motifs.
- For ours, or other, data prior assumption the required number of model's
- parameters might be large enough to introduce problems such as unfeasible
- memory complexity and overfitting the fixed-sized genome data.
  
 \end_layout
 
-\begin_layout Standard
-A common way to avoid overfitting the data when training machine learning
- models is regularization the model's parameters, a method we can incorporate
- while training HMM as well.
- A possible regularization is  constraint on the learned transition matrix
- T to be sparse.
- Similarly, the proposed HOP-HMM addresses both the memory issue and the
- overfitting issue while remaining equivalent to a regularized HMM with
- a large number of states.
- Namely, most of the transition probabilities are fixed to zero and therefore
- never stored in memory, and some of the emission probabilities are predetermine
-d and are fixed during the training\SpecialChar endofsentence
-.
- This allows us to learn a model with the enhancer prior assumptions of
- motifs and high-order emission without overfitting, and with reasonable
- memory complexity.
- 
-\end_layout
-
-\begin_layout Part*
+\begin_layout Section*
 Baum-Welch Algorithm for HOP-HMM
 \end_layout
 
