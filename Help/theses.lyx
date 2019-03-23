@@ -91,7 +91,7 @@ High-Order Generalized Hidden Markov Model for DNA Regulatory Sequences
 Abstract
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [TODO: rewrite this]
 \end_layout
 
@@ -482,11 +482,11 @@ These properties and mechanisms have measurable features that lie on top
  enhancer sequences, as done for the human genome in the ENCODE project.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [TODO: fix ENCODE cite above]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [Tommy: figure of epigenetics, genome browser tracks on top of the DNA]
 \end_layout
 
@@ -523,7 +523,7 @@ Since the scenario of TF binding on an enhancer requires an accessible DNA
 TADs
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [TODO: rearrange]
 \end_layout
 
@@ -721,7 +721,7 @@ There are several achievements in the task of predicting epigenetic properties
 \end_layout
 
 \begin_layout Paragraph*
-HMM background
+HMM Background
 \end_layout
 
 \begin_layout Standard
@@ -742,36 +742,36 @@ Multiple signal processing algorithms have been used in computational biology,
  multi-necleotides motifs frequency differences between DNA segments.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [PWMs and motif to classify tissue specific enhancers]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [k-mer to classify tissue specific enhancers]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [HMM to classify tissue specific enhancers]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [other machine learning work to classify tissue specific enhancers]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [Why the HOP-HMM approach to the problem differently]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [other stories]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [TOMMY: add research questions after background.
  BW and HOP-BW should come after HMM desc and HOP HMM desc.]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [Tommy: start with a 2 states before, for gentle intro.
  add the generative model part]
 \end_layout
@@ -791,17 +791,17 @@ The DNA sequence, when read from cells, is usually stored in files, such
  the DNA sequence in a one-hot encoding as described in figure 3.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph
 [tommy: add a part about : kmer based features, svm or one hot encoding
  to cnn]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph
 There are other mechanisms and non classic scenarios that involve enhacners:
  are intergenic enhancers, very long enhancers
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 TODO: k-mer frequencies varies between enhancers and non regulatory
 \begin_inset Quotes eld
 \end_inset
@@ -814,7 +814,7 @@ background
  distribution (Inbar and Tommy),
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph
 TODO: [Levin, VISTA] experiments shows that insertion of a sequence without
  any epigenetic information will activate an enhancer with a near by blue
  coloring gene.
@@ -823,7 +823,7 @@ TODO: [Levin, VISTA] experiments shows that insertion of a sequence without
  without additional epigenetic information.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph
 From (C.
 \begin_inset Quotes eld
 \end_inset
@@ -1008,7 +1008,7 @@ mode
 
 \series bold
 \emph on
-Fig: a HMM chain with length of 5.
+Figure: a HMM chain with length of 5.
  The underlying hidden states (up) are generated in a Marokov process and
  each state emits an observed variable, sampled from the state's emission
  probability.
@@ -1021,26 +1021,26 @@ Fig: a HMM chain with length of 5.
 Goals
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [tommy: alternative goals: 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 1.
  estimating parameters theta with fully observed sequences Y and X.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 2.
  given theta, infer hidden states (post max and viterbi)
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 3.
  learning the parameters (hidden states)
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 4.
  structure learning, what is the best hyper parameters]
 \end_layout
@@ -1136,20 +1136,16 @@ We will see that goal 1 and 2 can be achieved by using the Baum-Welch algorithm,
 HOP-HMM
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [Tommy: Add a part about the histone code]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [tommy: add here gentle intro: seq with single motif.
  figure of automat, figure of seq.
  then do same with multi motifs.
  then do with multi layers.
  Also a part about PWMs]
-\end_layout
-
-\begin_layout Standard
-[introduction]
 \end_layout
 
 \begin_layout Standard
@@ -1245,10 +1241,6 @@ Emission
 \end_layout
 
 \begin_layout Standard
-[PWM emission]
-\end_layout
-
-\begin_layout Standard
 On initialization the HOP-HMM is given k PWMs 
 \begin_inset Formula $W_{1},W_{2},...,W_{k}$
 \end_inset
@@ -1291,10 +1283,6 @@ On initialization the HOP-HMM is given k PWMs
 Figure 3: PWM emission of sub-states.
  PWMs are a set of per-position nucleotide emission probabilities, that
  are sampled independently to create a TFBS motif.
-\end_layout
-
-\begin_layout Standard
-[Base-state emission]
 \end_layout
 
 \begin_layout Standard
@@ -1544,7 +1532,7 @@ L - length of the DNA sequence (data given to the algorithm)
 Baum-Welch Algorithm
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [Tommy: Add, viterbi is not always the best way, since it has to be correct
  state seq, and chooses only one best state seq.
  This could not correlate to the sum of possible passes through a state
@@ -1552,11 +1540,11 @@ Baum-Welch Algorithm
  seq.]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [TOMMY: put this after HOP HMM desc]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 In the maximal-likelihood estimation problem before us, we have the observed
 \begin_inset Formula $X$
 \end_inset
@@ -1614,10 +1602,16 @@ P(X,y|\theta)=\pi_{y_{1}}E_{y_{1},x_{1}}\prod_{i=2}^{N}T_{y_{i-1},y_{i}}E_{y_{i}
 \end_layout
 
 \begin_layout Standard
-Note: while in our variation HOP-HMM (describe in later chapters [TODO:
- write specific chapter numbers]), we assume different transitions and emissions
- hence requires different calculation, but otherwise the rest of the EM
- algorithm holds.
+Note: while in our variation HOP-HMM (describe in later chapters),
+\end_layout
+
+\begin_layout Subparagraph*
+[TODO: write specific chapter numbers] 
+\end_layout
+
+\begin_layout Standard
+we assume different transitions and emissions hence requires different calculati
+on, but otherwise the rest of the EM algorithm holds.
 \end_layout
 
 \begin_layout Standard
@@ -2364,7 +2358,7 @@ where
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [TODO: consider with Tommy adding here the optimization of each of the four
  parts of Q using Lagrange multipliers]
 \end_layout
@@ -2600,7 +2594,7 @@ Note that when
  a PWM sub-state when the PWM is too long to fit into the sequence X length.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [TODO: problem, E is peaking before the t when doing a high-order emission
  of the base-states]
 \end_layout
@@ -3195,28 +3189,28 @@ DATA
 Results
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [tommy: prove and show know our limitation with a huge generated data-set,
  scatter plot of 
 \backslash
 theta values where it should go on the diagonal, real vs learned]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [tommy: position of the motifs]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [tommy: compare viterbi and max postirior]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [compare different hyperparameters.
  are we better than regular hmm? does the prelearning help? fixed base state
  E?]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [tommy: aligned heatmap sequences with the peak of the H3K27ac and post.
  prob., are they similar?]
 \end_layout
@@ -3332,10 +3326,6 @@ E M F T-> posterior of whole genome -> see if known critical SNPs are critical
 
 \begin_layout Section*
 Discussion
-\end_layout
-
-\begin_layout Section*
-References
 \end_layout
 
 \end_body
