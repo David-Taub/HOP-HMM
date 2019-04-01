@@ -487,7 +487,8 @@ These properties and mechanisms have measurable features that lie on top
 \end_layout
 
 \begin_layout Subparagraph*
-[Tommy: figure of epigenetics, genome browser tracks on top of the DNA]
+[Tommy: add figure of epigenetics tracks, genome browser tracks on top of
+ the DNA]
 \end_layout
 
 \begin_layout Paragraph
@@ -685,20 +686,37 @@ Computational Biology & Machine Learning
 \end_layout
 
 \begin_layout Subparagraph*
+#######
+\end_layout
+
+\begin_layout Subparagraph*
 [tommy: add a chapter about other methods.
  explain more deeply about each of these, add data representation chapter]
 \end_layout
 
 \begin_layout Standard
-There are several achievements in the task of predicting epigenetic properties
- of DNA elements given only their sequence using machine learning algorithms.
- DeepSEA predicts chromatin modifications given a sequence, from which a
- regulatory activity could be deduced, and Basset and deltaSVM predicts
- accessibility.
+There are several achievements in the task of predicting epigenetic and
+ regulatory properties of DNA elements given only their sequence using machine
+ learning algorithms.
+ DeepSEA (Zhou and Troyanskaya, 2015) deep convolutional network is fed
+ with 1000 bp DNA sequence and predicts an output vector of 919 binary features
+ which represents the chromatin modifications of 200 bp bin in the center
+ of the input sequence.
+ The training labels used are the chromatin modification are extracted from
+ ENCODE and Roadmap Epigenomics data releases.
+\end_layout
+
+\begin_layout Standard
+Basset (Kelley et al.
+ 2016) and deltaSVM predicts DNase I sensitivity.
  gkm-SVM (Beer et al.
  2014) uses gapped kmers as features for an SVM classifier to predict the
  role of DNA sequences.
- The disadvantage of these method is their need for a training data of known
+ 
+\end_layout
+
+\begin_layout Standard
+The disadvantage of these method is their need for a training data of known
  regulatory elements, which are known mainly from GWAS surveys done on 127
  obtained human cell types in the Roadmap and ENCODE projects (Kundaje et
  al.
@@ -712,62 +730,6 @@ There are several achievements in the task of predicting epigenetic properties
 \end_layout
 
 \begin_layout Paragraph*
-HMM Background
-\end_layout
-
-\begin_layout Standard
-Multiple signal processing algorithms have been used in computational biology,
- and HMM is especially popular among them.
- Hidden Markov model (HMM) is a statistical model proposed by Leonard Baum
- (Baum et al.
- 1966) and is based on the Markov model for modeling regions with alternating
- frequencies of patterns and symbols.It was used in various engineering fields
- since the 1980s especially in speech recognition, character recognition
- and digital communication and was adopted in the computational biology
- field.
- The reason HMM is effective in the task of DNA classification is the nucleotide
- frequencies differences between different types of DNA elements.
- The Baum-Welch and Viterbi algorithms can detect elements with distinguishable
- letters distributions without having to train on a labeled dataset.
- The disadvantage of the model is the lack of consideration for TFBSs or
- multi-necleotides motifs frequency differences between DNA segments.
-\end_layout
-
-\begin_layout Subparagraph*
-[PWMs and motif to classify tissue specific enhancers]
-\end_layout
-
-\begin_layout Subparagraph*
-[k-mer to classify tissue specific enhancers]
-\end_layout
-
-\begin_layout Subparagraph*
-[HMM to classify tissue specific enhancers]
-\end_layout
-
-\begin_layout Subparagraph*
-[other machine learning work to classify tissue specific enhancers]
-\end_layout
-
-\begin_layout Subparagraph*
-[Why the HOP-HMM approach to the problem differently]
-\end_layout
-
-\begin_layout Subparagraph*
-[other stories]
-\end_layout
-
-\begin_layout Subparagraph*
-[TOMMY: add research questions after background.
- BW and HOP-BW should come after HMM desc and HOP HMM desc.]
-\end_layout
-
-\begin_layout Subparagraph*
-[Tommy: start with a 2 states before, for gentle intro.
- add the generative model part]
-\end_layout
-
-\begin_layout Paragraph*
 
 \series bold
 Data Representation
@@ -778,9 +740,9 @@ The DNA sequence, when read from cells, is usually stored in files, such
  as .fa, as a sequence of letters A,C,G and T.
  For an algorithm to process it, the characters are mapped into integers
  1,2,3 and 4 respectively.
- For many algorithms, such as our HOP-Baum-Welch, it is more suitable to
- represent the DNA sequence in a one-hot encoding as described in figure
- 3.
+ For many algorithms, such as DeepSEA and our HOP-Baum-Welch, it is more
+ suitable to represent the DNA sequence in a one-hot encoding as described
+ in figure 3.
  
 \end_layout
 
@@ -856,7 +818,41 @@ Several approaches have tackled this problem by modeling gene expression
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
+[PWMs and motif to classify tissue specific enhancers]
+\end_layout
+
+\begin_layout Subparagraph*
+[k-mer to classify tissue specific enhancers]
+\end_layout
+
+\begin_layout Subparagraph*
+[HMM to classify tissue specific enhancers]
+\end_layout
+
+\begin_layout Subparagraph*
+[other machine learning work to classify tissue specific enhancers]
+\end_layout
+
+\begin_layout Subparagraph*
+[Why the HOP-HMM approach to the problem differently]
+\end_layout
+
+\begin_layout Subparagraph*
+[other stories]
+\end_layout
+
+\begin_layout Subparagraph*
+[TOMMY: add research questions after background.
+ BW and HOP-BW should come after HMM desc and HOP HMM desc.]
+\end_layout
+
+\begin_layout Subparagraph*
+[Tommy: start with a 2 states before, for gentle intro.
+ add the generative model part]
+\end_layout
+
+\begin_layout Subparagraph*
 [tommy: insert here a part about the goal of the research: identify enhancers
 \end_layout
 
@@ -875,7 +871,7 @@ Markov Model
 \begin_layout Standard
 Markov model (Markov, 1906) is a stochastic model named after Andrey Markov
  a Russian mathematician.
- In a Markov model, at any time the system is at one of m states 
+ In a Markov model, at any time the model is at one of m states 
 \begin_inset Formula $\left\{ S_{1},...,S_{m}\right\} $
 \end_inset
 
@@ -888,15 +884,15 @@ Markov model (Markov, 1906) is a stochastic model named after Andrey Markov
 \end_inset
 
 .
- The system's travel over the states is called a Markov process, and the
+ The model's travel over the states is called a Markov process, and the
  sequence of states visited in the process is called a Makov chain.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [Tommy: 4 is confusing, try 3]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [tommy: describe the likelihood of the model, starting from 1st state times
  all the transitions]
 \end_layout
@@ -924,7 +920,7 @@ Figure: Markov model with 4 states, marked as
 \begin_inset Formula $T_{i,*}$
 \end_inset
 
- is the distribution of the system's next step when in 
+ is the distribution of the model's next step when in 
 \begin_inset Formula $S_{i}$
 \end_inset
 
@@ -936,12 +932,43 @@ Hidden Markov model
 \end_layout
 
 \begin_layout Standard
-Hidden Markov model (HMM) is a system that travels over hidden states in
+Multiple signal processing algorithms have been used in computational biology,
+ and HMM is especially popular among them.
+ Hidden Markov model (HMM) is a statistical model proposed by Leonard Baum
+ (Baum et al.
+ 1966) and is based on the Markov model for modeling regions with alternating
+ frequencies of patterns and symbols.
+ It was used in various engineering fields since the 1980s especially in
+ speech recognition, character recognition and digital communication and
+ was adopted in the computational biology field.
+ 
+\end_layout
+
+\begin_layout Standard
+Hidden Markov model (HMM) is a model that travels over hidden states in
  a Markov process, and while doing so it emits variables called observed
  variables.
- In this generation process, a single observed variable is emitted per system's
- step, and so the observed sequence is generated with the same length as
- the hidden Markov chain.
+ 
+\end_layout
+
+\begin_layout Standard
+As a generative model, HMM relies on the assumption that the observed DNA
+ sequence of length L 
+\begin_inset Formula $X=x_{1},...,x_{L}$
+\end_inset
+
+ was generated by a parameterized model 
+\begin_inset Formula $\theta$
+\end_inset
+
+, and has an hidden state sequence 
+\begin_inset Formula $Y=y_{1},...,y_{L}$
+\end_inset
+
+ that was generated alongside it.
+ In this generation process, a single observed variable is emitted per step
+ of the model, and so the observed sequence is generated with the same length
+ as the hidden Markov chain.
  The observed variables 
 \begin_inset Formula $V_{1},...,V_{n}$
 \end_inset
@@ -950,7 +977,7 @@ Hidden Markov model (HMM) is a system that travels over hidden states in
 \begin_inset Formula $E_{i,j}=P(x_{t}=V_{j}|y_{t}=S_{i})$
 \end_inset
 
-, that is conditioned on the system's hidden state.
+, that is conditioned on the hidden state of the model.
  Similarly to the Markov model, the distribution to the first hidden state
  is marked as
 \begin_inset Formula $\pi$
@@ -995,7 +1022,7 @@ mode
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subparagraph*
 [tommy: show an example of two states machine, moving between the states,
  generating a sequence that is 1 state then moving to another state an coming
  back.
@@ -1016,122 +1043,6 @@ Figure: a HMM chain with length of 5.
  probability.
 \end_layout
 
-\begin_layout Standard
-
-\series bold
-\bar under
-Goals
-\end_layout
-
-\begin_layout Subparagraph*
-[tommy: alternative goals: 
-\end_layout
-
-\begin_layout Subparagraph*
-1.
- estimating parameters theta with fully observed sequences Y and X.
-\end_layout
-
-\begin_layout Subparagraph*
-2.
- given theta, infer hidden states (post max and viterbi)
-\end_layout
-
-\begin_layout Subparagraph*
-3.
- learning the parameters (hidden states)
-\end_layout
-
-\begin_layout Subparagraph*
-4.
- structure learning, what is the best hyper parameters]
-\end_layout
-
-\begin_layout Standard
-As a generative model, HMM relies on the assumption that the observed DNA
- sequence 
-\begin_inset Formula $\overrightarrow{X}^{L}=x_{1},...,x_{L}$
-\end_inset
-
- was generated by a parameterized model 
-\begin_inset Formula $\theta$
-\end_inset
-
-, and has an hidden state sequence 
-\begin_inset Formula $\overrightarrow{Y}^{L}=y_{1},...,y_{L}$
-\end_inset
-
- that was generated alongside it.
- Given an observed sequence 
-\begin_inset Formula $\overrightarrow{X}^{L}$
-\end_inset
-
-, our three goals here are:
-\end_layout
-
-\begin_layout Standard
-1.
- Finding model parameters 
-\begin_inset Formula $\theta$
-\end_inset
-
- that fits the most to the observed sequence.
- Formally, finding the
-\begin_inset Formula $\theta$
-\end_inset
-
- that maximizes the likelihood of the observed sequences
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\[
-argmax_{\theta}\mathcal{L}\left(\theta|\overrightarrow{X}^{L}\right)=argmax_{\theta}\sum_{i\in[N]}log\left(P_{\theta}(x_{i})\right)
-\]
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-2.
- Using the maximum likelihood 
-\begin_inset Formula $\theta$
-\end_inset
-
-, we would like to find the posterior probability of each individual hidden
- state, 
-\begin_inset Formula $P_{\theta}\left(y_{t}|X\right)$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-3.
- Using the maximum likelihood 
-\begin_inset Formula $\theta$
-\end_inset
-
-, we would like to find the most probable hidden sequence Y, 
-\begin_inset Formula $argmax_{\overrightarrow{Y}^{L}}\mathcal{L}\left(\overrightarrow{Y}^{L}|\overrightarrow{X}^{L};\theta\right)$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-We will see that goal 1 and 2 can be achieved by using the Baum-Welch algorithm,
- named after Leonard E.
- Baum and Lloyd R.
- Welch who developed it and the HMM it solves during the 1960s and 1970s.
- It applies the well known EM algorithm to that infers the maximize the
- likelihood HMM parameters and then the posterior probability, iteratively.
- Goal 3 could then be achieved by using the Viterbi algorithm on the posterior
- probability, named after Andrew Viterbi who proposed it in 1967.
-\end_layout
-
 \begin_layout Paragraph*
 
 \bar under
@@ -1145,7 +1056,7 @@ HMM Limitations
 \begin_layout Standard
 Although HMM is simple and efficient, applying it on DNA sequences has a
  major disadvantage which is the inherit Markovian lack-of-memory property.
- This property means that on every step of the system, the next state is
+ This property means that on every step of the model, the next state is
  dependent only on the previous state, without further history consideration.
  For the task of emitting a motif, where each position has a different emission
  distribution depending on the location in the motif, a HMM model would
@@ -3201,7 +3112,7 @@ DATA
 [synthetic sequences genration]
 \end_layout
 
-\begin_layout Section*
+\begin_layout Part*
 Results
 \end_layout
 
@@ -3229,6 +3140,73 @@ theta values where it should go on the diagonal, real vs learned]
 \begin_layout Subparagraph*
 [tommy: aligned heatmap sequences with the peak of the H3K27ac and post.
  prob., are they similar?]
+\end_layout
+
+\begin_layout Section*
+
+\series bold
+\bar under
+Semi-Supervised Learning Scheme:
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Pre-training:
+\series default
+ Calculate maximal likelihood initialization parameters 
+\begin_inset Formula $\theta_{0}$
+\end_inset
+
+ with from observed labeled dataset of sequences 
+\begin_inset Formula $Y_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $X_{0}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Unsupervised learning:
+\series default
+ Learn the 
+\begin_inset Formula $\theta$
+\end_inset
+
+ given X unlabeled sequences by approximating 
+\begin_inset Formula $\theta_{best}=$
+\end_inset
+
+
+\begin_inset Formula $argmax_{\theta}\mathcal{L}\left(\theta|X\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Predicting labels: 
+\series default
+Given learned 
+\begin_inset Formula $\theta$
+\end_inset
+
+, infer hidden states Y for unlabeled X
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Tuning:
+\series default
+ Preform hyperparameters optimization
 \end_layout
 
 \begin_layout Standard
@@ -3338,10 +3316,6 @@ run EM on whole genome -> posterior of whole genome -> check correlation
 \begin_layout Standard
 E M F T-> posterior of whole genome -> see if known critical SNPs are critical
  in classification
-\end_layout
-
-\begin_layout Section*
-Discussion
 \end_layout
 
 \end_body
