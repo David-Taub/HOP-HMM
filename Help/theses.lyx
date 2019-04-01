@@ -685,41 +685,37 @@ in-silico
 Computational Biology & Machine Learning 
 \end_layout
 
-\begin_layout Subparagraph*
-#######
-\end_layout
-
-\begin_layout Subparagraph*
-[tommy: add a chapter about other methods.
- explain more deeply about each of these, add data representation chapter]
-\end_layout
-
 \begin_layout Standard
 There are several achievements in the task of predicting epigenetic and
  regulatory properties of DNA elements given only their sequence using machine
  learning algorithms.
- DeepSEA (Zhou and Troyanskaya, 2015) deep convolutional network is fed
- with 1000 bp DNA sequence and predicts an output vector of 919 binary features
- which represents the chromatin modifications of 200 bp bin in the center
- of the input sequence.
+ DeepSEA (Zhou and Troyanskaya, 2015) deep convolutional neural network
+ (DCNN) is fed with 1000 bp DNA sequence and predicts an output vector of
+ 919 binary features which represents the chromatin modifications of 200
+ bp bin in the center of the input sequence.
  The training labels used are the chromatin modification are extracted from
  ENCODE and Roadmap Epigenomics data releases.
 \end_layout
 
 \begin_layout Standard
 Basset (Kelley et al.
- 2016) and deltaSVM predicts DNase I sensitivity.
- gkm-SVM (Beer et al.
- 2014) uses gapped kmers as features for an SVM classifier to predict the
- role of DNA sequences.
+ 2016) also used DCNN with known PWM as weights initialization on ENCODE
+ and Roadmap Epigenomics data to predict a binary vector that represents
+ accessibility in 164 cell types based on 600 bp DNA sequence.
+ In DeepBind (Alipanahi et al.
+ 2015) a DCNN was used to predict binding of 538 TFs and 194 RNA binding
+ proteins from DNA sequences of varying lengths.
+ In gkm-SVM (Beer et al.
+ 2014), gapped kmers presence indicator vector were used as features for
+ an SVM classifier to predict the role of DNA sequences with varying lengths.
  
 \end_layout
 
 \begin_layout Standard
-The disadvantage of these method is their need for a training data of known
- regulatory elements, which are known mainly from GWAS surveys done on 127
- obtained human cell types in the Roadmap and ENCODE projects (Kundaje et
- al.
+A common disadvantage of these method is their need for a training data
+ of known regulatory elements, which is obtained mainly from GWAS surveys
+ done on 127 obtained human cell types in the Roadmap and ENCODE projects
+ (Kundaje et al.
  2015; Ernst et al.
  2011).
  The number of different cell types in the human body is estimated to be
@@ -740,9 +736,9 @@ The DNA sequence, when read from cells, is usually stored in files, such
  as .fa, as a sequence of letters A,C,G and T.
  For an algorithm to process it, the characters are mapped into integers
  1,2,3 and 4 respectively.
- For many algorithms, such as DeepSEA and our HOP-Baum-Welch, it is more
- suitable to represent the DNA sequence in a one-hot encoding as described
- in figure 3.
+ For many algorithms, such as in DeepSEA, Basset, and our HOP-Baum-Welch,
+ it is more suitable to represent the DNA sequence in a one-hot encoding
+ as described in figure 3.
  
 \end_layout
 
