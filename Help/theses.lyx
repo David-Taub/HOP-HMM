@@ -113,7 +113,7 @@ backgound
 \end_inset
 
  DNA, and was used to classify enhancers from background using only the
- k-mer distribution (Inbar and tomy, gkm-SVM), and is thought to play a
+ k-mer distribution (Inbar and tommy, gkm-SVM), and is thought to play a
  role in spacial properties, nucleosome location and cleavage that cause
  accessibility of near-by TFBS.
  Using 44 out of 127 epigenetic data of Roadmap Project to select tissue
@@ -226,11 +226,8 @@ n of a gene adjacent to the promoter (see figure 1).
 \begin_layout Standard
 
 \series bold
-\bar under
-Figure:
-\series default
-\bar default
- 1) An enhancer and its distal target gene.
+\emph on
+Figure: 1) An enhancer and its distal target gene.
  2) The DNA folds and the attached with transcription factors draw other
  co-factor proteins that together form the transcription complex.
  3) The RNA Polymerase II is recruited and while moving along the gene it
@@ -622,12 +619,9 @@ g active enhancers from poised enhancers (Creyghton et al.
 \begin_layout Standard
 
 \series bold
-\bar under
-Figure:
-\series default
-\bar default
- The accessibility of the enhancer's sequence and its surrounding histone
- marks are connected to its regulatory activity state.
+\emph on
+Figure: The accessibility of the enhancer's sequence and its surrounding
+ histone marks are connected to its regulatory activity state.
  On the upper part an active enhancer sequence that is accessible for protein
  interaction needed for transcription, where as on the lower part an inactive
  enhancer is inaccessible since it is wrapped around a nucleosome.
@@ -690,7 +684,7 @@ in-silico
 \end_layout
 
 \begin_layout Subsection*
-Computational Biology & Machine Learning 
+Previous Work
 \end_layout
 
 \begin_layout Standard
@@ -716,14 +710,22 @@ Basset (Kelley et al.
  In gkm-SVM (Beer et al.
  2014), gapped kmers presence indicator vector were used as features for
  an SVM classifier to predict the role of DNA sequences with varying lengths.
- 
 \end_layout
 
 \begin_layout Standard
-A common disadvantage of these method is their need for a training data
- of known regulatory elements, which is obtained mainly from GWAS surveys
- done on 127 obtained human cell types in the Roadmap and ENCODE projects
- (Kundaje et al.
+ChromHMM (Ernst and Kellis, 2012) is a widely used software that tackles
+ the problem of analyzing the epigenetic data for concluding roles in the
+ genomic sequence.
+ The algorithm uses chromatin mark reads, threshold to binary values, as
+ input to HMM which then allows classifying the genome state in each position
+ in the genome.
+\end_layout
+
+\begin_layout Standard
+A disadvantage of these method is their need for a training data of known
+ regulatory elements or with epigenetic data, which is commonly obtained
+ from GWAS surveys done on 127 obtained human cell types in the Roadmap
+ and ENCODE projects (Kundaje et al.
  2015; Ernst et al.
  2011).
  The number of different cell types in the human body is estimated to be
@@ -761,45 +763,11 @@ A common feature extraction technique is representing a DNA sequence as
 \end_layout
 
 \begin_layout Subparagraph*
-TODO: k-mer frequencies varies between enhancers and non regulatory
-\begin_inset Quotes eld
-\end_inset
-
-background
-\begin_inset Quotes erd
-\end_inset
-
- DNA, and was used to classify enhancers from backgound using only the k-mer
- distribution (Inbar and Tommy)
-\end_layout
-
-\begin_layout Subparagraph*
 [PWMs and motif to classify tissue specific enhancers]
 \end_layout
 
 \begin_layout Subparagraph*
-[k-mer to classify tissue specific enhancers]
-\end_layout
-
-\begin_layout Subparagraph*
 [HMM to classify tissue specific enhancers]
-\end_layout
-
-\begin_layout Subparagraph*
-[other machine learning work to classify tissue specific enhancers]
-\end_layout
-
-\begin_layout Subparagraph*
-[Why the HOP-HMM approach to the problem differently]
-\end_layout
-
-\begin_layout Subparagraph*
-[other stories]
-\end_layout
-
-\begin_layout Subparagraph*
-[TOMMY: add research questions after background.
- BW and HOP-BW should come after HMM desc and HOP HMM desc.]
 \end_layout
 
 \begin_layout Subparagraph*
@@ -823,6 +791,28 @@ It has been shown in vivo (Visel et al.
  This strengthen the possibility that classifying sequences as enhancers
  could be achieved even without the epigenetic information, which is in
  missing for many types of cells.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/f735.jpg
+	scale 10
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\emph on
+Figure: Transgenic mouse with synthetic enhancer related dorsal root ganglion
+ spinal neurons.
+ The enhancer was inserted to the mouse genome with an adjacent blue color
+ marker gene, which was activated even when no additional epigenetic data
+ was introduced to the mouse.
+ Taken from Vista Enhancer Browser.
 \end_layout
 
 \begin_layout Standard
@@ -1104,6 +1094,9 @@ HOP-HMM
 \begin_layout Standard
 Here we present HOP-HMM, a variant model of HMM, that is well fitted to
  utilize the structure of enhancers containing TFBSs inside them.
+ Because of their key role in determining the role of the sequence adding
+ TFBS presence consideration in the generation process of the enhancer is
+ more suited for the classification of an enhancers.
  The base feature of HOP-HMM is its two types of hidden states: PWM sub-state,
  and base-states, where each type of sequence type is represented by a 
 \begin_inset Quotes eld
