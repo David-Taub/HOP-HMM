@@ -663,12 +663,20 @@ The currently most accurate method for predicting the location of tissue
  specific enhancers in a genome wide scale, is analyzing the histone marks
  and TF and cofactors presence using ChIP-seq from a cell line or from a
  tissue, combined with DNase I hypersensative (DHS).
- The main disadvantage of this method is this process is inherently limited
- to the tissues we can extract and isolate for the epigenetic examination.
- Another disadvantage of this method is the need for live cells for the
- verification of the regulatory activity of a sequence.
- The persecute for an efficient computational method for predicting the
- functional nature of sequences 
+ 
+\end_layout
+
+\begin_layout Standard
+Several approaches have faced the problem of locating enhancers by modeling
+ gene expression based on epigenetic marks.
+ However, these models rely on experimental data, and are inherently limited
+ to the specific tissues we can extract and isolate for epigenetic examination.
+ Furthermore, such models do no supply  a classification of enhancers for
+ new variation found in the population.
+ Another disadvantage is the need for live cells for the verification of
+ the regulatory activity of a sequence.
+ The ultimate goal of an efficient computational method for predicting and
+ explaining the reason for the functional nature of sequences 
 \begin_inset Quotes eld
 \end_inset
 
@@ -752,11 +760,6 @@ A common feature extraction technique is representing a DNA sequence as
  
 \end_layout
 
-\begin_layout Subparagraph
-There are other mechanisms and non classic scenarios that involve enhacners:
- are intergenic enhancers, very long enhancers
-\end_layout
-
 \begin_layout Subparagraph*
 TODO: k-mer frequencies varies between enhancers and non regulatory
 \begin_inset Quotes eld
@@ -767,51 +770,7 @@ background
 \end_inset
 
  DNA, and was used to classify enhancers from backgound using only the k-mer
- distribution (Inbar and Tommy),
-\end_layout
-
-\begin_layout Subparagraph
-TODO: [Levin, VISTA] experiments shows that insertion of a sequence without
- any epigenetic information will activate an enhancer with a near by blue
- coloring gene.
- This implies that for the newly introduced sequences to operate as an enhancer
- and target gene, all that is needed is its sequence in arbitrary location
- without additional epigenetic information.
-\end_layout
-
-\begin_layout Subparagraph
-From (C.
-\begin_inset Quotes eld
-\end_inset
-
-Probing instructions for expression regulation in gene nucleotide compositions
-\begin_inset Quotes erd
-\end_inset
-
-):
-\end_layout
-
-\begin_layout Standard
-\begin_inset Quotes eld
-\end_inset
-
-Several approaches have tackled this problem by modeling gene expression
- based on epigenetic marks, with the ultimate goal of identifying driving
- regions and associated genomic variations that are clinically relevant
- in particular in precision medicine.
- However, these models rely on experimental data, which are limited to specific
- samples (even often to cell lines) and cannot be generated for all regulators
- and all patients.
- In addition, we show here that, although these approaches are accurate
- in predicting gene expression, inference of TF combinations from this type
- of models is not straightforward.
- Furthermore these methods are not designed to capture regulation instructions
- present at the sequence level, before the binding of regulators or the
- opening of the chromatin.
-\begin_inset Quotes erd
-\end_inset
-
-
+ distribution (Inbar and Tommy)
 \end_layout
 
 \begin_layout Subparagraph*
@@ -848,8 +807,27 @@ Several approaches have tackled this problem by modeling gene expression
  add the generative model part]
 \end_layout
 
-\begin_layout Subparagraph*
-[tommy: insert here a part about the goal of the research: identify enhancers
+\begin_layout Section*
+Research Question
+\end_layout
+
+\begin_layout Standard
+It has been shown in vivo (Visel et al.
+ 2007) that the insertion of an enhancer sequence and an adjacent target
+ gene will cause an activation of the target gene in mice.
+ The transgenic mice shows the activation of the inserted enhancer although
+ it was inserted to an arbitrary location in the genome and without epigenetic
+ information.
+ This implies that for the newly introduced sequences, their DNA sequence
+ alone is potentially enough to make them active as enhancers.
+ This strengthen the possibility that classifying sequences as enhancers
+ could be achieved even without the epigenetic information, which is in
+ missing for many types of cells.
+\end_layout
+
+\begin_layout Standard
+My task of my research is to locate sequences with potential enhancer activity,
+ in cell types we have not yet obtained epigenetic data from.
 \end_layout
 
 \begin_layout Section*
