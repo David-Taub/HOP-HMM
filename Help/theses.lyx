@@ -261,7 +261,8 @@ Both enhancers and promoters contain TFBSs that are critical for the their
  correct regulatory operation.
  Multiple studies have shown that genetic alternations in TFBS can affect
  the expression of the regulated gene and are a major cause of different
- human diseases (Miguel-Escalada 2015; Soldner 2016; Smemo S.
+ human diseases (Kreimer et al 2017; Miguel-Escalada 2015; Soldner 2016;
+ Smemo S.
  2012; Benko 2009; Emison, 2005; Lettice 2003).
  From the sequence aspect, enhancers and promoters have a similar structure
  of a background nucleotide sequence with distribution different from other
@@ -763,16 +764,7 @@ A common feature extraction technique is representing a DNA sequence as
 \end_layout
 
 \begin_layout Subparagraph*
-[PWMs and motif to classify tissue specific enhancers]
-\end_layout
-
-\begin_layout Subparagraph*
-[HMM to classify tissue specific enhancers]
-\end_layout
-
-\begin_layout Subparagraph*
-[Tommy: start with a 2 states before, for gentle intro.
- add the generative model part]
+[Tommy: add the generative model description part]
 \end_layout
 
 \begin_layout Section*
@@ -822,10 +814,6 @@ My task of my research is to locate sequences with potential enhancer activity,
 
 \begin_layout Section*
 Methods
-\end_layout
-
-\begin_layout Standard
-[generative models, HMM]
 \end_layout
 
 \begin_layout Paragraph*
@@ -906,6 +894,24 @@ Multiple signal processing algorithms have been used in computational biology,
  speech recognition, character recognition and digital communication and
  was adopted in the computational biology field.
  
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/HMM_two_states.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\emph on
+Figure: Toy example of HMM with 2 hidden states, the observed variables
+ are emitted in a sequence, based on the hidden state at their location.
 \end_layout
 
 \begin_layout Standard
