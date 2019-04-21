@@ -482,11 +482,27 @@ These properties and mechanisms have measurable features that lie on top
 
 \begin_layout Subparagraph*
 [TODO: fix ENCODE cite above]
+\begin_inset Graphics
+	filename Figures/genome_browser.png
+
+\end_inset
+
+
 \end_layout
 
-\begin_layout Subparagraph*
-[Tommy: add figure of epigenetics tracks, genome browser tracks on top of
- the DNA]
+\begin_layout Standard
+
+\series bold
+\emph on
+Figure: Epigenetic feature tracks of ENCODE, taken from the tenth chromosome
+ of H1-hESC tissue.
+ The peaks in the H3K27ac and H3K4me1 histone marks and the DNaseI hyper
+ sensitivity together with the lack of H3K27me3 signal are indication of
+ an active enhancer.
+
+\series default
+\emph default
+ 
 \end_layout
 
 \begin_layout Paragraph
@@ -914,18 +930,18 @@ Discriminative models assume conditional probability
 \begin_inset Formula $P(Y|X)$
 \end_inset
 
-, and estimate it directly from the data.
+, which is estimated directly from the data.
 \end_layout
 
 \begin_layout Standard
 In classification problems, the task at hand is to arrive from the observed
  X to its label Y, e.g.
  given a DNA sequence X, deciding its role label Y.
- Both models eventually use an 
+ Both models eventually use the 
 \begin_inset Formula $P(Y|X)$
 \end_inset
 
- estimation and base their classification on it.
+ estimation to base their classification.
  Namely, classifying a data sample 
 \begin_inset Formula $x$
 \end_inset
