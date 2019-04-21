@@ -482,27 +482,6 @@ These properties and mechanisms have measurable features that lie on top
 
 \begin_layout Subparagraph*
 [TODO: fix ENCODE cite above]
-\begin_inset Graphics
-	filename Figures/genome_browser.png
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\emph on
-Figure: Epigenetic feature tracks of ENCODE, taken from the tenth chromosome
- of H1-hESC tissue.
- The peaks in the H3K27ac and H3K4me1 histone marks and the DNaseI hyper
- sensitivity together with the lack of H3K27me3 signal are indication of
- an active enhancer.
-
-\series default
-\emph default
- 
 \end_layout
 
 \begin_layout Paragraph
@@ -642,6 +621,37 @@ Figure: The accessibility of the enhancer's sequence and its surrounding
  On the upper part an active enhancer sequence that is accessible for protein
  interaction needed for transcription, where as on the lower part an inactive
  enhancer is inaccessible since it is wrapped around a nucleosome.
+\end_layout
+
+\begin_layout Subparagraph*
+\begin_inset Graphics
+	filename Figures/genome_browser.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\emph on
+Figure: Epigenetic feature tracks measured by ENCODE, taken from the tenth
+ chromosome of a H1-hESC cell line.
+ Highlighted in light blue, the peaks of the H3K27ac (1st green plot) and
+ H3K4me1 (2nd green plot) histone marks and the DNaseI hyper sensitivity
+ feature (4th green plot) together with the lack of H3K27me3 (3rd green
+ plot) signal are indication of an active enhancer, as indicated by the
+ ChromHMM classification (bottom).
+ Note the decrease between the two peaks of
+\series default
+\emph default
+ 
+\series bold
+\emph on
+H3K27ac and H3K4me1 is located on top of the increase of the DNaseI hyper
+ sensitivity, which implies a cleavage in between two nucleosomes with modificat
+ions.
 \end_layout
 
 \begin_layout Paragraph*
