@@ -682,6 +682,7 @@ in-silico
 \begin_layout Standard
 \begin_inset Graphics
 	filename Figures/genome_browser.png
+	scale 40
 
 \end_inset
 
@@ -1020,7 +1021,7 @@ Multiple signal processing algorithms have been used in computational biology,
 \series bold
 \emph on
 Figure: An example of a HMM with 2 hidden states, the observed variables
- are emitted in a sequence, based on the hidden state at their location.
+ are emitted in a sequence, based on the hidden state at their location.n
 \end_layout
 
 \begin_layout Standard
@@ -1108,10 +1109,7 @@ mode
 \end_layout
 
 \begin_layout Subparagraph*
-[tommy: show an example of two states machine, moving between the states,
- generating a sequence that is 1 state then moving to another state an coming
- back.
- also more about the likelihood 
+[tommy: more about the likelihood 
 \begin_inset Formula $L=P(x)=\sum_{Y}p(Y|X)P(Y)$
 \end_inset
 
@@ -1236,6 +1234,26 @@ layer
  base-state, while most layers represent an enhancer types, some layers
  are predefined as background sequences, and their probability to transfer
  into a sub-state is restricted.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/HOP_HMM_two_states.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\emph on
+Figure: HOP-HMM example with one base-state 'a', which emits one observable
+ variable at a time, and one sub-state 'b' that emits a TBFS using its PWM.
+ The emission of the base state 'a' is of order one therefore it is conditional
+ only upon a single previous observable variable.
 \end_layout
 
 \begin_layout Standard
