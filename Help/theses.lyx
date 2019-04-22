@@ -1021,7 +1021,9 @@ Multiple signal processing algorithms have been used in computational biology,
 \series bold
 \emph on
 Figure: An example of a HMM with 2 hidden states, the observed variables
- are emitted in a sequence, based on the hidden state at their location.n
+ are emitted in a sequence, based on the hidden state at their location.
+ The hidden variables sequences (orange and green on the bottom) is a two
+ state Markov chain that emits observed variables on every step.
 \end_layout
 
 \begin_layout Standard
