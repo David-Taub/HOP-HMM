@@ -3069,19 +3069,47 @@ Using the forward and the backward probability matrices, we are ready to
 \begin_inset Formula $m\times k\times L$
 \end_inset
 
- 
+
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align*}
-\psi_{j,l,t}= & P\left(y_{t}=(j,0),y_{t+1}=(j,l),X\right)=\\
-= & P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(y_{t+1}=(j,l)|y_{t}=(j,0)\right)\\
- & \cdot P\left(x_{t+1:t+\left|W_{l}\right|}|y_{t+1:t+\left|W_{l}\right|}=(j,l)\right)\\
- & \cdot P\left(x_{t+\left|W_{l}\right|+1}|y_{t+\left|W_{l}\right|+1}=(j,0)\right)\\
- & \text{\cdot}P\left(x_{t+|W_{l}|+2:L}|y_{t+|W_{l}|+1}=(j,0)\right)=\\
-= & \alpha_{j,t}\cdot G_{j,l}\cdot L_{W_{l,}}\left(x_{t+1},...,x_{t+|W_{l}|}\right)\cdot E_{j,x_{t+|W_{l}|-o+2},...,x_{t+|W_{l}|+1}}\cdot\beta_{j,t+|W_{l}|+1}
-\end{align*}
+\[
+\psi_{j,l,t}=P\left(y_{t}=(j,0),y_{t+1}=(j,l),X\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(y_{t+1}=(j,l)|y_{t}=(j,0)\right)\cdot P\left(x_{t+1:t+\left|W_{l}\right|}|y_{t+1:t+\left|W_{l}\right|}=(j,l)\right)\cdot
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\cdot P\left(x_{t+\left|W_{l}\right|+1}|y_{t+\left|W_{l}\right|+1}=(j,0)\right)\text{\cdot}P\left(x_{t+|W_{l}|+2:L}|y_{t+|W_{l}|+1}=(j,0)\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\alpha_{j,t}\cdot G_{j,l}\cdot L_{W_{l,}}\left(x_{t+1},...,x_{t+|W_{l}|}\right)\cdot E_{j,x_{t+|W_{l}|-o+2},...,x_{t+|W_{l}|+1}}\cdot\beta_{j,t+|W_{l}|+1}
+\]
 
 \end_inset
 
