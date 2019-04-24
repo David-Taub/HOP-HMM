@@ -832,7 +832,7 @@ My task of my research is to locate sequences with potential enhancer activity,
 \end_layout
 
 \begin_layout Section*
-Methods
+Markov Models
 \end_layout
 
 \begin_layout Paragraph*
@@ -1176,15 +1176,14 @@ A common way to avoid overfitting the data when training machine learning
  a large number of states.
  Namely, most of the transition probabilities are fixed to zero and therefore
  never stored in memory, and some of the emission probabilities are predetermine
-d and are fixed during the training\SpecialChar endofsentence
-.
+d and are fixed during the training.
  This allows us to learn a model with the enhancer prior assumptions of
  motifs and high-order emission without overfitting, and with reasonable
  memory complexity.
 \end_layout
 
 \begin_layout Standard
-There is a tradeoff regarding the use of high-order emission compared to
+There is a trade-off regarding the use of high-order emission compared to
  high-order transition, or in other words whether the transition or the
  emission probability is conditional to the previous states and emissions.
  Both can emit sequences with structure of higher order, for example both
@@ -1205,11 +1204,8 @@ HOP-HMM
 \end_layout
 
 \begin_layout Subparagraph*
-[tommy: add here gentle intro: seq with single motif.
- figure of automat, figure of seq.
- then do same with multi motifs.
- then do with multi layers.
- Also a part about PWMs]
+[tommy: gentle intro: automat with multi motifs.
+ then do with multi layers]
 \end_layout
 
 \begin_layout Standard
@@ -1253,9 +1249,10 @@ layer
 \series bold
 \emph on
 Figure: HOP-HMM example with one base-state 'a', which emits one observable
- variable at a time, and one sub-state 'b' that emits a TBFS using its PWM.
- The emission of the base state 'a' is of order one therefore it is conditional
- only upon a single previous observable variable.
+ DNA variable at a time, and one sub-state 'b' that emits a TBFS using its
+ assigned PWM.
+ The emission of the base state 'a' is of order one (o=1), therefore it
+ is conditioned upon a single previous observable variable.
 \end_layout
 
 \begin_layout Standard
@@ -2280,7 +2277,7 @@ We denote the terms values of (7) as
 \uwave off
 \noun off
 \color none
-And we denote the values of (9) as 
+And we denote the values of (8) as 
 \begin_inset Formula $\xi$
 \end_inset
 
@@ -2556,7 +2553,7 @@ for\,t=o,...,L:\\
 
 \end_inset
 
-Note that when 
+In the beginning of the sequence, when 
 \begin_inset Formula $t<o$
 \end_inset
 
@@ -2569,7 +2566,7 @@ Note that when
 \begin_inset Formula $E_{j,x_{1},...,x_{t}}$
 \end_inset
 
- is not well defined, so we define it here as 
+ is not defined, so we define it here as 
 \begin_inset Formula $E_{j,x_{1},...,x_{t}}=\underset{b_{1},...,b_{o-t}\in\{A,C,G,T\}}{\sum}\frac{1}{4^{o-t}}\cdot E_{j,b_{1},..,.b_{o-t},x_{1},...,x_{t}}$
 \end_inset
 
@@ -2610,7 +2607,7 @@ For
 \begin_inset Formula 
 \begin{align*}
 for\,t=L:\\
- & \beta_{j,t}=\frac{1}{m}\\
+ & \beta_{j,t}=1\\
 for\,t=L-1,...,1:\\
  & \beta_{j,t}=\underset{\text{base-state transitions}}{\underbrace{\sum_{j'\in[m]}\beta_{j',t+1}\cdot E_{u,x_{t-o+2},...,x_{t+1}}\cdot T_{j,j'}}}\\
  & +\underset{\text{sub-state transitions}}{\underbrace{\sum_{l\in\{1,...,k\}}\beta_{j,t+|W_{l}|+1}\cdot L_{W_{l}}\left(x_{t+1},...,x_{t+|W_{l}|}\right)\cdot E_{j,x_{t-o+|W_{l}|+2},...,x_{t+|W_{l}|+1}}\cdot G_{j,l}}}
@@ -2815,9 +2812,11 @@ This process is similar to the base-state transition.
 
 \begin_layout Standard
 \begin_inset Formula 
-\[
-P\left(y_{t-1}=(j',0),y_{t}=(j,0),x_{1:t}\right)=P\left(y_{t-1}=(j',0),x_{1:t-1}\right)\cdot P\left(y_{t}=(j,0)|y_{t-1}=(j',0),x_{1:t-1}\right)\cdot P\left(x_{t}|y_{t}=(j,0),y_{t-1}=(j',0),x_{1:t-1}\right)=
-\]
+\begin{align*}
+P\left(y_{t-1}=(j',0),y_{t}=(j,0),x_{1:t}\right)= & P\left(y_{t-1}=(j',0),x_{1:t-1}\right)\\
+ & \cdot P\left(y_{t}=(j,0)|y_{t-1}=(j',0),x_{1:t-1}\right)\\
+ & \cdot P\left(x_{t}|y_{t}=(j,0),y_{t-1}=(j',0),x_{1:t-1}\right)
+\end{align*}
 
 \end_inset
 
@@ -2831,7 +2830,18 @@ Using the conditional independencies to simplify the probabilities:
 \begin_layout Standard
 \begin_inset Formula 
 \[
-=P(y_{t-1}=(j',0),x_{1:t-1})\cdot P\left(y_{t}=(j,0)|y_{t-1}=(j',0)\right)\cdot P\left(x_{t}|y_{t}=(j,0),x_{1:t-1}\right)=\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1},...,x_{t}}
+P(y_{t-1}=(j',0),x_{1:t-1})\cdot P\left(y_{t}=(j,0)|y_{t-1}=(j',0)\right)\cdot P\left(x_{t}|y_{t}=(j,0),x_{1:t-1}\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1},...,x_{t}}
 \]
 
 \end_inset
@@ -2857,25 +2867,8 @@ For the backward probabilities
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align*}
-\beta_{j,t}= & P\left(x_{t+1:L}|y_{t}=(j,0)\right)=\\
-= & \underset{\text{base-state transitions}}{\underbrace{\sum_{j'\in[m]}\beta_{j',t+1}\cdot E_{u,x_{t-o+2},...,x_{t+1}}\cdot T_{j,j'}}}\\
-+ & \underset{\text{sub-state transitions}}{\underbrace{\sum_{l\in\{1,...,k\}}\beta_{j,t+|W_{l}|+1}\cdot L_{W_{l}}\left(x_{t+1},...,x_{t+|W_{l}|}\right)\cdot E_{j,x_{t-o+|W_{l}|+2},...,x_{t+|W_{l}|+1}}\cdot G_{j,l}}}
-\end{align*}
-
-\end_inset
-
- 
-\end_layout
-
-\begin_layout Standard
-Law of total probability:
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
 \[
-P\left(x_{t+1:L}|y_{t}=(j,0)\right)=
+P\left(x_{t+1:L}|y_{t}=(j,0),,x_{t-o+2:t}\right)=
 \]
 
 \end_inset
@@ -2886,7 +2879,7 @@ P\left(x_{t+1:L}|y_{t}=(j,0)\right)=
 \begin_layout Standard
 \begin_inset Formula 
 \[
-=\underset{\text{base-state transition}}{\underbrace{\sum_{j'}P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0)\right)}}+\underset{\text{sub-state transition}}{\underbrace{\sum_{l}P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{t+1:L}|y_{t}=(j,0)\right)}}
+=\underset{\text{base-state transition}}{\underbrace{\sum_{j'}P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0),x_{t-o+2:t}\right)}}+\underset{\text{sub-state transition}}{\underbrace{\sum_{l}P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{t+1:L}|y_{t}=(j,0)\right)}}
 \]
 
 \end_inset
@@ -2895,34 +2888,26 @@ P\left(x_{t+1:L}|y_{t}=(j,0)\right)=
 \end_layout
 
 \begin_layout Standard
-For the base-state transition term,using the chain rule:
+For the base-state transition term, we can use the chain rule and the Markovian
+ independence of the transitions and emissions:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align*}
-P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0)\right)= & P\left(x_{t+2:L}|y_{t+1}=(j',0),y_{t}=(j,0),x_{t+1}\right)\\
- & \cdot P\left(x_{t+1}|y_{t+1}=(j',0),y_{t}=(j,0)\right)\\
- & \cdot P\left(y_{t+1}=(j',0)|y_{t}=(j,0)\right)
-\end{align*}
+\[
+P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0),x_{t-o+2:t}\right)=
+\]
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-Using the conditional independencies to simplify the probabilities:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align*}
-P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0)\right)= & P\left(x_{t+2:L}|y_{t+1}=(j',0)\right)\\
- & \cdot P\left(x_{t+1}|y_{t+1}=(j',0),y_{t}=(j,0)\right)\\
- & \cdot P\left(y_{t+1}=(j',0)|y_{t}=(j,0)\right)=\\
-= & \beta_{j',t+1}\cdot E_{u,x_{t-o+2},...,x_{t+1}}\cdot T_{j,j'}
-\end{align*}
+\[
+=P\left(x_{t+2:L}|y_{t+1}=(j',0),y_{t}=(j,0),x_{t-o+2:t+1}\right)\cdot P\left(x_{t+1}|y_{t+1}=(j',0),y_{t}=(j,0),x_{t-o+2:t}\right)\cdot
+\]
 
 \end_inset
 
@@ -2930,14 +2915,40 @@ P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0)\right)= & P\left(x_{t+2:L}|y_{t+1}=(
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $P\left(y_{t-|W_{l}|:t-1}=(j',l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)=\,P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot\cdot P\left(y_{t-|W_{l}|:t-1}=(j,l)|y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot P\left(x_{t-|W_{l}|:t-1}|y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot P\left(x_{t}|y_{t}=(j,0),x_{1:t-1},y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0)\right)$
+\begin_inset Formula 
+\[
+\cdot P\left(y_{t+1}=(j',0)|y_{t}=(j,0),x_{t-o+2:t}\right)=
+\]
+
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
-For the sub-state transition term, using the chain rule:
+\begin_inset Formula 
+\[
+=P\left(x_{t+2:L}|y_{t+1}=(j',0),x_{t-o+3:t+1}\right)\cdot P\left(x_{t+1}|y_{t+1}=(j',0),x_{t-o+2:t}\right)\cdot P\left(y_{t+1}=(j',0)|y_{t}=(j,0)\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\beta_{j',t+1}\cdot E_{j',x_{t-o+2},...,x_{t+1}}\cdot T_{j,j'}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For the sub-state transition term, we use once more the chain rule:
 \end_layout
 
 \begin_layout Standard
@@ -2982,18 +2993,14 @@ Auxiliary Probabilities
 
 \begin_layout Standard
 Using the forward and the backward probability matrices, we are ready to
- calculate the auxiliary probabilities, that will help us calculate (9)
- (10) (11).
-\end_layout
-
-\begin_layout Standard
-First, we calculate the probability of sub-state starting at a given position,
- with the given sequence X.
- We denote it as 
+ calculate the auxiliary probabilities, that will help us calculate (13)
+ (14) (15).
+ Before calculating .
+ The first auxiliary probability is 
 \begin_inset Formula $\psi$
 \end_inset
 
- as a matrix of size 
+, a matrix of size 
 \begin_inset Formula $m\times k\times L$
 \end_inset
 
@@ -3017,23 +3024,7 @@ First, we calculate the probability of sub-state starting at a given position,
 \end_layout
 
 \begin_layout Standard
-Useful terms we can achieve with 
-\begin_inset Formula $\psi$
-\end_inset
-
- is the probability of a sub-state at a given position with the sequence
- X, and the probability of X:
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\[
-P\left(y_{t}=(j,l),X\right)=\underset{s\in\left[|W_{l}|\right]}{\sum}\psi_{j,l,t-s}
-\]
-
-\end_inset
-
-
+The second auxiliary probability, is of the observed sequence X:
 \end_layout
 
 \begin_layout Standard
@@ -3045,14 +3036,6 @@ P\left(X\right)=\underset{j\in[m]}{\sum}\left(\alpha_{j,t}\cdot\beta_{j,t}+\unde
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-where t here is set arbitrary from 
-\begin_inset Formula $t\in[L]$
-\end_inset
-
-.
 \end_layout
 
 \begin_layout Standard
@@ -3071,12 +3054,12 @@ Second, the probability (13) of the base-state at a given position given
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-\gamma_{j,t}= & P\left(y_{t}=(j,0)|X\right)=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{P\left(X\right)}
+\gamma_{j,t}= & P\left(y_{t}=(j,0)|X\right)=\frac{P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{1:t},y_{t}=(j,0)\right)}{P\left(X\right)}=\frac{P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{t-o+1:t},y_{t}=(j,0)\right)}{P\left(X\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{P\left(X\right)}
 \end{align*}
 
 \end_inset
 
- 
+
 \end_layout
 
 \begin_layout Standard
