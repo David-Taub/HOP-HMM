@@ -3058,10 +3058,8 @@ Auxiliary Probabilities
 
 \begin_layout Standard
 Using the forward and the backward probability matrices, we are ready to
- calculate the auxiliary probabilities, that will help us calculate (13)
- (14) (15).
- Before calculating .
- The first auxiliary probability is 
+ calculate the auxiliary probabilities (13) (14) (15).
+ The first probability that will help us for that task is 
 \begin_inset Formula $\psi$
 \end_inset
 
@@ -3069,13 +3067,13 @@ Using the forward and the backward probability matrices, we are ready to
 \begin_inset Formula $m\times k\times L$
 \end_inset
 
-
+:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\psi_{j,l,t}=P\left(y_{t}=(j,0),y_{t+1}=(j,l),X\right)=
+\psi_{j,l,t}=P\left(y_{t}=(j,0),y_{t+1}=(j,l),X\right)=P\left(y_{t}=(j,0),y_{t+1}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),X\right)=
 \]
 
 \end_inset
@@ -3086,7 +3084,7 @@ Using the forward and the backward probability matrices, we are ready to
 \begin_layout Standard
 \begin_inset Formula 
 \[
-=P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(y_{t+1}=(j,l)|y_{t}=(j,0)\right)\cdot P\left(x_{t+1:t+\left|W_{l}\right|}|y_{t+1:t+\left|W_{l}\right|}=(j,l)\right)\cdot
+=P\left(y_{t}=(j,0),y_{t+1}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{1:t+|W_{l}|+1}\right)\cdot P\left(x_{t+|W_{l}|+2:L}|y_{t+|W_{l}|+1}=(j,0),x_{1:t+|W_{l}|+1}\right)=
 \]
 
 \end_inset
@@ -3097,12 +3095,23 @@ Using the forward and the backward probability matrices, we are ready to
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\cdot P\left(x_{t+\left|W_{l}\right|+1}|y_{t+\left|W_{l}\right|+1}=(j,0)\right)\text{\cdot}P\left(x_{t+|W_{l}|+2:L}|y_{t+|W_{l}|+1}=(j,0)\right)=
+=P\left(x_{1:t},y_{t}=(j,0)\right)\cdot P\left(y_{t+1}=(j,l)|y_{t}=(j,0)\right)\cdot P\left(x_{t+1:t+\left|W_{l}\right|}|y_{t+1:t+\left|W_{l}\right|}=(j,l)\right)\cdot
 \]
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\cdot P\left(x_{t+\left|W_{l}\right|+1}|y_{t+\left|W_{l}\right|+1}=(j,0)\right)\text{\cdot}P\left(x_{t+|W_{l}|+2:L}|y_{t+|W_{l}|+1}=(j,0),x_{t+|W_{l}|-o+3:t+|W_{l}|+1}\right)=
+\]
+
+\end_inset
+
+ 
 \end_layout
 
 \begin_layout Standard
@@ -3117,7 +3126,7 @@ Using the forward and the backward probability matrices, we are ready to
 \end_layout
 
 \begin_layout Standard
-The second auxiliary probability, is of the observed sequence X:
+The second probability, is of the observed sequence X:
 \end_layout
 
 \begin_layout Standard
@@ -3132,8 +3141,8 @@ P\left(X\right)=\underset{j\in[m]}{\sum}\left(\alpha_{j,t}\cdot\beta_{j,t}+\unde
 \end_layout
 
 \begin_layout Standard
-Second, the probability (13) of the base-state at a given position given
- the sequence X, denoted as 
+Now we can calculate probability (13) of the base-state at a given position
+ given the sequence X, denoted as 
 \begin_inset Formula $\gamma$
 \end_inset
 
@@ -3147,7 +3156,7 @@ Second, the probability (13) of the base-state at a given position given
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-\gamma_{j,t}= & P\left(y_{t}=(j,0)|X\right)=\frac{P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{1:t},y_{t}=(j,0)\right)}{P\left(X\right)}=\frac{P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{t-o+1:t},y_{t}=(j,0)\right)}{P\left(X\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{P\left(X\right)}
+\gamma_{j,t}= & P\left(y_{t}=(j,0)|X\right)=\frac{P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{1:t},y_{t}=(j,0)\right)}{P\left(X\right)}=
 \end{align*}
 
 \end_inset
@@ -3156,8 +3165,19 @@ Second, the probability (13) of the base-state at a given position given
 \end_layout
 
 \begin_layout Standard
-Third, the probability (14) of being at a base-state to base-state transition
- given the sequence X, denoted as 
+\begin_inset Formula 
+\[
+=\frac{P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{t-o+1:t},y_{t}=(j,0)\right)}{P\left(X\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{P\left(X\right)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The probability (14) is the base-state to base-state transition given the
+ sequence X, denoted as 
 \begin_inset Formula $\xi$
 \end_inset
 
@@ -3170,18 +3190,50 @@ Third, the probability (14) of being at a base-state to base-state transition
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align*}
-\xi_{j_{1},j_{2},t}= & P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|X_{i}\right)=\frac{P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0),X\right)}{P\left(X\right)}=\\
-= & \frac{\alpha_{j_{1},t-1}\cdot T_{j_{1},j_{2}}\cdot E_{j_{2},x_{t-o+1},...,x_{t}}\cdot\beta_{j_{2},t}}{P\left(X\right)}
-\end{align*}
+\[
+\xi_{j_{1},j_{2},t}=P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|X_{i}\right)=\frac{P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0),X\right)}{P\left(X\right)}=
+\]
 
 \end_inset
 
 
-\begin_inset Newline newline
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\frac{P\left(x_{1:t-1},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)\cdot P\left(x_{t:L}|y_{t}=(j_{2},0),x_{1:t-1}\right)}{P\left(X\right)}=
+\]
+
 \end_inset
 
-Finally, the probability (15) of being at a base-state to base-state transition
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\frac{P\left(x_{1:t-1},y_{t-1}=(j_{1},0)\right)\cdot P\left(y_{t}=(j_{2},0)|y_{t-1}=(j_{1},0)\right)\cdot P\left(x_{t}|y_{t}=(j_{2},0),x_{1:t-1}\right)\cdot P\left(x_{t+1:L}|y_{t}=(j_{2},0),x_{1:t-1}\right)}{P\left(X\right)}=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\frac{\alpha_{j_{1},t-1}\cdot T_{j_{1},j_{2}}\cdot E_{j_{2},x_{t-o+1},...,x_{t}}\cdot\beta_{j_{2},t}}{P\left(X\right)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Finally, the probability (15) is the base-state to base-state transition
  given the sequence X, denoted as 
 \begin_inset Formula $\xi$
 \end_inset
