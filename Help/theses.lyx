@@ -1079,18 +1079,6 @@ Hidden Markov model (HMM) is a model that travels over hidden states in
 \end_layout
 
 \begin_layout Standard
-###############
-\end_layout
-
-\begin_layout Subparagraph*
-[tommy: more about the likelihood 
-\begin_inset Formula $L=P(x)=\sum_{Y}p(X|Y)P(Y)$
-\end_inset
-
-]
-\end_layout
-
-\begin_layout Standard
 The likelihood of the observed sequence is important, as we explain later
  the maximum likelihood estimation algorithm that is used to fit the HMM
  parameters 
@@ -1138,7 +1126,7 @@ mode
 \series bold
 \emph on
 Figure: a HMM chain with length of 5.
- The underlying hidden states (up) are generated in a Marokov process and
+ The underlying hidden states (up) are generated in a Markov process and
  each state emits an observed variable, sampled from the state's emission
  probability.
 \end_layout
@@ -2653,11 +2641,6 @@ Note that when
  In these situations this contribution of these component to the summation
  is zero, meaning our HOP-HMM as the behavior of avoiding a transition into
  a PWM sub-state when the PWM is too long to fit into the sequence X length.
-\end_layout
-
-\begin_layout Subparagraph*
-[TODO: problem, E is peaking before the t when doing a high-order emission
- of the base-states]
 \end_layout
 
 \begin_layout Standard
