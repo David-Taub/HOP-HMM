@@ -2369,11 +2369,11 @@ The Baum-Welch algorithm can be adjusted to infer the parameters of the
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-Q\left(\theta,\theta^{'}\right)= & \sum_{j\in[m]}log\pi_{j}\cdot P\left(X,y_{1}=(j,0)|\theta^{'}\right)\\
-+ & \sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}\cdot P\left(X,y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|\theta^{'}\right)\\
-+ & \sum_{t\in2...L}\sum_{j\in[m],l\in[k]}logG_{j,l}\cdot P\left(X,y_{t-1}=(j,0),y_{t}=(j,l)|\theta^{'}\right)\\
-+ & \sum_{t\in[L]}\sum_{j\in[m]}logE_{j,x_{t}}\cdot P\left(X,y_{t}=(j,0)|\theta^{'}\right)\\
-+ & \sum_{t\in[L]}\sum_{l\in[k]}logL_{W}(x_{t:t+|W_{l}|})\cdot P\left(X,y_{t:t+|W_{l}|}=(j,l)|\theta^{'}\right)
+Q\left(\theta,\theta^{'}\right)= & \sum_{j\in[m]}log\pi_{j}\cdot P_{\theta^{'}}\left(X,y_{1}=(j,0)\right)\\
++ & \sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}\cdot P_{\theta^{'}}\left(X,y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)\\
++ & \sum_{t\in2...L}\sum_{j\in[m],l\in[k]}logG_{j,l}\cdot P_{\theta^{'}}\left(X,y_{t-1}=(j,0),y_{t}=(j,l)\right)\\
++ & \sum_{t\in[L]}\sum_{j\in[m]}logE_{j,x_{t}}\cdot P_{\theta^{'}}\left(X,y_{t}=(j,0)\right)\\
++ & \sum_{t\in[L]}\sum_{l\in[k]}logL_{W}(x_{t:t+|W_{l}|})\cdot P_{\theta^{'}}\left(X,y_{t:t+|W_{l}|}=(j,l)\right)
 \end{align*}
 
 \end_inset
@@ -2429,7 +2429,7 @@ The
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-\pi_{j}=\frac{P\left(X,y_{1}=(j,0)|\theta^{'}\right)}{P\left(X|\theta^{'}\right)}=P\left(y_{1}=(j,0)|X,\theta^{'}\right)
+\pi_{j}=\frac{P_{\theta^{'}}\left(X,y_{1}=(j,0)|\theta^{'}\right)}{P_{\theta^{'}}\left(X|\theta^{'}\right)}=P_{\theta^{'}}\left(y_{1}=(j,0)|X\right)
 \end{equation}
 
 \end_inset
@@ -2440,7 +2440,7 @@ The
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P\left(X,y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|\theta^{'}\right)}{\sum_{t\in2...L}P\left(X,y_{t-1}=(j_{1},0)|\theta^{'}\right)}=\frac{\sum_{t\in2...L}P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|X,\theta^{'}\right)}{\sum_{t\in2...L}P\left(y_{t-1}=(j_{1},0)|X,\theta^{'}\right)}
+T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(X,y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(X,y_{t-1}=(j_{1},0)\right)}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|X\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j_{1},0)|X\right)}
 \end{equation}
 
 \end_inset
@@ -2451,7 +2451,7 @@ T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P\left(X,y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-G_{j,l}=\frac{\sum_{t\in2...L}P\left(X,y_{t-1}=(j,0),y_{t}=(j,l)|\theta^{'}\right)}{\sum_{t\in2...L}P\left(X,y_{t-1}=(j,0)|\theta^{'}\right)}=\frac{\sum_{t\in2...L}P\left(y_{t-1}=(j,0),y_{t}=(j,l)|X,\theta^{'}\right)}{\sum_{t\in2...L}P\left(y_{t-1}=(j,0)|X,\theta^{'}\right)}
+G_{j,l}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(X,y_{t-1}=(j,0),y_{t}=(j,l)\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(X,y_{t-1}=(j,0)\right)}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j,0),y_{t}=(j,l)|X\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j,0)|X\right)}
 \end{equation}
 
 \end_inset
@@ -2466,8 +2466,19 @@ and
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-E_{j,b_{1},...,b_{o}}=\frac{\sum_{t\in o,...,L}P\left(X,y_{t}=(j,0)|\theta^{'}\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P\left(X,y_{t}=(j,0)|\theta^{'}\right)}=\frac{\sum_{t\in o,...,L}P\left(y_{t}=(j,0)|X,\theta^{'}\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P\left(y_{t}=(j,0)|X,\theta^{'}\right)}
+E_{j,b_{1},...,b_{o}}=\frac{\sum_{t\in o,...,L}P_{\theta^{'}}\left(X,y_{t}=(j,0)\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P_{\theta^{'}}\left(X,y_{t}=(j,0)\right)}=
 \end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\frac{\sum_{t\in o,...,L}P_{\theta^{'}}\left(y_{t}=(j,0)|X\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P_{\theta^{'}}\left(y_{t}=(j,0)|X\right)}
+\]
 
 \end_inset
 
@@ -2487,7 +2498,7 @@ Hence to complete the EM iteration, the three missing components in (9),(10),(11
 
 \begin_inset Formula 
 \begin{equation}
-P\left(y_{t}=(j,0)|X,\theta^{'}\right)
+P_{\theta^{'}}\left(y_{t}=(j,0)|X\right)
 \end{equation}
 
 \end_inset
@@ -2495,7 +2506,7 @@ P\left(y_{t}=(j,0)|X,\theta^{'}\right)
 
 \begin_inset Formula 
 \begin{equation}
-P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|X,\theta^{'}\right)
+P_{\theta^{'}}\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|X\right)
 \end{equation}
 
 \end_inset
@@ -2506,7 +2517,7 @@ P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|X,\theta^{'}\right)
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-P\left(y_{t-1}=(j,0),y_{t}=(j,l)|X,\theta^{'}\right)
+P_{\theta^{'}}\left(y_{t-1}=(j,0),y_{t}=(j,l)|X\right)
 \end{equation}
 
 \end_inset
