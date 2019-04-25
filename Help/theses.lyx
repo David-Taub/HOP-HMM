@@ -1692,7 +1692,7 @@ The probability on the right side
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-P_{\theta}(X,Y=y)=P(y_{1})\cdot P(x_{1}|y_{1})\cdot\prod_{i=2}^{N}P(y_{i}|y_{i-1})\cdot P(x_{i}|y_{i})\cdot=\pi_{y_{1}}E_{y_{1},x_{1}}\prod_{i=2}^{N}T_{y_{i-1},y_{i}}E_{y_{i},x_{i}}
+P_{\theta}(X,Y=y)=P_{\theta}(y_{1})\cdot P_{\theta}(x_{1}|y_{1})\cdot\prod_{i=2}^{N}P_{\theta}(y_{i}|y_{i-1})\cdot P_{\theta}(x_{i}|y_{i})\cdot=\pi_{y_{1}}E_{y_{1},x_{1}}\prod_{i=2}^{N}T_{y_{i-1},y_{i}}E_{y_{i},x_{i}}
 \end{equation}
 
 \end_inset
@@ -1837,7 +1837,7 @@ The first part is maximized using Lagrange multiplier
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\frac{\partial}{\partial\pi_{j}}\left(\sum_{j\in[m]}log\pi_{j}P\left(X,y_{1}=j|\theta^{'}\right)+\lambda\left(\sum_{j\in[m]}\pi_{j}-1\right)\right)=0
+\frac{\partial}{\partial\pi_{j}}\left(\sum_{j'\in[m]}log\pi_{j'}P_{\theta^{'}}\left(X,y_{1}=j'\right)+\lambda\left(\sum_{j'\in[m]}1-\pi_{j'}\right)\right)=0
 \]
 
 \end_inset
@@ -1847,20 +1847,26 @@ The first part is maximized using Lagrange multiplier
 
 \begin_layout Standard
 we derive the equations and get 
-\begin_inset Formula $\frac{P\left(X,y_{1}=j|\theta^{'}\right)}{\pi_{j}}=-\lambda$
+\begin_inset Formula $\frac{P_{\theta^{'}}\left(X,y_{1}=j\right)}{\pi_{j}}=\lambda$
 \end_inset
 
- then sum them to receive 
-\begin_inset Formula $\lambda=P\left(X|\theta^{'}\right)$
+ for 
+\begin_inset Formula $j\in[m]$
 \end_inset
 
- and assign it and deduce:
+.
+ Then we multiply each equation by the denominator and sum these m equations
+ to receive 
+\begin_inset Formula $\lambda=P_{\theta^{'}}\left(X\right)$
+\end_inset
+
+, which yields:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-\pi_{j}=\frac{P\left(X,y_{1}=j|\theta^{'}\right)}{P\left(X|\theta^{'}\right)}=P\left(y_{1}=j|X,\theta^{'}\right)
+\pi_{j}=\frac{P_{\theta^{'}}\left(X,y_{1}=j\right)}{P_{\theta^{'}}\left(X\right)}=P_{\theta^{'}}\left(y_{1}=j|X\right)
 \end{equation}
 
 \end_inset
@@ -1869,14 +1875,14 @@ we derive the equations and get
 \end_layout
 
 \begin_layout Standard
-we follow this method similarly in the second and third parts, from which
- we receive:
+We may follow the Lagrange multipliers method in the second and third parts,
+ from which we'll receive:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P\left(X,y_{t-1}=j_{1},y_{t}=j_{2}|\theta^{'}\right)}{\sum_{t\in2...L}P\left(X,y_{t-1}=j_{1}|\theta^{'}\right)}=\frac{\sum_{t\in2...L}P\left(y_{t-1}=j_{1},y_{t}=j_{2}|X,\theta^{'}\right)}{\sum_{t\in2...L}P\left(y_{t-1}=j_{1}|X,\theta^{'}\right)}
+T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(X,y_{t-1}=j_{1},y_{t}=j_{2}\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(X,y_{t-1}=j_{1}\right)}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=j_{1},y_{t}=j_{2}|X\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=j_{1}|X\right)}
 \end{equation}
 
 \end_inset
@@ -1891,7 +1897,7 @@ and
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-E_{j,b}=\frac{\sum_{t\in[L]}P\left(X,y_{t}=j|\theta^{'}\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P\left(X,y_{t}=j|\theta^{'}\right)}=\frac{\sum_{t\in[L]}P\left(y_{t}=j|X,\theta^{'}\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P\left(y_{t}=j|X,\theta^{'}\right)}
+E_{j,b}=\frac{\sum_{t\in[L]}P_{\theta^{'}}\left(X,y_{t}=j\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P_{\theta^{'}}\left(X,y_{t}=j\right)}=\frac{\sum_{t\in[L]}P_{\theta^{'}}\left(y_{t}=j|X\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P_{\theta^{'}}\left(y_{t}=j|X\right)}
 \end{equation}
 
 \end_inset
@@ -1921,7 +1927,7 @@ After stating the intentions of each EM iteration in (4), (5) and (6), we
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-P\left(y_{t}=j|X,\theta^{'}\right)
+P_{\theta^{'}}\left(y_{t}=j|X\right)
 \end{equation}
 
 \end_inset
@@ -1929,7 +1935,7 @@ P\left(y_{t}=j|X,\theta^{'}\right)
 
 \begin_inset Formula 
 \begin{equation}
-P\left(y_{t-1}=j_{1},y_{t}=j_{2}|X,\theta^{'}\right)
+P_{\theta^{'}}\left(y_{t-1}=j_{1},y_{t}=j_{2}|X\right)
 \end{equation}
 
 \end_inset
