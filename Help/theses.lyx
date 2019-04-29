@@ -759,6 +759,19 @@ A disadvantage of these method is their need for a training data of known
  rest of the cell types is a mystery.
 \end_layout
 
+\begin_layout Standard
+HOP-HMM extends the algorithm of (Kaplan et al.
+ 2011) which also contains hidden states that emit TFBS sampled from PWMs
+ to predict enhancers location in the genome.
+ Both algorithms are part of the generalized hidden Markov model (gHMM)
+ family, which are HMM variants that contain hidden states that may emit
+ multiple observed variables.
+ Although HMM variants using higher-order HMM, in which the transition and
+ emission are dependent on previous hidden states where used previously
+ (Ferguson, 1980; Preez, 1997), an HMM variant in which the emission is
+ dependent on previous emissions is a less researched field.
+\end_layout
+
 \begin_layout Paragraph*
 
 \series bold
@@ -1001,8 +1014,8 @@ Multiple signal processing algorithms have been used in computational biology,
  1966) and is based on the Markov model for modeling regions with alternating
  frequencies of patterns and symbols.
  It was used in various engineering fields since the 1980s especially in
- speech recognition, character recognition and digital communication and
- was adopted in the computational biology field.
+ speech recognition (Rabiner and Juang, 1993), character recognition and
+ digital communication and was adopted in the computational biology field.
  
 \end_layout
 
@@ -1308,16 +1321,6 @@ Figure 1: The hidden variable states graph of the HOP-HMM.
  Not all transitions are possible, and moving between the layers is possible
  only by a base-state to base-state transition.
  
-\end_layout
-
-\begin_layout Standard
-A model that contains states that emit motifs sampled from PWMs was previously
- demonstrated (as described in [Kaplan et al.
- 2011]) and as such it is considered a generalized hidden Markov model (gHMM)
- is a variant of HMM in which states may emit multiple letters.other states
- that emit letters depending on previous letters in the observed sequence.
- Similarly to HMM, it assumes an underlying hidden sequence is present that
- are sampled from a Markov chain.
 \end_layout
 
 \begin_layout Standard
