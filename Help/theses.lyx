@@ -1323,7 +1323,7 @@ Figure 1: The hidden variable states graph of the HOP-HMM.
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Paragraph*
 
 \series bold
 \bar under
@@ -1541,7 +1541,7 @@ Figure 4: a compact way to hold the allowed transition probabilities.
  given the current one.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subsubsection*
 
 \series bold
 \bar under
@@ -1620,14 +1620,6 @@ L - length of the DNA sequence (data given to the algorithm)
 
 \bar under
 Baum-Welch Algorithm
-\end_layout
-
-\begin_layout Subparagraph*
-[Tommy: Add, viterbi is not always the best way, since it has to be correct
- state seq, and chooses only one best state seq.
- This could not correlate to the sum of possible passes through a state
- via multiple paths, and there for be very different from the real state
- seq.]
 \end_layout
 
 \begin_layout Subsection*
@@ -1950,7 +1942,15 @@ We will calculate these terms by using the Forward-Backward algorithm.
 \end_inset
 
 .
- The forward probabilities matrix 
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+Forward Algorithm
+\end_layout
+
+\begin_layout Standard
+The forward probabilities matrix 
 \begin_inset Formula $\alpha$
 \end_inset
 
@@ -2083,6 +2083,10 @@ P\left(x_{t}|y_{t}=j,x_{1:t-1}\right)\cdot P\left(y_{t}=j,x_{1:t-1}\right)
 
 \end_layout
 
+\begin_layout Subsubsection*
+Backwards Algorithm
+\end_layout
+
 \begin_layout Standard
 The backwards probabilities matrix 
 \begin_inset Formula $\beta$
@@ -2183,6 +2187,10 @@ This matrix building process is similarly explained by:
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsubsection*
+Auxiliary Probabilities
 \end_layout
 
 \begin_layout Standard
@@ -2542,6 +2550,14 @@ For the calculation of these probabilities, we will need to calculate the
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Subsubsection*
+HOP-Forward Algorithm
+\end_layout
+
+\begin_layout Standard
 We calculate 
 \begin_inset Formula $\alpha$
 \end_inset
@@ -2562,7 +2578,7 @@ We calculate
 \begin{align*}
 for\,t=1:\\
  & \alpha_{j,t}=\pi_{j}\cdot E_{j,x_{1}}\\
-for\,t=o,...,L:\\
+for\,t=2,...,L:\\
  & \alpha_{j,t}=\underset{\text{base-state transitions}}{\underbrace{\sum_{j'\in[m]}\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1},...,x_{t}}}}\\
  & +\underset{\text{sub-state transitions}}{\underbrace{\sum_{l\in[k]\cap\{i|t>|W_{i}|+1\}}\alpha_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}}}
 \end{align*}
@@ -2570,7 +2586,7 @@ for\,t=o,...,L:\\
 \end_inset
 
 In the beginning of the sequence, when 
-\begin_inset Formula $t<o$
+\begin_inset Formula $1\leq t<o$
 \end_inset
 
  , part of the preceding observable variables are missing.
@@ -2601,6 +2617,10 @@ In the beginning of the sequence, when
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Subsubsection*
+HOP-Backward Algorithm
 \end_layout
 
 \begin_layout Standard
@@ -2681,7 +2701,7 @@ Figure 5: In our version of the forward-backward algorithm, each of the
 
 \series bold
 \bar under
-Forward Algorithm Proof
+Forward Algorithm Explanation
 \end_layout
 
 \begin_layout Standard
@@ -2864,7 +2884,7 @@ P(y_{t-1}=(j',0),x_{1:t-1})\cdot P\left(y_{t}=(j,0)|y_{t-1}=(j',0)\right)\cdot P
 
 \series bold
 \bar under
-Backward Algorithm Proof
+Backward Algorithm Explanation
 \end_layout
 
 \begin_layout Standard
@@ -3336,31 +3356,102 @@ For readability, the algorithm was described for learning a single sequence
  sequences whenever possible.
 \end_layout
 
+\begin_layout Section*
+Classifying DNA a Sequence
+\end_layout
+
 \begin_layout Standard
+The goal of the HMM learning process is to be able to classify the role,of
+ DNA sequences by deciding their hidden-state per location.
+ After the Baum-Welch algorithm procedure, we could reach that goal by choosing
+ per position 
+\begin_inset Formula $t$
+\end_inset
+
+ the max-likelihood hidden-state:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+y_{t}^{*}=argmax_{(j,l)}P\left(y_{t}=(j,l)|X\right)
+\]
+
+\end_inset
+
+The problem with the hidden sequence that although each hidden-state maximizes
+ the likelihood, the hidden sequence including its transitions might not
+ be the maximal likelihood and it might even include illegal transition
+ (with probability 0).
+\end_layout
+
+\begin_layout Subsubsection*
+Viterbi Algorithm
+\end_layout
+
+\begin_layout Standard
+Input:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+ & V_{j,1}^{1}=\pi_{j}\cdot E_{j,x_{1}}\\
+ & V_{j,1}^{2}=0\\
+for\,t=2,...,L:\\
+ & V_{j,1}^{1}=max_{j'}\left(V_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1},...,x_{t}}\right)\\
+ & \cdot max_{l}\left(G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}\right)\\
+ & V_{j,1}^{2}=\pi_{j}\cdot E_{j,x_{1}}\\
+ & y_{t}^{*}=argmax_{j}\left(\alpha_{y_{t-1}^{*},t-1}\cdot T_{y_{t-1}^{*},j}\cdot E_{j,x_{t-o+1},...,x_{t}}\right)\\
+ & +\underset{\text{sub-state transitions}}{\underbrace{\sum_{l\in[k]\cap\{i|t>|W_{i}|+1\}}\alpha_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+####################################################################
+\end_layout
+
+\begin_layout Standard
+Once the done with the a 
+\end_layout
+
+\begin_layout Subparagraph*
+[Tommy: Add, viterbi is not always the best way, since it has to be correct
+ state seq, and chooses only one best state seq.
+ This could not correlate to the sum of possible passes through a state
+ via multiple paths, and there for be very different from the real state
+ seq.]
+\end_layout
+
+\begin_layout Part*
 
 \series bold
 \bar under
-DATA
+Data
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subsubsection*
 [Roadmap enhancers preprocessing]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subsubsection*
 [training on roadmap data]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subsubsection*
 [classification of regulation modules]
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subsubsection*
 [choosing the PWMs]
 \end_layout
 
-\begin_layout Standard
-[synthetic sequences genration]
+\begin_layout Subsubsection*
+[synthetic sequences generation]
 \end_layout
 
 \begin_layout Part*
