@@ -1179,10 +1179,9 @@ HOP-HMM
 
 \begin_layout Standard
 Here we present HOP-HMM, a variant model of HMM, that is well fitted to
- utilize the structure of enhancers containing TFBSs inside them.
- Because of their key role in determining the role of the sequence adding
- TFBS presence consideration in the generation process of the enhancer is
- more suited for the classification of an enhancers.
+ utilize the structure of enhancers containing TFBSs inside them, due to
+ the TFBS emitting sub-states that take part in the generation process of
+ the sequence.
  The base feature of HOP-HMM is its two types of hidden states: PWM sub-state,
  and base-states, where each type of sequence type is represented by a 
 \begin_inset Quotes eld
@@ -1217,11 +1216,11 @@ layer
 
 \series bold
 \emph on
-Figure: HOP-HMM example with one base-state 'a', which emits one observable
- DNA variable at a time, and one sub-state 'b' that emits a TBFS using its
- assigned PWM.
+Figure: HOP-HMM toy example with one base-state 'a', which emits a single
+ observable DNA variable at a time, and one sub-state 'b' which emits a
+ TBFS sampled from its PWM.
  The emission of the base state 'a' is of order one (o=1), therefore it
- is conditioned upon a single previous observable variable.
+ is conditioned on the last previous observable variable.
 \end_layout
 
 \begin_layout Standard
