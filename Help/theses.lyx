@@ -1172,34 +1172,17 @@ There is a trade-off regarding the use of high-order emission compared to
 HOP-HMM
 \end_layout
 
-\begin_layout Subparagraph*
-[tommy: gentle intro: automat with multi motifs.
- then do with multi layers]
-\end_layout
-
 \begin_layout Standard
 Here we present HOP-HMM, a variant model of HMM, that is well fitted to
  utilize the structure of enhancers containing TFBSs inside them, due to
  the TFBS emitting sub-states that take part in the generation process of
  the sequence.
  The base feature of HOP-HMM is its two types of hidden states: PWM sub-state,
- and base-states, where each type of sequence type is represented by a 
-\begin_inset Quotes eld
-\end_inset
-
-layer
-\begin_inset Quotes erd
-\end_inset
-
- or row of states in figure 1, a base-state that can transfer into one of
- it's PWM sub-states.
+ and base-states a base-state that can transfer into one of it's PWM sub-states.
  When generating the DNA sequence, the model travel between the layers and
  creates a sequence built as a mix of several types with different motif
  frequencies.
- Each layer on its own creates a series of nucleotides emitted from the
- base-state, while most layers represent an enhancer types, some layers
- are predefined as background sequences, and their probability to transfer
- into a sub-state is restricted.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1221,6 +1204,26 @@ Figure: HOP-HMM toy example with one base-state 'a', which emits a single
  TBFS sampled from its PWM.
  The emission of the base state 'a' is of order one (o=1), therefore it
  is conditioned on the last previous observable variable.
+\end_layout
+
+\begin_layout Subsubsection*
+Hidden States Indexing
+\end_layout
+
+\begin_layout Standard
+Each type of sequence type is represented by a 
+\begin_inset Quotes eld
+\end_inset
+
+layer
+\begin_inset Quotes erd
+\end_inset
+
+ or row of states in figure 1.
+ Each layer on its own creates a series of nucleotides emitted from the
+ base-state, while most layers represent an enhancer types, some layers
+ are predefined as background sequences, and their probability to transfer
+ into a sub-state is restricted.
 \end_layout
 
 \begin_layout Standard
