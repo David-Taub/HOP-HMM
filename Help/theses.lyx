@@ -860,10 +860,6 @@ L(\theta;X)=P_{\theta}(x_{0},x_{1},...,x_{L})=\pi_{x_{0}}\cdot T_{x_{0},x_{1}}\c
 
 \end_layout
 
-\begin_layout Subparagraph*
-[Tommy: 4 is confusing, try 3]
-\end_layout
-
 \begin_layout Standard
 
 \series bold
