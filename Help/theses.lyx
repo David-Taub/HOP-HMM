@@ -442,8 +442,7 @@ Almost all cells in every organism contain its genome, but only part of
 
 \begin_layout Standard
 Several epigenetic features (which do not involve the nucleotides sequence
- directly) correlate with enhancer regions in the genome and imply their
- target-gene:
+ directly) correlate with enhancer regions in the genome:
 \end_layout
 
 \begin_layout Itemize
@@ -456,10 +455,6 @@ TF & cofactors binding
 
 \begin_layout Itemize
 Histone modifications
-\end_layout
-
-\begin_layout Itemize
-Topologically associating domain (TAD) patterns
 \end_layout
 
 \begin_layout Itemize
@@ -508,44 +503,6 @@ Since the scenario of TF binding on an enhancer requires an accessible DNA
  region, I hypersensative sites are used for detecting a potential DNA cleavages
  that have the potential of being regulatory elements, in usually a better
  resolution than histone marks.
-\end_layout
-
-\begin_layout Paragraph
-
-\series bold
-\bar under
-TADs
-\end_layout
-
-\begin_layout Subparagraph*
-[TODO: rearrange]
-\end_layout
-
-\begin_layout Standard
-TADs are a sections of the genome where the DNA is self interact more frequently.
- Enhancer-gene interactions have tendency to happen within the region of
- TADs.
- Hi-C are a set of techniques for measuring the spatial organization of
- chromatin in the nucleus.
- These procedures measure the number of occurrences were genome loci are
- in proximity.
- In recent years, Hi-C data was generated from multiple organisms (Dixon
- et al.
- 2012; Rao et al.
- 2014; Dixon et al.
- 2015; Sexton et al.
- 2012), and shown that the genome is partitioned into TADs, mostly under
- 10 mb long.
- Within TADs sequence to sequence interaction are more frequent.
- TADs boundaries are enriched with DNA-biding protein motifs, and their
- location play a significant role in gene regulation.
- Gene-enhancer interactions occur when both are in the same TAD, and deletion
- of the motifs from TAD's boundaries may cause changes in the gene activation.
- It has been argued (Kadauke et al.
- 2018) that the TADs are dynamic throughout the cell's life cycle, and with
- the change of the TADs structure the enhancer-gene activation couples may
- vary as well, suggesting the target gene is not predetermined by the the
- enhancer's sequence.
 \end_layout
 
 \begin_layout Paragraph*
@@ -637,7 +594,7 @@ Here we covered the main known gene regulation mechanisms, but there are
  in multiple processes (Jones et al.
  2012), and has been documented as largely correlated with gene expression
  inhibition when present in promoters.
- In enhancer elements, anticorrelation was found between DNA methylation
+ In enhancer elements, anti-correlation was found between DNA methylation
  density and enrichment of active enhancer histone marks and TF binding
  (Stadler et al., 2011; Thurman et al., 2012), although the cause and consequence
  relationship underlying these correlations is not yet clear.
