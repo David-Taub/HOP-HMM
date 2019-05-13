@@ -1963,7 +1963,12 @@ The forward probabilities matrix
 \begin_inset Formula $\alpha$
 \end_inset
 
- holds: 
+ holds the probability that a sequence 
+\begin_inset Formula $x_{1:t}$
+\end_inset
+
+ was emitted and the hidden states series ended with the hidden state j:
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1978,48 +1983,248 @@ The forward probabilities matrix
 \end_layout
 
 \begin_layout Standard
-which is, in other words, that 
-\begin_inset Formula $\alpha_{j,t}$
-\end_inset
-
- is the probability that a sequence 
-\begin_inset Formula $x_{1:t}$
-\end_inset
-
- was emitted and the hidden states series ended with the hidden state j.
+It is calculated the dynamic algorithm:
 \end_layout
 
 \begin_layout Standard
-The calculation is done by iterating over 
-\begin_inset Formula $t=1,2,...,L$
-\end_inset
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
 
-, in each iteration filling all 
-\begin_inset Formula $j\in[m]$
-\end_inset
+\begin_layout Plain Layout
+\begin_inset Caption Standard
 
- matrix cells as following:
+\begin_layout Plain Layout
+Forward Algorithm
 \end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{align*}
-for\,t=1:\\
- & \alpha_{j,t}=\pi_{j}\cdot E_{j,x_{1}}\\
-for\,t=2,...,L:\\
- & \alpha_{j,t}=\sum_{j'\in[m]}\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t}}
-\end{align*}
 
 \end_inset
 
 
 \end_layout
 
-\begin_layout Standard
-\begin_inset Formula 
-\[
-\alpha_{j,t}=P\left(y_{t}=j,x_{1:t}\right)=P\left(x_{t}|y_{t}=j,x_{1:t-1}\right)\cdot P\left(y_{t}=j,x_{1:t-1}\right)
-\]
+\begin_layout Plain Layout
+
+\series bold
+Input:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+X - Observed DNA sequence
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Algorithm:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Formula $for\,j=1,...,m:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Formula $\alpha_{j,1}=\pi_{j}\cdot E_{j,x_{1}}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Formula $for\,t=2,...,L:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Formula $for\,j=1,...,m:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Formula $\alpha_{j,t}=\sum_{j'\in[m]}\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t}}$
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -2101,7 +2306,11 @@ The backwards probabilities matrix
 \begin_inset Formula $\beta$
 \end_inset
 
- holds:
+ holds the probability that a sequence 
+\begin_inset Formula $x_{t+1:L}$
+\end_inset
+
+ was emitted given the hidden state at position t had value j:
 \end_layout
 
 \begin_layout Standard
@@ -2116,37 +2325,209 @@ The backwards probabilities matrix
 \end_layout
 
 \begin_layout Standard
-which is the probability that a sequence 
-\begin_inset Formula $x_{t+1:L}$
-\end_inset
-
- was emitted given the hidden state at position t had value j.
+It is calculated by the dynamic algorithm:
 \end_layout
 
 \begin_layout Standard
-Filling the 
-\begin_inset Formula $\beta$
-\end_inset
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
 
- is done in the opposite direction 
-\begin_inset Formula $t=L,L-1,...,1$
-\end_inset
+\begin_layout Plain Layout
+\begin_inset Caption Standard
 
-, and for all 
-\begin_inset Formula $j\in[m]$
-\end_inset
-
- as following:
+\begin_layout Plain Layout
+Backward Algorithm
 \end_layout
 
-\begin_layout Standard
-\begin_inset Formula 
-\begin{align*}
-for\,t=L:\\
- & \beta_{j,t}=\frac{1}{m}\\
-for\,t=L-1,...,1:\\
- & \beta_{j,t}=\sum_{j'\in[m]}\beta_{j',t+1}\cdot T_{j,j'}\cdot E_{j',x_{t}}
-\end{align*}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Input:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+X - Observed DNA sequence
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Algorithm:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Formula $\beta_{1:m,L}=1$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Formula $for\,t=L-1,...,1:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Formula $for\,j=1,...,m:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Formula $\beta_{j,t}=\sum_{j'\in[m]}\beta_{j',t+1}\cdot T_{j,j'}\cdot E_{j',x_{t}}$
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -2596,6 +2977,49 @@ HOP Forward Algorithm
 \end_layout
 
 \begin_layout Plain Layout
+
+\series bold
+Input:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+X - Observed DNA sequence
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Algorithm:
+\end_layout
+
+\begin_layout Plain Layout
 \begin_inset space ~
 \end_inset
 
@@ -2953,6 +3377,49 @@ HOP Backward Algorithm
 \end_layout
 
 \begin_layout Plain Layout
+
+\series bold
+Input:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+X - Observed DNA sequence
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Algorithm:
+\end_layout
+
+\begin_layout Plain Layout
 \begin_inset space ~
 \end_inset
 
@@ -3220,9 +3687,6 @@ Figure 5: In our version of the forward-backward algorithm, each of the
 \end_layout
 
 \begin_layout Subsubsection*
-
-\series bold
-\bar under
 Forward Algorithm Explanation
 \end_layout
 
@@ -3403,9 +3867,6 @@ P\left(y_{t-1}=(j',0),x_{1:t-1}\right)\cdot P\left(y_{t}=(j,0)|y_{t-1}=(j',0)\ri
 \end_layout
 
 \begin_layout Subsubsection*
-
-\series bold
-\bar under
 Backward Algorithm Explanation
 \end_layout
 
@@ -3603,9 +4064,6 @@ P\left(x_{t+\left|W_{l}\right|+2:L}|x_{t+1:t+\left|W_{l}\right|+1},y_{t+1:t+\lef
 \end_layout
 
 \begin_layout Subsubsection*
-
-\series bold
-\bar under
 Auxiliary Probabilities
 \end_layout
 
@@ -3819,8 +4277,6 @@ Now with (13), (14), (15) at hand, we can calculate
 \end_layout
 
 \begin_layout Subsubsection*
-
-\bar under
 HOP Baum-Welch
 \end_layout
 
@@ -3828,7 +4284,7 @@ HOP Baum-Welch
 To conclude, the total EM algorithm for HOP-HMM: 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Standard
 \begin_inset Float algorithm
 wide false
 sideways false
@@ -3847,10 +4303,64 @@ HOP Baum-Welch
 \end_layout
 
 \begin_layout Plain Layout
-input: X
+
+\series bold
+Input:
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+X - Observed DNA sequence
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Algorithm:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
 for s=1...MAX_EM_ITERATIONS:
 \end_layout
 
@@ -3870,10 +4380,44 @@ for s=1...MAX_EM_ITERATIONS:
 \begin_inset space ~
 \end_inset
 
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph on
 //e-step
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset space ~
 \end_inset
 
@@ -3913,6 +4457,22 @@ for s=1...MAX_EM_ITERATIONS:
 \end_inset
 
 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset Formula $\beta=\text{hop\_backward\_alg(X) }$
 \end_inset
 
@@ -3920,6 +4480,22 @@ for s=1...MAX_EM_ITERATIONS:
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset space ~
 \end_inset
 
@@ -3951,6 +4527,22 @@ for
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset space ~
 \end_inset
 
@@ -4009,6 +4601,22 @@ for
 \end_inset
 
 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset Formula $Px=\underset{j\in[m]}{\sum}\alpha_{j,L}$
 \end_inset
 
@@ -4016,6 +4624,22 @@ for
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset space ~
 \end_inset
 
@@ -4075,6 +4699,22 @@ for
 \end_inset
 
 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset Formula $\gamma_{j,t}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{Px}$
 \end_inset
 
@@ -4082,6 +4722,22 @@ for
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset space ~
 \end_inset
 
@@ -4145,6 +4801,22 @@ for
 \end_inset
 
 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset Formula $\eta_{j,l,t}=\frac{\psi_{j,l,t}}{Px}$
 \end_inset
 
@@ -4152,6 +4824,22 @@ for
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset space ~
 \end_inset
 
@@ -4215,6 +4903,22 @@ for
 \end_inset
 
 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset Formula $\xi_{j_{1},j_{2},t}=\frac{\alpha_{j_{1},t-1}\cdot T_{j_{1},j_{2}}\cdot E_{j_{2},x_{t-o+1},...,x_{t}}\cdot\beta_{j_{2},t}}{Px}$
 \end_inset
 
@@ -4237,10 +4941,44 @@ for
 \begin_inset space ~
 \end_inset
 
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph on
 //m-step
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset space ~
 \end_inset
 
@@ -4296,6 +5034,22 @@ for
 \end_inset
 
 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset Formula $\pi_{j}=\gamma_{j,1}$
 \end_inset
 
@@ -4303,6 +5057,22 @@ for
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset space ~
 \end_inset
 
@@ -4378,6 +5148,22 @@ for
 \end_inset
 
 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset Formula $\text{    }E_{j,b_{1},b_{2},...,b_{o}}=\frac{\sum_{t\in o,...,L}\gamma_{j,t}\cdot\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1},...,x_{t})}{\sum_{t\in o,...,L}\gamma_{j,t}}$
 \end_inset
 
@@ -4385,6 +5171,22 @@ for
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset space ~
 \end_inset
 
@@ -4472,6 +5274,22 @@ for
 \end_inset
 
 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset Formula $G_{j,l}=\frac{\underset{t\in2,...,L}{\sum}\eta_{j,l,t}}{\underset{t\in1,...,L-1}{\sum}\gamma_{j_{1},t}}$
 \end_inset
 
@@ -4479,6 +5297,22 @@ for
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset space ~
 \end_inset
 
@@ -4572,6 +5406,45 @@ for
 
 \end_layout
 
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+If 
+\begin_inset Formula $\theta$
+\end_inset
+
+ converged, break EM for loop 
+\end_layout
+
 \end_inset
 
 
@@ -4582,13 +5455,13 @@ Learning Multiple Sequences at Once
 \end_layout
 
 \begin_layout Standard
-For readability, the algorithm was described for learning a single sequence
- of observable variables.
+The algorithm here is described for learning a single sequence of observable
+ variables X.
  For learning the parameters 
 \begin_inset Formula $\theta$
 \end_inset
 
- for multiple sequences at once, we can use the same method as introduced
+ from multiple sequences at once, we can use the same method as introduced
  in the original paper of Baum-Welch algorithm (Rabiner, 1989), which calculates
  the E step probabilities for every sequence, and in the m-step sums all
  positions from all sequence for the parameters update.
@@ -4599,8 +5472,9 @@ Classifying DNA a Sequence
 \end_layout
 
 \begin_layout Standard
-The goal of the HMM learning process is to be able to classify the role,of
- DNA sequences by deciding their hidden-state per location.
+One of the goals of the HMM and HOP-HMM learning process described above
+ is to be able to classify the DNA sequences by deciding their hidden-state
+ per location.
  After the Baum-Welch algorithm procedure, we could reach that goal by choosing
  per position 
 \begin_inset Formula $t$
@@ -4621,6 +5495,10 @@ The problem with the hidden sequence that although each hidden-state maximizes
  the likelihood, the hidden sequence including its transitions might not
  be the maximal likelihood and it might even include illegal transition
  (with probability 0).
+\end_layout
+
+\begin_layout Subparagraph*
+TODO: finish this part
 \end_layout
 
 \begin_layout Subsubsection*
