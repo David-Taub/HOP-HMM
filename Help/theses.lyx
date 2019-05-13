@@ -998,7 +998,7 @@ Hidden Markov model (HMM) is a model that travels over hidden states in
  variables.
  As the Markov model, HMM is an generative model and it assumes the existence
  of a joint probability 
-\begin_inset Formula $P(X,Y)$
+\begin_inset Formula $P(x_{1:L},y_{1:L})$
 \end_inset
 
  that is derived from the compact parameters 
@@ -1583,37 +1583,6 @@ L - length of the DNA sequence (data given to the algorithm)
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $Y=y_{1},...,y_{L}$
-\end_inset
-
- - hidden states sequence (unknown feature of the data, estimated by the
- Viterbi algorithm)
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $y_{i}\in[m]\times[k]\cup0$
-\end_inset
-
- - hidden state (unknown feature of the data, estimated by the Viterbi algorithm
-)
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $X=x_{1},...,x_{L}$
-\end_inset
-
- - observable variables sequence, which is the DNA sequence (data given
- to the algorithm)
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $x_{i}\in\{A,C,G,T\}$
-\end_inset
-
- - observable variable, nucleotide (data given to the algorithm)
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula $W_{i}$
 \end_inset
 
@@ -1637,14 +1606,15 @@ HMM Likelihood Function
 
 \begin_layout Standard
 In the maximal-likelihood estimation problem before us, we have the observed
-\begin_inset Formula $X$
+ 
+\begin_inset Formula $x_{1:L}$
 \end_inset
 
  and we would ultimately like find the parameters that maximize the likelihood
  of it:
 \begin_inset Formula 
 \[
-\theta^{*}=argmax_{\theta}L\left(\theta|X\right)
+\theta^{*}=argmax_{\theta}L\left(\theta|x_{1:L}\right)
 \]
 
 \end_inset
@@ -1654,7 +1624,7 @@ In the maximal-likelihood estimation problem before us, we have the observed
 
 \begin_layout Standard
 This likelihood function 
-\begin_inset Formula $L\left(\theta|X\right)$
+\begin_inset Formula $L\left(\theta|x_{1:L}\right)$
 \end_inset
 
 , also called the incomplete-data likelihood function, could be written,
@@ -1664,7 +1634,7 @@ This likelihood function
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-L\left(\theta|X\right)=P_{\theta}(X)=\sum_{y\in\left[m\right]^{N}}P_{\theta}\left(X,Y=y\right)
+L\left(\theta|x_{1:L}\right)=P_{\theta}(x_{1:L})=\sum_{y\in\left[m\right]^{N}}P_{\theta}\left(x_{1:L},y_{1:L}\right)
 \end{equation}
 
 \end_inset
@@ -1674,7 +1644,7 @@ L\left(\theta|X\right)=P_{\theta}(X)=\sum_{y\in\left[m\right]^{N}}P_{\theta}\lef
 
 \begin_layout Standard
 The probability on the right side 
-\begin_inset Formula $P_{\theta}(X,Y)=L(\theta|X,Y)$
+\begin_inset Formula $P_{\theta}(x_{1:L},y_{1:L})=L(\theta|x_{1:L},y_{1:L})$
 \end_inset
 
  is called the complete-data likelihood function, and in the case of the
@@ -1684,7 +1654,7 @@ The probability on the right side
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-P_{\theta}(X,Y=y)=P_{\theta}(y_{1})\cdot P_{\theta}(x_{1}|y_{1})\cdot\prod_{i=2}^{N}P_{\theta}(y_{i}|y_{i-1})\cdot P_{\theta}(x_{i}|y_{i})\cdot=\pi_{y_{1}}E_{y_{1},x_{1}}\prod_{i=2}^{N}T_{y_{i-1},y_{i}}E_{y_{i},x_{i}}
+P_{\theta}(x_{1:L},y_{1:L})=P_{\theta}(y_{1})\cdot P_{\theta}(x_{1}|y_{1})\cdot\prod_{i=2}^{N}P_{\theta}(y_{i}|y_{i-1})\cdot P_{\theta}(x_{i}|y_{i})\cdot=\pi_{y_{1}}E_{y_{1},x_{1}}\prod_{i=2}^{N}T_{y_{i-1},y_{i}}E_{y_{i},x_{i}}
 \end{equation}
 
 \end_inset
@@ -1704,7 +1674,7 @@ Unfortunately, optimizing or calculating the incomplete-data likelihood
  of the DNA sequence), which is infeasible.
  Instead, the strategy of the EM algorithm is to optimize the expected value
  of the complete-data log-likelihood 
-\begin_inset Formula $log\left(P\left(X,Y|\theta^{'}\right)\right)$
+\begin_inset Formula $log\left(P\left(x_{1:L},y_{1:L}|\theta^{'}\right)\right)$
 \end_inset
 
  where 
@@ -1717,7 +1687,7 @@ Unfortunately, optimizing or calculating the incomplete-data likelihood
  For this task we can formally define our target function Q:
 \begin_inset Formula 
 \begin{equation}
-Q\left(\theta,\theta^{'}\right)=E_{Y}\left[log\left(P_{\theta}\left(X,Y\right)\right)|X,\theta^{'}\right]=\sum_{y\in\left[m\right]^{N}}log\left(P_{\theta}\left(X,Y=y\right)\right)P_{\theta^{'}}\left(X,Y=y\right)
+Q\left(\theta,\theta^{'}\right)=E_{Y}\left[log\left(P_{\theta}\left(x_{1:L},y_{1:L}\right)\right)|x_{1:L},\theta^{'}\right]=\sum_{y\in\left[m\right]^{N}}log\left(P_{\theta}\left(x_{1:L},y_{1:L}\right)\right)P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)
 \end{equation}
 
 \end_inset
@@ -1751,9 +1721,9 @@ nt parts.
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-Q\left(\theta,\theta^{'}\right)= & \sum_{y\in\left[m\right]^{N}}log\pi_{y_{1}}\cdot P_{\theta^{'}}\left(X,Y=y\right)\\
-+ & \sum_{y\in\left[m\right]^{N}}\left(\sum_{t\in2...L}logT_{y_{t-1},y_{t}}\right)\cdot P_{\theta^{'}}\left(X,Y=y\right)\\
-+ & \sum_{y\in\left[m\right]^{N}}\left(\sum_{t\in[L]}logE_{y_{t},x_{t}}\right)\cdot P_{\theta^{'}}\left(X,Y=y\right)
+Q\left(\theta,\theta^{'}\right)= & \sum_{y\in\left[m\right]^{N}}log\pi_{y_{1}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)\\
++ & \sum_{y\in\left[m\right]^{N}}\left(\sum_{t\in2...L}logT_{y_{t-1},y_{t}}\right)\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)\\
++ & \sum_{y\in\left[m\right]^{N}}\left(\sum_{t\in[L]}logE_{y_{t},x_{t}}\right)\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)
 \end{align*}
 
 \end_inset
@@ -1769,9 +1739,9 @@ then by manipulating the summation and the state sequence cases could be
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-Q\left(\theta,\theta^{'}\right)= & \sum_{j\in[m]}log\pi_{j}\cdot P_{\theta^{'}}\left(X,y_{1}=j\right)\\
-+ & \sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}\cdot P_{\theta^{'}}\left(X,y_{t-1}=j_{1},y_{t}=j_{2}\right)\\
-+ & \sum_{t\in[L]}\sum_{j\in[m]}logE_{j,x_{t}}\cdot P_{\theta^{'}}\left(X,y_{t}=j\right)
+Q\left(\theta,\theta^{'}\right)= & \sum_{j\in[m]}log\pi_{j}\cdot P_{\theta^{'}}\left(x_{1:L},y_{1}=j\right)\\
++ & \sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t-1}=j_{1},y_{t}=j_{2}\right)\\
++ & \sum_{t\in[L]}\sum_{j\in[m]}logE_{j,x_{t}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t}=j\right)
 \end{align*}
 
 \end_inset
@@ -1829,7 +1799,7 @@ The first part is maximized using Lagrange multiplier
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\frac{\partial}{\partial\pi_{j}}\left(\sum_{j'\in[m]}log\pi_{j'}P_{\theta^{'}}\left(X,y_{1}=j'\right)+\lambda\left(\sum_{j'\in[m]}1-\pi_{j'}\right)\right)=0
+\frac{\partial}{\partial\pi_{j}}\left(\sum_{j'\in[m]}log\pi_{j'}P_{\theta^{'}}\left(x_{1:L},y_{1}=j'\right)+\lambda\left(\sum_{j'\in[m]}1-\pi_{j'}\right)\right)=0
 \]
 
 \end_inset
@@ -1839,7 +1809,7 @@ The first part is maximized using Lagrange multiplier
 
 \begin_layout Standard
 we derive the equations and get 
-\begin_inset Formula $\frac{P_{\theta^{'}}\left(X,y_{1}=j\right)}{\pi_{j}}=\lambda$
+\begin_inset Formula $\frac{P_{\theta^{'}}\left(x_{1:L},y_{1}=j\right)}{\pi_{j}}=\lambda$
 \end_inset
 
  for 
@@ -1849,7 +1819,7 @@ we derive the equations and get
 .
  Then we multiply each equation by the denominator and sum these m equations
  to receive 
-\begin_inset Formula $\lambda=P_{\theta^{'}}\left(X\right)$
+\begin_inset Formula $\lambda=P_{\theta^{'}}\left(x_{1:L}\right)$
 \end_inset
 
 , which yields:
@@ -1858,7 +1828,7 @@ we derive the equations and get
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-\pi_{j}=\frac{P_{\theta^{'}}\left(X,y_{1}=j\right)}{P_{\theta^{'}}\left(X\right)}=P_{\theta^{'}}\left(y_{1}=j|X\right)
+\pi_{j}=\frac{P_{\theta^{'}}\left(x_{1:L},y_{1}=j\right)}{P_{\theta^{'}}\left(x_{1:L}\right)}=P_{\theta^{'}}\left(y_{1}=j|x_{1:L}\right)
 \end{equation}
 
 \end_inset
@@ -1874,7 +1844,7 @@ We may follow the Lagrange multipliers method in the second and third parts,
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(X,y_{t-1}=j_{1},y_{t}=j_{2}\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(X,y_{t-1}=j_{1}\right)}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=j_{1},y_{t}=j_{2}|X\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=j_{1}|X\right)}
+T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=j_{1},y_{t}=j_{2}\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=j_{1}\right)}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=j_{1},y_{t}=j_{2}|x_{1:L}\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=j_{1}|x_{1:L}\right)}
 \end{equation}
 
 \end_inset
@@ -1889,7 +1859,7 @@ and
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-E_{j,b}=\frac{\sum_{t\in[L]}P_{\theta^{'}}\left(X,y_{t}=j\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P_{\theta^{'}}\left(X,y_{t}=j\right)}=\frac{\sum_{t\in[L]}P_{\theta^{'}}\left(y_{t}=j|X\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P_{\theta^{'}}\left(y_{t}=j|X\right)}
+E_{j,b}=\frac{\sum_{t\in[L]}P_{\theta^{'}}\left(x_{1:L},y_{t}=j\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P_{\theta^{'}}\left(x_{1:L},y_{t}=j\right)}=\frac{\sum_{t\in[L]}P_{\theta^{'}}\left(y_{t}=j|x_{1:L}\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P_{\theta^{'}}\left(y_{t}=j|x_{1:L}\right)}
 \end{equation}
 
 \end_inset
@@ -1919,7 +1889,7 @@ After stating the intentions of each EM iteration in (4), (5) and (6), we
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-P_{\theta^{'}}\left(y_{t}=j|X\right)
+P_{\theta^{'}}\left(y_{t}=j|x_{1:L}\right)
 \end{equation}
 
 \end_inset
@@ -1927,7 +1897,7 @@ P_{\theta^{'}}\left(y_{t}=j|X\right)
 
 \begin_inset Formula 
 \begin{equation}
-P_{\theta^{'}}\left(y_{t-1}=j_{1},y_{t}=j_{2}|X\right)
+P_{\theta^{'}}\left(y_{t-1}=j_{1},y_{t}=j_{2}|x_{1:L}\right)
 \end{equation}
 
 \end_inset
@@ -2038,7 +2008,11 @@ Input:
 \uwave off
 \noun off
 \color none
-X - Observed DNA sequence
+
+\begin_inset Formula $x_{1:L}$
+\end_inset
+
+ - Observed DNA sequence
 \end_layout
 
 \begin_layout Plain Layout
@@ -2648,7 +2622,7 @@ We denote the terms values of (7) as
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\gamma_{t,j}=P\left(y_{t}=j|X,\theta^{'}\right)=\frac{P\left(y_{t}=j,X|\theta^{'}\right)}{P\left(X|\theta^{'}\right)}=\frac{P\left(X|y_{t}=j,\theta^{'}\right)\cdot P\left(y_{t}=j|\theta^{'}\right)}{P\left(X|\theta^{'}\right)}=
+\gamma_{t,j}=P\left(y_{t}=j|X,\theta^{'}\right)=\frac{P\left(y_{t}=j,x_{1:L}|\theta^{'}\right)}{P\left(x_{1:L}|\theta^{'}\right)}=\frac{P\left(x_{1:L}|y_{t}=j,\theta^{'}\right)\cdot P\left(y_{t}=j|\theta^{'}\right)}{P\left(x_{1:L}|\theta^{'}\right)}=
 \]
 
 \end_inset
@@ -2706,7 +2680,7 @@ And we denote the values of (8) as
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\xi_{t,j_{1},j_{2}}=P\left(y_{t-1}=j_{1},y_{t}=j_{2}|X,\theta^{'}\right)=\frac{P\left(y_{t-1}=j_{1},y_{t]}=j_{2},X|\theta^{'}\right)}{P\left(X|\theta^{'}\right)}=
+\xi_{t,j_{1},j_{2}}=P\left(y_{t-1}=j_{1},y_{t}=j_{2}|x_{1:L},\theta^{'}\right)=\frac{P\left(y_{t-1}=j_{1},y_{t]}=j_{2},x_{1:L}|\theta^{'}\right)}{P\left(x_{1:L}|\theta^{'}\right)}=
 \]
 
 \end_inset
@@ -2758,11 +2732,11 @@ The Baum-Welch algorithm can be adjusted to infer the parameters of the
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-Q\left(\theta,\theta^{'}\right)= & \sum_{j\in[m]}log\pi_{j}\cdot P_{\theta^{'}}\left(X,y_{1}=(j,0)\right)\\
-+ & \sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}\cdot P_{\theta^{'}}\left(X,y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)\\
-+ & \sum_{t\in2...L}\sum_{j\in[m],l\in[k]}logG_{j,l}\cdot P_{\theta^{'}}\left(X,y_{t-1}=(j,0),y_{t}=(j,l)\right)\\
-+ & \sum_{t\in[L]}\sum_{j\in[m]}logE_{j,x_{t}}\cdot P_{\theta^{'}}\left(X,y_{t}=(j,0)\right)\\
-+ & \sum_{t\in[L]}\sum_{l\in[k]}logL_{W}(x_{t:t+|W_{l}|})\cdot P_{\theta^{'}}\left(X,y_{t:t+|W_{l}|}=(j,l)\right)
+Q\left(\theta,\theta^{'}\right)= & \sum_{j\in[m]}log\pi_{j}\cdot P_{\theta^{'}}\left(x_{1:L},y_{1}=(j,0)\right)\\
++ & \sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)\\
++ & \sum_{t\in2...L}\sum_{j\in[m],l\in[k]}logG_{j,l}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j,0),y_{t}=(j,l)\right)\\
++ & \sum_{t\in[L]}\sum_{j\in[m]}logE_{j,x_{t}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t}=(j,0)\right)\\
++ & \sum_{t\in[L]}\sum_{l\in[k]}logL_{W}(x_{t:t+|W_{l}|})\cdot P_{\theta^{'}}\left(x_{1:L},y_{t:t+|W_{l}|}=(j,l)\right)
 \end{align*}
 
 \end_inset
@@ -2813,7 +2787,7 @@ The
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-\pi_{j}=\frac{P_{\theta^{'}}\left(X,y_{1}=(j,0)|\theta^{'}\right)}{P_{\theta^{'}}\left(X|\theta^{'}\right)}=P_{\theta^{'}}\left(y_{1}=(j,0)|X\right)
+\pi_{j}=\frac{P_{\theta^{'}}\left(x_{1:L},y_{1}=(j,0)|\theta^{'}\right)}{P_{\theta^{'}}\left(x_{1:L}|\theta^{'}\right)}=P_{\theta^{'}}\left(y_{1}=(j,0)|x_{1:L}\right)
 \end{equation}
 
 \end_inset
@@ -2824,7 +2798,7 @@ The
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(X,y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(X,y_{t-1}=(j_{1},0)\right)}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|X\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j_{1},0)|X\right)}
+T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j_{1},0)\right)}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|x_{1:L}\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j_{1},0)|x_{1:L}\right)}
 \end{equation}
 
 \end_inset
@@ -2835,7 +2809,7 @@ T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(X,y_{t-1}=(j_{1},0),y_
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-G_{j,l}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(X,y_{t-1}=(j,0),y_{t}=(j,l)\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(X,y_{t-1}=(j,0)\right)}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j,0),y_{t}=(j,l)|X\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j,0)|X\right)}
+G_{j,l}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j,0),y_{t}=(j,l)\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j,0)\right)}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j,0),y_{t}=(j,l)|x_{1:L}\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j,0)|x_{1:L}\right)}
 \end{equation}
 
 \end_inset
@@ -2850,7 +2824,7 @@ and
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-E_{j,b_{1},...,b_{o}}=\frac{\sum_{t\in o,...,L}P_{\theta^{'}}\left(X,y_{t}=(j,0)\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P_{\theta^{'}}\left(X,y_{t}=(j,0)\right)}=
+E_{j,b_{1},...,b_{o}}=\frac{\sum_{t\in o,...,L}P_{\theta^{'}}\left(x_{1:L},y_{t}=(j,0)\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P_{\theta^{'}}\left(x_{1:L},y_{t}=(j,0)\right)}=
 \end{equation}
 
 \end_inset
@@ -2861,7 +2835,7 @@ E_{j,b_{1},...,b_{o}}=\frac{\sum_{t\in o,...,L}P_{\theta^{'}}\left(X,y_{t}=(j,0)
 \begin_layout Standard
 \begin_inset Formula 
 \[
-=\frac{\sum_{t\in o,...,L}P_{\theta^{'}}\left(y_{t}=(j,0)|X\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P_{\theta^{'}}\left(y_{t}=(j,0)|X\right)}
+=\frac{\sum_{t\in o,...,L}P_{\theta^{'}}\left(y_{t}=(j,0)|X\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P_{\theta^{'}}\left(y_{t}=(j,0)|x_{1:L}\right)}
 \]
 
 \end_inset
@@ -2882,7 +2856,7 @@ Hence to complete the EM iteration, the three missing components in (9),(10),(11
 
 \begin_inset Formula 
 \begin{equation}
-P_{\theta^{'}}\left(y_{t}=(j,0)|X\right)
+P_{\theta^{'}}\left(y_{t}=(j,0)|x_{1:L}\right)
 \end{equation}
 
 \end_inset
@@ -2890,7 +2864,7 @@ P_{\theta^{'}}\left(y_{t}=(j,0)|X\right)
 
 \begin_inset Formula 
 \begin{equation}
-P_{\theta^{'}}\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|X\right)
+P_{\theta^{'}}\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|x_{1:L}\right)
 \end{equation}
 
 \end_inset
@@ -2901,7 +2875,7 @@ P_{\theta^{'}}\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|X\right)
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-P_{\theta^{'}}\left(y_{t-1}=(j,0),y_{t}=(j,l)|X\right)
+P_{\theta^{'}}\left(y_{t-1}=(j,0),y_{t}=(j,l)|x_{1:L}\right)
 \end{equation}
 
 \end_inset
@@ -4167,7 +4141,7 @@ Now we can calculate probability (13) of the base-state at a given position
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-\gamma_{j,t}= & P\left(y_{t}=(j,0)|X\right)=\frac{P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{1:t},y_{t}=(j,0)\right)}{P\left(X\right)}=
+\gamma_{j,t}= & P\left(y_{t}=(j,0)|X\right)=\frac{P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{1:t},y_{t}=(j,0)\right)}{P\left(x_{1:L}\right)}=
 \end{align*}
 
 \end_inset
@@ -4178,7 +4152,7 @@ Now we can calculate probability (13) of the base-state at a given position
 \begin_layout Standard
 \begin_inset Formula 
 \[
-=\frac{P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{t-o+1:t},y_{t}=(j,0)\right)}{P\left(X\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{P\left(X\right)}
+=\frac{P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{t-o+1:t},y_{t}=(j,0)\right)}{P\left(x_{1:L}\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{P\left(x_{1:L}\right)}
 \]
 
 \end_inset
@@ -4202,7 +4176,7 @@ The probability (14) is the base-state to base-state transition given the
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\xi_{j_{1},j_{2},t}=P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|X_{i}\right)=\frac{P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0),X\right)}{P\left(X\right)}=
+\xi_{j_{1},j_{2},t}=P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|x_{1:L}\right)=\frac{P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0),x_{1:L}\right)}{P\left(x_{1:L}\right)}=
 \]
 
 \end_inset
@@ -4213,7 +4187,7 @@ The probability (14) is the base-state to base-state transition given the
 \begin_layout Standard
 \begin_inset Formula 
 \[
-=\frac{P\left(x_{1:t-1},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)\cdot P\left(x_{t:L}|y_{t}=(j_{2},0),x_{1:t-1}\right)}{P\left(X\right)}=
+=\frac{P\left(x_{1:t-1},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)\cdot P\left(x_{t:L}|y_{t}=(j_{2},0),x_{1:t-1}\right)}{P\left(x_{1:L}\right)}=
 \]
 
 \end_inset
@@ -4224,7 +4198,7 @@ The probability (14) is the base-state to base-state transition given the
 \begin_layout Standard
 \begin_inset Formula 
 \[
-=\frac{P\left(x_{1:t-1},y_{t-1}=(j_{1},0)\right)\cdot P\left(y_{t}=(j_{2},0)|y_{t-1}=(j_{1},0)\right)\cdot P\left(x_{t}|y_{t}=(j_{2},0),x_{1:t-1}\right)\cdot P\left(x_{t+1:L}|y_{t}=(j_{2},0),x_{1:t-1}\right)}{P\left(X\right)}=
+=\frac{P\left(x_{1:t-1},y_{t-1}=(j_{1},0)\right)\cdot P\left(y_{t}=(j_{2},0)|y_{t-1}=(j_{1},0)\right)\cdot P\left(x_{t}|y_{t}=(j_{2},0),x_{1:t-1}\right)\cdot P\left(x_{t+1:L}|y_{t}=(j_{2},0),x_{1:t-1}\right)}{P\left(x_{1:L}\right)}=
 \]
 
 \end_inset
@@ -4235,7 +4209,7 @@ The probability (14) is the base-state to base-state transition given the
 \begin_layout Standard
 \begin_inset Formula 
 \[
-=\frac{\alpha_{j_{1},t-1}\cdot T_{j_{1},j_{2}}\cdot E_{j_{2},x_{t-o+1},...,x_{t}}\cdot\beta_{j_{2},t}}{P\left(X\right)}
+=\frac{\alpha_{j_{1},t-1}\cdot T_{j_{1},j_{2}}\cdot E_{j_{2},x_{t-o+1},...,x_{t}}\cdot\beta_{j_{2},t}}{P\left(x_{1:L}\right)}
 \]
 
 \end_inset
@@ -4259,7 +4233,7 @@ Finally, the probability (15) is the base-state to base-state transition
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-\eta_{j,l,t}= & P\left(y_{t-1}=(j,0),y_{t}=(j,l)|X\right)=\frac{\psi_{j,l,t}}{P\left(X\right)}
+\eta_{j,l,t}= & P\left(y_{t-1}=(j,0),y_{t}=(j,l)|x_{1:L}\right)=\frac{\psi_{j,l,t}}{P\left(x_{1:L}\right)}
 \end{align*}
 
 \end_inset
@@ -4434,7 +4408,7 @@ for s=1...MAX_EM_ITERATIONS:
 \end_inset
 
 
-\begin_inset Formula $\alpha=\text{hop\_forward\_alg(X) }$
+\begin_inset Formula $\alpha=\text{hop\_forward\_alg(x_{1:L}) }$
 \end_inset
 
 
@@ -4473,7 +4447,7 @@ for s=1...MAX_EM_ITERATIONS:
 \end_inset
 
 
-\begin_inset Formula $\beta=\text{hop\_backward\_alg(X) }$
+\begin_inset Formula $\beta=\text{hop\_backward\_alg(x_{1:L}) }$
 \end_inset
 
 
@@ -5475,26 +5449,47 @@ Classifying DNA a Sequence
 One of the goals of the HMM and HOP-HMM learning process described above
  is to be able to classify the DNA sequences by deciding their hidden-state
  per location.
- After the Baum-Welch algorithm procedure, we could reach that goal by choosing
- per position 
+ After the Baum-Welch algorithm procedure, we might want to reach that goal
+ by choosing per position 
 \begin_inset Formula $t$
 \end_inset
 
- the max-likelihood hidden-state:
+ the max-likelihood hidden-state.
+ In the HOP-HMM case, this means getting the hidden sequence:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-y_{t}^{*}=argmax_{(j,l)}P\left(y_{t}=(j,l)|X\right)
+y_{t}^{*}=argmax_{(j,l)}P\left(y_{t}=(j,l)|x_{1:L}\right)
 \]
 
 \end_inset
 
-The problem with the hidden sequence that although each hidden-state maximizes
- the likelihood, the hidden sequence including its transitions might not
- be the maximal likelihood and it might even include illegal transition
- (with probability 0).
+Although simple to calculate with the 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ auxiliary probability, such a hidden sequence could be problematic.
+ Each hidden-state maximizes the likelihood at its location, but the hidden
+ sequence together with its transitions might not be the maximal likelihood
+ one, and in fact might even include illegal transition (with probability
+ 0).
+\end_layout
+
+\begin_layout Standard
+For calculating the hidden sequence that maximizes the likelihood:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+y_{1:L}^{*}=argmax_{y_{1:L}}P\left(y_{1:L}|x_{1:L}\right)\text{}
+\]
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subparagraph*
@@ -6485,10 +6480,6 @@ else:
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-####################################################################
 \end_layout
 
 \begin_layout Subparagraph*
