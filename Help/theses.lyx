@@ -5516,7 +5516,7 @@ For calculating the hidden sequence that maximizes the likelihood:
 \begin_layout Standard
 \begin_inset Formula 
 \[
-y_{1:L}^{*}=argmax_{y_{1:L}}P\left(y_{1:L}|x_{1:L}\right)\text{}
+y_{1:L}^{*}=argmax_{y_{1:L}}P\left(y_{1:L}|x_{1:L}\right)
 \]
 
 \end_inset
@@ -5533,6 +5533,22 @@ HOP-Viterbi Algorithm
 \end_layout
 
 \begin_layout Standard
+The Viterbi algorithm is very similar to the Forward algorithm, with the
+ difference of using the 
+\begin_inset Formula $max$
+\end_inset
+
+ and 
+\begin_inset Formula $argmax$
+\end_inset
+
+ functions instead of summing over the possible transitions on each step
+ of the dynamic algorithm.
+ The HOP-HMM adaptation of this algorithm is to support the PWM sub-states
+ and use the high order emission of the base states.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float algorithm
 wide false
 sideways false
@@ -5542,7 +5558,7 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Viterbi Algorithm
+HOP-Viterbi Algorithm
 \end_layout
 
 \end_inset
@@ -5694,7 +5710,11 @@ Algorithm:
 \uwave off
 \noun off
 \color none
-for t=2,...,L:
+
+\begin_inset Formula $for\,t=[2,...,L]$
+\end_inset
+
+:
 \end_layout
 
 \begin_layout Plain Layout
@@ -5741,7 +5761,11 @@ for t=2,...,L:
 \uwave off
 \noun off
 \color none
-for j=1,...,m:
+
+\begin_inset Formula $for\,j=[1,...,m]:$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Plain Layout
@@ -6232,7 +6256,7 @@ if
 \end_inset
 
 
-\begin_inset Formula $y_{t-1}=\left(j,l\right)$
+\begin_inset Formula $y_{t-1}=\left(j,0\right)$
 \end_inset
 
 
@@ -6512,14 +6536,6 @@ else:
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subparagraph*
-[Tommy: Add, viterbi is not always the best way, since it has to be correct
- state seq, and chooses only one best state seq.
- This could not correlate to the sum of possible passes through a state
- via multiple paths, and there for be very different from the real state
- seq.]
 \end_layout
 
 \begin_layout Part*
