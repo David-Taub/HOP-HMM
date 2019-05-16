@@ -5510,7 +5510,8 @@ Although simple to calculate with the
 \end_layout
 
 \begin_layout Standard
-For calculating the hidden sequence that maximizes the likelihood:
+Our task here is reaching the hidden sequence that maximizes the likelihood
+ of the observed sequence, where all the sequence is considered:
 \end_layout
 
 \begin_layout Standard
@@ -5533,19 +5534,21 @@ HOP-Viterbi Algorithm
 \end_layout
 
 \begin_layout Standard
-The Viterbi algorithm is very similar to the Forward algorithm, with the
- difference of using the 
+A common way to derive the hidden sequence that maximizes the likelihood
+ is the Viterbi algorithm, which is similar to the Forward algorithm.
+ The main differences between the two algorithms are the usage of 
 \begin_inset Formula $max$
 \end_inset
 
- and 
+ instead of summing over the possible transitions on each step of the dynamic
+ algorithm, and keeping information of the chosen maximal value used via
+ the 
 \begin_inset Formula $argmax$
 \end_inset
 
- functions instead of summing over the possible transitions on each step
- of the dynamic algorithm.
- The HOP-HMM adaptation of this algorithm is to support the PWM sub-states
- and use the high order emission of the base states.
+ function.
+ The HOP-HMM adaptation to this algorithm includes supporting the PWM sub-states
+ and the high order emission of the base states.
 \end_layout
 
 \begin_layout Standard
