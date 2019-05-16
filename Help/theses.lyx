@@ -2038,7 +2038,7 @@ Algorithm:
 \end_inset
 
 
-\begin_inset Formula $for\,j=1,...,m:$
+\begin_inset Formula $for\,j=[1,...,m]:$
 \end_inset
 
 
@@ -2100,7 +2100,7 @@ Algorithm:
 \end_inset
 
 
-\begin_inset Formula $for\,t=2,...,L:$
+\begin_inset Formula $for\,t=[2,...,L]:$
 \end_inset
 
 
@@ -2139,7 +2139,7 @@ Algorithm:
 \end_inset
 
 
-\begin_inset Formula $for\,j=1,...,m:$
+\begin_inset Formula $for\,j=[1,...,m]:$
 \end_inset
 
 
@@ -2403,7 +2403,7 @@ Algorithm:
 \end_inset
 
 
-\begin_inset Formula $for\,t=L-1,...,1:$
+\begin_inset Formula $for\,t=[L-1,...,1]:$
 \end_inset
 
 
@@ -2442,7 +2442,7 @@ Algorithm:
 \end_inset
 
 
-\begin_inset Formula $for\,j=1,...,m:$
+\begin_inset Formula $for\,j=[1,...,m]:$
 \end_inset
 
 
@@ -3010,7 +3010,7 @@ Algorithm:
 \end_inset
 
 
-\begin_inset Formula $for\,j=1,...,m:$
+\begin_inset Formula $for\,j=[1,...,m]:$
 \end_inset
 
 
@@ -3072,7 +3072,7 @@ Algorithm:
 \end_inset
 
 
-\begin_inset Formula $for\,t=2,...,L:$
+\begin_inset Formula $for\,t=[2,...,L]:$
 \end_inset
 
 
@@ -3111,7 +3111,7 @@ Algorithm:
 \end_inset
 
 
-\begin_inset Formula $for\,j=1,...,m:$
+\begin_inset Formula $for\,j=[1,...,m]:$
 \end_inset
 
 
@@ -3433,7 +3433,7 @@ Algorithm:
 \end_inset
 
 
-\begin_inset Formula $for\,t=L-1,...,1:$
+\begin_inset Formula $for\,t=[L-1,...,1]:$
 \end_inset
 
 
@@ -3472,7 +3472,7 @@ Algorithm:
 \end_inset
 
 
-\begin_inset Formula $for\,j=1,...,m:$
+\begin_inset Formula $for\,j=[1,...,m]:$
 \end_inset
 
 
@@ -4969,7 +4969,7 @@ for
 \end_inset
 
 for 
-\begin_inset Formula $j=1,...,m$
+\begin_inset Formula $j=[1,...,m]$
 \end_inset
 
 :
@@ -5138,7 +5138,23 @@ for
 \end_inset
 
 
-\begin_inset Formula $\text{    }E_{j,b_{1},b_{2},...,b_{o}}=\frac{\sum_{t\in o,...,L}\gamma_{j,t}\cdot\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1},...,x_{t})}{\sum_{t\in o,...,L}\gamma_{j,t}}$
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Formula $E_{j,b_{1},b_{2},...,b_{o}}=\frac{\sum_{t\in o,...,L}\gamma_{j,t}\cdot\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1},...,x_{t})}{\sum_{t\in o,...,L}\gamma_{j,t}}$
 \end_inset
 
 
@@ -5193,7 +5209,7 @@ for
 \end_inset
 
 for 
-\begin_inset Formula $l=1,...,k:$
+\begin_inset Formula $l=[1,...,k]:$
 \end_inset
 
 
@@ -5319,13 +5335,29 @@ for
 \end_inset
 
 for 
-\begin_inset Formula $j_{2}=1,...,m:$
+\begin_inset Formula $j_{2}=[1,...,m]:$
 \end_inset
 
 
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset space ~
 \end_inset
 
