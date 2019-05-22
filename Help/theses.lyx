@@ -122,11 +122,11 @@ background
  to classify cell-specific sequences, inside regulatory modules.
 \end_layout
 
-\begin_layout Section*
+\begin_layout Subsection*
 Background
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Subsubsection*
 
 \series bold
 \bar under
@@ -159,7 +159,7 @@ Proteins are macromolecoles, which carry various roles and functions within
  that constitute a protein.
 \end_layout
 
-\begin_layout Paragraph*
+\begin_layout Subparagraph*
 
 \series bold
 \bar under
@@ -187,7 +187,7 @@ Gene sequences are built out fragmented introns and exons, where only the
  
 \end_layout
 
-\begin_layout Paragraph*
+\begin_layout Subparagraph*
 
 \series bold
 \bar under
@@ -234,7 +234,7 @@ Figure 1: 1) An enhancer and its distal target gene.
  generates a new RNA molecule that is transcribed off the gene sequence.
 \end_layout
 
-\begin_layout Paragraph*
+\begin_layout Subparagraph*
 
 \series bold
 \bar under
@@ -285,7 +285,7 @@ The enrichment of TFBS is a good predictor for the location of promoter
  exposed and becomes a template for RNA synthesis.
 \end_layout
 
-\begin_layout Paragraph*
+\begin_layout Subparagraph*
 
 \series bold
 \bar under
@@ -386,7 +386,7 @@ Figure 2:
  location with high values indicate high likelihood of TF binding.
 \end_layout
 
-\begin_layout Paragraph*
+\begin_layout Subparagraph*
 
 \bar under
 Inter TFBS Sequences and Conservation
@@ -420,7 +420,7 @@ Conserved non-coding elements (CNE) reside in clusters, usually with low
  2014).
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Subsubsection*
 
 \series bold
 \bar under
@@ -479,7 +479,7 @@ These properties and mechanisms have measurable features that lie on top
 [TODO: fix ENCODE cite above]
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subparagraph
 
 \series bold
 \bar under
@@ -505,7 +505,7 @@ Since the scenario of TF binding on an enhancer requires an accessible DNA
  resolution than histone marks.
 \end_layout
 
-\begin_layout Paragraph*
+\begin_layout Subparagraph*
 
 \series bold
 \bar under
@@ -580,7 +580,7 @@ Figure 3: The accessibility of the enhancer's sequence and its surrounding
  enhancer is inaccessible since it is wrapped around a nucleosome.
 \end_layout
 
-\begin_layout Paragraph*
+\begin_layout Subparagraph*
 
 \series bold
 \bar under
@@ -601,7 +601,7 @@ Here we covered the main known gene regulation mechanisms, but there are
  
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subparagraph
 Epigenetics Limitation
 \end_layout
 
@@ -664,7 +664,7 @@ H3K27ac and H3K4me1 is located on top of the increase of the DNaseI hyper
 ions.
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Subsubsection*
 Previous Work
 \end_layout
 
@@ -729,7 +729,7 @@ HOP-HMM extends the algorithm of (Kaplan et al.
  dependent on previous emissions is a less researched field.
 \end_layout
 
-\begin_layout Paragraph*
+\begin_layout Subparagraph*
 
 \series bold
 Data Representation
@@ -6542,13 +6542,48 @@ else:
 \end_layout
 
 \begin_layout Part*
-
-\series bold
-\bar under
-Data
+Results
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Standard
+First, we use data synthesized by a HOP-HMM, to show that the parameters
+ learned in the HOP Baum Welch algorithm are similar to the ones that were
+ used in the generation.
+ For each test we generated 1000 sequences of length 10,000 using a model
+ with 
+\begin_inset Formula $\theta$
+\end_inset
+
+ parameters, synthetically generated.
+ The models contained different number of base-states and sub-states in
+ each run, and some of the base-states where set to be 
+\begin_inset Quotes eld
+\end_inset
+
+background base-states
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Background regions typically have lower occurrences of TFBS and are longer,
+ compared to enhancers.
+ For simulating such a behavior, the background base-states have a low probabili
+ty to enter into their PWM sub-states and have higher probability to move
+ into them and staying in them compared to non-background base-state.
+\end_layout
+
+\begin_layout Standard
+[TODO: generate and add such a figure]
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\emph on
+Figure:
+\end_layout
+
+\begin_layout Subparagraph*
 [Roadmap enhancers preprocessing]
 \end_layout
 
@@ -6566,10 +6601,6 @@ Data
 
 \begin_layout Subsubsection*
 [synthetic sequences generation]
-\end_layout
-
-\begin_layout Part*
-Results
 \end_layout
 
 \begin_layout Subparagraph*
