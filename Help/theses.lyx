@@ -6545,10 +6545,14 @@ else:
 Results
 \end_layout
 
+\begin_layout Subsubsection*
+Synthetic Sequences Generation
+\end_layout
+
 \begin_layout Standard
-First, we use data synthesized by a HOP-HMM, to show that the parameters
- learned in the HOP Baum Welch algorithm are similar to the ones that were
- used in the generation.
+We use data synthesized by a HOP-HMM, to show that the parameters learned
+ in the HOP Baum Welch algorithm are similar to the ones that were used
+ in the generation.
  For each test we generated 1000 sequences of length 10,000 using a model
  with 
 \begin_inset Formula $\theta$
@@ -6556,7 +6560,7 @@ First, we use data synthesized by a HOP-HMM, to show that the parameters
 
  parameters, synthetically generated.
  The models contained different number of base-states and sub-states in
- each run, and some of the base-states where set to be 
+ each run, and some of the base-states where set to behave as 
 \begin_inset Quotes eld
 \end_inset
 
@@ -6573,22 +6577,49 @@ ty to enter into their PWM sub-states and have higher probability to move
 \end_layout
 
 \begin_layout Standard
-[TODO: generate and add such a figure]
+Pretraining is done by initialization the E and G parameters by using the
+ learned parameters by the HOP Baum-Welch algorithm on datasets built out
+ of sequences that are labeled as active enhancers in a specific tissue
+ and background sequences.
+ We trained a 2 base-state HOP-HMM model (one base-state for the enhancer
+ and one for the background sequences) and used the learned parameters of
+ the enhancer base-state to initialize the HOP-HMM with multiple enhancer
+ base-states
+\end_layout
+
+\begin_layout Standard
+#################
+\end_layout
+
+\begin_layout Subsubsection*
+[TODO: generate and add such a figure with 12 scatter plots.
+ change those constants in each plot so an impact is shown.
+ consider removing the pretraining if doesn't improve (and mention it was
+ tried and it didn't work)]
 \end_layout
 
 \begin_layout Standard
 
 \series bold
 \emph on
-Figure:
-\end_layout
-
-\begin_layout Subparagraph*
-[Roadmap enhancers preprocessing]
+Figure: Comparison of learned and real parameters values of 3 different
+ HOP-HMMs.
+ The comparisons are done after learning 10%, 50%, 100% of generated sequence.
+ The right most plots show a comparison after learning 100% of generated
+ sequence using a pretrained initialization of the parameters.
+ (a) 3 base-states, and 5 sub-states for each base-state.
+ (b) 7 base-states out of which 1 is a background base-state, and 10 sub-states
+ for each base-state.
+ (c) 10 base-states out of which 2 are background base-states, and 30 sub-states
+ for each base-state.
 \end_layout
 
 \begin_layout Subsubsection*
-[training on roadmap data]
+Roadmap Dataset
+\end_layout
+
+\begin_layout Standard
+we used Roadmap dataset to extract the 
 \end_layout
 
 \begin_layout Subsubsection*
@@ -6600,7 +6631,7 @@ Figure:
 \end_layout
 
 \begin_layout Subsubsection*
-[synthetic sequences generation]
+[]
 \end_layout
 
 \begin_layout Subparagraph*
@@ -6748,15 +6779,15 @@ different
 \end_layout
 
 \begin_layout Standard
-[per sequence binary classification - backgound vs enhancer]
+[per sequence binary classification - background vs enhancer]
 \end_layout
 
 \begin_layout Standard
-[per nucleotide binary classification - backgound vs enhancer]
+[per nucleotide binary classification - background vs enhancer]
 \end_layout
 
 \begin_layout Standard
-[per sequence binary classification - backgound vs enhancer]
+[per sequence binary classification - background vs enhancer]
 \end_layout
 
 \begin_layout Standard
