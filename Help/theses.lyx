@@ -5516,17 +5516,13 @@ Our task here is reaching the hidden sequence that maximizes the likelihood
 
 \begin_layout Standard
 \begin_inset Formula 
-\[
+\begin{equation}
 y_{1:L}^{*}=argmax_{y_{1:L}}P\left(y_{1:L}|x_{1:L}\right)
-\]
+\end{equation}
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subparagraph*
-TODO: finish this part
 \end_layout
 
 \begin_layout Subsubsection*
@@ -5534,8 +5530,8 @@ HOP-Viterbi Algorithm
 \end_layout
 
 \begin_layout Standard
-A common way to derive the hidden sequence that maximizes the likelihood
- is the Viterbi algorithm, which is similar to the Forward algorithm.
+A common way to derive the hidden sequence that maximizes (16) is the Viterbi
+ algorithm, which is similar to the Forward algorithm.
  The main differences between the two algorithms are the usage of 
 \begin_inset Formula $max$
 \end_inset
