@@ -87,41 +87,6 @@ High-Order Generalized Hidden Markov Model for DNA Regulatory Sequences
  Classification
 \end_layout
 
-\begin_layout Section*
-Abstract
-\end_layout
-
-\begin_layout Subparagraph*
-[TODO: rewrite this]
-\end_layout
-
-\begin_layout Standard
-The TF inside the nucleus of specific tissues are thought to be a key factor
- in the activation of specific enhancer.
- The TFs form a transcription complex and are connected to the enhancer
- and promoter sequences on top of the TF binding sites (TFBS).
- Studies using TFBS of TF present in specific cell types are used to classify
- cell specific enhancer sequences.
- show heat map of AUC-ROC results.
- Between these TFBS, k-mer frequencies varies between enhancers and non
- regulatory 
-\begin_inset Quotes eld
-\end_inset
-
-background
-\begin_inset Quotes erd
-\end_inset
-
- DNA, and was used to classify enhancers from background using only the
- k-mer distribution (Inbar and tommy, gkm-SVM), and is thought to play a
- role in spacial properties, nucleosome location and cleavage that cause
- accessibility of near-by TFBS.
- Using 44 out of 127 epigenetic data of Roadmap Project to select tissue
- specific enhancer sequences dataset.
- In our method, we look for different TFBS and k-mer presence in sequences
- to classify cell-specific sequences, inside regulatory modules.
-\end_layout
-
 \begin_layout Subsection*
 Background
 \end_layout
@@ -6542,7 +6507,7 @@ Results
 \end_layout
 
 \begin_layout Subsubsection*
-Synthetic Sequences Generation
+Synthetic Sequences
 \end_layout
 
 \begin_layout Standard
@@ -6572,26 +6537,38 @@ ty to enter into their PWM sub-states and have higher probability to move
  into them and staying in them compared to non-background base-state.
 \end_layout
 
-\begin_layout Standard
-Pretraining is done by initialization the E and G parameters by using the
- learned parameters by the HOP Baum-Welch algorithm on datasets built out
- of sequences that are labeled as active enhancers in a specific tissue
- and background sequences.
- We trained a 2 base-state HOP-HMM model (one base-state for the enhancer
- and one for the background sequences) and used the learned parameters of
- the enhancer base-state to initialize the HOP-HMM with multiple enhancer
- base-states
+\begin_layout Paragraph*
+Pretraining
 \end_layout
 
 \begin_layout Standard
-#################
+When sequences are labeled as tissue-specific enhancers are available, it
+ is possible to pretrain a multi-base-state HOP-HMM with them.
+ The E and G parts of such a model could be initialized with parameters
+ taken from a smaller HOP-HMM, trained on 2 class datasets built out of
+ tissue-specific enhancers and background DNA sequences.
+ For each tissue, we build a dataset and trained a 2 base-state HOP-HMM
+ model (one base-state for the enhancer and one for the background) and
+ used the learned parameters of the enhancer base-state to initialize the
+ bigger multi-base-state HOP-HMM.
 \end_layout
 
-\begin_layout Subsubsection*
-[TODO: generate and add such a figure with 12 scatter plots.
+\begin_layout Paragraph*
+[TODO: generate such a figure with 12 scatter plots.
  change those constants in each plot so an impact is shown.
  consider removing the pretraining if doesn't improve (and mention it was
  tried and it didn't work)]
+\end_layout
+
+\begin_layout Paragraph*
+[TODO: more scatter plots with more 
+\backslash
+ less PWMs in enhancers, more 
+\backslash
+ less PWMs joint between enhancer types, different base-states emission
+ order, with 
+\backslash
+ without E sharing.]
 \end_layout
 
 \begin_layout Standard
@@ -6610,31 +6587,57 @@ Figure: Comparison of learned and real parameters values of 3 different
  for each base-state.
 \end_layout
 
+\begin_layout Paragraph*
+[TODO: generate sequence figure]
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\emph on
+Figure: Hidden states generated synthetically by a HOP-HMM (top), hidden
+ states estimated by the HOP-Viterbi algorithm (middle) and base-state probabili
+ty 
+\begin_inset Formula $\gamma_{j,t}=P\left(y_{t}=(j,0)|X\right)$
+\end_inset
+
+ (bottom).
+ The hidden states and base-states probability where calculated using the
+ parameters 
+\begin_inset Formula $\theta$
+\end_inset
+
+ learned by the HOP-Baum-Welch algorithm, using the observable synthetic
+ DNA sequence as input.
+\end_layout
+
+\begin_layout Paragraph*
+
+\series bold
+\emph on
+[TODO: add to the figure caption the model's hyper-parameters m, k, etc
+ .] 
+\end_layout
+
 \begin_layout Subsubsection*
 Roadmap Dataset
 \end_layout
 
+\begin_layout Subsubsection*
+TODO: add part - description of Roadmap data, and per-processing
+\end_layout
+
+\begin_layout Paragraph*
+Choosing the PWMs
+\end_layout
+
 \begin_layout Standard
-we used Roadmap dataset to extract the 
-\end_layout
-
-\begin_layout Subsubsection*
-[classification of regulation modules]
-\end_layout
-
-\begin_layout Subsubsection*
-[choosing the PWMs]
-\end_layout
-
-\begin_layout Subsubsection*
-[]
-\end_layout
-
-\begin_layout Subparagraph*
-[tommy: prove and show know our limitation with a huge generated data-set,
- scatter plot of 
-\backslash
-theta values where it should go on the diagonal, real vs learned]
+Part of the definition of a HOP-HMM is a set of PWMs emitted by the sub-states.
+ JASPAR has 719 vertebrates PWMs, out of which we would want to use the
+ most indicative for the tissue specific enhancers.
+ The ideal PWM would be a long motif, strongly distinguishable from the
+ background nucleotide probability and that occurs multiple times in the
+ enhancer, and only in the enhancers that are active in a single tissue.
 \end_layout
 
 \begin_layout Subparagraph*
@@ -6642,25 +6645,62 @@ theta values where it should go on the diagonal, real vs learned]
 \end_layout
 
 \begin_layout Subparagraph*
-[tommy: compare viterbi and max postirior]
-\end_layout
-
-\begin_layout Subparagraph*
-[compare different hyperparameters.
- are we better than regular hmm? does the prelearning help? fixed base state
- E?]
-\end_layout
-
-\begin_layout Subparagraph*
 [tommy: aligned heatmap sequences with the peak of the H3K27ac and post.
  prob., are they similar?]
 \end_layout
 
-\begin_layout Section*
+\begin_layout Subsubsection*
+TODO: comparison to ChromHMM and roadmap classification
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: Whole genome classification
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: comparison of HOP-HMM to SOTA
+\end_layout
+
+\begin_layout Part*
+misc
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: abstract 
+\end_layout
+
+\begin_layout Standard
+The TF inside the nucleus of specific tissues are thought to be a key factor
+ in the activation of specific enhancer.
+ The TFs form a transcription complex and are connected to the enhancer
+ and promoter sequences on top of the TF binding sites (TFBS).
+ Studies using TFBS of TF present in specific cell types are used to classify
+ cell specific enhancer sequences.
+ show heat map of AUC-ROC results.
+ Between these TFBS, k-mer frequencies varies between enhancers and non
+ regulatory 
+\begin_inset Quotes eld
+\end_inset
+
+background
+\begin_inset Quotes erd
+\end_inset
+
+ DNA, and was used to classify enhancers from background using only the
+ k-mer distribution (Inbar and tommy, gkm-SVM), and is thought to play a
+ role in spacial properties, nucleosome location and cleavage that cause
+ accessibility of near-by TFBS.
+ Using 44 out of 127 epigenetic data of Roadmap Project to select tissue
+ specific enhancer sequences dataset.
+ In our method, we look for different TFBS and k-mer presence in sequences
+ to classify cell-specific sequences, inside regulatory modules.
+\end_layout
+
+\begin_layout Subsubsection*
 
 \series bold
 \bar under
-Semi-Supervised Learning Scheme:
+TODO: Semi-Supervised Learning Scheme:
 \end_layout
 
 \begin_layout Enumerate
@@ -6759,19 +6799,7 @@ per sequence mutli-class classification (background vs enhancer)
 \end_layout
 
 \begin_layout Standard
-per nucleotide classification 
-\end_layout
-
-\begin_layout Standard
 per sequence classification
-\end_layout
-
-\begin_layout Standard
-different hyperparameters k, o, m
-\end_layout
-
-\begin_layout Standard
-different 
 \end_layout
 
 \begin_layout Standard
@@ -6786,27 +6814,11 @@ different
 [per sequence binary classification - background vs enhancer]
 \end_layout
 
-\begin_layout Standard
-[prediction on roadmap regulation modules]
-\end_layout
-
-\begin_layout Standard
-[Whole genome classification?]
-\end_layout
-
-\begin_layout Standard
-[Was HOP-HMM better?]
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
+\begin_layout Subsubsection*
 
 \series bold
 \bar under
-Possible Applications
+TODO: Possible Applications
 \end_layout
 
 \begin_layout Standard
