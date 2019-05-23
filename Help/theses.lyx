@@ -87,13 +87,12 @@ High-Order Generalized Hidden Markov Model for DNA Regulatory Sequences
  Classification
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Part*
 Background
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection*
 
-\series bold
 \bar under
 The Genome
 \end_layout
@@ -122,13 +121,21 @@ Proteins are macromolecoles, which carry various roles and functions within
  strand sequence of RNA.
  Later, the RNA molecules are translated into a sequence of amino acids
  that constitute a protein.
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
-\begin_layout Subparagraph*
-
+\begin_layout Subsubsection*
+Genes
 \series bold
 \bar under
-Genes
+
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -152,10 +159,7 @@ Gene sequences are built out fragmented introns and exons, where only the
  
 \end_layout
 
-\begin_layout Subparagraph*
-
-\series bold
-\bar under
+\begin_layout Subsubsection*
 Enhancers
 \end_layout
 
@@ -199,10 +203,7 @@ Figure 1: 1) An enhancer and its distal target gene.
  generates a new RNA molecule that is transcribed off the gene sequence.
 \end_layout
 
-\begin_layout Subparagraph*
-
-\series bold
-\bar under
+\begin_layout Subsubsection*
 Transcription Factor Binding
 \end_layout
 
@@ -250,7 +251,7 @@ The enrichment of TFBS is a good predictor for the location of promoter
  exposed and becomes a template for RNA synthesis.
 \end_layout
 
-\begin_layout Subparagraph*
+\begin_layout Subsubsection*
 
 \series bold
 \bar under
@@ -351,7 +352,7 @@ Figure 2:
  location with high values indicate high likelihood of TF binding.
 \end_layout
 
-\begin_layout Subparagraph*
+\begin_layout Subsubsection*
 
 \bar under
 Inter TFBS Sequences and Conservation
@@ -385,7 +386,7 @@ Conserved non-coding elements (CNE) reside in clusters, usually with low
  2014).
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection*
 
 \series bold
 \bar under
@@ -609,6 +610,10 @@ in-silico
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+
 \series bold
 \emph on
 Figure 4: Epigenetic feature tracks measured by ENCODE, taken from the tenth
@@ -694,7 +699,7 @@ HOP-HMM extends the algorithm of (Kaplan et al.
  dependent on previous emissions is a less researched field.
 \end_layout
 
-\begin_layout Subparagraph*
+\begin_layout Subsubsection*
 
 \series bold
 Data Representation
@@ -722,7 +727,15 @@ A common feature extraction technique is representing a DNA sequence as
 \end_layout
 
 \begin_layout Section*
+
+\bar under
 Research Question
+\end_layout
+
+\begin_layout Standard
+The main mission of this research is to locate genomic regions with potential
+ enhancer activity, both in cell types from which we have epigenetic data
+ and from cell types we don't.
 \end_layout
 
 \begin_layout Standard
@@ -761,17 +774,8 @@ Figure 5: Transgenic mouse with synthetic enhancer related dorsal root ganglion
  Taken from Vista Enhancer Browser.
 \end_layout
 
-\begin_layout Standard
-My task of my research is to locate sequences with potential enhancer activity,
- in cell types we have not yet obtained epigenetic data from.
-\end_layout
-
 \begin_layout Section*
 Markov Models
-\end_layout
-
-\begin_layout Paragraph*
-Markov Model
 \end_layout
 
 \begin_layout Standard
@@ -944,6 +948,10 @@ Multiple signal processing algorithms have been used in computational biology,
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Standard
 
 \end_layout
 
