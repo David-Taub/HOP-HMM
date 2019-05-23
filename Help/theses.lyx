@@ -6596,14 +6596,14 @@ Figure: Comparison of learned and real parameters values of 3 different
 \series bold
 \emph on
 Figure: Hidden states generated synthetically by a HOP-HMM (top), hidden
- states estimated by the HOP-Viterbi algorithm (middle) and base-state probabili
-ty 
+ states estimated by the HOP-Viterbi algorithm (middle) and base-state posterior
+ probability 
 \begin_inset Formula $\gamma_{j,t}=P\left(y_{t}=(j,0)|X\right)$
 \end_inset
 
  (bottom).
- The hidden states and base-states probability where calculated using the
- parameters 
+ The hidden states estimation and base-states probability are calculated
+ using the parameters 
 \begin_inset Formula $\theta$
 \end_inset
 
@@ -6623,8 +6623,12 @@ ty
 Roadmap Dataset
 \end_layout
 
-\begin_layout Subsubsection*
-TODO: add part - description of Roadmap data, and per-processing
+\begin_layout Paragraph*
+
+\end_layout
+
+\begin_layout Paragraph*
+Perprocessing
 \end_layout
 
 \begin_layout Paragraph*
@@ -6638,6 +6642,10 @@ Part of the definition of a HOP-HMM is a set of PWMs emitted by the sub-states.
  The ideal PWM would be a long motif, strongly distinguishable from the
  background nucleotide probability and that occurs multiple times in the
  enhancer, and only in the enhancers that are active in a single tissue.
+\end_layout
+
+\begin_layout Standard
+##########################
 \end_layout
 
 \begin_layout Subparagraph*
@@ -6662,7 +6670,7 @@ TODO: comparison of HOP-HMM to SOTA
 \end_layout
 
 \begin_layout Part*
-misc
+Misc
 \end_layout
 
 \begin_layout Subsubsection*
