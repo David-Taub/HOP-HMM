@@ -7,6 +7,7 @@
 \textclass article
 \begin_preamble
 \usepackage{babel}
+\usepackage{float}% http://ctan.org/pkg/float
 \end_preamble
 \use_default_options false
 \maintain_unincluded_children false
@@ -14,11 +15,11 @@
 \language_package default
 \inputencoding auto
 \fontencoding T1
-\font_roman "default" "default"
+\font_roman "times" "default"
 \font_sans "default" "default"
 \font_typewriter "default" "default"
-\font_math "auto" "auto"
-\font_default_family default
+\font_math "newtxmath" "auto"
+\font_default_family rmdefault
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
@@ -92,8 +93,6 @@ Background
 \end_layout
 
 \begin_layout Subsection*
-
-\bar under
 The Genome
 \end_layout
 
@@ -121,21 +120,10 @@ Proteins are macromolecoles, which carry various roles and functions within
  strand sequence of RNA.
  Later, the RNA molecules are translated into a sequence of amino acids
  that constitute a protein.
-\begin_inset Newline newline
-\end_inset
-
-
 \end_layout
 
 \begin_layout Subsubsection*
-Genes
-\series bold
-\bar under
-
-\begin_inset Newline newline
-\end_inset
-
-
+Genes 
 \end_layout
 
 \begin_layout Standard
@@ -252,9 +240,6 @@ The enrichment of TFBS is a good predictor for the location of promoter
 \end_layout
 
 \begin_layout Subsubsection*
-
-\series bold
-\bar under
 PWMs
 \end_layout
 
@@ -353,8 +338,6 @@ Figure 2:
 \end_layout
 
 \begin_layout Subsubsection*
-
-\bar under
 Inter TFBS Sequences and Conservation
 \end_layout
 
@@ -387,9 +370,6 @@ Conserved non-coding elements (CNE) reside in clusters, usually with low
 \end_layout
 
 \begin_layout Subsection*
-
-\series bold
-\bar under
 Epigenetics
 \end_layout
 
@@ -445,10 +425,7 @@ These properties and mechanisms have measurable features that lie on top
 [TODO: fix ENCODE cite above]
 \end_layout
 
-\begin_layout Subparagraph
-
-\series bold
-\bar under
+\begin_layout Subsubsection*
 Accessibility
 \end_layout
 
@@ -471,10 +448,7 @@ Since the scenario of TF binding on an enhancer requires an accessible DNA
  resolution than histone marks.
 \end_layout
 
-\begin_layout Subparagraph*
-
-\series bold
-\bar under
+\begin_layout Subsubsection*
 Histone Marks
 \end_layout
 
@@ -546,17 +520,12 @@ Figure 3: The accessibility of the enhancer's sequence and its surrounding
  enhancer is inaccessible since it is wrapped around a nucleosome.
 \end_layout
 
-\begin_layout Subparagraph*
-
-\series bold
-\bar under
+\begin_layout Subsubsection*
 DNA Methylation
 \end_layout
 
 \begin_layout Standard
-Here we covered the main known gene regulation mechanisms, but there are
- more regulation methods which have been researched, and are note negligible.
- DNA methylation at cytosine and CpG sites has been involved in genome silencing
+DNA methylation at cytosine and CpG sites has been involved in genome silencing
  in multiple processes (Jones et al.
  2012), and has been documented as largely correlated with gene expression
  inhibition when present in promoters.
@@ -567,7 +536,7 @@ Here we covered the main known gene regulation mechanisms, but there are
  
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Subsubsection*
 Epigenetics Limitation
 \end_layout
 
@@ -727,8 +696,6 @@ A common feature extraction technique is representing a DNA sequence as
 \end_layout
 
 \begin_layout Section*
-
-\bar under
 Research Question
 \end_layout
 
@@ -953,10 +920,6 @@ Multiple signal processing algorithms have been used in computational biology,
 
 \begin_layout Standard
 
-\end_layout
-
-\begin_layout Standard
-
 \series bold
 \emph on
 Figure 7: A toy example of HMM with 2 hidden states, the observed variables
@@ -1071,8 +1034,6 @@ Figure 8: a HMM chain with length of 5.
 \end_layout
 
 \begin_layout Paragraph*
-
-\bar under
 HMM Limitations
 \end_layout
 
@@ -1140,8 +1101,6 @@ There is a trade-off regarding the use of high-order emission compared to
 \end_layout
 
 \begin_layout Subsection*
-
-\bar under
 HOP-HMM
 \end_layout
 
@@ -1179,6 +1138,7 @@ Figure 9: HOP-HMM toy example with one base-state 'a', which emits a single
 \begin_layout Standard
 \begin_inset Graphics
 	filename Figures/HOP_HMM_multi_states.jpg
+	scale 50
 
 \end_inset
 
@@ -1306,9 +1266,6 @@ Figure 11: general hidden states graph of HOP-HMM.
 \end_layout
 
 \begin_layout Subsubsection*
-
-\series bold
-\bar under
 Emission
 \end_layout
 
@@ -1440,9 +1397,6 @@ ns.
 \end_layout
 
 \begin_layout Subsubsection*
-
-\series bold
-\bar under
 Transition
 \end_layout
 
@@ -1568,8 +1522,6 @@ L - length of the DNA sequence (data given to the algorithm)
 \end_layout
 
 \begin_layout Part*
-
-\bar under
 Baum-Welch Algorithm
 \end_layout
 
@@ -2803,9 +2755,6 @@ E_{j,b_{1},...,b_{o}}=\frac{\sum_{t\in o,...,L}P_{\theta^{'}}\left(x_{1:L},y_{t}
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
 \[
 =\frac{\sum_{t\in o,...,L}P_{\theta^{'}}\left(y_{t}=(j,0)|X\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P_{\theta^{'}}\left(y_{t}=(j,0)|x_{1:L}\right)}
@@ -2817,8 +2766,8 @@ E_{j,b_{1},...,b_{o}}=\frac{\sum_{t\in o,...,L}P_{\theta^{'}}\left(x_{1:L},y_{t}
 \end_layout
 
 \begin_layout Standard
-Hence to complete the EM iteration, the three missing components in (9),(10),(11
-),(12) are:
+Hence to complete the EM iteration, the three missing components in (9),
+ (10), (11), (12) are:
 \begin_inset Newline newline
 \end_inset
 
@@ -4238,6 +4187,17 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+[H]
+\end_layout
+
+\end_inset
+
+
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
@@ -4308,7 +4268,7 @@ Algorithm:
 \begin_inset space ~
 \end_inset
 
-for s=1...MAX_EM_ITERATIONS:
+for s=[1...MAX_EM_ITERATIONS]:
 \end_layout
 
 \begin_layout Plain Layout
@@ -6519,9 +6479,11 @@ Synthetic Sequences
 \end_layout
 
 \begin_layout Standard
-We use data synthesized by a HOP-HMM, to show that the parameters learned
- in the HOP Baum Welch algorithm are similar to the ones that were used
- in the generation.
+Before applying the algorithm to a real DNA data, we would like to check
+ its capabilities on synthetic data.
+ We generated several datasets with different HOP-HMMs, and we wanted to
+ see if the parameters learned by the HOP Baum Welch algorithm are similar
+ to the parameters that were used in the generation.
  For each test we generated 1000 sequences of length 10,000 using a model
  with 
 \begin_inset Formula $\theta$
@@ -6576,7 +6538,7 @@ When sequences are labeled as tissue-specific enhancers are available, it
  less PWMs joint between enhancer types, different base-states emission
  order, with 
 \backslash
- without E sharing.]
+ without E sharing, model's hyper-parameters m, k, etc.]
 \end_layout
 
 \begin_layout Standard
@@ -6619,20 +6581,16 @@ Figure: Hidden states generated synthetically by a HOP-HMM (top), hidden
  DNA sequence as input.
 \end_layout
 
-\begin_layout Paragraph*
+\begin_layout Standard
 
 \series bold
 \emph on
-[TODO: add to the figure caption the model's hyper-parameters m, k, etc
- .] 
+Figure: Percent of correctly placed TFBSs in synthetic dataset, and average
+ misplacement distance per TFBS.
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Standard
 Roadmap Dataset
-\end_layout
-
-\begin_layout Paragraph*
-
 \end_layout
 
 \begin_layout Paragraph*
@@ -6657,10 +6615,6 @@ Part of the definition of a HOP-HMM is a set of PWMs emitted by the sub-states.
 \end_layout
 
 \begin_layout Subparagraph*
-[tommy: position of the motifs]
-\end_layout
-
-\begin_layout Subparagraph*
 [tommy: aligned heatmap sequences with the peak of the H3K27ac and post.
  prob., are they similar?]
 \end_layout
@@ -6671,6 +6625,18 @@ TODO: comparison to ChromHMM and roadmap classification
 
 \begin_layout Subsubsection*
 TODO: Whole genome classification
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\emph on
+Figure: HOP-Viterbi classification of a region classified as an enhancer,
+ ChromHMM classification and the H3K27ac features.
+
+\series default
+\emph default
+ 
 \end_layout
 
 \begin_layout Subsubsection*
