@@ -1000,8 +1000,7 @@ TODO: confusion graph of the states classification of the viterbi algo.
 
 \begin_layout Subsubsection*
 TODO: sub state -> motif state.
- base-state -> background state.
- 
+ base-state -> background state
 \end_layout
 
 \begin_layout Subsubsection*
@@ -6624,12 +6623,19 @@ Figure: Percent of correctly placed TFBSs in synthetic dataset, and average
  misplacement distance per TFBS.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subsection*
 Roadmap Dataset
 \end_layout
 
 \begin_layout Paragraph*
 Perprocessing
+\end_layout
+
+\begin_layout Standard
+downloaded from Roadmap (links) tissues with all the histone mark data (number
+ of tissues).
+ Manipulated bed files with Bedtools, center of peaks +- 500.
+ taking parts with H3K27ac and H3K4me3 and without ...
 \end_layout
 
 \begin_layout Paragraph*
@@ -6647,6 +6653,20 @@ Part of the definition of a HOP-HMM is a set of PWMs emitted by the sub-states.
 
 \begin_layout Standard
 ##########################
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: Violine graph of the postirior of places viterbi marked as PWMs and
+ didnt mark as PWMs.
+ violine of the acc.
+ of the places marked by the viterbi on real DNA.
+ also, deep tool of the acc.
+ and ME3 of these sequences.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: confusion graph of the states classification of the viterbi algo.
 \end_layout
 
 \begin_layout Subparagraph*
