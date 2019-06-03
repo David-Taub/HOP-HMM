@@ -29,16 +29,18 @@ def make_onehot(seq, height):
     return onehot
 
 
-height = 4
-width = 8
-long_seq = np.random.randint(0, height, (100,), np.int)
-target_seq_onehot = make_onehot(long_seq[20: 20 + width], height)
+HEIGHT = 4
+WIDTH = 8
+SNR = 1
 
-pwm = np.random.rand(height, width)
-pwm += 3 * target_seq_onehot
+long_seq = np.random.randint(0, HEIGHT, (100,), np.int)
+target_seq_onehot = make_onehot(long_seq[20: 20 + WIDTH], HEIGHT)
+
+pwm = np.random.rand(HEIGHT, WIDTH)
+pwm += SNR * target_seq_onehot
 pwm = pwm / np.sum(pwm, 0)
 
-responses = np.array([mult_seq(long_seq[i:i+width], pwm, height) for i in range(len(long_seq) - width)])
+responses = np.array([mult_seq(long_seq[i:i+WIDTH], pwm, HEIGHT) for i in range(len(long_seq) - WIDTH)])
 print(responses[20])
 plt.fill_between(np.arange(len(responses)), responses, min(responses)-1, color=[0.5, 0, 0])
 plt.show()
