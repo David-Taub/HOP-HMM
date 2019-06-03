@@ -177,7 +177,7 @@ n of a gene adjacent to the promoter (see figure 1).
 
 \begin_layout Standard
 \begin_inset Graphics
-	filename Figures/Enhancer_gene_transcription.png
+	filename Figures/Enhancer_gene_transcription.jpg
 	scale 50
 
 \end_inset
@@ -193,10 +193,6 @@ Figure 1: 1) An enhancer and its distal target gene.
  co-factor proteins that together form the transcription complex.
  3) The RNA Polymerase II is recruited and while moving along the gene it
  generates a new RNA molecule that is transcribed off the gene sequence.
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: 1,2,3 => a, b, c
 \end_layout
 
 \begin_layout Subsubsection*
@@ -425,10 +421,6 @@ These properties and mechanisms have measurable features that lie on top
  epigenetic data.
  The epigenetic data is commonly used as the ground truth indication for
  enhancer sequences, as done for the human genome in the ENCODE project.
-\end_layout
-
-\begin_layout Subparagraph*
-[TODO: fix ENCODE cite above]
 \end_layout
 
 \begin_layout Subsubsection*
@@ -808,8 +800,8 @@ L(\theta;X)=P_{\theta}(x_{0},x_{1},...,x_{L})=\pi_{x_{0}}\cdot T_{x_{0},x_{1}}\c
 
 \begin_layout Standard
 \begin_inset Graphics
-	filename Figures/Markov_state.png
-	scale 40
+	filename Figures/Markov_model.jpg
+	scale 50
 
 \end_inset
 
@@ -819,25 +811,19 @@ L(\theta;X)=P_{\theta}(x_{0},x_{1},...,x_{L})=\pi_{x_{0}}\cdot T_{x_{0},x_{1}}\c
 \begin_layout Standard
 
 \series bold
-Figure 6: Markov model with 4 states, marked as 
-\begin_inset Formula $S_{1},S_{2},S_{3},S_{4}$
+Figure 6: A) Markov model with 3 states (yellow green and blue).
+ B,C) The model starts with a state sampled from 
+\begin_inset Formula $\pi$
 \end_inset
 
- with two of all possible transition probabilities written.
- T matrix describes the transition distributions, where 
-\begin_inset Formula $T_{i,*}$
-\end_inset
-
- is the distribution of the model's next step when in 
-\begin_inset Formula $S_{i}$
+, and travels between the states with a transition distribution 
+\begin_inset Formula $T$
 \end_inset
 
 .
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: add Markov chain here.
- use a single graphical language
+ D) The model can generate Markov chains of states, where the transition
+ between the states is conditioned on the previous state alone, causing
+ the Markov process to be memoryless.
 \end_layout
 
 \begin_layout Subsection*
@@ -926,9 +912,11 @@ Multiple signal processing algorithms have been used in computational biology,
  (Baum et al.
  1966) and is based on the Markov model for modeling regions with alternating
  frequencies of patterns and symbols.
- It was used in various engineering fields since the 1980s especially in
- speech recognition (Rabiner and Juang, 1993), character recognition and
- digital communication and was adopted in the computational biology field.
+ It was used in various engineering fields since the 1980s, especially in
+ speech recognition (Rabiner and Juang, 1993), handwriting recognition (Hu
+ et al.
+ 1996) and digital communication (Turin and Sondhi, 1993) and was adopted
+ in the computational biology field.
  
 \end_layout
 
@@ -945,33 +933,24 @@ Multiple signal processing algorithms have been used in computational biology,
 \begin_layout Standard
 
 \series bold
-Figure 7: A toy example of HMM with 2 hidden states, the observed variables
- are emitted in a sequence, based on the hidden state at their location.
- The hidden variables sequences (orange and green on the bottom) is a two
- state Markov chain that emits observed variables on every step.
-\end_layout
+Figure 7: A) HMM with 2 hidden states.
+ B) The observed variables (dark blue) are emitted conditioned on the hidden
+ state at their location, sampled from the discrete conditional multinoulli
+ distribution E.
+ C,D) The hidden states (orange and green) behave as states in a Markov
+ model with starting and transition probabilities, 
+\begin_inset Formula $\pi$
+\end_inset
 
-\begin_layout Subsubsection*
-TODO: number the chapters.
- model , likelihood (full, partial) inference (fa, ba), EM
-\end_layout
+ and 
+\begin_inset Formula $T$
+\end_inset
 
-\begin_layout Subsubsection*
-TODO: Violine graph of the postirior of places viterbi marked as PWMs and
- didnt mark as PWMs.
- violine of the acc.
- of the places marked by the viterbi on real DNA.
- also, deep tool of the acc.
- and ME3 of these sequences.
- 
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: confusion graph of the states classification of the viterbi algo.
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: add generalized HMM with PWM states without high order emission.
+.
+ E) The output of the model is a observable sequence with an underlying
+ hidden sequence.
+ The hidden sequence is a Markov chain, where on each step the hidden state
+ emits a single observed variable.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -979,7 +958,17 @@ TODO: HMM should be more detailed, mathematically.
  could have the section of the likelihood (full, partial) parts in here,
  also move the inference of the hidden variables and for.
  back.
- algo to here
+ algo to heremodel , likelihood (full, partial) inference (fa, ba), EM
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/sHMM_two_states.jpg
+	scale 50
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1067,25 +1056,6 @@ mode
 
 \end_layout
 
-\begin_layout Standard
-\begin_inset Graphics
-	filename Figures/HMM.jpg
-	scale 60
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Figure 8: a HMM chain with length of 5.
- The underlying hidden states (up) are generated in a Markov process and
- each state emits an observed variable, sampled from the state's emission
- probability.
-\end_layout
-
 \begin_layout Paragraph*
 HMM Limitations
 \end_layout
@@ -1171,8 +1141,8 @@ Here we present HOP-HMM, a variant model of HMM, that is well fitted to
 #####
 \end_layout
 
-\begin_layout Standard
-TODO: finish
+\begin_layout Paragraph*
+TODO: add structured hmm
 \end_layout
 
 \begin_layout Standard
@@ -6554,6 +6524,16 @@ When sequences are labeled as tissue-specific enhancers are available, it
  tried and it didn't work)]
 \end_layout
 
+\begin_layout Subsubsection*
+TODO: Violine graph of the postirior of places viterbi marked as PWMs and
+ didnt mark as PWMs.
+ violine of the acc.
+ of the places marked by the viterbi on real DNA.
+ also, deep tool of the acc.
+ and ME3 of these sequences.
+ 
+\end_layout
+
 \begin_layout Paragraph*
 [TODO: more scatter plots with more 
 \backslash
@@ -6608,6 +6588,10 @@ Figure: Hidden states generated synthetically by a HOP-HMM (top), hidden
 \series bold
 Figure: Percent of correctly placed TFBSs in synthetic dataset, and average
  misplacement distance per TFBS.
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: confusion graph of the states classification of the viterbi algo.
 \end_layout
 
 \begin_layout Subsection*
@@ -6793,6 +6777,10 @@ TODO: add references alphabetically by author names
 
 \begin_layout Part*
 Misc
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: number the chapters.
 \end_layout
 
 \begin_layout Subsubsection*
