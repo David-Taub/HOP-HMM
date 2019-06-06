@@ -1062,7 +1062,7 @@ The two probabilities in the questions above are the likelihood and the
 
 \begin_layout Standard
 As in many generative models, HMM's likelihood function 
-\begin_inset Formula $L\left(\theta|x_{1:L}\right)$
+\begin_inset Formula $\mathcal{L}\left(\theta|x_{1:L}\right)$
 \end_inset
 
  which we want to compute can be split by the total probability law to the
@@ -1072,7 +1072,7 @@ As in many generative models, HMM's likelihood function
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-L\left(\theta|x_{1:L}\right)=P_{\theta}\left(x_{1:L}\right)=\sum_{y_{1:L}\in\left[m\right]^{L}}P_{\theta}\left(x_{1:L},y_{1:L}\right)
+\mathcal{L}\left(\theta|x_{1:L}\right)=P_{\theta}\left(x_{1:L}\right)=\sum_{y_{1:L}\in\left[m\right]^{L}}P_{\theta}\left(x_{1:L},y_{1:L}\right)
 \end{equation}
 
 \end_inset
@@ -1164,11 +1164,6 @@ An alternative method, which answers both the likelihood and the posterior
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: HMM should be parts: model , likelihood (full, partial) inference
- (fa, ba), EM
 \end_layout
 
 \begin_layout Subsubsection*
@@ -1934,9 +1929,9 @@ TODO: ask Tommy for a gHMM that states that emit multiple variables to cite
 \end_layout
 
 \begin_layout Standard
-Generalized hidden Markov models (gHMM) are a wide family of variations
- of HMM, some of which contain hidden states that emit zero or multiple
- observable variables.
+Generalized hidden Markov models (gHMM) are a family of variants of HMM,
+ some of which contain hidden states that emit zero or multiple observable
+ variables.
  Applied on DNA, these models can assume (and learn) a TFBS frequency across
  DNA sequences.
  It is a way to generalize emission of the HMM, and the EM algorithm can
@@ -2275,9 +2270,9 @@ G for background-state to PWM-state transitions a
 \end_layout
 
 \begin_layout Standard
-When in a background-state, after the single observable variable emission,
- the model samples its next state from a probability vector that is a concatenat
-ion of a row in T and a row in G.
+When in a background-state, after the observable variable emission, the
+ model samples its next hidden state from a probability vector that is a
+ concatenation of a row in T and a row in G.
  If a PWM-state is chosen, after the PWM-state's motif emission, the model
  returns back to the background-state to emit another single observable
  variable and so on.
@@ -2354,25 +2349,17 @@ L - length of the DNA sequence (data given to the algorithm)
 Baum-Welch Algorithm
 \end_layout
 
-\begin_layout Subsection*
-HMM Likelihood Function
-\end_layout
-
-\begin_layout Paragraph*
-TODO: parts were moved upwards, fix this section
-\end_layout
-
 \begin_layout Standard
-In the maximal-likelihood estimation problem before us, we have the observed
- 
+To be able to learn a DNA sequence with a HMM, we need to find parameters
+ of the model that best explain the input sequence x.
+ Formally, we have the observed 
 \begin_inset Formula $x_{1:L}$
 \end_inset
 
- and we would ultimately like find the parameters that maximize the incomplete-l
-ikelihood:
+ and we would like find the parameters that maximize the incomplete-likelihood:
 \begin_inset Formula 
 \[
-\theta^{*}=argmax_{\theta}L\left(\theta|x_{1:L}\right)
+\theta^{*}=argmax_{\theta}\mathcal{L}\left(\theta|x_{1:L}\right)
 \]
 
 \end_inset
@@ -2381,15 +2368,9 @@ ikelihood:
 \end_layout
 
 \begin_layout Standard
-In our variation HOP-HMM we assume different transitions and emissions hence
- the complete-data likelihood requires different calculation while the rest
- of the EM algorithm still holds.
-\end_layout
-
-\begin_layout Standard
-Unfortunately, optimizing or calculating the incomplete-data likelihood
- in (1) involves a summation of exponential-by-L elements (L is the length
- of the DNA sequence), which is infeasible.
+Unfortunately, even though the incomplete-data likelihood of HMM in (1)
+ is derivable, optimizing it involves a summation of exponential-by-L complete-d
+ata elements , which is infeasible.
  Instead, the strategy of the EM algorithm is to optimize the expected value
  of the complete-data log-likelihood 
 \begin_inset Formula $log\left(P\left(x_{1:L},y_{1:L}|\theta^{'}\right)\right)$
@@ -2403,6 +2384,9 @@ Unfortunately, optimizing or calculating the incomplete-data likelihood
  in the first iteration) and while assuming a fixed observed X, as it is
  our DNA sequence.
  For this task we can formally define our target function Q:
+\end_layout
+
+\begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
 Q\left(\theta,\theta^{'}\right)=E_{Y}\left[log\left(P_{\theta}\left(x_{1:L},y_{1:L}\right)\right)|x_{1:L},\theta^{'}\right]=\sum_{y\in\left[m\right]^{N}}log\left(P_{\theta}\left(x_{1:L},y_{1:L}\right)\right)P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)
@@ -2794,7 +2778,10 @@ Baum-Welch Algorithm for HOP-HMM
 \end_layout
 
 \begin_layout Standard
-The Baum-Welch algorithm can be adjusted to infer the parameters of the
+Since the transitions and emissions assumptions of HOP-HMM are different,
+ the complete-data likelihood requires different calculation for the EM
+ algorithm to hold.
+ The Baum-Welch algorithm can be adjusted to infer the parameters of the
  HOP-HMM variant 
 \begin_inset Formula $\theta=\{\pi,E,G,T\}$
 \end_inset
