@@ -1,15 +1,14 @@
 
 % mainGenSequences(300, 10000, 5, 25, true);
 % mainGenSequences(10000, 500, 5, 25, false);
-function mergedPeaksMin = mainGenSequences(N, L, m, k, mixed)
+function mergedPeaksMin = mainGenSequences(N, L, params, canCrossLayer)
     dbstop if error
     clear pcPWMp
     close all;
 
     delete(fullfile('..', 'data', 'precomputation', 'pcPWMp.mat'));
-    params = misc.genParams(m, k);
-    params.m = m;
-    theta = genHumanTheta(params, mixed);
+    % params = misc.genParams(m, k);
+    theta = genHumanTheta(params, canCrossLayer);
     show.showTheta(theta);
     [seqs, Y] = misc.genSequences(theta, params, N, L);
     Y2 = Y(:,:,2);
@@ -17,13 +16,15 @@ function mergedPeaksMin = mainGenSequences(N, L, m, k, mixed)
     overlaps = matUtils.vec2mat(Y(:, 1)', params.m)';
     lengths = ones(N, 1) * L;
     tissueNames = num2cell(num2str([1:params.m]'));
-    save(fullfile('..', 'data', 'peaks', 'mergedPeaksMinimized_fake.mat'), 'seqs', 'lengths', 'overlaps', 'theta', 'Y', 'Y2', 'theta', 'tissueNames');
     mergedPeaksMin.seqs = seqs;
+    mergedPeaksMin.params = params;
     mergedPeaksMin.overlaps = overlaps;
     mergedPeaksMin.lengths = lengths;
     mergedPeaksMin.theta = theta;
     mergedPeaksMin.Y = Y
     mergedPeaksMin.Y2 = Y2;
+    mergedPeaksMin.tissueNames = tissueNames
+    save(fullfile('..', 'data', 'peaks', 'mergedPeaksMinimized_fake.mat'), 'mergedPeaksMin');
 end
 
 
@@ -31,14 +32,14 @@ end
 
 
 
-function T = genHumanT(params, mixed)
+function T = genHumanT(params, canCrossLayer)
     % T = ones(params.m) * params.PCrossEnhancers;
     % T(eye(params.m) == 1) = 1 - (params.PCrossEnhancers * (params.m-2) + params.PEnhancerToBackground + params.PTotalBaseToSub);
     % T(:, end) = params.PEnhancerToBackground;
     % T(end, :) = params.PBackgroundToEnhancer;
     % T(end, end) = 1 - params.PBackgroundToEnhancer * (params.m-1);
     T = (params.minT + params.maxT) ./ 2;
-    if not(mixed)
+    if not(canCrossLayer)
         T(not(eye(params.m))) = eps;
     end
     T = log(T);
@@ -61,8 +62,8 @@ function G = genHumanG(params)
     G = log(G);
 end
 
-function startT = genHumanStartT(params, mixed)
-    if mixed
+function startT = genHumanStartT(params, canCrossLayer)
+    if canCrossLayer
         startT = log([ones(params.m - params.backgroundAmount, 1) * eps; ones(params.backgroundAmount, 1) * (1 - (eps * (params.m - params.backgroundAmount))) / params.backgroundAmount]);
     else
         startT = log(ones(params.m, 1) ./ params.m);
@@ -86,9 +87,9 @@ function E = genHumanE(params)
 end
 
 
-function theta = genHumanTheta(params, mixed)
+function theta = genHumanTheta(params, canCrossLayer)
     theta.E = genHumanE(params);
-    theta.T = genHumanT(params, mixed);
+    theta.T = genHumanT(params, canCrossLayer);
     theta.G = genHumanG(params);
     T = exp(theta.T);
     G = exp(theta.G) * 3;
@@ -96,5 +97,5 @@ function theta = genHumanTheta(params, mixed)
     s = sum(T, 2) + sum(G, 2);
     theta.T = log(T ./ repmat(s, [1, params.m]));
     theta.G = log(G ./ repmat(s, [1, params.k]));
-    theta.startT = genHumanStartT(params, mixed);
+    theta.startT = genHumanStartT(params, canCrossLayer);
 end
