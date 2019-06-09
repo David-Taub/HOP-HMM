@@ -1,14 +1,23 @@
 
-% mainScatterEM(multiEnhancers, 5, 40, false, false);
+function mainScatterEM()
+    m = 3
+    backgroundAmount = 0
+    k = 5
+    doResample = false
+    doESharing = false
+    doBound = false
+    main(m, backgroundAmount, k, doResample, doESharing, doBound);
+end
+
 % doResample - if True will resample G of mode if is too similar to another mode (uses threshold)
 % doESharing - Each EM iteration, averaging the E across all modes, and using the average in all modes
-function mainScatterEM(m, k, doResample, doESharing, doBound)
+function main(m, backgroundAmount, k, doResample, doESharing, doBound)
     dbstop if error
     close all;
     N = 3000;
     L = 1000;
     maxIters = 1000;
-    params = misc.genParams(m, k);
+    params = misc.genParams(m, k, backgroundAmount);
 
     mergedPeaksMin = mainGenSequences(N, L, params, canCrossLayer);
     [test, train] = crossValidationSplit(params, mergedPeaksMin, 0.01);
@@ -21,7 +30,7 @@ function mainScatterEM(m, k, doResample, doESharing, doBound)
 end
 
 function theta = permThetaByAnother(params, thetaOrig, thetaEst, perm)
-    perm = findCorrectPermute(params, thetaOrig, thetaEst);
+    perm = findCorrectThetaPermute(params, thetaOrig, thetaEst);
     theta = permTheta(thetaEst, perm);
 end
 
@@ -41,7 +50,7 @@ function mat = thetaToMat(params, theta)
 end
 
 % perm - m x 1
-function perm = findCorrectPermute(params, thetaOrig, thetaEst)
+function perm = findCorrectThetaPermute(params, thetaOrig, thetaEst)
     % to vec
     vectorizedOrig = thetaToMat(params, thetaOrig)
     vectorizedEst = thetaToMat(params, thetaEst)

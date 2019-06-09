@@ -1,10 +1,11 @@
 % m - number of base states in the model
 % k - number of sub states each base state has in the model
-function params = genParams(m, k, backroundAmount)
+% backgroundAmount - number of background states
+function params = genParams(m, k, backgroundAmount)
 
     params.m = m;
     params.order = 3;
-    params.backroundAmount = backroundAmount;
+    params.backgroundAmount = backgroundAmount;
     [params.PWMs, params.lengths, params.names] = misc.PWMs();
 
     params.backgroundRatio = 0.90;
@@ -16,11 +17,11 @@ function params = genParams(m, k, backroundAmount)
     PTotalBaseToOthers = 1 / ((1 - params.enhancerMotifsRatio) * params.enhancerLength);
 
     params.PTotalBaseToSub = misc.ratio2TransitionProb(mean(params.lengths, 2), params.enhancerMotifsRatio);
-    params.PBackgroundToEnhancer = misc.ratio2TransitionProb(meanEnhancerLength, 1 - params.backgroundRatio) / ((params.m - 1) * params.backroundAmount);
-    params.PEnhancerToBackground = PTotalBaseToOthers * (1 - params.crossEnhancer) / params.backroundAmount;
-    params.PCrossEnhancers = PTotalBaseToOthers * params.crossEnhancer / (params.m - 1 - params.backroundAmount);
+    params.PBackgroundToEnhancer = misc.ratio2TransitionProb(meanEnhancerLength, 1 - params.backgroundRatio) / ((params.m - 1) * params.backgroundAmount);
+    params.PEnhancerToBackground = PTotalBaseToOthers * (1 - params.crossEnhancer) / params.backgroundAmount;
+    params.PCrossEnhancers = PTotalBaseToOthers * params.crossEnhancer / (params.m - 1 - params.backgroundAmount);
 
-    if params.m - params.backroundAmount == 1
+    if params.m - params.backgroundAmount == 1
         params.PCrossEnhancers = 0;
     end
 
@@ -37,7 +38,7 @@ function params = genParams(m, k, backroundAmount)
     params.maxMotif = (1/10) ./ params.k;
     params.maxBgMotif = (1/2000) ./ params.k;
     params.minCrossEnh = eps;
-    params.maxCrossEnh = 1 / (params.minEnhLen * (params.m - params.backroundAmount) * 10)
+    params.maxCrossEnh = 1 / (params.minEnhLen * (params.m - params.backgroundAmount) * 10)
     params.minEnhMotif = eps;
     params.minBgMotif = eps;
 
@@ -76,38 +77,38 @@ end
 
 function [minT, minG] = genMinGT(params)
     minStayEnh = 1 - (1 / params.minEnhLen);
-    minStayBg = 1 - (params.backroundAmount / params.minBgLen);
-    minCrossBg = params.backroundAmount / params.maxBgLen;
+    minStayBg = 1 - (params.backgroundAmount / params.minBgLen);
+    minCrossBg = params.backgroundAmount / params.maxBgLen;
     minBgToEnh = 1 / params.maxBgLen;
-    minEnhToBg = 1 / (params.maxEnhLen * params.backroundAmount);
+    minEnhToBg = 1 / (params.maxEnhLen * params.backgroundAmount);
 
     minT = ones(params.m) .* params.minCrossEnh;
-    minT(params.m - params.backroundAmount + 1: end, params.m - params.backroundAmount + 1: end) = minCrossBg;
+    minT(params.m - params.backgroundAmount + 1: end, params.m - params.backgroundAmount + 1: end) = minCrossBg;
     minT(eye(params.m) == 1) = minStayEnh;
-    minT(:, params.m - params.backroundAmount + 1: end) = minEnhToBg;
-    minT(params.m - params.backroundAmount + 1:end, :) = minBgToEnh;
-    for t = params.m - params.backroundAmount + 1:params.m
+    minT(:, params.m - params.backgroundAmount + 1: end) = minEnhToBg;
+    minT(params.m - params.backgroundAmount + 1:end, :) = minBgToEnh;
+    for t = params.m - params.backgroundAmount + 1:params.m
         minT(t, t) = minStayBg;
     end
     minG = ones(params.m, params.k) .* params.minEnhMotif;
-    minG(params.m - params.backroundAmount + 1:end, :) = params.minBgMotif;
+    minG(params.m - params.backgroundAmount + 1:end, :) = params.minBgMotif;
 end
 
 function [maxT, maxG] = genMaxGT(params)
     maxStayEnh = 1 - (1 / params.maxEnhLen);
-    maxStayBg = 1 - (params.backroundAmount / params.maxBgLen);
-    maxCrossBg = params.backroundAmount / params.minBgLen;
+    maxStayBg = 1 - (params.backgroundAmount / params.maxBgLen);
+    maxCrossBg = params.backgroundAmount / params.minBgLen;
     maxBgToEnh = 1 / params.minBgLen;
-    maxEnhToBg = 1 / (params.minEnhLen * params.backroundAmount);
+    maxEnhToBg = 1 / (params.minEnhLen * params.backgroundAmount);
 
     maxT = ones(params.m) .* params.maxCrossEnh;
-    maxT(params.m - params.backroundAmount + 1: end, params.m - params.backroundAmount + 1: end) = maxCrossBg;
+    maxT(params.m - params.backgroundAmount + 1: end, params.m - params.backgroundAmount + 1: end) = maxCrossBg;
     maxT(eye(params.m) == 1) = maxStayEnh;
-    maxT(:, params.m - params.backroundAmount + 1: end) = maxEnhToBg;
-    maxT(params.m - params.backroundAmount + 1:end, :) = maxBgToEnh;
-    for t = params.m - params.backroundAmount + 1:params.m
+    maxT(:, params.m - params.backgroundAmount + 1: end) = maxEnhToBg;
+    maxT(params.m - params.backgroundAmount + 1:end, :) = maxBgToEnh;
+    for t = params.m - params.backgroundAmount + 1:params.m
         maxT(t, t) = maxStayBg;
     end
     maxG = ones(params.m, params.k) .* params.maxMotif;
-    maxG(params.m - params.backroundAmount + 1:end, :) = params.maxBgMotif;
+    maxG(params.m - params.backgroundAmount + 1:end, :) = params.maxBgMotif;
 end
