@@ -15,19 +15,9 @@ function mainScatterEM(m, k, doResample, doESharing, doBound)
     [thetaEst, ~] = EM.EM(train, params, maxIters, doResample, doESharing, doBound);
     thetaOrig = mergedPeaksMin.theta;
     thetaEst = permThetaByAnother(params, thetaOrig, thetaEst, perm)
-
-    % show.showTheta(theta);
-    % YEst = misc.viterbi(theta, params, train.X, train.pcPWMp);
-    % theta = permuteTheta(theta, params, train.Y(:, :), YEst(:, :, 1));
-
-    % classify(theta, params, train);
-    % [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, train.X, train.pcPWMp);
-    % show.seqSampleCertainty(params, train.Y, gamma, psi, 8, false);
-
-    % classify(theta, params, test);
-    % [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, test.X, test.pcPWMp);
-    % show.seqSampleCertainty(params, test.Y, gamma, psi, 8, false);
-    % keyboard
+    thetaOrigMat = thetaToMat(params, thetaOrig);
+    thetaEstMat = thetaToMat(params, thetaEst);
+    scatter(thetaOrigMat(:), thetaEstMat(:));
 end
 
 function theta = permThetaByAnother(params, thetaOrig, thetaEst, perm)
