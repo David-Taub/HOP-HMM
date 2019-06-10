@@ -42,7 +42,7 @@ function [X, Y] = genSequences(theta, params, N, L)
                 end
                 if t <= L
                     if mod(t, 20) == 0
-                        fprintf('%d', state);
+                        fprintf('%d', yt);
                     end
                     X(j, t) = emitBaseState(X, params, E, t, yt, j);
                     Y(j, t, 1) = yt;
@@ -50,14 +50,14 @@ function [X, Y] = genSequences(theta, params, N, L)
                     t = t + 1;
                 end
             else
-                if mod(t, 20) == 0
-                    fprintf('%d', state);
-                end
                 ytNext = state;
-                X(j, t) = emitBaseState(X, params, E, t, ytNext, j);
-                if ytNext ~= yt
-                    fprintf('(%d>%d)', yt, ytNext);
+                if mod(t, 20) == 0
+                    fprintf('%d', ytNext);
                 end
+                X(j, t) = emitBaseState(X, params, E, t, ytNext, j);
+                % if ytNext ~= yt
+                %     fprintf('(%d>%d)', yt, ytNext);
+                % end
                 Y(j, t, 1) = ytNext;
                 Y(j, t, 2) = 0;
                 t = t + 1;
