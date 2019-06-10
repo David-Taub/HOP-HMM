@@ -1,5 +1,5 @@
 function ret = logMatSum(A, dim)
-    assert(size(A, dim) > 0)
+    assert(size(A, dim) > 0);
     % ret = logMatSum2(A, dim, 1, size(A, dim));
     % ret = logMatSum1(A, dim);
     ret = logMatSum3(A, dim);
@@ -24,7 +24,7 @@ function ret = logMatSum3(A, dim)
     Asub = A - repmat(Amax, repSize);
     ret = Amax + log(sum(exp(Asub), dim));
     ret(Amax == -inf) = -inf;
-    assert(not(any(isnan(ret(:)))))
+    assert(not(any(isnan(ret(:)))));
 end
 
 % slower, but calculation error should be smaller

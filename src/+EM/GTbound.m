@@ -1,7 +1,8 @@
-% this code is very dirty it is built out of heuristics that help the algorithm converge to the correct result
+% TODO:this code is very dirty it is built out of heuristics
+% help the algorithm converge to the correct result
 % G - m x k
 % T - m x m
-function [G, T, startT] = GTbound(params, G, T, doResample)
+function [G, T] = GTbound(params, G, T, doResample)
     if params.m == 1
         return;
     end
@@ -9,40 +10,18 @@ function [G, T, startT] = GTbound(params, G, T, doResample)
     T = exp(T);
     originG = G;
     originT = T;
-
-
-    params.maxT < T
-    params.minT > T
-    sum(params.maxG < G, 2)
-    sum(params.minG > G, 2)
-
-    for i = 1:5
-        T = max(T, params.minT);
-        G = max(G, params.minG);
-        T = min(T, params.maxT);
-        G = min(G, params.maxG);
-        s = sum(G, 2) + sum(T, 2);
-
-        T = T ./ repmat(s, [1, params.m]);
-        G = G ./ repmat(s, [1, params.k]);
-    end
-
+    T(T > params.maxT) = params.maxT(T > params.maxT);
+    G(G > params.maxG) = params.maxG(G > params.maxG);
+    T(eye(params.m) == 1) = T(eye(params.m) == 1) + 1 - sum(T, 2) - sum(G, 2);
     if doResample
-        G = makeDifferent(params, G);
+        G = resampleG(params, G);
     end
-    % [G, T] = balanceGTweights(params, G, T);
-    % T = limitTDiag(params, T);
-    T = limitCrossEnhancers(params, T, params.PCrossEnhancers);
-
-    % force always start in one of the backgrounds modes
-    startT = [ones(params.m - params.backgroundAmount, 1) * eps; ones(params.backgroundAmount, 1) * (1 - (eps * (params.m - params.backgroundAmount))) / params.backgroundAmount];
     fprintf('%d/%d (G) and %d/%d (T) changed in bounding process\n', sum(sum(originG ~= G, 2), 1), params.m * params.k, sum(sum(originT ~= T, 2), 1), params.m ^ 2);
     G = log(G);
     T = log(T);
-    startT = log(startT);
 end
 
-function G = makeDifferent(params, G)
+function G = resampleG(params, G)
 
     [m, k] = size(G);
     for i = 1:m

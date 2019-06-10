@@ -20,11 +20,15 @@ function [X, Y] = genSequences(theta, params, N, L)
         while t <= L
             yt = Y(j, t-1, 1);
             state = sampleMultiVarDist([T(yt, :), G(yt, :)]');
+
             if params.m < state
                 % PWM step
                 motif = state - params.m;
-                fprintf('[%d]',motif)
+                % fprintf('[%d]', motif)
                 for i=1:params.lengths(motif)
+                    if mod(t, 20) == 0
+                        fprintf('*');
+                    end
                     X(j, t) = sampleMultiVarDist(params.PWMs(motif, :, i)');
                     % fprintf('%d',X(j, t))
                     Y(j, t, 1) = yt;
@@ -37,16 +41,22 @@ function [X, Y] = genSequences(theta, params, N, L)
                     end
                 end
                 if t <= L
+                    if mod(t, 20) == 0
+                        fprintf('%d', state);
+                    end
                     X(j, t) = emitBaseState(X, params, E, t, yt, j);
                     Y(j, t, 1) = yt;
                     Y(j, t, 2) = 0;
                     t = t + 1;
                 end
             else
+                if mod(t, 20) == 0
+                    fprintf('%d', state);
+                end
                 ytNext = state;
                 X(j, t) = emitBaseState(X, params, E, t, ytNext, j);
                 if ytNext ~= yt
-                    fprintf('(%d>%d)', yt, ytNext)
+                    fprintf('(%d>%d)', yt, ytNext);
                 end
                 Y(j, t, 1) = ytNext;
                 Y(j, t, 2) = 0;

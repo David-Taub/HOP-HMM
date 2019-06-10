@@ -6,8 +6,8 @@ function mainScatterEM()
     conf.doResample = false
     conf.doESharing = false
     conf.doBound = true
-    conf.N = 3000;
-    conf.L = 1000;
+    conf.N = 40;
+    conf.L = 100;
     conf.maxIters = 1000;
     conf.canCrossLayer = true;
     conf.patience = 3;
@@ -24,49 +24,9 @@ function main(conf)
     [test, train] = crossValidationSplit(params, mergedPeaksMin, 0.01);
     [thetaEst, ~] = EM.EM(train, params, conf.maxIters, conf.doResample, conf.doESharing, conf.doBound, conf.patience);
     thetaOrig = mergedPeaksMin.theta;
-    thetaEst = permThetaByAnother(params, thetaOrig, thetaEst);
-    show.showTwoThetas(params, thetaOrig, thetaEst, true)
-    show.showTwoThetas(params, thetaOrig, thetaEst, false)
+    show.showTwoThetas(params, thetaOrig, thetaEst, true);
+    show.showTwoThetas(params, thetaOrig, thetaEst, false);
 end
-
-function theta = permThetaByAnother(params, thetaOrig, thetaEst)
-    perm = findCorrectThetaPermute(params, thetaOrig, thetaEst);
-    theta = permTheta(thetaEst, perm);
-end
-
-function theta = permTheta(theta, perm)
-    theta.T = theta.T(perm, :);
-    theta.startT = theta.startT(perm);
-    theta.G = theta.G(perm, :);
-    for i = 1:length(perm)
-        theta.E(i, :) = theta.E(perm(i), :);
-    end
-end
-
-function mat = thetaToMat(params, theta)
-    mat = zeros(params.m, 1 + params.m + (params.n ^ params.order) + params.k);
-    for i = 1:params.m
-        mat(i, :) = [theta.T(i, :), theta.E(i, :), theta.G(i, :), theta.startT(i)];
-    end
-end
-
-% perm - m x 1
-function perm = findCorrectThetaPermute(params, thetaOrig, thetaEst)
-    % to vec
-    vectorizedOrig = thetaToMat(params, thetaOrig);
-    vectorizedEst = thetaToMat(params, thetaEst);
-    distMat = vectorizedOrig * vectorizedEst';
-    % distMat = squareform(pdist(vectorized));
-    perm = zeros(params.m, 1);
-    for i = 1:params.m
-        [~, I] = max(distMat(:));
-        [I_row, I_col] = ind2sub(size(distMat), I);
-        perm(I_col) = I_row;
-        distMat(I_row, :) = -1;
-        distMat(:, I_col) = -1;
-    end
-end
-
 
 function [test, train] = crossValidationSplit(params, mergedPeaksMin, testTrainRatio)
     L = size(mergedPeaksMin.seqs, 2);
