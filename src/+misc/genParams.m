@@ -26,7 +26,7 @@ function params = genParams(m, k, backgroundAmount)
     end
 
     params.maxPRatio = 3;
-    params.batchSize = 2;
+    params.batchSize = 20;
     [kMax, params.n, params.J] = size(params.PWMs);
     params.k = min(k, kMax);
 

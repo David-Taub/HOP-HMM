@@ -1,5 +1,5 @@
 
-function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doResample, doESharing, doBound)
+function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doResample, doESharing, doBound, patience)
     % X - N x L emission variables
     % m - amount of possible states (y)
     % n - amount of possible emissions (x)
@@ -24,7 +24,11 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doResample, 
     for rep = 1:repeat
         % X = X(randperm(N), :);
         initTheta = misc.genTheta(params, true);
-        [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doResample, doESharing, doBound);
+        if params.batchSize > 0
+            [iterLike, theta] = singleRunEMBatch(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doResample, doESharing, doBound, patience);
+        else
+            [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doResample, doESharing, doBound, patience);
+        end
         if bestLikelihood < iterLike(end)
             bestLikelihood = iterLike(end);
             bestTheta = theta;
@@ -32,7 +36,7 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doResample, 
     end
 end
 
-function [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doResample, doESharing, doBound)
+function [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doResample, doESharing, doBound, patience)
     LIKELIHOOD_THRESHOLD = 10 ^ -5;
     theta = initTheta;
     iterLike = [];
@@ -71,6 +75,85 @@ function [iterLike, theta] = singleRunEM(dataset, params, initTheta, maxIter, in
         fprintf('It %d: log-like: %.2f Time: %.2fs, motifs: ~%.2f%% cov: %.2f\n', it, iterLike(end), timeLapse, motifsPer, mean(R(:)));
         if length(iterLike) > 1 && abs((iterLike(end) - iterLike(end-1)) / iterLike(end)) < LIKELIHOOD_THRESHOLD
             fprintf('Converged\n');
+            break
+        end
+        if length(iterLike) > patience && iterLike(end) < iterLike(end - patience)
+            fprintf('Patience reached, Converged\n');
+            break
+        end
+        % show.showTheta(theta);
+    end % end of iterations loop
+ end
+
+
+function [iterLike, theta] = singleRunEMBatch(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doResample, doESharing, doBound, patience)
+    LIKELIHOOD_THRESHOLD = 10 ^ -5;
+    theta = initTheta;
+    iterLike = [];
+
+    for it = 1:maxIter
+        tic
+        N = size(dataset.X, 1);
+        batchAmount = ceil(N / params.batchSize);
+        updatedTheta = theta
+        updatedTheta.T = updatedTheta.T * 0;
+        updatedTheta.E = updatedTheta.E * 0;
+        updatedTheta.G = updatedTheta.G * 0;
+        updatedTheta.startT = updatedTheta.startT * 0;
+
+        for u = 1:batchAmount
+            % N x m x k+m x L
+            batchMask = mod(1:N, batchAmount) == u - 1;
+            XBatch = dataset.X(batchMask, :);
+
+            % alpha - N x m x L
+            % beta - N x m x L
+            % pX - N x 1
+            % xi - N x m x m x L
+            % gamma - N x m x L
+            % psi - N x m x k x L
+
+            [alpha, beta, pX, xi, gamma, psi] = EM.EStep(params, theta, XBatch, dataset.pcPWMp);
+            % close all;
+            % show.showTheta(theta);
+            % show.seqSampleCertainty(params, dataset.Y, gamma, psi, 8, true);
+            E = updateE(gamma, params, indicesHotMap);
+            % drawStatus(theta, params, alpha, beta, gamma, pX, xi, psi);
+            if doESharing
+                % theta.E = log(repmat(mean(exp(theta.E), 1), [params.n, ones(1, params.order)]));
+                E(1:end - params.backgroundAmount, :) = repmat(log(mean(exp(E(1:end - params.backgroundAmount, :)), 1)), [params.n - params.backgroundAmount, 1]);
+            end
+            fprintf('. ');
+            startT = updateStartT(gamma);
+            [G, T, startT] = updateGT(params, theta, xi, gamma, psi, doResample, doBound);
+            updatedTheta.T = updatedTheta.T + T;
+            updatedTheta.E = updatedTheta.E + E;
+            updatedTheta.G = updatedTheta.G + G;
+            updatedTheta.startT = updatedTheta.startT + startT;
+
+        end
+        updatedTheta.T = updatedTheta.T / batchAmount;
+        updatedTheta.E = updatedTheta.E / batchAmount;
+        updatedTheta.G = updatedTheta.G / batchAmount;
+        updatedTheta.startT = updatedTheta.startT / batchAmount;
+        iterLike(end+1) = matUtils.logMatSum(pX, 1);% / (N*L);
+
+        assert(not(any(isnan(theta.T(:)))))
+        assert(not(any(isnan(theta.E(:)))))
+        assert(not(any(isnan(theta.G(:)))))
+        assert(not(any(isnan(alpha(:)))))
+        assert(not(any(isnan(beta(:)))))
+
+        motifsPer = sum(exp(theta.G(:)), 1).*100;
+        timeLapse = toc();
+        R = cov(theta.G);
+        fprintf('It %d: log-like: %.2f Time: %.2fs, motifs: ~%.2f%% cov: %.2f\n', it, iterLike(end), timeLapse, motifsPer, mean(R(:)));
+        if length(iterLike) > 1 && abs((iterLike(end) - iterLike(end-1)) / iterLike(end)) < LIKELIHOOD_THRESHOLD
+            fprintf('Converged\n');
+            break
+        end
+        if length(iterLike) > patience && iterLike(end) < iterLike(end - patience)
+            fprintf('Patience reached, Converged\n');
             break
         end
         % show.showTheta(theta);
@@ -149,22 +232,46 @@ end
 function [newG, newT, newStartT] = updateGT(params, theta, xi, gamma, psi, doResample, doBound)
     [N, ~, L] = size(gamma);
 
-    % note: batch trick is used to reduce the
-    % calculation errors due to summing
-    % many very small numbers in log space
-
-    % N x m x k x L
-    batchAmount = ceil(N / params.batchSize);
     % N x m x k+m x L
     psiXiMerged = cat(3, psi, xi);
     psiXiMerged = psiXiMerged(:, :, :, 1:end-params.J);
     % psiXiMerged = psiXiMerged - permute(repmat(gamma(:,:,1:end-params.J), [1, 1, 1, params.k+params.m]), [1,2,4,3]);
 
     psiXiMerged = matUtils.logMatSum(psiXiMerged, 4);
+    mergedAveraged = matUtils.logMatSum(psiXiMerged, 1);
+    mergedAveraged = matUtils.logMakeDistribution(mergedAveraged);
+    mergedAveraged = permute(mergedAveraged, [2,3,1]);
+    G = mergedAveraged(:, 1:params.k);
+    T = mergedAveraged(:, params.k+1:end);
+    if doBound
+        [newG, newT, newStartT] = EM.GTbound(params, G, T, doResample);
+    else
+        newG = G;
+        newT = T;
+        newStartT = theta.startT;
+    end
+end
+% alpha - N x m x L
+% beta - N x m x L
+% gamma - N x m x L
+% xi - N x m x m x L
+% psi - N x m x k x L
+% newG - m x k
+% newT - m x m
+function [newG, newT, newStartT] = updateGTLowMem(params, theta, xi, gamma, psi, doResample, doBound)
+    [N, ~, L] = size(gamma);
+
+    % N x m x k x L
+    batchAmount = ceil(N / params.batchSize);
     mergedBatches = -inf(batchAmount, params.m, params.k+params.m);
     for u = 1:batchAmount
+    % N x m x k+m x L
         batchMask = mod(1:N, batchAmount) == u-1;
-        batch = psiXiMerged(batchMask, :, :);
+        psiXiMerged = cat(3, psi(batchMask, :, :), xi(batchMask, :, :));
+        psiXiMerged = psiXiMerged(:, :, :, 1:end-params.J);
+        % psiXiMerged = psiXiMerged - permute(repmat(gamma(:,:,1:end-params.J), [1, 1, 1, params.k+params.m]), [1,2,4,3]);
+
+        batch = matUtils.logMatSum(psiXiMerged, 4);
         % batchSize x m x k+m x L-J
         mergedBatches(u, :, :) = matUtils.logMatSum(batch, 1);
         mergedBatches(u, :, :) = matUtils.logMakeDistribution(mergedBatches(u, :, :));
@@ -183,6 +290,5 @@ function [newG, newT, newStartT] = updateGT(params, theta, xi, gamma, psi, doRes
         newT = T;
         newStartT = theta.startT;
     end
-
 end
 

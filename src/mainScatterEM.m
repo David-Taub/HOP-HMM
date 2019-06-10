@@ -1,15 +1,16 @@
 
 function mainScatterEM()
-    conf.m = 3
+    conf.m = 5
     conf.backgroundAmount = 0
-    conf.k = 5
+    conf.k = 20
     conf.doResample = false
     conf.doESharing = false
-    conf.doBound = false
-    conf.N = 100;
-    conf.L = 500;
+    conf.doBound = true
+    conf.N = 3000;
+    conf.L = 1000;
     conf.maxIters = 1000;
     conf.canCrossLayer = true;
+    conf.patience = 3;
     main(conf);
 end
 
@@ -19,16 +20,42 @@ function main(conf)
     dbstop if error
     close all;
     params = misc.genParams(conf.m, conf.k, conf.backgroundAmount);
-
     mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.canCrossLayer);
     [test, train] = crossValidationSplit(params, mergedPeaksMin, 0.01);
-    [thetaEst, ~] = EM.EM(train, params, conf.maxIters, conf.doResample, conf.doESharing, conf.doBound);
+    [thetaEst, ~] = EM.EM(train, params, conf.maxIters, conf.doResample, conf.doESharing, conf.doBound, conf.patience);
     thetaOrig = mergedPeaksMin.theta;
     thetaEst = permThetaByAnother(params, thetaOrig, thetaEst);
+    showTwoThetas(params, thetaOrig, thetaEst, true)
+    showTwoThetas(params, thetaOrig, thetaEst, false)
+end
+
+
+function showTwoThetas(params, thetaOrig, thetaEst, withExponent)
+    DOT_SIZE = 20
     thetaOrigMat = thetaToMat(params, thetaOrig);
     thetaEstMat = thetaToMat(params, thetaEst);
+    inds = [params.m, params.n ^ params.order, params.k, 1]
+    colors = ['b', 'r', 'g', 'm']
     figure;
-    scatter(exp(thetaOrigMat(:)), exp(thetaEstMat(:)));
+    hold on;
+    if withExponent
+        thetaOrigMat = exp(thetaOrigMat);
+        thetaEstMat = exp(thetaEstMat);
+        minVal = floor(min([thetaEstMat(:); thetaOrigMat(:)]))
+        maxVal = ceil(max([thetaEstMat(:); thetaOrigMat(:)]))
+        plot([minVal, maxVal], [minVal, maxVal])
+    end
+    for i=1:4
+        origMat = thetaOrigMat(:, 1:inds(i));
+        thetaOrigMat = thetaOrigMat(:, inds(i)+1:end);
+        estMat = thetaEstMat(:, 1:inds(i));
+        thetaEstMat = thetaEstMat(:,  inds(i)+1:end);
+        scatter(exp(origMat(:)), exp(estMat(:)), DOT_SIZE, colors(i), 'filled');
+    end
+    legend('x=y', 'T', 'E', 'G', 'startT')
+    title('Learned Parameters vs True Parameters')
+    xlabel('True')
+    ylabel('Estimated')
 end
 
 function theta = permThetaByAnother(params, thetaOrig, thetaEst)

@@ -46,14 +46,14 @@ function T = genHumanT(params, canCrossLayer)
 end
 
 function G = genHumanG(params)
-    BACKGROUND_G_NOISE = 0.0005;
-    NUM_OF_NONZEROS = 1;
+    BACKGROUND_G_NOISE = 0.3;
+    NUM_OF_NONZEROS = 3;
     G = zeros(params.m, params.k);
     for i = 1:params.m - params.backgroundAmount
-        % G(i, :) = mod(1:params.k, params.m) == (i-1);
         G(i, :) = eps;
-        % G(i, datasample(1:params.k, NUM_OF_NONZEROS)) = 1;
-        G(i, i) = 1;
+        G(i, datasample(1:params.k, NUM_OF_NONZEROS)) = 1;
+        % G(i, :) = G(i, :) + (mod(1:params.k, params.m) == (i-1));
+        % G(i, i) = G(i, :) + 1;
     end
     G = G + (rand(params.m, params.k) .* BACKGROUND_G_NOISE);
     G = G ./ repmat(sum(G, 2), [1, params.k]);
