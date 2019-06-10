@@ -25,37 +25,8 @@ function main(conf)
     [thetaEst, ~] = EM.EM(train, params, conf.maxIters, conf.doResample, conf.doESharing, conf.doBound, conf.patience);
     thetaOrig = mergedPeaksMin.theta;
     thetaEst = permThetaByAnother(params, thetaOrig, thetaEst);
-    showTwoThetas(params, thetaOrig, thetaEst, true)
-    showTwoThetas(params, thetaOrig, thetaEst, false)
-end
-
-
-function showTwoThetas(params, thetaOrig, thetaEst, withExponent)
-    DOT_SIZE = 20
-    thetaOrigMat = thetaToMat(params, thetaOrig);
-    thetaEstMat = thetaToMat(params, thetaEst);
-    inds = [params.m, params.n ^ params.order, params.k, 1]
-    colors = ['b', 'r', 'g', 'm']
-    figure;
-    hold on;
-    if withExponent
-        thetaOrigMat = exp(thetaOrigMat);
-        thetaEstMat = exp(thetaEstMat);
-        minVal = floor(min([thetaEstMat(:); thetaOrigMat(:)]))
-        maxVal = ceil(max([thetaEstMat(:); thetaOrigMat(:)]))
-        plot([minVal, maxVal], [minVal, maxVal])
-    end
-    for i=1:4
-        origMat = thetaOrigMat(:, 1:inds(i));
-        thetaOrigMat = thetaOrigMat(:, inds(i)+1:end);
-        estMat = thetaEstMat(:, 1:inds(i));
-        thetaEstMat = thetaEstMat(:,  inds(i)+1:end);
-        scatter(exp(origMat(:)), exp(estMat(:)), DOT_SIZE, colors(i), 'filled');
-    end
-    legend('x=y', 'T', 'E', 'G', 'startT')
-    title('Learned Parameters vs True Parameters')
-    xlabel('True')
-    ylabel('Estimated')
+    show.showTwoThetas(params, thetaOrig, thetaEst, true)
+    show.showTwoThetas(params, thetaOrig, thetaEst, false)
 end
 
 function theta = permThetaByAnother(params, thetaOrig, thetaEst)
