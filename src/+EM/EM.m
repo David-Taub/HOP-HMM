@@ -114,14 +114,17 @@ end
 % indicesHotMap - N x L x maxEIndex
 % gamma - N x m x L
 % E - m x 4 x 4 x 4 x ... x 4 (order times)
-function newE = updateE(gamma, params, indicesHotMap)
+function newE = updateE(gamma, params, kmerIndicesHotMap)
     %  m x N x L + J
     % m x N x L
-    perGamma = permute(gamma, [2, 1, 3]);
+    permGamma = permute(gamma, [2, 1, 3]);
     newE = -inf([params.m, params.n * ones(1, params.order)]);
     for i = 1:(params.n ^ params.order)
         % m x N x L -> m x 1
-        newE(:, i) = matUtils.logMatSum(perGamma(:, indicesHotMap(:, :, i)), 2);
+        kmerPosteriorProb = permGamma(:, kmerIndicesHotMap(:, :, i));
+        if size(kmerPosteriorProb, 2) > 0 
+            newE(:, i) = matUtils.logMatSum(kmerPosteriorProb, 2);
+        end
     end
     newE = matUtils.logMakeDistribution(newE);
 end

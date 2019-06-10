@@ -1,41 +1,44 @@
 
 function mainScatterEM()
-    m = 3
-    backgroundAmount = 0
-    k = 5
-    doResample = false
-    doESharing = false
-    doBound = false
-    main(m, backgroundAmount, k, doResample, doESharing, doBound);
+    conf.m = 3
+    conf.backgroundAmount = 0
+    conf.k = 5
+    conf.doResample = false
+    conf.doESharing = false
+    conf.doBound = false
+    conf.N = 100;
+    conf.L = 500;
+    conf.maxIters = 1000;
+    conf.canCrossLayer = true;
+    main(conf);
 end
 
 % doResample - if True will resample G of mode if is too similar to another mode (uses threshold)
 % doESharing - Each EM iteration, averaging the E across all modes, and using the average in all modes
-function main(m, backgroundAmount, k, doResample, doESharing, doBound)
+function main(conf)
     dbstop if error
     close all;
-    N = 3000;
-    L = 1000;
-    maxIters = 1000;
-    params = misc.genParams(m, k, backgroundAmount);
+    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount);
 
-    mergedPeaksMin = mainGenSequences(N, L, params, canCrossLayer);
+    mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.canCrossLayer);
     [test, train] = crossValidationSplit(params, mergedPeaksMin, 0.01);
-    [thetaEst, ~] = EM.EM(train, params, maxIters, doResample, doESharing, doBound);
+    [thetaEst, ~] = EM.EM(train, params, conf.maxIters, conf.doResample, conf.doESharing, conf.doBound);
     thetaOrig = mergedPeaksMin.theta;
-    thetaEst = permThetaByAnother(params, thetaOrig, thetaEst, perm)
+    thetaEst = permThetaByAnother(params, thetaOrig, thetaEst);
     thetaOrigMat = thetaToMat(params, thetaOrig);
     thetaEstMat = thetaToMat(params, thetaEst);
-    scatter(thetaOrigMat(:), thetaEstMat(:));
+    figure;
+    scatter(exp(thetaOrigMat(:)), exp(thetaEstMat(:)));
 end
 
-function theta = permThetaByAnother(params, thetaOrig, thetaEst, perm)
+function theta = permThetaByAnother(params, thetaOrig, thetaEst)
     perm = findCorrectThetaPermute(params, thetaOrig, thetaEst);
     theta = permTheta(thetaEst, perm);
 end
 
 function theta = permTheta(theta, perm)
     theta.T = theta.T(perm, :);
+    theta.startT = theta.startT(perm);
     theta.G = theta.G(perm, :);
     for i = 1:length(perm)
         theta.E(i, :) = theta.E(perm(i), :);
@@ -43,17 +46,17 @@ function theta = permTheta(theta, perm)
 end
 
 function mat = thetaToMat(params, theta)
-    mat = zeros(params.m, params.m + (params.n ^ params.order) + params.J);
+    mat = zeros(params.m, 1 + params.m + (params.n ^ params.order) + params.k);
     for i = 1:params.m
-        mat(i, :) = [theta.T(i, :), theta.E(i, :), theta.G(i, :)];
+        mat(i, :) = [theta.T(i, :), theta.E(i, :), theta.G(i, :), theta.startT(i)];
     end
 end
 
 % perm - m x 1
 function perm = findCorrectThetaPermute(params, thetaOrig, thetaEst)
     % to vec
-    vectorizedOrig = thetaToMat(params, thetaOrig)
-    vectorizedEst = thetaToMat(params, thetaEst)
+    vectorizedOrig = thetaToMat(params, thetaOrig);
+    vectorizedEst = thetaToMat(params, thetaEst);
     distMat = vectorizedOrig * vectorizedEst';
     % distMat = squareform(pdist(vectorized));
     perm = zeros(params.m, 1);

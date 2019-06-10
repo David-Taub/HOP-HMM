@@ -5,7 +5,7 @@ function showTheta(theta)
     imagesc(exp(theta.startT)); colorbar; title('startT')
     caxis([0,1])
     subplot(1,4,2);
-    imagesc(exp(theta.T) - diag(diag(exp(theta.T)))); colorbar; title('T')
+    imagesc(exp(theta.T)); colorbar; title('T')
     subplot(1,4,3);
     imagesc(exp(theta.G)); colorbar; title('G')
     subplot(1,4,4);

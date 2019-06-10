@@ -1,6 +1,6 @@
-function [theta] = genTheta(params, isMixed)
+function [theta] = genTheta(params, startTUniform)
     % normalized random probabilities
-    if isMixed
+    if startTUniform
         theta.startT = log(ones(params.m, 1) ./ params.m);
     else
         theta.startT = log([ones(params.m - 1, 1) * eps; 1 - eps * (params.m - 1)]);

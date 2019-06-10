@@ -1,9 +1,8 @@
 function ret = logMatSum(A, dim)
+    assert(size(A, dim) > 0)
     % ret = logMatSum2(A, dim, 1, size(A, dim));
     % ret = logMatSum1(A, dim);
     ret = logMatSum3(A, dim);
-
-
 end
 
 % faster, but calculation error should be bigger

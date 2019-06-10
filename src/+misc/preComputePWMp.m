@@ -49,6 +49,12 @@ function out = preComputePWMpAux(Xs1H, params)
     pcPWMp = calculate(params, Xs1H);
     sample = newSample;
     assert(not(any(isnan(pcPWMp(:)))))
+
+    [basedir, ~, ~] = fileparts(PC_PWM_PROBABILITY_FILE);
+    if ~exist(basedir, 'dir')
+       mkdir(basedir);
+    end
+    
     save(PC_PWM_PROBABILITY_FILE, 'pcPWMp', 'sample', '-v7.3');
     fprintf('Saved data in %s\n', PC_PWM_PROBABILITY_FILE);
 

@@ -12,20 +12,20 @@ function [X, Y] = genSequences(theta, params, N, L)
         % first letter
         Etemp = matUtils.sumDim(E, 2 : params.order);
         Etemp = bsxfun(@times, Etemp, 1 ./ sum(Etemp, length(size(Etemp))));
-        Y(j, 1, 1) = smrnd(startT);
+        Y(j, 1, 1) = sampleMultiVarDist(startT);
         Y(j, 1, 2) = 0;
-        X(j, 1) = smrnd(Etemp(Y(j, 1), :)');
+        X(j, 1) = sampleMultiVarDist(Etemp(Y(j, 1), :)');
         fprintf('Sequence index %d / %d: %d ', j, N, Y(j, 1, 1));
         t = 2;
         while t <= L
             yt = Y(j, t-1, 1);
-            state = smrnd([T(yt, :), G(yt, :)]');
+            state = sampleMultiVarDist([T(yt, :), G(yt, :)]');
             if params.m < state
                 % PWM step
                 motif = state - params.m;
                 fprintf('[%d]',motif)
                 for i=1:params.lengths(motif)
-                    X(j, t) = smrnd(params.PWMs(motif, :, i)');
+                    X(j, t) = sampleMultiVarDist(params.PWMs(motif, :, i)');
                     % fprintf('%d',X(j, t))
                     Y(j, t, 1) = yt;
                     Y(j, t, 2) = motif;
@@ -73,14 +73,14 @@ function ret = emitBaseState(X, params, E, t, yt, j)
     % params.order x params.n
     subscripts = [repmat([yt ; Xlast'], [1, params.n]); 1:params.n];
     indices = matUtils.matSub2ind(size(Etemp), subscripts);
-    ret = smrnd(Etemp(indices)');
+    ret = sampleMultiVarDist(Etemp(indices)');
 end
 
 
-% P - N x 1
-function ret = smrnd(P)
-    assert(size(P, 2) == 1);
-    assert(abs(sum(P,1) - 1) < 0.01);
-    ret = find(mnrnd(1, P));
+% distribution - N x 1
+function ret = sampleMultiVarDist(distribution)
+    assert(size(distribution, 2) == 1);
+    assert(abs(sum(distribution,1) - 1) < 0.01);
+    ret = find(mnrnd(1, distribution));
 end
 

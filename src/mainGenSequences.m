@@ -58,12 +58,11 @@ function G = genHumanG(params)
     G = G + (rand(params.m, params.k) .* BACKGROUND_G_NOISE);
     G = G ./ repmat(sum(G, 2), [1, params.k]);
     G = G .* params.PTotalBaseToSub;
-    G(end, :) = eps;
     G = log(G);
 end
 
 function startT = genHumanStartT(params, canCrossLayer)
-    if canCrossLayer
+    if canCrossLayer & params.backgroundAmount > 0
         startT = log([ones(params.m - params.backgroundAmount, 1) * eps; ones(params.backgroundAmount, 1) * (1 - (eps * (params.m - params.backgroundAmount))) / params.backgroundAmount]);
     else
         startT = log(ones(params.m, 1) ./ params.m);

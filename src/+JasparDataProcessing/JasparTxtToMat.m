@@ -1,4 +1,4 @@
-function JasparTxtToMat();
+function JasparTxtToMat()
 	dbstop if error
     txtFilePath = '../data/Jaspar/raw/JASPAR_CORE_nonredundant_pfm_vertebrates.txt';
     % txtFilePath = 'data/Jaspar/raw/JASPAR_CORE_redundant_pfm_vertebrates.txt';
