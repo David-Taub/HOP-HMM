@@ -1,14 +1,29 @@
 
 % mainGenSequences(300, 10000, 5, 25, true);
 % mainGenSequences(10000, 500, 5, 25, false);
-function mergedPeaksMin = mainGenSequences(N, L, params, canCrossLayer)
+function mergedPeaksMin = mainGenSequences(N, L, params, startWithBackground)
+    filename = sprintf('mergedPeaksMin_generated_%d%d%d%d%d%d.mat', params.m, params.k, N, L, params.order, params.backgroundAmount)
     dbstop if error
     clear pcPWMp
     close all;
 
+    try
+        mergedPeaksMin = load(fullfile('..', 'data', 'peaks', filename));
+        mergedPeaksMin = mergedPeaksMin.mergedPeaksMin;
+        fprintf('loaded sequences from cache\n')
+        return
+    catch
+        fprintf('generating sequences\n')
+    end
     delete(fullfile('..', 'data', 'precomputation', 'pcPWMp.mat'));
     % params = misc.genParams(m, k);
-    theta = genHumanTheta(params, canCrossLayer);
+    theta = misc.genTheta(params, false);
+    T = exp(theta.T);
+    G = exp(genHumanG(params));
+    theta.T = log(T ./ repmat(sum(T, 2) + sum(G, 2), [1, params.m]));
+    theta.G = log(G ./ repmat(sum(T, 2) + sum(G, 2), [1, params.k]));
+
+    % theta = genHumanTheta(params, startWithBackground);
     show.showTheta(theta);
     [seqs, Y] = misc.genSequences(theta, params, N, L);
     Y2 = Y(:,:,2);
@@ -21,10 +36,10 @@ function mergedPeaksMin = mainGenSequences(N, L, params, canCrossLayer)
     mergedPeaksMin.overlaps = overlaps;
     mergedPeaksMin.lengths = lengths;
     mergedPeaksMin.theta = theta;
-    mergedPeaksMin.Y = Y
+    mergedPeaksMin.Y = Y;
     mergedPeaksMin.Y2 = Y2;
     mergedPeaksMin.tissueNames = tissueNames
-    save(fullfile('..', 'data', 'peaks', 'mergedPeaksMinimized_fake.mat'), 'mergedPeaksMin');
+    save(fullfile('..', 'data', 'peaks', filename), 'mergedPeaksMin');
 end
 
 
@@ -32,7 +47,7 @@ end
 
 
 
-function T = genHumanT(params, canCrossLayer)
+function T = genHumanT(params)
     % T = ones(params.m) * params.PCrossEnhancers;
     % T(eye(params.m) == 1) = 1 - (params.PCrossEnhancers * (params.m-2) + params.PEnhancerToBackground + params.PTotalBaseToSub);
     % T(:, end) = params.PEnhancerToBackground;
@@ -46,23 +61,23 @@ function T = genHumanT(params, canCrossLayer)
 end
 
 function G = genHumanG(params)
-    BACKGROUND_G_NOISE = 0.3;
-    NUM_OF_NONZEROS = 3;
-    G = zeros(params.m, params.k);
+    BACKGROUND_G_NOISE = 0.10;
+    NUM_OF_NONZEROS = 4;
+    G = params.minG;
+    G = G + (rand(params.m, params.k) .* BACKGROUND_G_NOISE * params.maxEnhMotif);
     for i = 1:params.m - params.backgroundAmount
-        G(i, :) = eps;
-        G(i, datasample(1:params.k, NUM_OF_NONZEROS)) = 1;
+        G(i, datasample(1:params.k, ceil(params.k / params.m))) = params.maxEnhMotif;
         % G(i, :) = G(i, :) + (mod(1:params.k, params.m) == (i-1));
         % G(i, i) = G(i, :) + 1;
     end
-    G = G + (rand(params.m, params.k) .* BACKGROUND_G_NOISE);
-    G = G ./ repmat(sum(G, 2), [1, params.k]);
-    G = G .* params.PTotalBaseToSub;
+    % G = G ./ repmat(sum(G, 2), [1, params.k]);
+    % G = G .* params.PTotalBaseToSub;
     G = log(G);
 end
 
-function startT = genHumanStartT(params, canCrossLayer)
-    if canCrossLayer & params.backgroundAmount > 0
+function startT = genHumanStartT(params, startWithBackground)
+
+    if startWithBackground & params.backgroundAmount > 0
         startT = log([ones(params.m - params.backgroundAmount, 1) * eps; ones(params.backgroundAmount, 1) * (1 - (eps * (params.m - params.backgroundAmount))) / params.backgroundAmount]);
     else
         startT = log(ones(params.m, 1) ./ params.m);
@@ -86,7 +101,7 @@ function E = genHumanE(params)
 end
 
 
-function theta = genHumanTheta(params, canCrossLayer)
+function theta = genHumanTheta(params, startWithBackground, canCrossLayer)
     theta.E = genHumanE(params);
     theta.T = genHumanT(params, canCrossLayer);
     theta.G = genHumanG(params);
@@ -96,5 +111,5 @@ function theta = genHumanTheta(params, canCrossLayer)
     s = sum(T, 2) + sum(G, 2);
     theta.T = log(T ./ repmat(s, [1, params.m]));
     theta.G = log(G ./ repmat(s, [1, params.k]));
-    theta.startT = genHumanStartT(params, canCrossLayer);
+    theta.startT = genHumanStartT(params, startWithBackground);
 end

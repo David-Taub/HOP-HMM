@@ -1,31 +1,55 @@
 
 function mainScatterEM()
-    conf.m = 5
-    conf.backgroundAmount = 0
-    conf.k = 20
-    conf.doResample = false
-    conf.doESharing = false
-    conf.doBound = true
-    conf.N = 40;
-    conf.L = 100;
+    conf.doESharing = false;
+    conf.startWithBackground = false;
+    conf.doBound = true;
     conf.maxIters = 1000;
     conf.canCrossLayer = true;
     conf.patience = 3;
+    conf.Xpercents = [0.1, 0.5, 1];
+    conf.L = 1000;
+    conf.N = 6000;
+
+    conf.order = 1;
+    conf.m = 3;
+    conf.k = 5;
+    conf.backgroundAmount = 0
+    main(conf);
+
+    conf.doBound = false;
+    main(conf);
+
+    conf.order = 2;
+    conf.m = 7;
+    conf.k = 10;
+    conf.backgroundAmount = 1
+    main(conf);
+
+    conf.order = 3;
+    conf.m = 10;
+    conf.k = 30;
+    conf.backgroundAmount = 2
     main(conf);
 end
 
-% doResample - if True will resample G of mode if is too similar to another mode (uses threshold)
-% doESharing - Each EM iteration, averaging the E across all modes, and using the average in all modes
 function main(conf)
     dbstop if error
     close all;
-    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount);
-    mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.canCrossLayer);
-    [test, train] = crossValidationSplit(params, mergedPeaksMin, 0.01);
-    [thetaEst, ~] = EM.EM(train, params, conf.maxIters, conf.doResample, conf.doESharing, conf.doBound, conf.patience);
+    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order);
+    mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.startWithBackground);
     thetaOrig = mergedPeaksMin.theta;
-    show.showTwoThetas(params, thetaOrig, thetaEst, true);
-    show.showTwoThetas(params, thetaOrig, thetaEst, false);
+    pcPWMp = misc.preComputePWMp(mergedPeaksMin.seqs, params);
+    for Xpercent = conf.Xpercents
+        outpath = sprintf('m%dk%dp%do%db%d.jpg', conf.m, conf.k, floor(100 * Xpercent), conf.order, conf.doBound);
+        subtitle = sprintf('m=%d, k=%d, %d%% of data', conf.m, conf.k, floor(100 * Xpercent));
+        dataset.title = subtitle;
+        dataset.X = mergedPeaksMin.seqs(1:floor(conf.N * Xpercent), :);
+        dataset.theta = mergedPeaksMin.theta;
+        dataset.pcPWMp = pcPWMp(1:floor(conf.N * Xpercent), :, :);
+        [thetaEst, ~] = EM.EM(dataset, params, conf.maxIters, conf.doESharing, conf.doBound, conf.patience);
+        show.showTwoThetas(params, thetaOrig, thetaEst, true, subtitle, outpath);
+        % show.showTwoThetas(params, thetaOrig, thetaEst, false, subtitle, outpath);
+    end
 end
 
 function [test, train] = crossValidationSplit(params, mergedPeaksMin, testTrainRatio)
@@ -39,8 +63,8 @@ function [test, train] = crossValidationSplit(params, mergedPeaksMin, testTrainR
     trainMask = true(N, 1);
     trainMask(randperm(N, floor(N * testTrainRatio))) = false;
     train.title = 'Train';
-    test.title = 'Test';
     train.X = X(trainMask, :);
+    test.title = 'Test';
     test.X = X(~trainMask, :);
     train.pcPWMp = pcPWMp(trainMask, :, :);
     test.pcPWMp = pcPWMp(~trainMask, :, :);

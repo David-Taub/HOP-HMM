@@ -1,10 +1,8 @@
 
-% doResample - if True will resample G of mode if is too similar to another mode (uses threashold)
 % doESharing - Each EM iteration, averaging the E across all modes, and using the average in all modes
 
 function pretrain(mergedPeaksMin, k, tissueList, backgroundIndex)
     dbstop if error
-    doResample = false;
     doESharing = false;
     m = 2;
     params = misc.genParams(m, k, 1);
@@ -16,7 +14,7 @@ function pretrain(mergedPeaksMin, k, tissueList, backgroundIndex)
     for i = 1:length(tissueList)
         fprintf('Pre training tissue %d vs background\n', tissueList(i))
         dataset = preprocess(params, mergedPeaksMin, tissueList(i), backgroundIndex);
-        [theta, ~] = EM.EM(dataset, params, maxIters, doResample, doESharing, true);
+        [theta, ~] = EM.EM(dataset, params, maxIters, doESharing, true);
         show.showTheta(theta);
         totalTheta.E(i, :) = theta.E(1, :);
         totalTheta.G(i, :) = theta.G(1, :);

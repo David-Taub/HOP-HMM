@@ -1,8 +1,7 @@
 
 % mainRealData(multiEnhancers, 5, 40, false, false);
-% doResample - if True will resample G of mode if is too similar to another mode (uses threshold)
 % doESharing - Each EM iteration, averaging the E across all modes, and using the average in all modes
-function mainRealData(mergedPeaksMin, m, k, doResample, doESharing, doBound)
+function mainRealData(mergedPeaksMin, m, k, doESharing, doBound)
     dbstop if error
     close all;
 
@@ -11,7 +10,7 @@ function mainRealData(mergedPeaksMin, m, k, doResample, doESharing, doBound)
     maxIters = 1000;
     testTrainRatio = 0.15;
     [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio);
-    [theta, ~] = EM.EM(train, params, maxIters, doResample, doESharing, doBound);
+    [theta, ~] = EM.EM(train, params, maxIters, doESharing, doBound);
     show.showTheta(theta);
     YEst = misc.viterbi(theta, params, train.X, train.pcPWMp);
     theta = permuteTheta(theta, params, train.Y(:, :), YEst(:, :, 1));

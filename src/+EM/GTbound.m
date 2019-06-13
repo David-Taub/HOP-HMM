@@ -2,7 +2,7 @@
 % help the algorithm converge to the correct result
 % G - m x k
 % T - m x m
-function [G, T] = GTbound(params, G, T, doResample)
+function [G, T] = GTbound(params, G, T)
     if params.m == 1
         return;
     end
@@ -13,29 +13,9 @@ function [G, T] = GTbound(params, G, T, doResample)
     T(T > params.maxT) = params.maxT(T > params.maxT);
     G(G > params.maxG) = params.maxG(G > params.maxG);
     T(eye(params.m) == 1) = T(eye(params.m) == 1) + 1 - sum(T, 2) - sum(G, 2);
-    if doResample
-        G = resampleG(params, G);
-    end
     fprintf('%d/%d (G) and %d/%d (T) changed in bounding process\n', sum(sum(originG ~= G, 2), 1), params.m * params.k, sum(sum(originT ~= T, 2), 1), params.m ^ 2);
     G = log(G);
     T = log(T);
-end
-
-function G = resampleG(params, G)
-
-    [m, k] = size(G);
-    for i = 1:m
-        for j = i+1:m
-            n1 = norm(G(i, :));
-            n2 = norm(G(j, :));
-            similarity = (G(i, :) ./ n1) * (G(j, :)./ n2)';
-            if similarity > 0.95
-                fprintf('state %d and %d are too similar (%.2f), resampling %d\n', i, j, similarity, j);
-                G(j, :) = rand(1, k);
-                G(j, :) = G(j, :) ./ (sum(G(j, :), 2) * params.PTotalBaseToSub);
-            end
-        end
-    end
 end
 
 % replaced with min max prob values scheme

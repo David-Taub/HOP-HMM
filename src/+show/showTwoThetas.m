@@ -1,11 +1,11 @@
-function showTwoThetas(params, thetaOrig, thetaEst, withExponent)
+function showTwoThetas(params, thetaOrig, thetaEst, withExponent, subtitle, outpath)
     DOT_SIZE = 20;
     thetaEst = permThetaByAnother(params, thetaOrig, thetaEst);
     thetaOrigMat = thetaToMat(params, thetaOrig);
     thetaEstMat = thetaToMat(params, thetaEst);
     inds = [params.m, params.n ^ params.order, params.k, 1];
     colors = ['b', 'r', 'g', 'm'];
-    figure;
+    fig = figure;
     if withExponent
         thetaOrigMat = exp(thetaOrigMat);
         thetaEstMat = exp(thetaEstMat);
@@ -21,10 +21,11 @@ function showTwoThetas(params, thetaOrig, thetaEst, withExponent)
         thetaEstMat = thetaEstMat(:,  inds(i) + 1:end);
         scatter(origMat(:), estMat(:), DOT_SIZE, colors(i), 'filled');
     end
-    legend('x=y', 'T', 'E', 'G', 'startT');
-    title('Learned Parameters vs True Parameters');
-    xlabel('True');
-    ylabel('Estimated');
+    legend('x=y', 'T', 'E', 'G', 'startT', 'Location', 'southeast');
+    title(sprintf('Learned \theta vs True \theta (%s)', subtitle));
+    xlabel('True \theta');
+    ylabel('Estimated \theta');
+    saveas(fig, outpath);
 end
 
 
@@ -43,6 +44,7 @@ end
 
 function theta = permTheta(theta, perm)
     theta.T = theta.T(perm, :);
+    theta.T = theta.T(:, perm);
     theta.startT = theta.startT(perm);
     theta.G = theta.G(perm, :);
     for i = 1:length(perm)
