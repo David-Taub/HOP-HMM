@@ -1,3 +1,4 @@
+% equals to log(exp(A) * exp(B))
 function ret = logMatProd(A, B)
     [n1, ~] = size(A);
     [~, n2] = size(B);

@@ -1,3 +1,4 @@
+% equals to log(sum(exp(A), dim))
 function ret = logMatSum(A, dim)
     assert(size(A, dim) > 0);
     Amax = max(A, [], dim);

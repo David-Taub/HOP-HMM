@@ -7,8 +7,10 @@ function mainScatterEM()
     conf.canCrossLayer = true;
     conf.patience = 3;
     conf.Xpercents = [0.1, 0.5, 1];
-    conf.L = 1000;
-    conf.N = 6000;
+    conf.L = 800;
+    conf.N = 1000;
+    conf.withExponent = false;
+    conf.repeat = 1;
 
     conf.order = 1;
     conf.m = 3;
@@ -46,9 +48,8 @@ function main(conf)
         dataset.X = mergedPeaksMin.seqs(1:floor(conf.N * Xpercent), :);
         dataset.theta = mergedPeaksMin.theta;
         dataset.pcPWMp = pcPWMp(1:floor(conf.N * Xpercent), :, :);
-        [thetaEst, ~] = EM.EM(dataset, params, conf.maxIters, conf.doESharing, conf.doBound, conf.patience);
-        show.showTwoThetas(params, thetaOrig, thetaEst, true, subtitle, outpath);
-        % show.showTwoThetas(params, thetaOrig, thetaEst, false, subtitle, outpath);
+        [thetaEst, ~] = EM.EM(dataset, params, conf.maxIters, conf.doESharing, conf.doBound, conf.patience, conf.repeat);
+        show.showTwoThetas(params, thetaOrig, thetaEst, conf.withExponent, subtitle, outpath);
     end
 end
 

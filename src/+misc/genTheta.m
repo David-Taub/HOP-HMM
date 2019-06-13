@@ -9,8 +9,8 @@ function [theta] = genTheta(params, startTUniform)
     % theta.G = log((rand(params.m, params.k) .* (params.maxG - params.minG)) + params.minG);
     T = normrnd((params.maxT + params.minT) / 2, (params.maxT - params.minT) / 3);
     G = normrnd((params.maxG + params.minG) / 2, (params.maxG - params.minG) / 3);
-    G(G < 0) = eps;
-    T(T < 0) = eps;
+    G(G < params.minG) = params.minG(G < params.minG);
+    T(T < params.minT) = params.minT(T < params.minT);
     theta.T = log(T ./ repmat(sum(T, 2) + sum(G, 2), [1, params.m]));
     theta.G = log(G ./ repmat(sum(T, 2) + sum(G, 2), [1, params.k]));
 

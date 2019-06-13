@@ -1,5 +1,5 @@
 
-function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doESharing, doGTBound, patience)
+function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doESharing, doGTBound, patience, repeat)
     % X - N x L emission variables
     % m - amount of possible states (y)
     % n - amount of possible emissions (x)
@@ -13,7 +13,6 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doESharing, 
     [N, L] = size(dataset.X);
     fprintf('Starting EM algorithm on %d x %d\n', N, L);
     bestLikelihood = -Inf;
-    repeat = 1;
     % N x L - order + 1
     indices = reshape(matUtils.getIndices1D(dataset.X, params.order, params.n), [L-params.order+1, N]).';
     % N x L - order + 1 x maxEIndex
@@ -33,7 +32,7 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doESharing, 
 end
 
 function [iterLike, theta] = singleRunEMBatch(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doESharing, doGTBound, patience)
-    LIKELIHOOD_THRESHOLD = 10 ^ -5;
+    LIKELIHOOD_THRESHOLD = 10 ^ -4;
     theta = initTheta;
     iterLike = [];
 
@@ -89,6 +88,12 @@ function [iterLike, theta] = singleRunEMBatch(dataset, params, initTheta, maxIte
         theta.E = log(updatedTheta.E / batchAmount);
         theta.G = log(updatedTheta.G / batchAmount);
         theta.startT = log(updatedTheta.startT / batchAmount);
+        % clf
+        % show.showTwoThetas(params, dataset.theta, theta, false, sprintf('%d', it), 'tmp.jpg');
+        % drawnow;
+        if doGTBound
+            [theta.G, theta.T] = EM.GTbound(params, theta.G, theta.T);
+        end
         iterLike(end+1) = matUtils.logMatSum(pX, 1);% / (N*L);
 
         motifsPer = sum(exp(theta.G(:)), 1).*100;
@@ -188,12 +193,6 @@ function [newG, newT] = updateGT(params, xi, gamma, psi, doGTBound)
     mergedAveraged = matUtils.logMatSum(psiXiMerged, 1);
     mergedAveraged = matUtils.logMakeDistribution(mergedAveraged);
     mergedAveraged = permute(mergedAveraged, [2,3,1]);
-    G = mergedAveraged(:, 1:params.k);
-    T = mergedAveraged(:, params.k+1:end);
-    if doGTBound
-        [newG, newT] = EM.GTbound(params, G, T);
-    else
-        newG = G;
-        newT = T;
-    end
+    newG = mergedAveraged(:, 1:params.k);
+    newT = mergedAveraged(:, params.k+1:end);
 end
