@@ -2,36 +2,50 @@
 function mainScatterEM()
     conf.doESharing = false;
     conf.startWithBackground = false;
-    conf.doBound = true;
     conf.maxIters = 1000;
     conf.canCrossLayer = true;
     conf.patience = 3;
-    conf.Xpercents = [0.1, 0.5, 1];
-    conf.L = 800;
-    conf.N = 1000;
+    conf.Xpercents = [0.01, 0.25, 0.5, 0.75, 1];
+    conf.L = 1000;
+    conf.N = 10000;
     conf.withExponent = false;
-    conf.repeat = 1;
+    conf.repeat = 2;
 
-    conf.order = 1;
+    conf.order = 2;
     conf.m = 3;
     conf.k = 5;
     conf.backgroundAmount = 0
+    conf.doBound = true;
     main(conf);
-
     conf.doBound = false;
     main(conf);
+
 
     conf.order = 2;
     conf.m = 7;
     conf.k = 10;
     conf.backgroundAmount = 1
+    conf.doBound = true;
     main(conf);
+    conf.doBound = false;
+    main(conf);
+
 
     conf.order = 3;
     conf.m = 10;
     conf.k = 30;
     conf.backgroundAmount = 2
+    conf.doBound = true;
     main(conf);
+    conf.doBound = false;
+    main(conf);
+
+
+    conf.doBound = true;
+    main(conf);
+    conf.doBound = false;
+    main(conf);
+
 end
 
 function main(conf)
@@ -42,12 +56,13 @@ function main(conf)
     thetaOrig = mergedPeaksMin.theta;
     pcPWMp = misc.preComputePWMp(mergedPeaksMin.seqs, params);
     for Xpercent = conf.Xpercents
-        outpath = sprintf('m%dk%dp%do%db%d.jpg', conf.m, conf.k, floor(100 * Xpercent), conf.order, conf.doBound);
+        subN = floor(conf.N * Xpercent);
+        outpath = sprintf('m%dk%dp%do%db%dN%dL%d.jpg', conf.m, conf.k, floor(100 * Xpercent), conf.order, conf.doBound, subN, conf.L);
         subtitle = sprintf('m=%d, k=%d, %d%% of data', conf.m, conf.k, floor(100 * Xpercent));
         dataset.title = subtitle;
-        dataset.X = mergedPeaksMin.seqs(1:floor(conf.N * Xpercent), :);
+        dataset.X = mergedPeaksMin.seqs(1:subN, :);
         dataset.theta = mergedPeaksMin.theta;
-        dataset.pcPWMp = pcPWMp(1:floor(conf.N * Xpercent), :, :);
+        dataset.pcPWMp = pcPWMp(1:subN, :, :);
         [thetaEst, ~] = EM.EM(dataset, params, conf.maxIters, conf.doESharing, conf.doBound, conf.patience, conf.repeat);
         show.showTwoThetas(params, thetaOrig, thetaEst, conf.withExponent, subtitle, outpath);
     end

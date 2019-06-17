@@ -1,3 +1,4 @@
+% ret is equivilant to log(exp(A) + exp(B))
 function ret = logAdd(A, B)
     assert(all(size(A) == size(B)))
     ret = zeros(size(A));

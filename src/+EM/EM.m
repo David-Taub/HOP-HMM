@@ -22,6 +22,7 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doESharing, 
     % figure
     for rep = 1:repeat
         % X = X(randperm(N), :);
+        fprintf('Repeat %d / %d\n', rep, repeat);
         initTheta = misc.genTheta(params, true);
         [iterLike, theta] = singleRunEMBatch(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doESharing, doGTBound, patience);
         if bestLikelihood < iterLike(end)
@@ -32,11 +33,12 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doESharing, 
 end
 
 function [iterLike, theta] = singleRunEMBatch(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doESharing, doGTBound, patience)
-    LIKELIHOOD_THRESHOLD = 10 ^ -4;
+    LIKELIHOOD_THRESHOLD = 10 ^ -5;
     theta = initTheta;
-    iterLike = [];
+    iterLikes = -inf(maxIter, 1);
 
     for it = 1:maxIter
+        fprintf('EM iteration %d / %d\n', it, maxIter);
         tic;
         N = size(dataset.X, 1);
         batchAmount = ceil(N / params.batchSize);
@@ -47,6 +49,7 @@ function [iterLike, theta] = singleRunEMBatch(dataset, params, initTheta, maxIte
         updatedTheta.startT = updatedTheta.startT * 0;
 
         for u = 1:batchAmount
+            fprintf('Batch %d / %d\n', u, batchAmount);
             % N x m x k+m x L
             batchMask = mod(1:N, batchAmount) == u - 1;
             XBatch = dataset.X(batchMask, :);
@@ -82,8 +85,10 @@ function [iterLike, theta] = singleRunEMBatch(dataset, params, initTheta, maxIte
             updatedTheta.E = updatedTheta.E + exp(E);
             updatedTheta.G = updatedTheta.G + exp(G);
             updatedTheta.startT = updatedTheta.startT + exp(startT);
-
+            iterLikes(it) = matUtils.logAdd(iterLikes(it), matUtils.logMatSum(pX, 1));
         end
+        iterLikes(it) = iterLikes(it) - batchAmount;
+        iterLike = iterLikes(it);
         theta.T = log(updatedTheta.T / batchAmount);
         theta.E = log(updatedTheta.E / batchAmount);
         theta.G = log(updatedTheta.G / batchAmount);
@@ -92,19 +97,22 @@ function [iterLike, theta] = singleRunEMBatch(dataset, params, initTheta, maxIte
         % show.showTwoThetas(params, dataset.theta, theta, false, sprintf('%d', it), 'tmp.jpg');
         % drawnow;
         if doGTBound
+            fprintf('Bounding G and T\n');
             [theta.G, theta.T] = EM.GTbound(params, theta.G, theta.T);
         end
-        iterLike(end+1) = matUtils.logMatSum(pX, 1);% / (N*L);
+
+
 
         motifsPer = sum(exp(theta.G(:)), 1).*100;
         timeLapse = toc();
         R = cov(theta.G);
-        fprintf('It %d: log-like: %.2f Time: %.2fs, motifs: ~%.2f%% cov: %.2f\n', it, iterLike(end), timeLapse, motifsPer, mean(R(:)));
-        if length(iterLike) > 1 && abs((iterLike(end) - iterLike(end-1)) / iterLike(end)) < LIKELIHOOD_THRESHOLD
+        fprintf('It %d: log-like: %.2f Time: %.2fs, motifs: ~%.2f%% cov: %.2f\n', it, iterLike, timeLapse, motifsPer, mean(R(:)));
+        if it > 1 && abs((iterLike - iterLikes(it - 1)) / iterLike) < LIKELIHOOD_THRESHOLD
             fprintf('Converged\n');
             break
         end
-        if length(iterLike) > patience && iterLike(end) < iterLike(end - patience)
+
+        if it > patience && iterLike < iterLikes(it - patience)
             fprintf('Patience reached, Converged\n');
             break
         end

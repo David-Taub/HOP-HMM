@@ -29,10 +29,10 @@ function params = genParams(m, k, backgroundAmount, L, order)
     % end
 
     % params.maxPRatio = 3;
-    params.batchSize = 50;
+    params.batchSize = 1000;
     [kMax, params.n, params.J] = size(params.PWMs);
     params.k = min(k, kMax);
-    EPS = 10 ^ -4;
+    params.EPS = 10 ^ -7;
     maxBbMotifRatio = 1 / 90; % maximal ratio of all motif letters in BG section
     maxEnhMotifRatio = 1 / 10; % maximal ratio of a single motif letters in enhancer section
     maxCrossEnhRatio = 1 / 15; % maximal ratio of transition to any another enhancer
@@ -43,17 +43,17 @@ function params = genParams(m, k, backgroundAmount, L, order)
     minBgLen = L - maxEnhLen;
     
     params.maxEnhMotif = maxEnhMotifRatio / mean(params.lengths);
-    params.minEnhMotif = EPS;
+    params.minEnhMotif = params.EPS;
     params.maxCrossEnh = maxCrossEnhRatio / (minEnhLen * (params.m - params.backgroundAmount))
-    params.minCrossEnh = EPS;
+    params.minCrossEnh = params.EPS;
     params.maxBgMotif = maxBbMotifRatio / ( mean(params.lengths) * params.k);
-    params.minBgMotif = EPS;
+    params.minBgMotif = params.EPS;
     params.maxStayEnh = 1 - (1 / maxEnhLen);
     params.minStayEnh = 1 - (1 / minEnhLen);
     params.maxStayBg = 1 - (1 / maxBgLen);
     params.minStayBg = 1 - (1 / minBgLen);
     params.maxCrossBg = 1 / minBgLen;
-    params.minCrossBg = EPS;
+    params.minCrossBg = params.EPS;
     params.maxBgToEnh = 1 / minBgLen;
     params.minBgToEnh = 1 / maxBgLen;
     params.maxEnhToBg = 1 / minEnhLen;

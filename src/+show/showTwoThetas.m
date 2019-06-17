@@ -14,7 +14,8 @@ function showTwoThetas(params, thetaOrig, thetaEst, withExponent, subtitle, outp
     maxVal = ceil(max([thetaEstMat(:); thetaOrigMat(:)]));
     plot([minVal, maxVal], [minVal, maxVal]);
     hold on;
-    fit_mse = mean((thetaOrigMat(:) - thetaEstMat(:)) .^ 2, 1);
+    % mse = mean((thetaOrigMat(:) - thetaEstMat(:)) .^ 2, 1);
+    msle = mean((log(exp(thetaOrigMat(:)) + 1) - log(exp(thetaEstMat(:)) + 1)) .^ 2, 1);
     for i=1:4
         % plot by color
         origSubMat = thetaOrigMat(:, 1:inds(i));
@@ -26,10 +27,10 @@ function showTwoThetas(params, thetaOrig, thetaEst, withExponent, subtitle, outp
         thetaEstMat = thetaEstMat(:,  inds(i) + 1:end);
     end
     legend('x=y', 'T', 'E', 'G', 'startT', 'Location', 'southeast');
-    title(sprintf('Learned \theta vs True \theta (%s)', subtitle));
+    title(sprintf('Learned \\theta vs True \\theta (%s)', subtitle));
     xlabel('True \theta');
     ylabel('Estimated \theta');
-    text(minVal + 0.1 * (maxVal - minVal), minVal + 0.8 * (maxVal - minVal), sprintf('MSE=%.2f', fit_mse), 'FontSize', 14)
+    text(minVal + 0.1 * (maxVal - minVal), minVal + 0.8 * (maxVal - minVal), sprintf('MSLE=%.2e', msle), 'FontSize', 14)
     saveas(fig, outpath);
 end
 

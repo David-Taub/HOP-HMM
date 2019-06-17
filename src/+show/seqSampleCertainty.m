@@ -10,7 +10,7 @@ function seqSampleCertainty(params, Y, gamma, psi, sequencesToShow, showFirst)
     YOneHot = permute(matUtils.mat23Dmat(Y, params.m), [1, 3, 2]);
     % N x L
     certainty = permute(sum(posterior .* YOneHot, 2), [1,3,2]);
-    loss = mean(1-certainty(:)+eps);
+    loss = mean(1-certainty(:) + eps);
     fprintf('Avg loss: %.2f\n', loss);
     % sequencesToShow = 10;
     mJet = jet(params.m);

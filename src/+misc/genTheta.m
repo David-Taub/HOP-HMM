@@ -3,7 +3,7 @@ function [theta] = genTheta(params, startTUniform)
     if startTUniform || params.backgroundAmount == 0
         theta.startT = log(ones(params.m, 1) ./ params.m);
     else
-        theta.startT = log([ones(params.m - params.backgroundAmount, 1) * eps; ones(params.backgroundAmount, 1) * (1 - eps * (params.m - params.backgroundAmount)) / params.backgroundAmount]);
+        theta.startT = log([ones(params.m - params.backgroundAmount, 1) * params.EPS; ones(params.backgroundAmount, 1) * (1 - params.EPS * (params.m - params.backgroundAmount)) / params.backgroundAmount]);
     end
     % theta.T = log((rand(params.m) .* (params.maxT - params.minT)) + params.minT);
     % theta.G = log((rand(params.m, params.k) .* (params.maxG - params.minG)) + params.minG);
