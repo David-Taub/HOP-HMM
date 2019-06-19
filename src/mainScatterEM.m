@@ -4,21 +4,21 @@ function mainScatterEM()
     conf.startWithBackground = false;
     conf.maxIters = 1000;
     conf.canCrossLayer = true;
-    conf.patience = 3;
+    conf.patience = 4;
     conf.Xpercents = [0.01, 0.25, 0.5, 0.75, 1];
     conf.L = 1000;
     conf.N = 10000;
     conf.withExponent = false;
     conf.repeat = 2;
 
-    conf.order = 2;
-    conf.m = 3;
-    conf.k = 5;
-    conf.backgroundAmount = 0
-    conf.doBound = true;
-    main(conf);
-    conf.doBound = false;
-    main(conf);
+    % conf.order = 2;
+    % conf.m = 3;
+    % conf.k = 5;
+    % conf.backgroundAmount = 0
+    % conf.doBound = true;
+    % main(conf);
+    % conf.doBound = false;
+    % main(conf);
 
 
     conf.order = 2;
@@ -26,7 +26,7 @@ function mainScatterEM()
     conf.k = 10;
     conf.backgroundAmount = 1
     conf.doBound = true;
-    main(conf);
+    % main(conf);
     conf.doBound = false;
     main(conf);
 
@@ -39,13 +39,6 @@ function mainScatterEM()
     main(conf);
     conf.doBound = false;
     main(conf);
-
-
-    conf.doBound = true;
-    main(conf);
-    conf.doBound = false;
-    main(conf);
-
 end
 
 function main(conf)
@@ -57,7 +50,7 @@ function main(conf)
     pcPWMp = misc.preComputePWMp(mergedPeaksMin.seqs, params);
     for Xpercent = conf.Xpercents
         subN = floor(conf.N * Xpercent);
-        outpath = sprintf('m%dk%dp%do%db%dN%dL%d.jpg', conf.m, conf.k, floor(100 * Xpercent), conf.order, conf.doBound, subN, conf.L);
+        outpath = sprintf('scatter_m%dk%dp%do%db%dN%dL%d.jpg', conf.m, conf.k, floor(100 * Xpercent), conf.order, conf.doBound, subN, conf.L);
         subtitle = sprintf('m=%d, k=%d, %d%% of data', conf.m, conf.k, floor(100 * Xpercent));
         dataset.title = subtitle;
         dataset.X = mergedPeaksMin.seqs(1:subN, :);
@@ -70,7 +63,8 @@ end
 
 function [test, train] = crossValidationSplit(params, mergedPeaksMin, testTrainRatio)
     L = size(mergedPeaksMin.seqs, 2);
-    X = mergedPeaksMin.seqs;
+    X = mergedPeaksMin.seqs; % N x L
+
     % X = cat(2, X, fliplr(5-X));
     % N x k x L
 
@@ -138,7 +132,7 @@ function YEstViterbi = classify(theta, params, dataset)
     % N x m x L
     [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
     % EM.drawStatus(theta, params, gamma);
-    YEstViterbi = misc.viterbi(theta, params, dataset.X, dataset.pcPWMp);
+    YEstViterbi = misc.viterbi(params, theta, dataset.X, dataset.pcPWMp);
     YEstViterbiAcc = YEstViterbi(:, :, 1) == dataset.Y; YEstViterbiAcc = sum(YEstViterbiAcc(:)) ./ length(YEstViterbiAcc(:));
 
     YEstMax = maxPostEstimator(theta, params, psi, gamma);

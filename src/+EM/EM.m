@@ -23,10 +23,10 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doESharing, 
     for rep = 1:repeat
         % X = X(randperm(N), :);
         fprintf('Repeat %d / %d\n', rep, repeat);
-        initTheta = misc.genTheta(params, true);
+        initTheta = misc.genTheta(params, false);
         [iterLike, theta] = singleRunEMBatch(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doESharing, doGTBound, patience);
-        if bestLikelihood < iterLike(end)
-            bestLikelihood = iterLike(end);
+        if bestLikelihood < iterLike
+            bestLikelihood = iterLike;
             bestTheta = theta;
         end
     end
@@ -34,7 +34,7 @@ end
 
 % iterates the EM algorithm, returns the likelihood of the best iteration, and theta parameters at that iteration
 function [iterLike, theta] = singleRunEMBatch(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doESharing, doGTBound, patience)
-    LIKELIHOOD_THRESHOLD = 10 ^ -5;
+    LIKELIHOOD_THRESHOLD = 10 ^ -6;
     theta(1) = initTheta;
     iterLikes = -inf(maxIter, 1);
 

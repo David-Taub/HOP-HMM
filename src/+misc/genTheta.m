@@ -7,12 +7,9 @@ function [theta] = genTheta(params, startTUniform)
     end
     % theta.T = log((rand(params.m) .* (params.maxT - params.minT)) + params.minT);
     % theta.G = log((rand(params.m, params.k) .* (params.maxG - params.minG)) + params.minG);
-    T = normrnd((params.maxT + params.minT) / 2, (params.maxT - params.minT) / 3);
-    G = normrnd((params.maxG + params.minG) / 2, (params.maxG - params.minG) / 3);
-    G(G < params.minG) = params.minG(G < params.minG);
-    T(T < params.minT) = params.minT(T < params.minT);
-    theta.T = log(T ./ repmat(sum(T, 2) + sum(G, 2), [1, params.m]));
-    theta.G = log(G ./ repmat(sum(T, 2) + sum(G, 2), [1, params.k]));
+    T = log(normrnd((params.maxT + params.minT) / 2, (params.maxT - params.minT) / 3));
+    G = log(normrnd((params.maxG + params.minG) / 2, (params.maxG - params.minG) / 3));
+    [theta.G, theta.T] = EM.GTbound(params, G, T);
 
     % theta.startT = rand(params.m, 1);
     % theta.startT = ones(params.m, 1);
