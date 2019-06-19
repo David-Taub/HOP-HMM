@@ -72,7 +72,7 @@ function YEstViterbi = classify(theta, params, dataset)
     % N x m x L
     [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
     % EM.drawStatus(theta, params, gamma);
-    YEstViterbi = misc.viterbi(theta, params, dataset.X, dataset.pcPWMp);
+    YEstViterbi = misc.viterbi(params, theta, dataset.X, dataset.pcPWMp);
     YEstViterbiAcc = YEstViterbi(:, :, 1) == dataset.Y; YEstViterbiAcc = sum(YEstViterbiAcc(:)) ./ length(YEstViterbiAcc(:));
 
     YEstMax = maxPostEstimator(theta, params, psi, gamma);

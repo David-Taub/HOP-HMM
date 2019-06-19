@@ -2,7 +2,7 @@
 % beta - N x m x L
 % X - N x L
 % pcPWMp - N x k x L
-% psi - N x m x k x L
+% psi - N x m x k x L ;  holds P(y_t=(j,0), y_t+1=(j,l), x_1:L)
 function psi = makePsi(alpha, beta, X, params, theta, pcPWMp, pX)
     [N, L] = size(X);
     Eps = EM.getEp3d(theta, params, X, 1:L);

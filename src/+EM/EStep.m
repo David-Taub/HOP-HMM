@@ -4,7 +4,7 @@
 % pX - N x 1
 % xi - N x m x m x L
 % gamma - N x m x L
-% psi - N x m x k x L
+% psi - N x m x k x L ;  holds P(y_t=(j,0), y_t+1=(j,l), x_1:L)
 function [alpha, beta, pX, xi, gamma, psi] = EStep(params, theta, X, pcPWMp)
     % fprintf('Running E step...\n');
     [N, L] = size(X);
@@ -34,4 +34,11 @@ function [alpha, beta, pX, xi, gamma, psi] = EStep(params, theta, X, pcPWMp)
     psi = EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
     assert(not(any(isnan(psi(:)))));
     fprintf('. \n');
+
+    assert(size(psi) == [N, params.m, params.k, L]);
+    assert(size(gamma) == [N, params.m, L]);
+    assert(size(alpha) == [N, params.m, L]);
+    assert(size(beta) == [N, params.m, L]);
+    assert(size(pX) == [N, 1]);
+    assert(size(xi) == [N, params.m, params.m, L]);
 end

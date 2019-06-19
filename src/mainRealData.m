@@ -12,7 +12,7 @@ function mainRealData(mergedPeaksMin, m, k, doESharing, doBound)
     [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio);
     [theta, ~] = EM.EM(train, params, maxIters, doESharing, doBound);
     show.showTheta(theta);
-    YEst = misc.viterbi(theta, params, train.X, train.pcPWMp);
+    YEst = misc.viterbi(params, theta, train.X, train.pcPWMp);
     theta = permuteTheta(theta, params, train.Y(:, :), YEst(:, :, 1));
 
     classify(theta, params, train);
@@ -97,7 +97,7 @@ function YEstViterbi = classify(theta, params, dataset)
     % N x m x L
     [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
     % EM.drawStatus(theta, params, gamma);
-    YEstViterbi = misc.viterbi(theta, params, dataset.X, dataset.pcPWMp);
+    YEstViterbi = misc.viterbi(params, theta, dataset.X, dataset.pcPWMp);
     YEstViterbiAcc = YEstViterbi(:, :, 1) == dataset.Y; YEstViterbiAcc = sum(YEstViterbiAcc(:)) ./ length(YEstViterbiAcc(:));
 
     YEstMax = maxPostEstimator(theta, params, psi, gamma);
