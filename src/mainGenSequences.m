@@ -43,16 +43,7 @@ function mergedPeaksMin = mainGenSequences(N, L, params, startWithBackground)
 end
 
 
-
-
-
-
 function T = genHumanT(params)
-    % T = ones(params.m) * params.PCrossEnhancers;
-    % T(eye(params.m) == 1) = 1 - (params.PCrossEnhancers * (params.m-2) + params.PEnhancerToBackground + params.PTotalBaseToSub);
-    % T(:, end) = params.PEnhancerToBackground;
-    % T(end, :) = params.PBackgroundToEnhancer;
-    % T(end, end) = 1 - params.PBackgroundToEnhancer * (params.m-1);
     T = (params.minT + params.maxT) ./ 2;
     if not(canCrossLayer)
         T(not(eye(params.m))) = eps;
@@ -60,20 +51,17 @@ function T = genHumanT(params)
     T = log(T);
 end
 
+
 function G = genHumanG(params)
     BACKGROUND_G_NOISE = 0.10;
-    NUM_OF_NONZEROS = 4;
     G = params.minG;
-    G = G + (rand(params.m, params.k) .* BACKGROUND_G_NOISE * params.maxEnhMotif);
+    G = G + (rand(params.m, params.k) .* BACKGROUND_G_NOISE .* params.maxG);
     for i = 1:params.m - params.backgroundAmount
         G(i, datasample(1:params.k, ceil(params.k / params.m))) = params.maxEnhMotif;
-        % G(i, :) = G(i, :) + (mod(1:params.k, params.m) == (i-1));
-        % G(i, i) = G(i, :) + 1;
     end
-    % G = G ./ repmat(sum(G, 2), [1, params.k]);
-    % G = G .* params.PTotalBaseToSub;
     G = log(G);
 end
+
 
 function startT = genHumanStartT(params, startWithBackground)
 
