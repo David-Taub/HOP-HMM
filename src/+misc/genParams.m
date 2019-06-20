@@ -1,8 +1,8 @@
 % m - number of base states in the model
 % k - number of sub states each base state has in the model
 % backgroundAmount - number of background states
-function params = genParams(m, k, backgroundAmount, L, order)
-
+function params = genParams(m, k, backgroundAmount, L, order, doESharing)
+    params.doESharing = doESharing;
     params.m = m;
     params.k = k;
     params.order = order;

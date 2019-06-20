@@ -1,5 +1,5 @@
 
-function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doESharing, doGTBound, patience, repeat)
+function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doGTBound, patience, repeat)
     % X - N x L emission variables
     % m - amount of possible states (y)
     % n - amount of possible emissions (x)
@@ -14,29 +14,36 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doESharing, 
     fprintf('Starting EM algorithm on %d x %d\n', N, L);
     bestLikelihood = -Inf;
     % N x L - order + 1
-    indices = reshape(matUtils.getIndices1D(dataset.X, params.order, params.n), [L-params.order+1, N]).';
-    % N x L - order + 1 x maxEIndex
-    indicesHotMap = matUtils.mat23Dmat(indices, params.n ^ params.order);
-    % N x L  x maxEIndex
-    indicesHotMap = cat(2, false(N, params.order-1, params.n ^ params.order), indicesHotMap);
+    dataset.XIndicesHotMap = genXInidcesHotMap(params, dataset);
     % figure
     for rep = 1:repeat
         % X = X(randperm(N), :);
         fprintf('Repeat %d / %d\n', rep, repeat);
         initTheta = misc.genTheta(params, false);
-        [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doESharing, doGTBound, patience);
+        [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, doGTBound, patience);
         if bestLikelihood < iterLike
             bestLikelihood = iterLike;
             bestTheta = theta;
         end
     end
     if doGTBound
-        [bestLikelihood, bestTheta] = EMRun(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doESharing, false, patience);
+        [bestLikelihood, bestTheta] = EMRun(dataset, params, initTheta, maxIter, false, patience);
     end
 end
 
 
-function [theta, iterLike] = EMIteration(params, dataset, inputTheta, indicesHotMap)
+function XIndicesHotMap =  genXInidcesHotMap(params, dataset)
+    [N, L] = size(dataset.X);
+    % N x L - order + 1
+    indices = reshape(matUtils.getIndices1D(dataset.X, params.order, params.n), [L - params.order + 1, N]).';
+    % N x L - order + 1 x maxEIndex
+    XIndicesHotMap = matUtils.mat23Dmat(indices, params.n ^ params.order);
+    % N x L  x maxEIndex
+    XIndicesHotMap = cat(2, false(N, params.order - 1, params.n ^ params.order), XIndicesHotMap);
+end
+
+
+function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
     N = size(dataset.X, 1);
     batchAmount = ceil(N / params.batchSize);
     batchesTheta = inputTheta;
@@ -44,14 +51,14 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, indicesHot
     batchesTheta.E = batchesTheta.E * 0;
     batchesTheta.G = batchesTheta.G * 0;
     batchesTheta.startT = batchesTheta.startT * 0;
-
+    batchesLikelihood = -inf;
     for u = 1:batchAmount
         fprintf('Batch %d / %d\n', u, batchAmount);
         % N x m x k+m x L
         batchMask = mod(1:N, batchAmount) == u - 1;
         XBatch = dataset.X(batchMask, :);
         pcPWMpBatch = dataset.pcPWMp(batchMask, :, :);
-        indicesHotMapBatch = indicesHotMap(batchMask, :, :);
+        XIndicesHotMapBatch = dataset.XIndicesHotMap(batchMask, :, :);
 
         % alpha - N x m x L
         % beta - N x m x L
@@ -63,9 +70,9 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, indicesHot
         % close all;
         % show.showTheta(theta);
         % show.seqSampleCertainty(params, dataset.Y, gamma, psi, 8, true);
-        E = updateE(gamma, params, indicesHotMapBatch);
+        E = updateE(gamma, params, XIndicesHotMapBatch);
         % drawStatus(theta, params, alpha, beta, gamma, pX, xi, psi);
-        if doESharing
+        if params.doESharing
             % theta.E = log(repmat(mean(exp(theta.E), 1), [params.n, ones(1, params.order)]));
             E(1:end - params.backgroundAmount, :) = repmat(log(mean(exp(E(1:end - params.backgroundAmount, :)), 1)), [params.n - params.backgroundAmount, 1]);
         end
@@ -93,15 +100,11 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, indicesHot
     % clf
     % show.showTwoThetas(params, dataset.theta, theta, false, sprintf('%d', it), 'tmp.jpg');
     % drawnow;
-    if doGTBound
-        fprintf('Bounding G and T\n');
-        [theta.G, theta.T] = EM.GTbound(params, theta.G, theta.T);
-    end
 end
 
 
 % iterates the EM algorithm, returns the likelihood of the best iteration, and theta parameters at that iteration
-function [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doESharing, doGTBound, patience)
+function [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, doGTBound, patience)
     LIKELIHOOD_THRESHOLD = 10 ^ -6;
     theta(1) = initTheta;
     iterLikes = -inf(maxIter, 1);
@@ -109,7 +112,7 @@ function [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, indicesH
     for it = 1:maxIter
         fprintf('EM iteration %d / %d\n', it, maxIter);
         tic;
-        [theta(it + 1), iterLike] = EMIteration(params, dataset, theta(it), indicesHotMap);
+        [theta(it + 1), iterLike] = EMIteration(params, dataset, theta(it), doGTBound);
         motifsPer = sum(exp(theta(it + 1).G(:)), 1).*100;
         timeLapse = toc();
         fprintf('It %d: log-like: %.2f Time: %.2fs, motifs: ~%.2f%%\n', it, iterLike, timeLapse, motifsPer);
@@ -161,17 +164,18 @@ function drawStatus(theta, params, alpha, beta, gamma, pX, xi, psi)
     drawnow;
 end
 
-% indicesHotMap - N x L x maxEIndex
+% dataset.XIndicesHotMap - N x L x maxEIndex
 % gamma - N x m x L
 % E - m x 4 x 4 x 4 x ... x 4 (order times)
-function newE = updateE(gamma, params, kmerIndicesHotMap)
+function newE = updateE(gamma, params, XIndicesHotMap)
     %  m x N x L + J
     % m x N x L
     permGamma = permute(gamma, [2, 1, 3]);
     newE = -inf([params.m, params.n * ones(1, params.order)]);
     for i = 1:(params.n ^ params.order)
+
         % m x N x L -> m x 1
-        kmerPosteriorProb = permGamma(:, kmerIndicesHotMap(:, :, i));
+        kmerPosteriorProb = permGamma(:, XIndicesHotMap(:, :, i));
         if size(kmerPosteriorProb, 2) > 0
             newE(:, i) = matUtils.logMatSum(kmerPosteriorProb, 2);
         end

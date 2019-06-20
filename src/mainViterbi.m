@@ -22,7 +22,7 @@ end
 function main(conf)
     dbstop if error
     close all;
-    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order);
+    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, conf.doESharing);
     mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.startWithBackground);
     thetaOrig = mergedPeaksMin.theta;
     outpath = sprintf('viterbi_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, conf.N, conf.L);
@@ -33,7 +33,7 @@ function main(conf)
     dataset.Y = mergedPeaksMin.Y;
     dataset.Y2 = mergedPeaksMin.Y2;
     dataset.pcPWMp = misc.preComputePWMp(mergedPeaksMin.seqs, params);
-    [thetaEst, ~] = EM.EM(dataset, params, conf.maxIters, conf.doESharing, conf.doBound, conf.patience, conf.repeat);
+    [thetaEst, ~] = EM.EM(dataset, params, conf.maxIters, conf.doBound, conf.patience, conf.repeat);
     thetaEst = misc.permThetaByAnother(params, thetaOrig, thetaEst);
     [~, ~, ~, ~, ~, psi] = EM.EStep(params, thetaEst, dataset.X, dataset.pcPWMp);
     % N x L x 2

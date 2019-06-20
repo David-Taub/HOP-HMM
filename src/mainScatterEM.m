@@ -44,7 +44,7 @@ end
 function main(conf)
     dbstop if error
     close all;
-    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order);
+    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, conf.doESharing);
     mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.startWithBackground);
     thetaOrig = mergedPeaksMin.theta;
     pcPWMp = misc.preComputePWMp(mergedPeaksMin.seqs, params);
@@ -56,7 +56,7 @@ function main(conf)
         dataset.X = mergedPeaksMin.seqs(1:subN, :);
         dataset.theta = mergedPeaksMin.theta;
         dataset.pcPWMp = pcPWMp(1:subN, :, :);
-        [thetaEst, ~] = EM.EM(dataset, params, conf.maxIters, conf.doESharing, conf.doBound, conf.patience, conf.repeat);
+        [thetaEst, ~] = EM.EM(dataset, params, conf.maxIters, conf.doBound, conf.patience, conf.repeat);
         show.showTwoThetas(params, thetaOrig, thetaEst, conf.withExponent, subtitle, outpath);
     end
 end
