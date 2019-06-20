@@ -5,7 +5,7 @@ function showTwoThetas(params, thetaOrig, thetaEst, withExponent, subtitle, outp
     thetaEstMat = misc.thetaToMat(params, thetaEst, true);
     inds = [params.m, params.n ^ params.order, params.k, 1];
     colors = ['b', 'r', 'g', 'm'];
-    fig = figure;
+    fig = figure('units','normalized','outerposition',[0 0 1 1]);
     if withExponent
         thetaOrigMat = exp(thetaOrigMat);
         thetaEstMat = exp(thetaEstMat);
