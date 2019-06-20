@@ -37,7 +37,7 @@ function main(conf)
     thetaEst = misc.permThetaByAnother(params, thetaOrig, thetaEst);
     [~, ~, ~, ~, ~, psi] = EM.EStep(params, thetaEst, dataset.X, dataset.pcPWMp);
     % N x L x 2
-    YEstViterbi = misc.viterbi(params, theta, dataset.X, dataset.pcPWMp);
+    YEstViterbi = misc.viterbi(params, thetaEst, dataset.X, dataset.pcPWMp);
     % N x L x 2
     Ymerged = cat(3, dataset.Y, dataset.Y2);
 
