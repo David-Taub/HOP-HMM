@@ -30,6 +30,9 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doESharing, 
             bestTheta = theta;
         end
     end
+    if doGTBound
+        [bestLikelihood, bestTheta] = singleRunEMBatch(dataset, params, initTheta, maxIter, indicesHotMap, N, L, doESharing, false, patience);
+    end
 end
 
 % iterates the EM algorithm, returns the likelihood of the best iteration, and theta parameters at that iteration
@@ -166,7 +169,7 @@ function newE = updateE(gamma, params, kmerIndicesHotMap)
     for i = 1:(params.n ^ params.order)
         % m x N x L -> m x 1
         kmerPosteriorProb = permGamma(:, kmerIndicesHotMap(:, :, i));
-        if size(kmerPosteriorProb, 2) > 0 
+        if size(kmerPosteriorProb, 2) > 0
             newE(:, i) = matUtils.logMatSum(kmerPosteriorProb, 2);
         end
     end

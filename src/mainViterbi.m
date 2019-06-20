@@ -1,5 +1,5 @@
 
-function mainScatterEM()
+function mainViterbi()
     conf.doESharing = false;
     conf.startWithBackground = false;
     conf.maxIters = 1000;
@@ -7,13 +7,13 @@ function mainScatterEM()
     conf.patience = 4;
     conf.Xpercents = [0.01, 0.25, 0.5, 0.75, 1];
     conf.L = 1000;
-    conf.N = 10000;
+    conf.N = 100;
     conf.withExponent = false;
-    conf.repeat = 2;
+    conf.repeat = 1;
     conf.order = 2;
-    conf.m = 7;
+    conf.m = 5;
     conf.k = 10;
-    conf.backgroundAmount = 1
+    conf.backgroundAmount = 1;
     conf.doBound = false;
     main(conf);
 
@@ -25,7 +25,7 @@ function main(conf)
     params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order);
     mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.startWithBackground);
     thetaOrig = mergedPeaksMin.theta;
-    outpath = sprintf('viterbi_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, subN, conf.L);
+    outpath = sprintf('viterbi_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, conf.N, conf.L);
     subtitle = sprintf('m=%d, k=%d, %d%% of data', conf.m, conf.k);
     dataset.title = subtitle;
     dataset.X = mergedPeaksMin.seqs;
@@ -34,26 +34,24 @@ function main(conf)
     dataset.Y2 = mergedPeaksMin.Y2;
     dataset.pcPWMp = misc.preComputePWMp(mergedPeaksMin.seqs, params);
     [thetaEst, ~] = EM.EM(dataset, params, conf.maxIters, conf.doESharing, conf.doBound, conf.patience, conf.repeat);
+    thetaEst = misc.permThetaByAnother(params, thetaOrig, thetaEst);
     [~, ~, ~, ~, ~, psi] = EM.EStep(params, thetaEst, dataset.X, dataset.pcPWMp);
-    YEstViterbi = classify(thetaEst, params, dataset);
+    % N x L x 2
+    YEstViterbi = misc.viterbi(params, theta, dataset.X, dataset.pcPWMp);
+    % N x L x 2
+    Ymerged = cat(3, dataset.Y, dataset.Y2);
+
     % N x m x k x L
-    estMask = genPWMMask(params, YEstViterbi, conf.N, conf.L);
-    trueMask = genPWMMask(params, YEstViterbi, conf.N, conf.L);
+    estMask = genPWMMask(params, YEstViterbi, conf.N, conf.L) == 1;
+    % N x m x k x L
+    trueMask = genPWMMask(params, Ymerged, conf.N, conf.L) == 1;
 
-    estPosVals = psi(estMask);
-    estNegVals = psi(~estMask);
+    estPosVals = psi((estMask) & (psi > -inf));
+    estNegVals = psi((~estMask) & (psi > -inf));
 
-    truePosVals = psi(trueMask);
-    trueNegVals = psi(~trueMask);
-
-    show.distributionPlot({truePosVals, estPosVals}, 'histOri', 'right', 'color', 'r', 'widthDiv', [2 2], 'showMM', 0);
-    show.distributionPlot({trueNegVals, estNegVals}, 'histOri', 'left', 'color', 'b', 'widthDiv', [2 1], 'showMM', 0);
-
-    show.violin({estPosVals, estNegVals, truePosVals, trueNegVals});
-
-
-
-
+    truePosVals = psi((trueMask) & (psi > -inf));
+    trueNegVals = psi((~trueMask) & (psi > -inf));
+    show.violinViterbi(truePosVals, trueNegVals, estPosVals, estNegVals, outpath);
 end
 
 
@@ -159,14 +157,14 @@ function mask = genPWMMask(params, Y, N, L)
     for l = 1:params.k
         layerMask = [];
         for i = 1:params.m
-            PWMStateMask = (Y(:, 2:end, 2) > l) && (Y(:, 1:end - 1, 2) == 0) && (Y(:, 1:end - 1, 1) == i);
+            PWMStateMask = (Y(:, 2:end, 2) == l) & (Y(:, 1:end - 1, 2) == 0) & (Y(:, 1:end - 1, 1) == i);
             % N x L
             PWMStateMask = cat(2, PWMStateMask, false(N, 1, 1));
             layerMask = cat(3, layerMask, PWMStateMask);
         end
-        assert(size(layerMask) == [N, L, params.m]);
+        assert(all(size(layerMask) == [N, L, params.m]));
         layerMask = permute(layerMask, [1, 3, 4, 2]);
         mask = cat(3, mask, layerMask);
     end
-    assert(size(mask) == [N, params.m, params.k, L]);
+    assert(all(size(mask) == [N, params.m, params.k, L]));
 end

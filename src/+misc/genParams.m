@@ -41,7 +41,7 @@ function params = genParams(m, k, backgroundAmount, L, order)
     minEnhLen = min(100, floor(0.1 * L));
     maxBgLen = L - minEnhLen;
     minBgLen = L - maxEnhLen;
-    
+
     params.maxEnhMotif = maxEnhMotifRatio / mean(params.lengths);
     params.minEnhMotif = params.EPS;
     params.maxCrossEnh = maxCrossEnhRatio / (minEnhLen * (params.m - params.backgroundAmount))

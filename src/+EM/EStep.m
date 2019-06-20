@@ -35,10 +35,10 @@ function [alpha, beta, pX, xi, gamma, psi] = EStep(params, theta, X, pcPWMp)
     assert(not(any(isnan(psi(:)))));
     fprintf('. \n');
 
-    assert(size(psi) == [N, params.m, params.k, L]);
-    assert(size(gamma) == [N, params.m, L]);
-    assert(size(alpha) == [N, params.m, L]);
-    assert(size(beta) == [N, params.m, L]);
-    assert(size(pX) == [N, 1]);
-    assert(size(xi) == [N, params.m, params.m, L]);
+    assert(all(size(psi) == [N, params.m, params.k, L]));
+    assert(all(size(gamma) == [N, params.m, L]));
+    assert(all(size(alpha) == [N, params.m, L]));
+    assert(all(size(beta) == [N, params.m, L]));
+    assert(all(size(pX) == [N, 1]));
+    assert(all(size(xi) == [N, params.m, params.m, L]));
 end
