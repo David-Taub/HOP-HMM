@@ -1,11 +1,10 @@
 
-function mainViterbi()
+function mainViterbiViolin()
     conf.doESharing = false;
     conf.startWithBackground = false;
     conf.maxIters = 1000;
     conf.canCrossLayer = true;
     conf.patience = 4;
-    conf.Xpercents = [0.01, 0.25, 0.5, 0.75, 1];
     conf.L = 1000;
     conf.N = 100;
     conf.withExponent = false;
