@@ -1,5 +1,5 @@
 
-function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doGTBound, patience, repeat)
+function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doGTBound, doResample, patience, repeat)
     % X - N x L emission variables
     % m - amount of possible states (y)
     % n - amount of possible emissions (x)
@@ -13,38 +13,26 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doGTBound, p
     [N, L] = size(dataset.X);
     fprintf('Starting EM algorithm on %d x %d\n', N, L);
     bestLikelihood = -Inf;
-    % N x L - order + 1
-    dataset.XIndicesHotMap = genXInidcesHotMap(params, dataset);
     % figure
     for rep = 1:repeat
         % X = X(randperm(N), :);
         fprintf('Repeat %d / %d\n', rep, repeat);
         initTheta = misc.genTheta(params, false);
-        [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, doGTBound, patience);
+        [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, doGTBound, doResample, patience);
         if bestLikelihood < iterLike
             bestLikelihood = iterLike;
             bestTheta = theta;
         end
     end
     if doGTBound
-        [bestLikelihood, bestTheta] = EMRun(dataset, params, initTheta, maxIter, false, patience);
+        [bestLikelihood, bestTheta] = EMRun(dataset, params, initTheta, maxIter, false, doResample, patience);
     end
 end
 
 
-function XIndicesHotMap =  genXInidcesHotMap(params, dataset)
-    [N, L] = size(dataset.X);
-    % N x L - order + 1
-    indices = reshape(matUtils.getIndices1D(dataset.X, params.order, params.n), [L - params.order + 1, N]).';
-    % N x L - order + 1 x maxEIndex
-    XIndicesHotMap = matUtils.mat23Dmat(indices, params.n ^ params.order);
-    % N x L  x maxEIndex
-    XIndicesHotMap = cat(2, false(N, params.order - 1, params.n ^ params.order), XIndicesHotMap);
-end
-
 
 % iterates the EM algorithm, returns the likelihood of the best iteration, and theta parameters at that iteration
-function [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, doGTBound, patience)
+function [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, doGTBound, doResample, patience)
     LIKELIHOOD_THRESHOLD = 10 ^ -6;
     theta(1) = initTheta;
     iterLikes = -inf(maxIter, 1);
@@ -52,7 +40,7 @@ function [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, doGTBoun
     for it = 1:maxIter
         fprintf('EM iteration %d / %d\n', it, maxIter);
         tic;
-        [theta(it + 1), iterLike] = EM.EMIteration(params, dataset, theta(it), doGTBound);
+        [theta(it + 1), iterLike] = EM.EMIteration(params, dataset, theta(it), doGTBound, doResample);
         motifsPer = sum(exp(theta(it + 1).G(:)), 1).*100;
         timeLapse = toc();
         fprintf('It %d: log-like: %.2f Time: %.2fs, motifs: ~%.2f%%\n', it, iterLike, timeLapse, motifsPer);

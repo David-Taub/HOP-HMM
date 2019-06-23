@@ -1,5 +1,10 @@
-function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
+function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound, doResample)
     N = size(dataset.X, 1);
+    learningRate = 0.3;
+    if ~isfield(dataset, 'XIndicesHotMap')
+        % N x L - order + 1
+        dataset.XIndicesHotMap = misc.genXInidcesHotMap(params, dataset);
+    end
     batchAmount = ceil(N / params.batchSize);
     batchesTheta = inputTheta;
     batchesTheta.T = batchesTheta.T * 0;
@@ -33,7 +38,7 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
         end
         fprintf('. ');
         startT = updateStartT(gamma);
-        [G, T] = updateGT(params, xi, gamma, psi, doGTBound);
+        [G, T] = updateGT(params, xi, gamma, psi);
         assert(not(any(isnan(startT(:)))));
         assert(not(any(isnan(T(:)))));
         assert(not(any(isnan(E(:)))));
@@ -45,13 +50,19 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
         batchesTheta.G = batchesTheta.G + exp(G);
         batchesTheta.startT = batchesTheta.startT + exp(startT);
         batchesLikelihood = matUtils.logAdd(batchesLikelihood, matUtils.logMatSum(pX, 1));
-    end % end batch loop
+    end
 
     iterLike = batchesLikelihood - batchAmount;
-    theta.T = log(batchesTheta.T / batchAmount);
-    theta.E = log(batchesTheta.E / batchAmount);
-    theta.G = log(batchesTheta.G / batchAmount);
-    theta.startT = log(batchesTheta.startT / batchAmount);
+    theta.T = log(exp(inputTheta.T) .* (1 - learningRate) + learningRate .* batchesTheta.T / batchAmount);
+    theta.E = log(exp(inputTheta.E) .* (1 - learningRate) + learningRate .* batchesTheta.E / batchAmount);
+    theta.G = log(exp(inputTheta.G) .* (1 - learningRate) + learningRate .* batchesTheta.G / batchAmount);
+    theta.startT = log(exp(inputTheta.startT) .* (1 - learningRate) + learningRate .* batchesTheta.startT / batchAmount);
+    if doGTBound
+        [theta.G, theta.T] = EM.GTbound(params, theta.G, theta.T);
+    end
+    if doResample
+        [theta.E, theta.G] = EM.resampleEG(params, theta.E, theta.G);
+    end
     % clf
     % show.showTwoThetas(params, dataset.theta, theta, false, sprintf('%d', it), 'tmp.jpg');
     % drawnow;
@@ -93,7 +104,7 @@ end
 % psi - N x m x k x L
 % newG - m x k
 % newT - m x m
-function [newG, newT] = updateGT(params, xi, gamma, psi, doGTBound)
+function [newG, newT] = updateGT(params, xi, gamma, psi)
     [N, ~, L] = size(gamma);
 
     % N x m x k+m x L
