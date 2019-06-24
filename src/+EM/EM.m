@@ -1,14 +1,14 @@
-
+% X - N x L emission variables
+% m - amount of possible states (y)
+% n - amount of possible emissions (x)
+% maxIter - maximal iterations allowed
+% tEpsilon - probability to switch states will not exceed this number (if tEpsilon = 0.01,
+%            and m = 3 then the probability to stay in a state will not be less than 0.98)
+% pcPWMp - N x k x L
+% order - the HMM order of the E matrix
+% initial estimation parameters
+% TODO: too many args, move to struct
 function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doGTBound, doResample, patience, repeat)
-    % X - N x L emission variables
-    % m - amount of possible states (y)
-    % n - amount of possible emissions (x)
-    % maxIter - maximal iterations allowed
-    % tEpsilon - probability to switch states will not exceed this number (if tEpsilon = 0.01,
-    %            and m = 3 then the probability to stay in a state will not be less than 0.98)
-    % pcPWMp - N x k x L
-    % order - the HMM order of the E matrix
-    % initial estimation parameters
 
     [N, L] = size(dataset.X);
     fprintf('Starting EM algorithm on %d x %d\n', N, L);
@@ -17,7 +17,7 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doGTBound, d
     for rep = 1:repeat
         % X = X(randperm(N), :);
         fprintf('Repeat %d / %d\n', rep, repeat);
-        initTheta = misc.genTheta(params, false);
+        initTheta = misc.genTheta(params, true);
         [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, doGTBound, doResample, patience);
         if bestLikelihood < iterLike
             bestLikelihood = iterLike;

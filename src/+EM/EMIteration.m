@@ -52,7 +52,7 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound,
         batchesLikelihood = matUtils.logAdd(batchesLikelihood, matUtils.logMatSum(pX, 1));
     end
 
-    iterLike = batchesLikelihood - batchAmount;
+    iterLike = batchesLikelihood - log(N);
     theta.T = log(exp(inputTheta.T) .* (1 - learningRate) + learningRate .* batchesTheta.T / batchAmount);
     theta.E = log(exp(inputTheta.E) .* (1 - learningRate) + learningRate .* batchesTheta.E / batchAmount);
     theta.G = log(exp(inputTheta.G) .* (1 - learningRate) + learningRate .* batchesTheta.G / batchAmount);
