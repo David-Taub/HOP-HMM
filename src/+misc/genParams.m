@@ -7,7 +7,7 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing)
     params.k = k;
     params.order = order;
     params.backgroundAmount = backgroundAmount;
-    params = loadPWMs(params)
+    params = loadPWMs(params);
 
     % params.enhancerLength = 500;
     % meanEnhancerCountInSeq = 1.5;
@@ -38,7 +38,7 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing)
     maxCrossEnhRatio = 1 / 15; % maximal ratio of transition to any another enhancer
     maxCrossBgRatio = 1 / 20; % maximal ratio of transition to any another enhancer
     maxEnhLen = min(700, floor(0.7 * L));
-    minEnhLen = min(100, floor(0.1 * L));
+    minEnhLen = min(100, floor(0.3 * L));
     maxBgLen = L - minEnhLen;
     minBgLen = L - maxEnhLen;
 
@@ -77,6 +77,7 @@ function [minT, minG] = genMinGT(params)
     minG = ones(params.m, params.k) .* params.minEnhMotif;
     minG(end - params.backgroundAmount + 1:end, :) = params.minBgMotif;
 end
+
 
 function [maxT, maxG] = genMaxGT(params)
     maxT = ones(params.m) .* params.maxCrossEnh;

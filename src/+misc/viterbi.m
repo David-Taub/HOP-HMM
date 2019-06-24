@@ -3,7 +3,7 @@
 % pcPWMp - N x k x L
 function Y = viterbi(params, theta, X, pcPWMp)
     [N, L] = size(X);
-    fprintf('Running Viterbi on %d sequences of length %d\n', N, L)
+    fprintf('Running Viterbi on %d sequences of length %d\n', N, L);
     pcPWMp = cat(3, -inf(N, params.k, params.J), pcPWMp);
     Y = zeros(N, L, 2);
     matSize = [params.m , params.n * ones(1, params.order)];

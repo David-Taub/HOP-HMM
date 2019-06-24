@@ -2,19 +2,19 @@
 function mainDecErrorPlot()
     conf.doESharing = false;
     conf.startWithBackground = false;
-    conf.maxIters = 50;
+    conf.maxIters = 100;
     conf.canCrossLayer = true;
-    conf.patience = 4;
-    conf.L = 1000;
-    conf.N = 300;
+    conf.patience = 10;
+    conf.L = 1500;
+    conf.N = 500;
     conf.withExponent = false;
     conf.repeat = 1;
-    conf.order = 2;
-    conf.m = 5;
-    conf.k = 10;
+    conf.order = 3;
+    conf.m = 6;
+    conf.k = 15;
     conf.backgroundAmount = 1;
     conf.doBound = false;
-    conf.doResample = true;
+    conf.doResample = false;
     main(conf);
 
 end
@@ -25,10 +25,9 @@ function main(conf)
     params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, conf.doESharing);
     mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.startWithBackground);
     thetaOrig = mergedPeaksMin.theta;
-    outpath = sprintf('viterbi_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, conf.doResample, conf.N, conf.L);
     subtitle = sprintf('m=%d, k=%d, %d%% of data', conf.m, conf.k);
 
-    [trainDataset, testDataset] = crossValidationSplit(params, mergedPeaksMin, 0.15)
+    [trainDataset, testDataset] = misc.crossValidationSplit(params, mergedPeaksMin, 0.15)
     % dataset.title = subtitle;
     % dataset.X = mergedPeaksMin.seqs;
     % dataset.theta = mergedPeaksMin.theta;
@@ -37,13 +36,14 @@ function main(conf)
     % dataset.pcPWMp = misc.preComputePWMp(mergedPeaksMin.seqs, params);
 
     thetaOrig = trainDataset.theta;
-    thetaEst(1) = misc.genTheta(params, false);
+    thetaEst(1) = misc.genTheta(params, true);
     errorsTrain(1) = rateTheta(params, thetaOrig, thetaEst(1), trainDataset);
     errorsTest(1) = rateTheta(params, thetaOrig, thetaEst(1), testDataset);
-    [~, ~, pX, ~, ~, ~] = EM.EStep(params, thetaOrig, trainDataset.X, trainDataset.pcPWMp);
+    [~, ~, pX, ~, ~, ~] = EM.EStep(params, thetaEst(1), trainDataset.X, trainDataset.pcPWMp);
     trainLikelihood(1) = matUtils.logMatSum(pX, 1);
-    [~, ~, pX, ~, ~, ~] = EM.EStep(params, thetaOrig, testDataset.X, testDataset.pcPWMp);
+    [~, ~, pX, ~, ~, ~] = EM.EStep(params, thetaEst(1), testDataset.X, testDataset.pcPWMp);
     testLikelihood(1) = matUtils.logMatSum(pX, 1);
+    matUtils.logMatSum(pX, 1);
     for i = 1:conf.maxIters
         [thetaEst(i + 1), trainLikelihood(i + 1)] = EM.EMIteration(params, trainDataset, thetaEst(i), conf.doBound, conf.doResample);
         thetaEst(i + 1) = misc.permThetaByAnother(params, thetaOrig, thetaEst(i + 1));
@@ -51,37 +51,47 @@ function main(conf)
         testLikelihood(i + 1) = matUtils.logMatSum(pX, 1);
 
         errorsTrain(i + 1) = rateTheta(params, thetaOrig, thetaEst(i + 1) , trainDataset);
-        if mod(i + 1, 5) == 0
-            close all
-            show.showTheta(thetaEst(i + 1));
-            show.showTheta(thetaOrig);
-            figure
-            cla(subplot(1,4,1));
-            hold on
-            % plot([errorsTrain(:).totalError]);
-            % plot([errorsTrain(:).PWMError]);
-            plot([errorsTrain(:).layerError]);
-            % plot([errorsTest(:).totalError]);
-            % plot([errorsTest(:).PWMError]);
-            plot([errorsTest(:).layerError]);
-            % legend('Total train', 'PWM train', 'Layer train', 'Total test', 'PWM test', 'Layer test')
-            legend('Layer train', 'Layer test');
-            cla(subplot(1,4,2));
-            showTwoThetasOverTime(params, thetaOrig, thetaEst, 'false', subtitle, 'tmp.jpg');
-            % show.showTwoThetas(params, thetaOrig, thetaEst, 'false', subtitle, 'tmp.jpg');
-            cla(subplot(1,4,3));
-            title('MSLE')
-            hold on;
-            plot([errorsTrain(:).msle])
-            cla(subplot(1,4,4));
-            title('likelihood')
-            hold on;
-            plot(trainLikelihood)
-            plot(testLikelihood)
-            legend('train', 'test')
-        end
         errorsTest(i + 1) = rateTheta(params, thetaOrig, thetaEst(i + 1), testDataset);
     end
+    close all
+    show.showTheta(thetaEst(end));
+    show.showTheta(thetaOrig);
+    figure('units','normalized','outerposition',[0 0 1 1]);
+
+    figure('units','normalized','outerposition',[0 0 1 1]);
+    hold on
+    title('Viterbi Error')
+    % plot([errorsTrain(:).totalError]);
+    % plot([errorsTrain(:).PWMError]);
+    plot([errorsTrain(:).layerError]);
+    % plot([errorsTest(:).totalError]);
+    % plot([errorsTest(:).PWMError]);
+    plot([errorsTest(:).layerError]);
+    % legend('Total train', 'PWM train', 'Layer train', 'Total test', 'PWM test', 'Layer test')
+    legend('Layer train error', 'Layer test error');
+    outpath = sprintf('DecError1_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, conf.doResample, conf.N, conf.L);
+    saveas(gcf, outpath);
+
+    figure('units','normalized','outerposition',[0 0 1 1]);
+    outpath = sprintf('DecError2_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, conf.doResample, conf.N, conf.L);
+    showTwoThetasOverTime(params, thetaOrig, thetaEst, 'false', subtitle, outpath);
+    % show.showTwoThetas(params, thetaOrig, thetaEst, 'false', subtitle, 'tmp.jpg');
+
+    figure('units','normalized','outerposition',[0 0 1 1]);
+    outpath = sprintf('DecError3_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, conf.doResample, conf.N, conf.L);
+    title('MSLE')
+    hold on;
+    plot([errorsTrain(:).msle])
+    saveas(gcf, outpath);
+
+    outpath = sprintf('DecError4_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, conf.doResample, conf.N, conf.L);
+    figure('units','normalized','outerposition',[0 0 1 1]);
+    title('Log Likelihood')
+    hold on;
+    plot(trainLikelihood)
+    plot(testLikelihood)
+    legend('train likelihood', 'test likelihood')
+    saveas(gcf, outpath);
     keyboard
 end
 
@@ -98,9 +108,9 @@ function showTwoThetasOverTime(params, thetaOrig, thetaEsts, withExponent, subti
         % m x length(theta(:)) / m
         thetaOrigMat = misc.thetaToMat(params, thetaOrig, true);
         thetaEstMat = misc.thetaToMat(params, thetaEst, true);
-        if isempty(strfind(outpath, 'tmp'))
-            fig = figure('units','normalized','outerposition',[0 0 1 1]);
-        end
+        % if isempty(strfind(outpath, 'tmp'))
+            % fig = figure('units','normalized','outerposition',[0 0 1 1]);
+        % end
         if withExponent
             thetaOrigMat = exp(thetaOrigMat);
             thetaEstMat = exp(thetaEstMat);
@@ -130,33 +140,6 @@ function showTwoThetasOverTime(params, thetaOrig, thetaEsts, withExponent, subti
     saveas(gcf, outpath);
 end
 
-function [test, train] = crossValidationSplit(params, mergedPeaksMin, testTrainRatio)
-    L = size(mergedPeaksMin.seqs, 2);
-    X = mergedPeaksMin.seqs; % N x L
-    % N x k x L
-    pcPWMp = misc.preComputePWMp(X, params);
-    N = size(X, 1);
-    trainMask = true(N, 1);
-    trainMask(randperm(N, floor(N * testTrainRatio))) = false;
-    train.title = 'Train';
-    train.X = X(trainMask, :);
-    test.title = 'Test';
-    test.X = X(~trainMask, :);
-    train.pcPWMp = pcPWMp(trainMask, :, :);
-    test.pcPWMp = pcPWMp(~trainMask, :, :);
-    if isfield(mergedPeaksMin, 'Y')
-        train.Y = mergedPeaksMin.Y(trainMask, :);
-        test.Y = mergedPeaksMin.Y(~trainMask, :);
-    end
-    if isfield(mergedPeaksMin, 'Y2')
-        train.Y2 = mergedPeaksMin.Y2(trainMask, :);
-        test.Y2 = mergedPeaksMin.Y2(~trainMask, :);
-    end
-    if isfield(mergedPeaksMin, 'theta')
-        train.theta = mergedPeaksMin.theta;
-        test.theta = mergedPeaksMin.theta;
-    end
-end
 
 
 function errors = rateTheta(params, thetaOrig, thetaEst, dataset)

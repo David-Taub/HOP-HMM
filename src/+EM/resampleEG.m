@@ -2,19 +2,22 @@
 function [E, G] = resampleEG(params, E, G)
     EFlat = E(:, :);
     randTheta = misc.genTheta(params, false);
-    E(:, :) = replaceSimRows(E(:, :), randTheta.E(:, :))
-    G(:, :) = replaceSimRows(G(:, :), randTheta.G(:, :))
+    E(:, :) = replaceSimRows(E(:, :), randTheta.E(:, :));
+    G(:, :) = replaceSimRows(G(:, :), randTheta.G(:, :));
 end
+
 
 % v - m x 1
 function ret = findLowVals(v)
-    THRESHOLD = 0.01;
-    missMeans = v;
+    THRESHOLD = 2.5;
+    zScores = v;
     for i = 1:length(v)
-        missMeans(i) = mean([v(1:i-1), v(i+1:end)], 2);
+        vWithoutI = [v(1:i-1), v(i+1:end)];
+        zScores(i) = (mean(vWithoutI, 2) - v(i)) ./ std(vWithoutI);
     end
-    ret = missMeans * THRESHOLD > v;
+    ret = zScores > THRESHOLD;
 end
+
 
 % M - m1, m2
 function ret = findSimilarRows(M)
@@ -23,9 +26,10 @@ function ret = findSimilarRows(M)
     ret = squareform(simMask);
 end
 
+
 % M - m1, m2
 function M = replaceSimRows(M, randM)
-    for i = size(M, 1);
+    for i = size(M, 1) + 1;
         simMask = findSimilarRows(M);
         rowToReplace = find(any(simMask > 0, 2), 1);
         if length(rowToReplace) == 0
