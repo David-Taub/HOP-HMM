@@ -40,21 +40,21 @@ function main(conf)
     errorsTest(1) = rateTheta(params, thetaOrig, thetaEst(1), testDataset);
     trainLikelihood(1) = calcLikelihood(params, thetaEst(1), trainDataset.X, trainDataset.pcPWMp);
     testLikelihood(1) = calcLikelihood(params, thetaEst(1), testDataset.X, testDataset.pcPWMp);
-    trainLikelihoodOrig = calcLikelihood(params, thetaOrig, trainDataset.X, trainDataset.pcPWMp)
+    trainLikelihoodOrig = calcLikelihood(params, thetaOrig, trainDataset.X, trainDataset.pcPWMp);
     testLikelihoodOrig = calcLikelihood(params, thetaOrig, testDataset.X, testDataset.pcPWMp);
 
     for i = 1:conf.maxIters
         i
         [thetaEst(i + 1), trainLikelihood(i + 1)] = EM.EMIteration(params, trainDataset, thetaEst(i), conf.doBound, conf.doResample);
         thetaEst(i + 1) = misc.permThetaByAnother(params, thetaOrig, thetaEst(i + 1));
-        [~, ~, pX, ~, ~, ~] = EM.EStep(params, thetaEst(i + 1), testDataset.X, testDataset.pcPWMp);
-        testLikelihood(i + 1) = matUtils.logMatSum(pX, 1);
+        testLikelihood(i + 1) = calcLikelihood(params, thetaEst(i + 1), testDataset.X, testDataset.pcPWMp);
 
         errorsTrain(i + 1) = rateTheta(params, thetaOrig, thetaEst(i + 1) , trainDataset);
         errorsTest(i + 1) = rateTheta(params, thetaOrig, thetaEst(i + 1), testDataset);
         testLikelihood(end)
+        trainLikelihood(end)
         convergeSpan = floor(0.1 * conf.maxIters);
-        if length(testLikelihood) > floor(0.1 * conf.maxIters) & abs(mean(testLikelihood(end - convergeSpan:end), 2) - testLikelihood(end)) < abs(0.005 * testLikelihood(end))
+        if length(testLikelihood) > floor(0.1 * conf.maxIters) & abs(mean(testLikelihood(end - convergeSpan:end), 2) - testLikelihood(end)) < abs(0.001 * testLikelihood(end))
             break
         end
     end
@@ -62,15 +62,20 @@ function main(conf)
 
     show.showTheta(thetaEst(end));
     show.showTheta(thetaOrig);
+    origTrainError = rateTheta(params, thetaOrig, thetaOrig, trainDataset);
+    origTestError = rateTheta(params, thetaOrig, thetaOrig, testDataset);
 
     figure('units', 'normalized', 'outerposition', [0 0 1 1]);
     hold on
-    title('Viterbi Classification')
+    title('Viterbi Classification Convergence')
     plot([errorsTrain(:).layerError]);
     plot([errorsTest(:).layerError]);
-    ylabel('Misclassification Rate')
+    plot([1, length([errorsTrain(:).layerError])], [origTrainError.layerError, origTrainError.layerError])
+    plot([1, length([errorsTrain(:).layerError])], [origTestError.layerError, origTestError.layerError])
+    ylabel('Misclassification Rate (lower is better)')
     xlabel('EM Iteration')
-    legend('Train error', 'Test error');
+    legend('Viterbi train error with learned \theta', 'Viterbi test error with learned \theta', ...
+           'Viterbi train error with true \theta', 'Viterbi test error with true \theta')
     outpath = sprintf('DecError_VitErr_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, conf.doResample, conf.N, conf.L);
     saveas(gcf, outpath);
 
@@ -96,9 +101,9 @@ function main(conf)
     plot(testLikelihood)
     plot([1, length(trainLikelihood)], [trainLikelihoodOrig, trainLikelihoodOrig])
     plot([1, length(testLikelihood)], [testLikelihoodOrig, testLikelihoodOrig])
-    legend('Train likelihood of learned \theta', 'Test likelihood of learned \theta', ...
-           'Train likelihood of true \theta', 'Test likelihood of true \theta')
-    ylabel('Average log likelihood of sequence (higher is better)');
+    legend('Train likelihood with learned \theta', 'Test likelihood with learned \theta', ...
+           'Train likelihood with true \theta', 'Test likelihood with true \theta')
+    ylabel('Log likelihood of sequences (higher is better)');
     xlabel('EM Iteration');
     saveas(gcf, outpath);
     keyboard
