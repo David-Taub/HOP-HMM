@@ -9,12 +9,6 @@ function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
     % TODO: think about summing on the correct PWM only, not all of them
     % N x m x L
     posterior = calcPosterior(params, gamma, psi);
-    % N x m x L
-    YOneHot = permute(matUtils.mat23Dmat(dataset.Y, params.m), [1, 3, 2]);
-    % N x L - the posteriors of the correct state
-    certainty = permute(sum(posterior .* YOneHot, 2), [1,3,2]);
-    loss = mean(1-certainty(:) + eps);
-    fprintf('Avg loss: %.2f\n', loss);
     % sequencesToShow = 10;
     cMap = lines(params.m);
     cellCMap = {};
@@ -28,17 +22,16 @@ function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
     cMapWithError = [cMap; ERROR_COLOR; PWM_COLOR; MATCH_COLOR];
     inds = randsample(N, sequencesToShow);
     inds = sort(inds);
-    loss = mean(1-certainty(:));
+    % lowbar
+    match_val = params.m + 3;
+    pwm_val = params.m + 2;
+    error_val = params.m + 1;
+    LOW_BAR_HIEGHT = 0.2;
     figure('units','normalized','outerposition',[0 0 1 1]);
     for i = 1:sequencesToShow
         ind = inds(i);
         subplot(sequencesToShow, 1, i);
         hold on;
-        % lowbar
-        match_val = params.m + 3;
-        pwm_val = params.m + 2;
-        error_val = params.m + 1;
-        LOW_BAR_HIEGHT = 0.2;
 
         ylim([-LOW_BAR_HIEGHT, 1]);
         errorMask = any(YEst(ind, :, :) ~= cat(3, dataset.Y(ind, :), dataset.Y2(ind, :)), 3);
@@ -56,9 +49,6 @@ function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
         text(L + 1, 0.5, 'Posterior Probability', 'FontSize', 8)
         text(L + 1, -LOW_BAR_HIEGHT / 4, 'Viterbi Estimation', 'FontSize', 8)
         text(L + 1, -3 * LOW_BAR_HIEGHT / 4, 'Real States', 'FontSize', 8)
-
-        % heatmap = [origY; YEst(ind, :, 1); errorMask];
-        % imagesc([.5, L-.5], [-5 * LOW_BAR_HIEGHT / 6, -LOW_BAR_HIEGHT / 6], heatmap, [1, params.m + 3]);
 
         % m x L
         YOneHot = matUtils.vec2mat(dataset.Y(ind, :), params.m);
