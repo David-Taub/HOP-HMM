@@ -26,11 +26,11 @@ function alpha = forwardAlg(X, theta, params, pcPWMp, Eps)
     for t = 2:L
         % fprintf('Forward algorithm %.2f%%\r', 100*t/L);
         % N x m * m x m
-        baseStateStep = matUtils.logMatProd(alpha(:, :, params.J+t-1), theta.T) + Eps(:, :, t);
+        baseStateStep = matUtils.logMatProd(alpha(:, :, params.J + t - 1), theta.T) + Eps(:, :, t);
         % N x m x k
-        alphaSlice = alpha(:, :, params.J+t-params.lengths-1);
+        alphaSlice = alpha(:, :, params.J + t - params.lengths - 1);
         % N x m
-        subStateStep = EM.PWMstep(alphaSlice, Gs, t-params.lengths', pcPWMp, repmat(Eps(:, :, t), [1, 1, params.k]));
+        subStateStep = EM.PWMstep(alphaSlice, Gs, t - params.lengths', pcPWMp, repmat(Eps(:, :, t), [1, 1, params.k]));
 
         alpha(:, :, params.J + t) = matUtils.logAdd(baseStateStep, subStateStep);
     end

@@ -22,14 +22,14 @@ function beta = backwardAlg(X, theta, params, pcPWMp, Eps)
 
         % N x m x k
 
-        EpReturn = Eps(:, :, t+params.lengths);
+        EpReturn = Eps(:, :, t + params.lengths);
         % N x m x k
-        betaSlice = beta(:, :, t+params.lengths);
+        betaSlice = beta(:, :, t + params.lengths);
         % N x m
         subStateStep = EM.PWMstep(betaSlice, Gs, repmat(t, [params.k, 1]), pcPWMp, EpReturn);
         % N x m
         baseStateStep = matUtils.logMatProd(Eps(:, :, t) + beta(:, :, t), theta.T');
-        beta(:,:,t-1) = matUtils.logAdd(baseStateStep, subStateStep);
+        beta(:, :, t - 1) = matUtils.logAdd(baseStateStep, subStateStep);
     end
     beta = beta(:, :, 1:L);
     % fprintf('\n');
