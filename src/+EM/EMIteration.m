@@ -1,6 +1,6 @@
 function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound, doResample)
     N = size(dataset.X, 1);
-    LEARNING_RATE = 0.3;
+    LEARNING_RATE = 1;
     if ~isfield(dataset, 'XIndicesHotMap')
         % N x L - order + 1
         dataset.XIndicesHotMap = misc.genXInidcesHotMap(params, dataset);
@@ -11,7 +11,7 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound,
     batchesTheta.E = batchesTheta.E * 0;
     batchesTheta.G = batchesTheta.G * 0;
     batchesTheta.startT = batchesTheta.startT * 0;
-    batchesLikelihood = -inf;
+    batchesLikelihood = 0;
     for u = 1:batchAmount
         fprintf('Batch %d / %d\n', u, batchAmount);
         % N x m x k+m x L
