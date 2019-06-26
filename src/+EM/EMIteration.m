@@ -49,10 +49,10 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound,
         batchesTheta.E = batchesTheta.E + exp(E);
         batchesTheta.G = batchesTheta.G + exp(G);
         batchesTheta.startT = batchesTheta.startT + exp(startT);
-        batchesLikelihood = matUtils.logAdd(batchesLikelihood, matUtils.logMatSum(pX, 1));
+        batchesLikelihood = batchesLikelihood + sum(pX, 1);
     end
-
-    iterLike = batchesLikelihood - log(N);
+    % geometric average is more stable than regular mean for very small likelihood values
+    iterLike = batchesLikelihood / N;
     theta.T = log(exp(inputTheta.T) .* (1 - LEARNING_RATE) + LEARNING_RATE .* batchesTheta.T / batchAmount);
     theta.E = log(exp(inputTheta.E) .* (1 - LEARNING_RATE) + LEARNING_RATE .* batchesTheta.E / batchAmount);
     theta.G = log(exp(inputTheta.G) .* (1 - LEARNING_RATE) + LEARNING_RATE .* batchesTheta.G / batchAmount);

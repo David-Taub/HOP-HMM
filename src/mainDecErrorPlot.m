@@ -6,7 +6,7 @@ function mainDecErrorPlot()
     conf.canCrossLayer = true;
     conf.patience = 10;
     conf.L = 1000;
-    conf.N = 1000;
+    conf.N = 500;
     conf.withExponent = false;
 
     conf.order = 2;
@@ -21,7 +21,7 @@ end
 function likelihood = calcLikelihood(params, theta, X, pcPWMp)
     N = size(X, 1);
     [~, ~, pX, ~, ~, ~] = EM.EStep(params, theta, X, pcPWMp);
-    likelihood = matUtils.logMatSum(pX, 1) - log(N);
+    likelihood = mean(pX, 1);
 end
 
 
@@ -40,10 +40,11 @@ function main(conf)
     errorsTest(1) = rateTheta(params, thetaOrig, thetaEst(1), testDataset);
     trainLikelihood(1) = calcLikelihood(params, thetaEst(1), trainDataset.X, trainDataset.pcPWMp);
     testLikelihood(1) = calcLikelihood(params, thetaEst(1), testDataset.X, testDataset.pcPWMp);
-    likelihoodOrig = calcLikelihood(params, thetaOrig, cat(1, trainDataset.X, testDataset.X), ...
-                                    cat(1, trainDataset.pcPWMp, testDataset.pcPWMp));
+    trainLikelihoodOrig = calcLikelihood(params, thetaOrig, trainDataset.X, trainDataset.pcPWMp)
+    testLikelihoodOrig = calcLikelihood(params, thetaOrig, testDataset.X, testDataset.pcPWMp);
 
     for i = 1:conf.maxIters
+        i
         [thetaEst(i + 1), trainLikelihood(i + 1)] = EM.EMIteration(params, trainDataset, thetaEst(i), conf.doBound, conf.doResample);
         thetaEst(i + 1) = misc.permThetaByAnother(params, thetaOrig, thetaEst(i + 1));
         [~, ~, pX, ~, ~, ~] = EM.EStep(params, thetaEst(i + 1), testDataset.X, testDataset.pcPWMp);
@@ -53,7 +54,7 @@ function main(conf)
         errorsTest(i + 1) = rateTheta(params, thetaOrig, thetaEst(i + 1), testDataset);
         testLikelihood(end)
         convergeSpan = floor(0.1 * conf.maxIters);
-        if length(testLikelihood) > floor(0.1 * conf.maxIters) & abs(mean(testLikelihood(end - convergeSpan:end), 1) - testLikelihood(end)) < 0.005 * testLikelihood(end)
+        if length(testLikelihood) > floor(0.1 * conf.maxIters) & abs(mean(testLikelihood(end - convergeSpan:end), 2) - testLikelihood(end)) < abs(0.005 * testLikelihood(end))
             break
         end
     end
@@ -93,9 +94,11 @@ function main(conf)
     hold on;
     plot(trainLikelihood)
     plot(testLikelihood)
-    plot([1, length(trainLikelihood)], [likelihoodOrig, likelihoodOrig])
-    legend('Train likelihood of learned \theta', 'Test likelihood of learned \theta', 'Likelihood of original \theta')
-    ylabel('Average log likelihood (higher is better)');
+    plot([1, length(trainLikelihood)], [trainLikelihoodOrig, trainLikelihoodOrig])
+    plot([1, length(testLikelihood)], [testLikelihoodOrig, testLikelihoodOrig])
+    legend('Train likelihood of learned \theta', 'Test likelihood of learned \theta', ...
+           'Train likelihood of true \theta', 'Test likelihood of true \theta')
+    ylabel('Average log likelihood of sequence (higher is better)');
     xlabel('EM Iteration');
     saveas(gcf, outpath);
     keyboard
@@ -124,7 +127,7 @@ function showTwoThetasOverTime(params, thetaOrig, thetaEsts, withExponent, outpa
         minVal = floor(min(minVal, min([thetaEstMat(:); thetaOrigMat(:)])));
         maxVal = ceil(max(maxVal, max([thetaEstMat(:); thetaOrigMat(:)])));
         % mse = mean((thetaOrigMat(:) - thetaEstMat(:)) .^ 2, 1);
-        gradColor = BASE_INTENSITY + (1 - BASE_INTENSITY) * (length(thetaEsts) - j) / length(thetaEsts);
+        gradColor = BASE_INTENSITY + (0.9 - BASE_INTENSITY) * (length(thetaEsts) - j) / length(thetaEsts);
         % if j > 1
         %     for t = 1: length(thetaOrigMat(:))
         %         plot([thetaOrigMat(t), thetaOrigMat(t)], [prevTheta(t), thetaEstMat(t)], 'color', [gradColor, gradColor, 1]);
