@@ -1,6 +1,6 @@
 function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound, doResample)
     N = size(dataset.X, 1);
-    learningRate = 0.3;
+    LEARNING_RATE = 0.3;
     if ~isfield(dataset, 'XIndicesHotMap')
         % N x L - order + 1
         dataset.XIndicesHotMap = misc.genXInidcesHotMap(params, dataset);
@@ -53,10 +53,10 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound,
     end
 
     iterLike = batchesLikelihood - log(N);
-    theta.T = log(exp(inputTheta.T) .* (1 - learningRate) + learningRate .* batchesTheta.T / batchAmount);
-    theta.E = log(exp(inputTheta.E) .* (1 - learningRate) + learningRate .* batchesTheta.E / batchAmount);
-    theta.G = log(exp(inputTheta.G) .* (1 - learningRate) + learningRate .* batchesTheta.G / batchAmount);
-    theta.startT = log(exp(inputTheta.startT) .* (1 - learningRate) + learningRate .* batchesTheta.startT / batchAmount);
+    theta.T = log(exp(inputTheta.T) .* (1 - LEARNING_RATE) + LEARNING_RATE .* batchesTheta.T / batchAmount);
+    theta.E = log(exp(inputTheta.E) .* (1 - LEARNING_RATE) + LEARNING_RATE .* batchesTheta.E / batchAmount);
+    theta.G = log(exp(inputTheta.G) .* (1 - LEARNING_RATE) + LEARNING_RATE .* batchesTheta.G / batchAmount);
+    theta.startT = log(exp(inputTheta.startT) .* (1 - LEARNING_RATE) + LEARNING_RATE .* batchesTheta.startT / batchAmount);
     if doGTBound
         [theta.G, theta.T] = EM.GTbound(params, theta.G, theta.T);
     end
