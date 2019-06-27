@@ -263,5 +263,5 @@ wget -O chr22.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/c
 wget -O chrX.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chrX.fa.gz
 wget -O chrY.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chrY.fa.gz
 
-gunzip -f *.gz
+gunzip -vf *.gz
 rm -f *.gz

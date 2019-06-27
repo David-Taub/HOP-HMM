@@ -18,6 +18,8 @@ function typesOfCells = beds2mats(L)
             nameParts = strsplit(nameParts{1}, '-');
             name = nameParts{1};
             matPath = ['../data/peaks/mat/', name, '.peaks.mat'];
+            fprintf('Converting %d / %d: [%s] %s -> %s\n', index, ...
+                    typesOfCells, name, bedFilePath, matPath);
             bed2mat(index, name, bedFilePath, matPath, typesOfCells, L, dict);
             assert(isfile(matPath));
         end
@@ -80,7 +82,7 @@ function bed2mat(index, name, bedFilePath, matPath, typesOfCells, L, dict)
     fprintf('\n');
 
     save(matPath, 'S', '-v7.3');
-    fprintf('Saving bed in mat format in %s \n', matPath);
+    fprintf('Saved bed in mat format in %s \n', matPath);
 
 end
 

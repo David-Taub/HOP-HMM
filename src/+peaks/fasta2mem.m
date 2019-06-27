@@ -3,16 +3,17 @@
 % seqs{i} = dict(chr).Data(from:to);
 function dict = fasta2mem()
     HG19_FASTA_DIR = '../data/peaks/raw_genome';
-    fprintf('Fasta 2 mm\n');
+    fprintf('Fasta -> mm\n');
     % save in dict opened hg19 fasta files as memory mapped files
     dict = containers.Map;
     fastaFiles = dir([HG19_FASTA_DIR, '/*.fa']);
     for i = 1:length(fastaFiles)
         if not(fastaFiles(i).isdir)
-            fastaFilePath = fullfile(HG19_FASTA_DIR, fastaFiles(i).name)
+            fastaFilePath = fullfile(HG19_FASTA_DIR, fastaFiles(i).name);
             [~, chr, ~] = fileparts(fastaFilePath);
             mmFilePath = [fullfile(HG19_FASTA_DIR, chr) '.mm'];
             if not(exist(mmFilePath, 'file') == 2)
+                fprintf('Converting file %s -> %s\n', fastaFilePath, mmFilePath);
                 singleFasta2mm(fastaFilePath, mmFilePath);
             end
             dict(chr) = memmapfile(mmFilePath, 'format', 'uint8');
