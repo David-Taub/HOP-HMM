@@ -1,16 +1,45 @@
+function mainRealData()
+    conf.doESharing = false;
+    conf.startWithBackground = false;
+    conf.maxIters = 1000;
+    conf.canCrossLayer = true;
+    conf.patience = 4;
+    conf.L = 1000;
+    conf.N = 100;
+    conf.withExponent = false;
+    conf.repeat = 1;
+    conf.order = 2;
+    conf.m = 5;
+    conf.k = 10;
+    conf.withBackground = true;
+    conf.backgroundAmount = 1;
+    conf.doBound = false;
+    main(conf);
+end
+
+% reads bed files, make them into a single mat file and return it's content
+function mergedPeaksMin = preprocess(conf)
+    PROCESSED_FILEPATH = sprintf('../data/peaks/mergedPeaksMinimized_L%db%d.mat', conf.L, conf.withBackground);
+    if ~isfile(PROCESSED_FILEPATH)
+        peaks.beds2mats(conf.L);
+        mergedPeaks = peaks.mergePeakFiles(conf.withBackground, true);
+        peaks.minimizeMergePeak(mergedPeaks, conf.L, tissueNames, PROCESSED_FILEPATH);
+    end
+    mergedPeaksMin = load(PROCESSED_FILEPATH);
+end
+
 
 % mainRealData(multiEnhancers, 5, 40, false, false);
 % doESharing - Each EM iteration, averaging the E across all modes, and using the average in all modes
-function mainRealData(mergedPeaksMin, m, k, doESharing, doBound)
+function main(conf)
     dbstop if error
     close all;
-
-    params = misc.genParams(m, k);
-    params.NperTissue = 1000;
-    maxIters = 1000;
+    mergedPeaksMin = preprocess(conf);
     testTrainRatio = 0.15;
-    [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio);
-    [theta, ~] = EM.EM(train, params, maxIters, doESharing, doBound);
+    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, conf.doESharing);
+    params = misc.genParams(m, k);
+    [test, train] = misc.crossValidationSplit(params, mergedPeaksMin, testTrainRatio);
+    [theta, ~] = EM.EM(train, params, conf.maxIters, conf.doBound, conf.patience, conf.repeat);
     show.showTheta(theta);
     YEst = misc.viterbi(params, theta, train.X, train.pcPWMp);
     theta = permuteTheta(theta, params, train.Y(:, :), YEst(:, :, 1));
@@ -26,33 +55,6 @@ function mainRealData(mergedPeaksMin, m, k, doESharing, doBound)
 
 end
 
-
-
-function [test, train] = preprocess(params, mergedPeaksMin, testTrainRatio)
-    L = size(mergedPeaksMin.seqs, 2);
-    X = mergedPeaksMin.seqs;
-    % X = cat(2, X, fliplr(5-X));
-    % N x k x L
-
-    pcPWMp = misc.preComputePWMp(X, params);
-    N = size(X, 1);
-    trainMask = true(N, 1);
-    trainMask(randperm(N, floor(N * testTrainRatio))) = false;
-    train.title = 'Train';
-    test.title = 'Test';
-    train.X = X(trainMask, :);
-    test.X = X(~trainMask, :);
-    train.pcPWMp = pcPWMp(trainMask, :, :);
-    test.pcPWMp = pcPWMp(~trainMask, :, :);
-    if isfield(mergedPeaksMin, 'Y')
-        train.Y = mergedPeaksMin.Y(trainMask, :);
-        test.Y = mergedPeaksMin.Y(~trainMask, :);
-    end
-    if isfield(mergedPeaksMin, 'Y2')
-        train.Y2 = mergedPeaksMin.Y2(trainMask, :);
-        test.Y2 = mergedPeaksMin.Y2(~trainMask, :);
-    end
-end
 
 function perm = findCorrectPermute(params, Y, YEst)
     % N * L x m

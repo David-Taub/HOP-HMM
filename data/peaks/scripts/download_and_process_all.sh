@@ -1,5 +1,3 @@
-# cd ~/projects/HOP-HMM/data/peaks/scripts
-cd /cygdrive/d/projects/HOP-HMM/data/peaks/scripts
 # Downloaded from roadmap site (2013):
 # from page http://egg2.wustl.edu/roadmap/web_portal/processed_data.html
 # http://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/
@@ -7,18 +5,25 @@ cd /cygdrive/d/projects/HOP-HMM/data/peaks/scripts
 # H3K27ac, H3K27me3, H3K4me3, H3K4me1
 
 
+# On Linux
+# cd ~/projects/HOP-HMM/data/peaks/scripts
+# sudo apt update
+# sudo apt install bedtools
+
+
+# On Windows
+cygwin
+cd /cygdrive/d/projects/HOP-HMM/data/peaks/scripts
+
+
+# On Windows and Linux
+
 # bedtools installation
 wget https://github.com/arq5x/bedtools2/releases/download/v2.25.0/bedtools-2.25.0.tar.gz
 tar -zxvf bedtools-2.25.0.tar.gz
 cd bedtools2
 make
-sudo apt update
-sudo apt install bedtools
-apt-cyg update
-apt-cyg install bedtools
-# in cygwin on windows laptop:
-cd  /cygdrive/d/projects/HOP-HMM/data/peaks/scripts
-
+cd ..
 
 mkdir ../raw_bed
 cd ../raw_bed
@@ -39,10 +44,8 @@ wget -O hg19.chrom.sizes http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/
 wget --no-check-certificate -O hg19.KnownGenes.bed.gz https://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg19_UCSC_knownGene.bed.gz
 gunzip -f hg19.KnownGenes.bed.gz
 
-
 bedtools slop -i ./hg19.KnownGenes.bed -g ./hg19.chrom.sizes -b 5000 > ./hg19.KnownGenes.slopped.bed
 ls -la
-
 
 mkdir ../processed
 bedtools sort -faidx hg19.chrom.sizes -i hg19.KnownGenes.slopped.bed > tmp.1.narrowPeak
@@ -51,6 +54,7 @@ bedtools complement  -i tmp.1.narrowPeak -g hg19.chrom.sizes > background.narrow
 cat ../scripts/download_and_process_one.sh | dos2unix -u > ../scripts/download_and_process_one2.sh
 mv ../scripts/download_and_process_one2.sh ../scripts/download_and_process_one.sh
 
+# 44 tissue data with all needed tracks
 ../scripts/download_and_process_one.sh E003
 ../scripts/download_and_process_one.sh E004
 ../scripts/download_and_process_one.sh E005
@@ -95,7 +99,6 @@ mv ../scripts/download_and_process_one2.sh ../scripts/download_and_process_one.s
 ../scripts/download_and_process_one.sh E126
 ../scripts/download_and_process_one.sh E127
 ../scripts/download_and_process_one.sh E128
-
 
 ../scripts/download_and_process_one.sh E001
 ../scripts/download_and_process_one.sh E002

@@ -1,6 +1,6 @@
 % cd /cs/stud/boogalla/cbioDavid/projects/CompGenetics/BaumWelch/src
 
-function minimizeMergePeak(mergedPeaks, L, tissueNames)
+function minimizeMergePeak(mergedPeaks, L, tissueNames, outFilepath)
     TOP_PEAKS_HEIGHT_PERCENT_KEPT = 0.50;
     numerOfTissues = length(mergedPeaks(1).overlap);
 
@@ -15,7 +15,7 @@ function minimizeMergePeak(mergedPeaks, L, tissueNames)
     [seqs, overlaps, lengths] = removeNonLetters(seqs, overlaps, lengths);
     size(overlaps, 1)
     [seqs, overlaps, lengths] = balanceOverlaps(seqs, overlaps, lengths);
-    outFilepath = '../data/peaks/mergedPeaksMinimized.mat';
+    % outFilepath = '../data/peaks/mergedPeaksMinimized.mat';
     save(outFilepath, '-v7.3', 'seqs', 'overlaps', 'lengths', 'tissueNames');
     fprintf('Saved peaks in %s\n', outFilepath);
 end

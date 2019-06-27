@@ -1,14 +1,13 @@
-
-function beds2mats(L)
+function typesOfCells = beds2mats(L)
     dbstop if error
     BEDS_DIR = '../data/peaks/processed';
     HG19_MM_DIR = '../data/peaks/mm';
     % save in dict opened hg19 fasta files as memory mapped files
     bedFiles = dir([BEDS_DIR, '/*.cleaned.narrowPeak']);
-    typesOfCells = length(bedFiles)
+    typesOfCells = length(bedFiles);
     dict = peaks.fasta2mem();
-    assert(length(dict.keys()) > 0)
-    assert(length(bedFiles) > 0)
+    assert(length(dict.keys()) > 0);
+    assert(length(bedFiles) > 0);
     if not(isdir('../data/peaks/mat/'))
         mkdir('../data/peaks/mat/');
     end
@@ -20,8 +19,7 @@ function beds2mats(L)
             name = nameParts{1};
             matPath = ['../data/peaks/mat/', name, '.peaks.mat'];
             bed2mat(index, name, bedFilePath, matPath, typesOfCells, L, dict);
-            % if not(exist(matPath, 'file') == 2)
-            % end
+            assert(isfile(matPath));
         end
     end
     fclose('all');

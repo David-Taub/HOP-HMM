@@ -3,12 +3,12 @@
 % overlaps vectors became from one hot to a heat map of the height of
 % the peak in each tissue
 
-
+% mergedPeaks fields: ['seqTo', 'peakTo', 'peakFrom', 'overlap', 'height', 'peakPos']
 % withBackground - sees the background as a tissue, and takes sequences from it
 % withSeq - saves a sequences actual data in file, instead only the metadata of the sequences
-function mergedPeaks = mergePeakFiles(withBackground, with_seq)
+function mergedPeaks = mergePeakFiles(withBackground, withSeq)
     dbstop if error
-    if with_seq
+    if withSeq
         INPUT_MAT_DIR_PATH = '../data/peaks/mat';
     else
         INPUT_MAT_DIR_PATH = '../data/peaks/mat_no_seq';
@@ -19,14 +19,14 @@ function mergedPeaks = mergePeakFiles(withBackground, with_seq)
     end
     ROADMAP_NAMES_CSV_PATH = '../data/peaks/help/full_tissue_names.csv';
     namesDict = roadmapNamesDict(ROADMAP_NAMES_CSV_PATH);
-    fprintf('Reading mat files...\n')
+    fprintf('Reading mat files...\n');
     [unmergedPeaks, tissueNames] = readMatFiles(INPUT_MAT_DIR_PATH, withBackground);
     tissueNames = convertNames(tissueNames, namesDict);
-    fprintf('Merging...\n')
-    mergedPeaks = mergePeaks(unmergedPeaks, with_seq);
+    fprintf('Merging...\n');
+    mergedPeaks = mergePeaks(unmergedPeaks, withSeq);
 
     save('-v7.3', OUT_FILE_PATH, 'mergedPeaks', 'tissueNames');
-    fprintf('Saved peaks in %s\n', OUT_FILE_PATH)
+    fprintf('Saved peaks in %s\n', OUT_FILE_PATH);
 end
 
 function namesDict = roadmapNamesDict(namesCSVPath)
@@ -48,6 +48,7 @@ function [unmergedPeaks, tissueNames] = readMatFiles(matDirPath, withBackground)
     unmergedPeaks = [];
     tissueNames = {};
     peakFiles = dir(fullfile(matDirPath, '*.peaks.mat'));
+    assert(length(peakFiles) > 0);
     for i = 1:length(peakFiles)
         filename = peakFiles(i).name;
         matFilepath = fullfile(matDirPath, filename);
@@ -65,7 +66,7 @@ function [unmergedPeaks, tissueNames] = readMatFiles(matDirPath, withBackground)
     end
 end
 
-function mergedPeaks = mergePeaks(unmergedPeaks, with_seq)
+function mergedPeaks = mergePeaks(unmergedPeaks, withSeq)
 
     mergedPeaks = unmergedPeaks;
     j = 1;
@@ -81,7 +82,7 @@ function mergedPeaks = mergePeaks(unmergedPeaks, with_seq)
             if oldPeak.seqTo > newPeak.seqFrom
                 fprintf('.')
                 % merge
-                if with_seq
+                if withSeq
                     oldPeak.seq = [oldPeak.seq, newPeak.seq(end-(newPeak.seqTo-oldPeak.seqTo) + 1:end)];
                 end
                 oldPeak.seqTo = newPeak.seqTo;

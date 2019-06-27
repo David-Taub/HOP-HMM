@@ -1,4 +1,3 @@
-
 function [test, train] = crossValidationSplit(params, mergedPeaksMin, testTrainRatio)
     L = size(mergedPeaksMin.seqs, 2);
     X = mergedPeaksMin.seqs; % N x L

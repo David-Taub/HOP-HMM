@@ -1,31 +1,10 @@
-
-% first we choose the PWMs that are most different between the following tissues,
-% including background and genes:
-cd C:\Users\booga\Dropbox\projects\HOP-HMM\src
-cd /cygdrive/c/users/booga/Dropbox/projects/HOP-HMM/src
-cd ~/projects/HopHMM/src
-cd ~/projects/HOP-HMM/src
-
-% TEST
-
-k = 40
-JasparDataProcessing.JasparTxtToMat();
+1. Download data + preprocess: D:\projects\HOP-HMM\data\peaks\scripts\download_and_process_all.sh
+2. In Matlab - JASPAR preprocess JasparDataProcessing.JasparTxtToMat();
+3. In Matlab - Gen synthetic data + plots via the main*.m files in src
+4. In Matlab - Real data:
 delete('../data/precomputation/SelectedPWMs.mat');
 delete('../data/precomputation/pcPWMp.mat');
-delete('../data/precomputation/pretrainedTheta.mat')
-mainGenSequences(3000, 500, 4, 1000, false);
-mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized_fake.mat');
-backgroundIndex = 4;
-selectedPWMs = JasparDataProcessing.mainPreprocessPWMs(0.25, 0.55, mergedPeaksMin, [1,2,3,backgroundIndex], k)
-pretrain(mergedPeaksMin, k, [1,2,3], backgroundIndex)
-mainGenSequences(300, 4000, 4, 1000, true);
-mergedPeaksMin = load('../data/peaks/mergedPeaksMinimized_fake.mat');
-mainRealData(mergedPeaksMin, 4, k, false, true, false);
-
-% REAL
-delete('../data/precomputation/SelectedPWMs.mat');
-delete('../data/precomputation/pcPWMp.mat');
-delete('../data/precomputation/pretrainedTheta.mat')
+delete('../data/precomputation/pretrainedTheta.mat');
 k = 40
 peaks.beds2mats(500)
 peaks.mergePeakFiles(true, true)
