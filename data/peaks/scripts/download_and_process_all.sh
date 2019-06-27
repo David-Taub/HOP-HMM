@@ -1,5 +1,5 @@
-cd ~/projects/HOP-HMM/data/peaks/scripts
-cd /cygdrive/c/users/booga/Dropbox/projects/HOP-HMM/data/peaks/scripts
+# cd ~/projects/HOP-HMM/data/peaks/scripts
+cd /cygdrive/d/projects/HOP-HMM/data/peaks/scripts
 # Downloaded from roadmap site (2013):
 # from page http://egg2.wustl.edu/roadmap/web_portal/processed_data.html
 # http://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/
@@ -8,28 +8,35 @@ cd /cygdrive/c/users/booga/Dropbox/projects/HOP-HMM/data/peaks/scripts
 
 
 # bedtools installation
-# wget https://github.com/arq5x/bedtools2/releases/download/v2.25.0/bedtools-2.25.0.tar.gz
-# tar -zxvf bedtools-2.25.0.tar.gz
-# cd bedtools2
-# make
+wget https://github.com/arq5x/bedtools2/releases/download/v2.25.0/bedtools-2.25.0.tar.gz
+tar -zxvf bedtools-2.25.0.tar.gz
+cd bedtools2
+make
 sudo apt update
 sudo apt install bedtools
 apt-cyg update
 apt-cyg install bedtools
 # in cygwin on windows laptop:
-# cd  ../../cygdrive/c/Users/booga/Dropbox/projects/CompGenetics/data/peaks/scripts
+cd  /cygdrive/d/projects/HOP-HMM/data/peaks/scripts
+
 
 mkdir ../raw_bed
 cd ../raw_bed
-#HG19 genome size:
+# HG19 genome size:
 wget -O hg19.chrom.sizes http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/hg19.chrom.sizes
 
+# failed on slop:
 # wget -O hg19.KnownGenes.bed.gz hgdownload.cse.ucsc.edu/goldenPath/hg19/database/knownGene.txt.gz
 # gunzip -f hg19.KnownGenes.bed.gz
-# mv knownGenes.txt hg19.KnownGenes.bed
+
+# failed on sort:
 # wget -O hg19.KnownGenes.bed "https://genome.ucsc.edu/cgi-bin/hgTables?hgsid=597259395_zm48O4B23IAG8yLNYr5ekoweAIGe&boolshad.hgta_printCustomTrackHeaders=0&hgta_ctName=tb_knownGene&hgta_ctDesc=table+browser+query+on+knownGene&hgta_ctVis=pack&hgta_ctUrl=&fbQual=whole&fbUpBases=200&fbExonBases=0&fbIntronBases=0&fbDownBases=200&hgta_doGetBed=get+BED"
 
-wget --no-check-certificate -O hg19.KnownGenes.bed.gz https://10gbps-io.dl.sourceforge.net/project/rseqc/BED/Human_Homo_sapiens/hg19_UCSC_knownGene.bed.gz
+# failed to connect:
+# wget --no-check-certificate -O hg19.KnownGenes.bed.gz https://10gbps-io.dl.sourceforge.net/project/rseqc/BED/Human_Homo_sapiens/hg19_UCSC_knownGene.bed.gz
+
+# succeed:
+wget --no-check-certificate -O hg19.KnownGenes.bed.gz https://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg19_UCSC_knownGene.bed.gz
 gunzip -f hg19.KnownGenes.bed.gz
 
 
@@ -217,12 +224,6 @@ mv ../scripts/download_and_process_one2.sh ../scripts/download_and_process_one.s
 ../scripts/download_and_process_one.sh E126
 ../scripts/download_and_process_one.sh E127
 ../scripts/download_and_process_one.sh E128
-
-
-
-
-
-
 
 
 
