@@ -45,16 +45,20 @@ function main(conf)
 
     for i = 1:conf.maxIters
         i
-        [thetaEst(i + 1), trainLikelihood(i + 1)] = EM.EMIteration(params, trainDataset, thetaEst(i), conf.doBound, conf.doResample);
+        [thetaEst(i + 1), trainLikelihood(i + 1)] = EM.EMIteration(params, trainDataset, thetaEst(i),...
+                                                                   conf.doBound, conf.doResample);
         thetaEst(i + 1) = misc.permThetaByAnother(params, thetaOrig, thetaEst(i + 1));
         testLikelihood(i + 1) = calcLikelihood(params, thetaEst(i + 1), testDataset.X, testDataset.pcPWMp);
+        trainLikelihood(i + 1) = calcLikelihood(params, thetaEst(i + 1), trainDataset.X, trainDataset.pcPWMp);
 
         errorsTrain(i + 1) = rateTheta(params, thetaOrig, thetaEst(i + 1) , trainDataset);
         errorsTest(i + 1) = rateTheta(params, thetaOrig, thetaEst(i + 1), testDataset);
         testLikelihood(end)
         trainLikelihood(end)
         convergeSpan = floor(0.1 * conf.maxIters);
-        if length(testLikelihood) > floor(0.1 * conf.maxIters) & abs(mean(testLikelihood(end - convergeSpan:end), 2) - testLikelihood(end)) < abs(0.001 * testLikelihood(end))
+        if length(testLikelihood) > floor(0.1 * conf.maxIters) & ...
+            abs(mean(testLikelihood(end - convergeSpan:end), 2) - testLikelihood(end)) < ...
+            abs(0.001 * testLikelihood(end))
             break
         end
     end
@@ -66,45 +70,52 @@ function main(conf)
     origTestError = rateTheta(params, thetaOrig, thetaOrig, testDataset);
 
     figure('units', 'normalized', 'outerposition', [0 0 1 1]);
-    hold on
-    title('Viterbi Classification Convergence')
-    plot([errorsTrain(:).layerError]);
-    plot([errorsTest(:).layerError]);
+    hold on;
+    title('Viterbi Classification Convergence');
+    plot([errorsTrain(:).layerError], 'LineWidth', 2);
+    plot([errorsTest(:).layerError], 'LineWidth', 2);
     plot([1, length([errorsTrain(:).layerError])], [origTrainError.layerError, origTrainError.layerError])
     plot([1, length([errorsTrain(:).layerError])], [origTestError.layerError, origTestError.layerError])
-    ylabel('Misclassification Rate (lower is better)')
-    xlabel('EM Iteration')
+    ylabel('Misclassification Rate (lower is better)');
+    xlabel('EM Iteration');
     legend('Viterbi train error with learned \theta', 'Viterbi test error with learned \theta', ...
-           'Viterbi train error with true \theta', 'Viterbi test error with true \theta')
-    outpath = sprintf('DecError_VitErr_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, conf.doResample, conf.N, conf.L);
+           'Viterbi train error with true \theta', 'Viterbi test error with true \theta');
+    xlim([1, length([errorsTrain(:).layerError])]);
+    outpath = sprintf('DecError_VitErr_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order, ...
+                      conf.doBound, conf.doResample, conf.N, conf.L);
     saveas(gcf, outpath);
 
     figure('units', 'normalized', 'outerposition', [0 0 1 1]);
-    outpath = sprintf('DecError_ThetaOverIter_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, conf.doResample, conf.N, conf.L);
+    outpath = sprintf('DecError_ThetaOverIter_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order,...
+                      conf.doBound, conf.doResample, conf.N, conf.L);
     showTwoThetasOverTime(params, thetaOrig, thetaEst, 'false', outpath);
     % show.showTwoThetas(params, thetaOrig, thetaEst, 'false', subtitle, 'tmp.jpg');
 
     figure('units', 'normalized', 'outerposition', [0 0 1 1]);
-    outpath = sprintf('DecError_MSLEOverIter_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, conf.doResample, conf.N, conf.L);
-    title(sprintf('Learned \\theta Error Convergence'))
+    title(sprintf('Learned \\theta Error Convergence'));
     hold on;
-    plot([errorsTrain(:).msle]);
+    plot([errorsTrain(:).msle], 'LineWidth', 2);
     ylabel('MSLE of learned \theta (lower is better)');
     xlabel('EM Iteration');
+    ylim([0, max([errorsTrain(:).msle], [], 2) * 1.1]);
+    outpath = sprintf('DecError_MSLEOverIter_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order, ...
+                      conf.doBound, conf.doResample, conf.N, conf.L);
     saveas(gcf, outpath);
 
     figure('units', 'normalized', 'outerposition', [0 0 1 1]);
-    outpath = sprintf('DecError_Likelihood_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, conf.doResample, conf.N, conf.L);
-    title('Log Likelihood Convergence')
+    title('Log Likelihood Convergence');
     hold on;
-    plot(trainLikelihood)
-    plot(testLikelihood)
-    plot([1, length(trainLikelihood)], [trainLikelihoodOrig, trainLikelihoodOrig])
-    plot([1, length(testLikelihood)], [testLikelihoodOrig, testLikelihoodOrig])
+    plot(trainLikelihood, 'LineWidth', 2);
+    plot(testLikelihood, 'LineWidth', 2);
+    plot([1, length(trainLikelihood)], [trainLikelihoodOrig, trainLikelihoodOrig]);
+    plot([1, length(testLikelihood)], [testLikelihoodOrig, testLikelihoodOrig]);
     legend('Train likelihood with learned \theta', 'Test likelihood with learned \theta', ...
-           'Train likelihood with true \theta', 'Test likelihood with true \theta')
+           'Train likelihood with true \theta', 'Test likelihood with true \theta', 'Location', 'southeast');
     ylabel('Log likelihood of sequences (higher is better)');
     xlabel('EM Iteration');
+    xlim([1, length(trainLikelihood)]);
+    outpath = sprintf('DecError_Likelihood_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order, ...
+                      conf.doBound, conf.doResample, conf.N, conf.L);
     saveas(gcf, outpath);
     keyboard
 end
@@ -132,10 +143,11 @@ function showTwoThetasOverTime(params, thetaOrig, thetaEsts, withExponent, outpa
         minVal = floor(min(minVal, min([thetaEstMat(:); thetaOrigMat(:)])));
         maxVal = ceil(max(maxVal, max([thetaEstMat(:); thetaOrigMat(:)])));
         % mse = mean((thetaOrigMat(:) - thetaEstMat(:)) .^ 2, 1);
-        gradColor = BASE_INTENSITY + (0.9 - BASE_INTENSITY) * (length(thetaEsts) - j) / length(thetaEsts);
+        gradColor = BASE_INTENSITY + (0.95 - BASE_INTENSITY) * (length(thetaEsts) - j) / length(thetaEsts);
         % if j > 1
         %     for t = 1: length(thetaOrigMat(:))
-        %         plot([thetaOrigMat(t), thetaOrigMat(t)], [prevTheta(t), thetaEstMat(t)], 'color', [gradColor, gradColor, 1]);
+        %         plot([thetaOrigMat(t), thetaOrigMat(t)], [prevTheta(t), thetaEstMat(t)],...
+        %              'color', [gradColor, gradColor, 1]);
         %     end
         % end
         if j == length(thetaEsts)
@@ -150,7 +162,8 @@ function showTwoThetasOverTime(params, thetaOrig, thetaEsts, withExponent, outpa
     title(sprintf('Learned \\theta vs True \\theta Comparison'));
     xlabel('True \theta probabilities');
     ylabel('Estimated \theta probabilities');
-    text(minVal + 0.1 * (maxVal - minVal), minVal + 0.8 * (maxVal - minVal), sprintf('Final EM Iteration MSLE = %.2e', msle), 'FontSize', 14)
+    text(minVal + 0.1 * (maxVal - minVal), minVal + 0.8 * (maxVal - minVal), ...
+         sprintf('Final EM Iteration MSLE = %.2e', msle), 'FontSize', 14)
     saveas(gcf, outpath);
 end
 
