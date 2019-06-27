@@ -1,6 +1,6 @@
 function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound, doResample)
     N = size(dataset.X, 1);
-    LEARNING_RATE = 1;
+    LEARNING_RATE = 0.7;
     if ~isfield(dataset, 'XIndicesHotMap')
         % N x L - order + 1
         dataset.XIndicesHotMap = misc.genXInidcesHotMap(params, dataset);
