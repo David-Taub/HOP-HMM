@@ -71,7 +71,7 @@ function bed2mat(index, name, bedFilePath, matPath, typesOfCells, seqMaxLength, 
         S{newSeqId}.seqTo = peakTos(i);
         S{newSeqId}.peakLength = S{newSeqId}.peakTo - S{newSeqId}.peakFrom;
         S{newSeqId}.height = heights(i);
-        S{newSeqId}.peakPos = peakFroms(i)+maxPos(i);
+        S{newSeqId}.peakPos = peakFroms(i) + maxPos(i);
         S{newSeqId}.overlap = zeros(1, typesOfCells);
         S{newSeqId}.overlap(index) = max(heights(i), 1);
         chrLength = length(dict(S{newSeqId}.chr).Data);

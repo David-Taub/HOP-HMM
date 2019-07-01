@@ -6,22 +6,34 @@
 % mergedPeaks fields: ['seqTo', 'peakTo', 'peakFrom', 'overlap', 'height', 'peakPos']
 % withBackground - sees the background as a tissue, and takes sequences from it
 % withSeq - saves a sequences actual data in file, instead only the metadata of the sequences
-function [mergedPeaks, tissueNames] = mergePeakFiles(withBackground, withSeq, outfilePath)
-    if withSeq
-        INPUT_MAT_DIR_PATH = '../data/peaks/mat';
-    else
-        INPUT_MAT_DIR_PATH = '../data/peaks/mat_no_seq';
+function [mergedPeaks, tissueNames] = mergePeakFiles(withBackground, withGenes, withSeq, L)
+    mergedFilePath = sprintf('../data/peaks/mergedPeaks_L%db%dws%d.mat', L, withBackground, withSeq);
+    if isfile(mergedFilePath)
+        load(mergedFilePath);
+        return;
     end
     ROADMAP_NAMES_CSV_PATH = '../data/peaks/help/full_tissue_names.csv';
+    assert(isfile(ROADMAP_NAMES_CSV_PATH))
+
+    if withSeq
+        inputMatDirPath = '../data/peaks/mat';
+    else
+        inputMatDirPath = '../data/peaks/mat_no_seq';
+    end
+    matFilesCount = length(dir(inputMatDirPath)) - 2;
+    if matFilesCount < 40
+        fprintf('Found only %d mat files at %s. Generating mat files...\n', matFilepath, inputMatDirPath);
+        peaks.beds2mats(L);
+    end
     namesDict = roadmapNamesDict(ROADMAP_NAMES_CSV_PATH);
     fprintf('Reading mat files...\n');
-    [unmergedPeaks, tissueNames] = readMatFiles(INPUT_MAT_DIR_PATH, withBackground);
+    [unmergedPeaks, tissueNames] = readMatFiles(inputMatDirPath, withBackground, withGenes);
     tissueNames = convertNames(tissueNames, namesDict);
     fprintf('Merging...\n');
     mergedPeaks = mergePeaks(unmergedPeaks, withSeq);
 
-    save('-v7.3', outfilePath, 'mergedPeaks', 'tissueNames');
-    fprintf('Saved peaks in %s\n', outfilePath);
+    save('-v7.3', mergedFilePath, 'mergedPeaks', 'tissueNames');
+    fprintf('Saved peaks in %s\n', mergedFilePath);
 end
 
 function namesDict = roadmapNamesDict(namesCSVPath)
@@ -41,7 +53,7 @@ function tissueNames = convertNames(tissueNames, namesDict)
     end
 end
 
-function [unmergedPeaks, tissueNames] = readMatFiles(matDirPath, withBackground)
+function [unmergedPeaks, tissueNames] = readMatFiles(matDirPath, withBackground, withGenes)
     unmergedPeaks = [];
     tissueNames = {};
     peakFiles = dir(fullfile(matDirPath, '*.peaks.mat'));
@@ -54,6 +66,11 @@ function [unmergedPeaks, tissueNames] = readMatFiles(matDirPath, withBackground)
         filenameParts = strsplit(filename, '.');
         tissueName = filenameParts{1};
         if strcmp(tissueName , 'background') && ~withBackground
+            fprintf('skipping background\n');
+            continue
+        end
+        if strcmp(tissueName , 'genes') && ~withGenes
+            fprintf('skipping genes\n');
             continue
         end
         if length(peaks.S) > 0
@@ -88,7 +105,7 @@ function mergedPeaks = mergePeaks(unmergedPeaks, withSeq)
                 % oldPeak.pos = round((oldPeak.seqFrom + newPeak.seqTo)/2) ;
                 oldPeak.overlap = max(oldPeak.overlap, newPeak.overlap);
                 oldPeak.height = max(oldPeak.height, newPeak.height);
-                oldPeak.peakPos = mean([oldPeak.peakPos, newPeak.peakPos], 2);
+                oldPeak.peakPos = ((sum(oldPeak.overlap > 0, 2) - 1) * oldPeak.peakPos + newPeak.peakPos) / sum(oldPeak.overlap > 0, 2);
                 % oldPeak.min = min(oldPeak.min, newPeak.min);
 
                 mergedPeaks(j) = oldPeak;

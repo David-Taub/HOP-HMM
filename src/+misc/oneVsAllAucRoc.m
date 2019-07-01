@@ -1,7 +1,9 @@
 % aucRocs  - m x k
-function aucRocs = oneVsAllAucRoc(X, Y, m, k, PWMs, lengths)
+function aucRocs = oneVsAllAucRoc(X, Y, PWMs, lengths)
     EXPECTED_NUM_OF_PEAKS_IN_SEQ = 2;
     n = 4;
+    m = max(Y(:));
+    k = size(PWMs, 1);
     aucRocs = zeros(m, k);
     Xs1H = matUtils.mat23Dmat(X, n);
     for pwmId = 1:k

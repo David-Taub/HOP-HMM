@@ -1,56 +1,41 @@
 %TODO: Gen Y by the beds, permute theta, show Viterbi errors over iterations
 %TODO: Download h3k27acc bigwigs, print normalized acc heatmaps of regions classified by Viterbi
 function mainRealData()
-    conf.doESharing = false;
     conf.startWithBackground = false;
+    conf.doEnhSpecific = true;
+    conf.seqsPerTissue = 300;
     conf.maxIters = 1000;
     conf.canCrossLayer = true;
     conf.patience = 4;
-    conf.L = 900;
+    conf.L = 1000;
+    conf.peakMinL = 300;
+    conf.peakMaxL = 800;
     conf.withExponent = false;
     conf.repeat = 1;
     conf.order = 2;
     conf.m = 5;
     conf.k = 10;
     conf.withBackground = true;
+    conf.withGenes = true;
     conf.sequencesToShow = 5;
     conf.backgroundAmount = 1;
+    conf.doESharing = false;
     conf.doGTBound = false;
-    conf.doResample = false;
+    conf.doResampling = false;
     conf.topPercent = 0.5;
     main(conf);
 end
 
-% reads bed files, make them into a single mat file and return it's content
-function mergedPeaksMin = preprocess(conf)
-    minimizedMergedFilePath = sprintf('../data/peaks/mergedPeaksMinimized_L%db%dp%d.mat', conf.L, ...
-                                 conf.withBackground, floor(100 * conf.topPercent));
-    mergedFilePath = sprintf('../data/peaks/mergedPeaks_L%db%dp%d.mat', conf.L, ...
-                                 conf.withBackground, floor(100 * conf.topPercent));
-    if ~isfile(minimizedMergedFilePath)
-        % peaks.beds2mats(conf.L);
-        if ~isfile(mergedFilePath)
-            [mergedPeaks, tissueNames] = peaks.mergePeakFiles(conf.withBackground, true, mergedFilePath);
-        else
-            mergedPeaks = load(minimizedMergedFilePath);
-        end
-        mergedPeaksMin = peaks.minimizeMergePeak(mergedPeaks.mergedPeaks, mergedPeaks.tissueNames, minimizedMergedFilePath, conf.topPercent);
-    else
-        mergedPeaksMin = load(minimizedMergedFilePath);
-    end
-end
 
-
-% mainRealData(multiEnhancers, 5, 40, false, false);
-% doESharing - Each EM iteration, averaging the E across all modes, and using the average in all modes
 function main(conf)
     dbstop if error
     close all;
-    mergedPeaksMin = preprocess(conf);
+    mergedPeaksMin = peaks.minimizeMergePeak(conf.topPercent, conf.doEnhSpecific, conf.withBackground, conf.withGenes,...
+                                             conf.seqsPerTissue, conf.L, conf.peakMinL, conf.peakMaxL)
     testTrainRatio = 0.15;
-    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, conf.doESharing);
+    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, conf.doESharing, conf.doGTBound, conf.doResampling);
     [test, train] = misc.crossValidationSplit(params, mergedPeaksMin, testTrainRatio);
-    [theta, ~] = EM.EM(train, params, conf.maxIters, conf.doGTBound, conf.doResample, conf.patience, conf.repeat);
+    [theta, ~] = EM.EM(train, params, conf.maxIters, conf.doGTBound, conf.doResampling, conf.patience, conf.repeat);
     show.showTheta(theta);
     outpath = sprintf('real_posterior_m%da%dk%do%db%dN%dL%d.jpg', conf.m, conf.backgroundAmount, ...
                       conf.k, conf.order, conf.doGTBound, conf.N, conf.L);

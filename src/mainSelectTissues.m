@@ -1,22 +1,19 @@
 % for each couple of tissue, we take sequences that are unique to the tissues and background sequences
 % then we choose the PWM with the max AucRoc and keep the
-function tissueList = mainSelectTissues(mergedPeaksMin, backgroundIndex, m)
+function [tissueList, pwmsList] = mainSelectTissues(mergedPeaksMin, backgroundIndex, wantedM, wantedK)
     dbstop if error
     figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     title('tissue aucroc maximal PWM')
-    MAX_SEQS_PER_TISSUE = 300;
     numberOfTissues = size(mergedPeaksMin.overlaps, 2);
-    diffMat = zeros(numberOfTissues);
-    indexMat = zeros(numberOfTissues);
     [PWMs, lengths, names] = misc.PWMs();
-    k = size(PWMs, 1);
+    numberOfPWMs = length(lengths);
+    aucs = zeros(numberOfTissues, numberOfTissues, numberOfPWMs);
+    indexMat = zeros(numberOfTissues);
     for i = 1:numberOfTissues
         for j = i + 1 : numberOfTissues
-            auc = compareTwoTypes(mergedPeaksMin, i, [j, backgroundIndex] ...
-                                  MAX_SEQS_PER_TISSUE, k, PWMs, lengths);
-            [diffMat(i, j), indexMat(i, j)] = auc;
-            imagesc(diffMat);
-            drawnow;
+            auc1 = compareTwoTypes(mergedPeaksMin, i, [j, backgroundIndex], PWMs, lengths);
+            auc2 = compareTwoTypes(mergedPeaksMin, j, [i, backgroundIndex], PWMs, lengths);
+            aucs(i, j, :) = max(auc1, auc2);
         end
     end
     % take max vals tissues
@@ -30,15 +27,38 @@ function tissueList = mainSelectTissues(mergedPeaksMin, backgroundIndex, m)
     tissueList = [tissueList(1:m-1), backgroundIndex];
 end
 
-
-function ret = compareTwoTypes(mergedPeaksMin, ind1, inds, maxSeqsPerTissue, k, PWMs, lengths)
+% ret - k x 1
+function ret = compareTwoTypes(mergedPeaksMin, ind1, inds, PWMs, lengths)
+    numberOfPWMs = length(lengths);
+    EXPECTED_NUM_OF_PEAKS_IN_SEQ = 2;
+    SEQS_PER_TISSUE = 300;
+    n = 4;
     mask1 = mergedPeaksMin.overlaps(:, ind1) > 0;
-    mask2 =  any(mergedPeaksMin.overlaps(:, inds) > 0, 2);
+    % SEQS_PER_TISSUE x L
     seqs1 = mergedPeaksMin.seqs(mask1, :);
-    seqs2 = mergedPeaksMin.seqs(mask2, :);
-    seqsPerTissue = min([maxSeqsPerTissue, size(seqs1, 1), size(seqs2, 1)]);
-    X = [seqs2(1:seqsPerTissue, :); seqs1(1:seqsPerTissue, :)];
-    Y = [ones(seqsPerTissue, 1); ones(seqsPerTissue, 1) * 2];
-    aucRocs = misc.oneVsAllAucRoc(X, Y, Z, k, PWMs, lengths)
-    ret = max(aucRocs(:));
+    assert(size(seqs1, 1) > SEQS_PER_TISSUE);
+    seqs1 = seqs1(1:SEQS_PER_TISSUE, :);
+    seqs2 = [];
+    for i = inds
+        mask2 = any(mask, mergedPeaksMin.overlaps(:, i) > 0);
+        seqs = mergedPeaksMin.seqs(mask2, :);
+        seqs2 = [seqs2; seqs(1:SEQS_PER_TISSUE, :)];
+    end
+
+    for pwmId = 1:k
+        % SEQS_PER_TISSUE x L x n
+        pos1H = matUtils.mat23Dmat(seqs1, n);
+        % 2*SEQS_PER_TISSUE x L x n
+        neg1H = matUtils.mat23Dmat(seqs2, n);
+        % SEQS_PER_TISSUE x L
+        posPWMLogLike = misc.PWMLogLikelihood(PWMs, lengths, pos1H, pwmId);
+        % 2*SEQS_PER_TISSUE x L
+        negPWMLogLike = misc.PWMLogLikelihood(PWMs, lengths, neg1H, pwmId);
+        % SEQS_PER_TISSUE x EXPECTED_NUM_OF_PEAKS_IN_SEQ
+        pos = misc.maxN(posPWMLogLike(tissueMask, :), 2, EXPECTED_NUM_OF_PEAKS_IN_SEQ);
+        % 2*SEQS_PER_TISSUE x EXPECTED_NUM_OF_PEAKS_IN_SEQ
+        neg = misc.maxN(negPWMLogLike(~tissueMask, :), 2, EXPECTED_NUM_OF_PEAKS_IN_SEQ);
+        % N x L
+        [ret(pwmId), ~, ~] = misc.getAucRoc(pos(:), neg(:), false, true);
+    end
 end

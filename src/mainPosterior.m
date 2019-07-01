@@ -15,7 +15,7 @@ function  mainPosterior()
     conf.k = 10;
     conf.backgroundAmount = 1;
     conf.doGTBound = false;
-    conf.doResample = false;
+    conf.doResampling = false;
     main(conf);
 end
 
@@ -26,7 +26,7 @@ function main(conf)
     mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.startWithBackground);
     thetaOrig = mergedPeaksMin.theta;
     [trainDataset, testDataset] = misc.crossValidationSplit(params, mergedPeaksMin, 0.15);
-    [thetaEst, ~] = EM.EM(trainDataset, params, conf.maxIters, conf.doGTBound, conf.doResample, conf.patience, conf.repeat);
+    [thetaEst, ~] = EM.EM(trainDataset, params, conf.maxIters, conf.doGTBound, conf.doResampling, conf.patience, conf.repeat);
 
     thetaEst = misc.permThetaByAnother(params, thetaOrig, thetaEst);
     outpath = sprintf('Posterior_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doGTBound, conf.N, conf.L);
