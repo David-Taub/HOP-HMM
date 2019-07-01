@@ -7,7 +7,6 @@
 % pcPWMp - N x k x L
 % order - the HMM order of the E matrix
 % initial estimation parameters
-% TODO: too many args, move to struct
 function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, patience, repeat)
 
     [N, L] = size(dataset.X);
