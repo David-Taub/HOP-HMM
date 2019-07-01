@@ -1,4 +1,3 @@
-% TODO:this code is very dirty it is built out of heuristics
 % help the algorithm converge to the correct result
 % G - m x k
 % T - m x m

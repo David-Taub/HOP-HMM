@@ -16,8 +16,6 @@ function out = preComputePWMpAux(Xs1H, params)
     persistent sample
     [N, L, ~] = size(Xs1H);
     % L = L - fJ;
-    % TODO: pcPWMp is too big for the memory. Tried matfile and memfile,
-    % no good, too slow and unfit for this size. Tall array should work.
     filename = misc.pathMaker(params, N, L, 'pcPWMp', '.mat');
     pcPWMProbabilityFile = fullfile('..', 'data', 'precomputation', filename);
 

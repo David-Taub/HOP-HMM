@@ -4,8 +4,6 @@
 % TODO: add tutorial to the post graph
 % TODO: bigwigoverbed -minmax of tommy, to get the min and max of bigwigs to choose the high 50% (No)
 % TODO: add note around area where the EM was confused between different Enhancers)
-% TODO: add note around area where the EM was confused between different Enhancers)
-
 
 
 function mainDecErrorPlot()

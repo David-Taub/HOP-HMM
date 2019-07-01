@@ -6,13 +6,12 @@ function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
     % gamma - N x m x L
     % psi - N x m x k x L
     [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
-    % TODO: think about summing on the correct PWM only, not all of them
     % N x m x L
     posterior = calcPosterior(params, gamma, psi);
     % sequencesToShow = 10;
     cMap = lines(params.m);
     cellCMap = {};
-    for i=1:params.m
+    for i = 1:params.m
         cellCMap{i, 1} = cMap(i, :);
     end
     YEst = misc.viterbi(params, theta, dataset.X, dataset.pcPWMp);

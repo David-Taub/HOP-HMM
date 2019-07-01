@@ -5,7 +5,6 @@
     % gamma - N x m x L
     % psi - N x m x k x L
     [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
-    % TODO: think about summing on the correct PWM only, not all of them
     % N x m x L
     posterior = calcPosterior(params, gamma, psi);
     % sequencesToShow = 10;
