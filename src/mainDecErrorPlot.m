@@ -1,4 +1,3 @@
-% TODO: MSLE -> RMSE. and make the plot square!
 % TODO: BPI bit per instance
 % TODO: the hungarian algo
 % TODO: add tutorial to the post graph
@@ -100,11 +99,11 @@ function main(conf)
     figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     title(sprintf('Learned \\theta Error Convergence'));
     hold on;
-    plot([errorsTrain(:).msle], 'LineWidth', 2);
-    ylabel('MSLE of learned \theta (lower is better)');
+    plot([errorsTrain(:).rmse], 'LineWidth', 2);
+    ylabel('RMSE of learned \theta (lower is better)');
     xlabel('EM Iteration');
-    ylim([0, max([errorsTrain(:).msle], [], 2) * 1.1]);
-    outpath = pathMaker(params, conf.N, conf.L, 'DecError_MSLEOverIter', '.jpg');
+    ylim([0, max([errorsTrain(:).rmse], [], 2) * 1.1]);
+    outpath = pathMaker(params, conf.N, conf.L, 'DecError_RMSEOverIter', '.jpg');
     saveas(gcf, outpath);
 
     figure('units', 'pixels', 'Position', [0 0 1000 1000]);
@@ -160,14 +159,14 @@ function showTwoThetasOverTime(params, thetaOrig, thetaEsts, withExponent, outpa
         scatter(thetaOrigMat(:), thetaEstMat(:), DOT_SIZE, [gradColor, gradColor, 1], 'filled');
         prevTheta = thetaEstMat;
     end
-    msle = mean((log(exp(thetaOrigMat(:)) + 1) - log(exp(thetaEstMat(:)) + 1)) .^ 2, 1);
+    rmse = sqrt(mean((exp(thetaOrigMat(:)) - exp(thetaEstMat(:))) .^ 2, 1));
     plot([minVal, maxVal], [minVal, maxVal]);
     % legend('x=y', 'T', 'E', 'G', 'startT', 'Location', 'southeast');
     title(sprintf('Learned \\theta vs True \\theta Comparison'));
     xlabel('True \theta probabilities');
     ylabel('Estimated \theta probabilities');
     text(minVal + 0.1 * (maxVal - minVal), minVal + 0.8 * (maxVal - minVal), ...
-         sprintf('Final EM Iteration MSLE = %.2e', msle), 'FontSize', 14)
+         sprintf('Final EM Iteration RMSE = %.2e', rmse), 'FontSize', 14)
     saveas(gcf, outpath);
 end
 
@@ -177,14 +176,14 @@ function errors = rateTheta(params, thetaOrig, thetaEst, dataset)
     thetaEst = misc.permThetaByAnother(params, thetaOrig, thetaEst);
     YEst = misc.viterbi(params, thetaEst, dataset.X, dataset.pcPWMp);
     [errors.totalError, errors.PWMError, errors.layerError] = calcYEstError(params, dataset, YEst);
-    errors.msle = calcThetaError(params, thetaOrig, thetaEst);
+    errors.rmse = calcThetaError(params, thetaOrig, thetaEst);
 end
 
 
-function msle = calcThetaError(params, thetaOrig, thetaEst)
+function rmse = calcThetaError(params, thetaOrig, thetaEst)
     thetaOrigMat = misc.thetaToMat(params, thetaOrig, true);
     thetaEstMat = misc.thetaToMat(params, thetaEst, true);
-    msle = mean((log(exp(thetaOrigMat(:)) + 1) - log(exp(thetaEstMat(:)) + 1)) .^ 2, 1);
+    rmse = sqrt(mean((exp(thetaOrigMat(:)) - exp(thetaEstMat(:))) .^ 2, 1));
 end
 
 
