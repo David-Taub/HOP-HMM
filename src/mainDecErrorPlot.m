@@ -1,3 +1,12 @@
+% TODO: MSLE -> RMSE. and make the plot square!
+% TODO: BPI bit per instance
+% TODO: the hungarian algo
+% TODO: add tutorial to the post graph
+% TODO: bigwigoverbed -minmax of tommy, to get the min and max of bigwigs to choose the high 50% (No)
+% TODO: add note around area where the EM was confused between different Enhancers)
+% TODO: add note around area where the EM was confused between different Enhancers)
+
+
 
 function mainDecErrorPlot()
     conf.doESharing = false;
@@ -13,10 +22,11 @@ function mainDecErrorPlot()
     conf.m = 6;
     conf.k = 25;
     conf.backgroundAmount = 1;
-    conf.doBound = false;
+    conf.doGTBound = false;
     conf.doResample = false;
     main(conf);
 end
+
 
 function likelihood = calcLikelihood(params, theta, X, pcPWMp)
     N = size(X, 1);
@@ -46,7 +56,7 @@ function main(conf)
     for i = 1:conf.maxIters
         i
         [thetaEst(i + 1), trainLikelihood(i + 1)] = EM.EMIteration(params, trainDataset, thetaEst(i),...
-                                                                   conf.doBound, conf.doResample);
+                                                                   conf.doGTBound);
         thetaEst(i + 1) = misc.permThetaByAnother(params, thetaOrig, thetaEst(i + 1));
         testLikelihood(i + 1) = calcLikelihood(params, thetaEst(i + 1), testDataset.X, testDataset.pcPWMp);
         trainLikelihood(i + 1) = calcLikelihood(params, thetaEst(i + 1), trainDataset.X, trainDataset.pcPWMp);
@@ -69,7 +79,7 @@ function main(conf)
     origTrainError = rateTheta(params, thetaOrig, thetaOrig, trainDataset);
     origTestError = rateTheta(params, thetaOrig, thetaOrig, testDataset);
 
-    figure('units', 'normalized', 'outerposition', [0 0 1 1]);
+    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     hold on;
     title('Viterbi Classification Convergence');
     plot([errorsTrain(:).layerError], 'LineWidth', 2);
@@ -81,28 +91,25 @@ function main(conf)
     legend('Viterbi train error with learned \theta', 'Viterbi test error with learned \theta', ...
            'Viterbi train error with true \theta', 'Viterbi test error with true \theta');
     xlim([1, length([errorsTrain(:).layerError])]);
-    outpath = sprintf('DecError_VitErr_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order, ...
-                      conf.doBound, conf.doResample, conf.N, conf.L);
+    outpath = pathMaker(params, conf.N, conf.L, 'DecError_VitErr', '.jpg');
     saveas(gcf, outpath);
 
-    figure('units', 'normalized', 'outerposition', [0 0 1 1]);
-    outpath = sprintf('DecError_ThetaOverIter_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order,...
-                      conf.doBound, conf.doResample, conf.N, conf.L);
+    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    outpath = pathMaker(params, conf.N, conf.L, 'DecError_ThetaOverIter', '.jpg');
     showTwoThetasOverTime(params, thetaOrig, thetaEst, 'false', outpath);
     % show.showTwoThetas(params, thetaOrig, thetaEst, 'false', subtitle, 'tmp.jpg');
 
-    figure('units', 'normalized', 'outerposition', [0 0 1 1]);
+    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     title(sprintf('Learned \\theta Error Convergence'));
     hold on;
     plot([errorsTrain(:).msle], 'LineWidth', 2);
     ylabel('MSLE of learned \theta (lower is better)');
     xlabel('EM Iteration');
     ylim([0, max([errorsTrain(:).msle], [], 2) * 1.1]);
-    outpath = sprintf('DecError_MSLEOverIter_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order, ...
-                      conf.doBound, conf.doResample, conf.N, conf.L);
+    outpath = pathMaker(params, conf.N, conf.L, 'DecError_MSLEOverIter', '.jpg');
     saveas(gcf, outpath);
 
-    figure('units', 'normalized', 'outerposition', [0 0 1 1]);
+    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     title('Log Likelihood Convergence');
     hold on;
     plot(trainLikelihood, 'LineWidth', 2);
@@ -114,8 +121,7 @@ function main(conf)
     ylabel('Log likelihood of sequences (higher is better)');
     xlabel('EM Iteration');
     xlim([1, length(trainLikelihood)]);
-    outpath = sprintf('DecError_Likelihood_m%dk%do%db%dr%dN%dL%d.jpg', conf.m, conf.k, conf.order, ...
-                      conf.doBound, conf.doResample, conf.N, conf.L);
+    outpath = pathMaker(params, conf.N, conf.L, 'DecError_Likelihood', '.jpg');
     saveas(gcf, outpath);
     keyboard
 end
@@ -134,7 +140,7 @@ function showTwoThetasOverTime(params, thetaOrig, thetaEsts, withExponent, outpa
         thetaOrigMat = misc.thetaToMat(params, thetaOrig, true);
         thetaEstMat = misc.thetaToMat(params, thetaEst, true);
         % if isempty(strfind(outpath, 'tmp'))
-            % fig = figure('units', 'normalized', 'outerposition', [0 0 1 1]);
+            % fig = figure('units', 'pixels', 'Position', [0 0 1000 1000]);
         % end
         if withExponent
             thetaOrigMat = exp(thetaOrigMat);

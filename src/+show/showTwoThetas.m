@@ -6,7 +6,7 @@ function showTwoThetas(params, thetaOrig, thetaEst, withExponent, subtitle, outp
     inds = [params.m, params.n ^ params.order, params.k, 1];
     colors = ['b', 'r', 'g', 'm'];
     if isempty(strfind(outpath, 'tmp'))
-        fig = figure('units','normalized','outerposition',[0 0 1 1]);
+        fig = figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     end
     if withExponent
         thetaOrigMat = exp(thetaOrigMat);

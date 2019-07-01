@@ -1,4 +1,4 @@
-function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound, doResample)
+function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
     N = size(dataset.X, 1);
     LEARNING_RATE = 0.7;
     if ~isfield(dataset, 'XIndicesHotMap')
@@ -60,7 +60,7 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound,
     if doGTBound
         [theta.G, theta.T] = EM.GTbound(params, theta.G, theta.T);
     end
-    if doResample
+    if params.doResampling
         [theta.E, theta.G] = EM.resampleEG(params, theta.E, theta.G);
     end
     % clf

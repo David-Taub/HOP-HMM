@@ -19,7 +19,7 @@
     cMapWithError = [cMap;  PWM_COLOR];
     inds = randsample(N, sequencesToShow);
     inds = sort(inds);
-    figure('units','normalized','outerposition',[0 0 1 1]);
+    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     YEst = misc.viterbi(params, theta, dataset.X, dataset.pcPWMp);
     pwm_val = params.m + 1;
     LOW_BAR_HIEGHT = 0.1;

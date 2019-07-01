@@ -6,16 +6,11 @@
 % mergedPeaks fields: ['seqTo', 'peakTo', 'peakFrom', 'overlap', 'height', 'peakPos']
 % withBackground - sees the background as a tissue, and takes sequences from it
 % withSeq - saves a sequences actual data in file, instead only the metadata of the sequences
-function mergedPeaks = mergePeakFiles(withBackground, withSeq)
-    dbstop if error
+function [mergedPeaks, tissueNames] = mergePeakFiles(withBackground, withSeq, outfilePath)
     if withSeq
         INPUT_MAT_DIR_PATH = '../data/peaks/mat';
     else
         INPUT_MAT_DIR_PATH = '../data/peaks/mat_no_seq';
-    end
-    OUT_FILE_PATH = '../data/peaks/mergedPeaks.mat';
-    if ~withBackground
-        OUT_FILE_PATH = '../data/peaks/mergedPeaksNoBackground.mat';
     end
     ROADMAP_NAMES_CSV_PATH = '../data/peaks/help/full_tissue_names.csv';
     namesDict = roadmapNamesDict(ROADMAP_NAMES_CSV_PATH);
@@ -25,8 +20,8 @@ function mergedPeaks = mergePeakFiles(withBackground, withSeq)
     fprintf('Merging...\n');
     mergedPeaks = mergePeaks(unmergedPeaks, withSeq);
 
-    save('-v7.3', OUT_FILE_PATH, 'mergedPeaks', 'tissueNames');
-    fprintf('Saved peaks in %s\n', OUT_FILE_PATH);
+    save('-v7.3', outfilePath, 'mergedPeaks', 'tissueNames');
+    fprintf('Saved peaks in %s\n', outfilePath);
 end
 
 function namesDict = roadmapNamesDict(namesCSVPath)
@@ -39,7 +34,9 @@ end
 function tissueNames = convertNames(tissueNames, namesDict)
     for i = 1:length(tissueNames)
         if any(strcmp(tissueNames{i}, namesDict.keys))
-            tissueNames{i} = namesDict(tissueNames{i});
+            key = tissueNames{i};
+            tissueNames{i} = namesDict(key);
+            fprintf('Tissue name found: %s -> %s\n', key, tissueNames{i});
         end
     end
 end

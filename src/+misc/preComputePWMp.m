@@ -18,7 +18,8 @@ function out = preComputePWMpAux(Xs1H, params)
     % L = L - fJ;
     % TODO: pcPWMp is too big for the memory. Tried matfile and memfile,
     % no good, too slow and unfit for this size. Tall array should work.
-    PC_PWM_PROBABILITY_FILE = fullfile('..', 'data', 'precomputation', 'pcPWMp.mat');
+    filename = misc.pathMaker(params, N, L, 'pcPWMp', '.mat');
+    pcPWMProbabilityFile = fullfile('..', 'data', 'precomputation', filename);
 
     newSample = [Xs1H(1:500), Xs1H(end-499:end), params.k, L, N];
     try
@@ -28,16 +29,16 @@ function out = preComputePWMpAux(Xs1H, params)
         out = pcPWMp;
         return;
     end
-        if exist(PC_PWM_PROBABILITY_FILE, 'file') == 2
-            fprintf('Loading pre-computed PWM from %s...\n', PC_PWM_PROBABILITY_FILE);
-            load(PC_PWM_PROBABILITY_FILE, 'pcPWMp');
+        if exist(pcPWMProbabilityFile, 'file') == 2
+            fprintf('Loading pre-computed PWM from %s...\n', pcPWMProbabilityFile);
+            load(pcPWMProbabilityFile, 'pcPWMp');
             if all(newSample == sample)
                 fprintf('data match\n');
                 % loaded from file, same size
                 out = pcPWMp;
                 return;
             else
-                delete(PC_PWM_PROBABILITY_FILE);
+                delete(pcPWMProbabilityFile);
                 fprintf('data file mismatch\n');
             end
         end
@@ -50,13 +51,13 @@ function out = preComputePWMpAux(Xs1H, params)
     sample = newSample;
     assert(not(any(isnan(pcPWMp(:)))))
 
-    [basedir, ~, ~] = fileparts(PC_PWM_PROBABILITY_FILE);
+    [basedir, ~, ~] = fileparts(pcPWMProbabilityFile);
     if ~exist(basedir, 'dir')
        mkdir(basedir);
     end
-    
-    save(PC_PWM_PROBABILITY_FILE, 'pcPWMp', 'sample', '-v7.3');
-    fprintf('Saved data in %s\n', PC_PWM_PROBABILITY_FILE);
+
+    save(pcPWMProbabilityFile, 'pcPWMp', 'sample', '-v7.3');
+    fprintf('Saved data in %s\n', pcPWMProbabilityFile);
 
     out = pcPWMp;
 end

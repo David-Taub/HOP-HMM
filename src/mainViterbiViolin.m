@@ -2,6 +2,7 @@
 function mainViterbiViolin()
     conf.doESharing = false;
     conf.startWithBackground = false;
+    conf.doResampling = false;
     conf.maxIters = 1000;
     conf.canCrossLayer = true;
     conf.patience = 4;
@@ -13,7 +14,7 @@ function mainViterbiViolin()
     conf.m = 5;
     conf.k = 10;
     conf.backgroundAmount = 1;
-    conf.doBound = false;
+    conf.doGTBound = false;
     main(conf);
 
 end
@@ -21,10 +22,10 @@ end
 function main(conf)
     dbstop if error
     close all;
-    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, conf.doESharing);
+    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, conf.doESharing, conf.doGTBound, conf.doResampling);
     mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.startWithBackground);
     thetaOrig = mergedPeaksMin.theta;
-    outpath = sprintf('viterbi_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, conf.N, conf.L);
+    outpath = misc.pathMaker(params, conf.N, conf.L, 'viterbiViolin', '.jpg');
     subtitle = sprintf('m=%d, k=%d, %d%% of data', conf.m, conf.k);
     dataset.title = subtitle;
     dataset.X = mergedPeaksMin.seqs;
@@ -32,7 +33,7 @@ function main(conf)
     dataset.Y = mergedPeaksMin.Y;
     dataset.Y2 = mergedPeaksMin.Y2;
     dataset.pcPWMp = misc.preComputePWMp(mergedPeaksMin.seqs, params);
-    [thetaEst, ~] = EM.EM(dataset, params, conf.maxIters, conf.doBound, conf.patience, conf.repeat);
+    [thetaEst, ~] = EM.EM(dataset, params, conf.maxIters, conf.patience, conf.repeat);
     thetaEst = misc.permThetaByAnother(params, thetaOrig, thetaEst);
     [~, ~, ~, ~, ~, psi] = EM.EStep(params, thetaEst, dataset.X, dataset.pcPWMp);
     % N x L x 2

@@ -1,60 +1,44 @@
 % for each couple of tissue, we take sequences that are unique to the tissues and background sequences
-then we choose the PWM with the max AucRoc and keep the
+% then we choose the PWM with the max AucRoc and keep the
 function tissueList = mainSelectTissues(mergedPeaksMin, backgroundIndex, m)
     dbstop if error
-    figure;
+    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     title('tissue aucroc maximal PWM')
-    tissuesCount = size(mergedPeaksMin.overlaps, 2);
-    diffMat = zeros(tissuesCount, tissuesCount);
-    indexMat = zeros(tissuesCount, tissuesCount);
+    MAX_SEQS_PER_TISSUE = 300;
+    numberOfTissues = size(mergedPeaksMin.overlaps, 2);
+    diffMat = zeros(numberOfTissues);
+    indexMat = zeros(numberOfTissues);
     [PWMs, lengths, names] = misc.PWMs();
     k = size(PWMs, 1);
-    backMask = mergedPeaksMin.overlaps(:, backgroundIndex) > 0;
-    sum(backMask, 1)
-    for i = 1:tissuesCount
-        tissueMask = mergedPeaksMin.overlaps(:, i) > 0;
-        sum(tissueMask, 1)
-        backSeqs = mergedPeaksMin.seqs(backMask, :);
-        tissueSeqs = mergedPeaksMin.seqs(tissueMask, :);
-        maxSeqsPerTissue = 300;
-        maxSeqsPerTissue = min([maxSeqsPerTissue, size(backSeqs, 1)]);
-        maxSeqsPerTissue = min([maxSeqsPerTissue, size(tissueSeqs, 1)]);
-        X = [backSeqs(1:maxSeqsPerTissue, :);
-             tissueSeqs(1:maxSeqsPerTissue, :)];
-        Y = [ones(maxSeqsPerTissue, 1); ones(maxSeqsPerTissue, 1) * 2];
-        m = 2;
-        aucRocs = misc.oneVsAllAucRoc(X, Y, m, k, PWMs, lengths)
-        [diffMat(i, i), indexMat(i, i)] = max(aucRocs(:));
-
-        for j = i+1 : tissuesCount
-            tissueMask1 = mergedPeaksMin.overlaps(:, i) > 0;
-            tissueMask2 = mergedPeaksMin.overlaps(:, j) > 0;
-            backSeqs = mergedPeaksMin.seqs(backMask, :);
-            tissue1Seqs = mergedPeaksMin.seqs(tissueMask1, :);
-            tissue2Seqs = mergedPeaksMin.seqs(tissueMask2, :);
-            maxSeqsPerTissue = 300;
-            maxSeqsPerTissue = min([maxSeqsPerTissue, size(backSeqs, 1)]);
-            maxSeqsPerTissue = min([maxSeqsPerTissue, size(tissue1Seqs, 1)]);
-            maxSeqsPerTissue = min([maxSeqsPerTissue, size(tissue2Seqs, 1)]);
-            X = [backSeqs(1:maxSeqsPerTissue, :);
-                 tissue1Seqs(1:maxSeqsPerTissue, :);
-                 tissue2Seqs(1:maxSeqsPerTissue, :)];
-            Y = [ones(maxSeqsPerTissue, 1);
-                 ones(maxSeqsPerTissue, 1) * 2;
-                 ones(maxSeqsPerTissue, 1) * 3];
-            m = 3;
-            aucRocs = misc.oneVsAllAucRoc(X, Y, m, k, PWMs, lengths)
-            [diffMat(i, j), indexMat(i, j)] = max(aucRocs(:));
+    for i = 1:numberOfTissues
+        for j = i + 1 : numberOfTissues
+            auc = compareTwoTypes(mergedPeaksMin, i, [j, backgroundIndex] ...
+                                  MAX_SEQS_PER_TISSUE, k, PWMs, lengths);
+            [diffMat(i, j), indexMat(i, j)] = auc;
             imagesc(diffMat);
             drawnow;
         end
     end
+    % take max vals tissues
     tissueList = [];
-    while length(tissueList) < m-1
-        [v, i] = max(diffMat, [], 1);
+    while length(tissueList) < m - 1
+        [v, inds] = max(diffMat, [], 1);
         [v2, i2] = max(v, [], 2);
-        tissueList = [tissueList, i2, i(i2)]
-        diffMat(i(i2), i2) = -inf;
+        tissueList = [tissueList, i2, inds(i2)]
+        diffMat(inds(i2), i2) = -inf;
     end
     tissueList = [tissueList(1:m-1), backgroundIndex];
+end
+
+
+function ret = compareTwoTypes(mergedPeaksMin, ind1, inds, maxSeqsPerTissue, k, PWMs, lengths)
+    mask1 = mergedPeaksMin.overlaps(:, ind1) > 0;
+    mask2 =  any(mergedPeaksMin.overlaps(:, inds) > 0, 2);
+    seqs1 = mergedPeaksMin.seqs(mask1, :);
+    seqs2 = mergedPeaksMin.seqs(mask2, :);
+    seqsPerTissue = min([maxSeqsPerTissue, size(seqs1, 1), size(seqs2, 1)]);
+    X = [seqs2(1:seqsPerTissue, :); seqs1(1:seqsPerTissue, :)];
+    Y = [ones(seqsPerTissue, 1); ones(seqsPerTissue, 1) * 2];
+    aucRocs = misc.oneVsAllAucRoc(X, Y, Z, k, PWMs, lengths)
+    ret = max(aucRocs(:));
 end

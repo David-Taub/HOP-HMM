@@ -15,9 +15,9 @@ function mainScatterEM()
     % conf.m = 3;
     % conf.k = 5;
     % conf.backgroundAmount = 0
-    % conf.doBound = true;
+    % conf.doGTBound = true;
     % main(conf);
-    % conf.doBound = false;
+    % conf.doGTBound = false;
     % main(conf);
 
 
@@ -25,9 +25,9 @@ function mainScatterEM()
     conf.m = 7;
     conf.k = 10;
     conf.backgroundAmount = 1
-    conf.doBound = true;
+    conf.doGTBound = true;
     % main(conf);
-    conf.doBound = false;
+    conf.doGTBound = false;
     main(conf);
 
 
@@ -35,9 +35,9 @@ function mainScatterEM()
     conf.m = 10;
     conf.k = 30;
     conf.backgroundAmount = 2
-    conf.doBound = true;
+    conf.doGTBound = true;
     main(conf);
-    conf.doBound = false;
+    conf.doGTBound = false;
     main(conf);
 end
 
@@ -50,13 +50,13 @@ function main(conf)
     pcPWMp = misc.preComputePWMp(mergedPeaksMin.seqs, params);
     for Xpercent = conf.Xpercents
         subN = floor(conf.N * Xpercent);
-        outpath = sprintf('scatter_m%dk%dp%do%db%dN%dL%d.jpg', conf.m, conf.k, floor(100 * Xpercent), conf.order, conf.doBound, subN, conf.L);
+        outpath = sprintf('scatter_m%dk%dp%do%db%dN%dL%d.jpg', conf.m, conf.k, floor(100 * Xpercent), conf.order, conf.doGTBound, subN, conf.L);
         subtitle = sprintf('m=%d, k=%d, %d%% of data', conf.m, conf.k, floor(100 * Xpercent));
         dataset.title = subtitle;
         dataset.X = mergedPeaksMin.seqs(1:subN, :);
         dataset.theta = mergedPeaksMin.theta;
         dataset.pcPWMp = pcPWMp(1:subN, :, :);
-        [thetaEst, ~] = EM.EM(dataset, params, conf.maxIters, conf.doBound, conf.patience, conf.repeat);
+        [thetaEst, ~] = EM.EM(dataset, params, conf.maxIters, conf.doGTBound, conf.patience, conf.repeat);
         show.showTwoThetas(params, thetaOrig, thetaEst, conf.withExponent, subtitle, outpath);
     end
 end

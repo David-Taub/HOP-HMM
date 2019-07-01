@@ -1,31 +1,43 @@
+%TODO: Gen Y by the beds, permute theta, show Viterbi errors over iterations
+%TODO: Download h3k27acc bigwigs, print normalized acc heatmaps of regions classified by Viterbi
 function mainRealData()
     conf.doESharing = false;
     conf.startWithBackground = false;
     conf.maxIters = 1000;
     conf.canCrossLayer = true;
     conf.patience = 4;
-    conf.L = 1000;
-    conf.N = 100;
+    conf.L = 900;
     conf.withExponent = false;
     conf.repeat = 1;
     conf.order = 2;
     conf.m = 5;
     conf.k = 10;
     conf.withBackground = true;
+    conf.sequencesToShow = 5;
     conf.backgroundAmount = 1;
-    conf.doBound = false;
+    conf.doGTBound = false;
+    conf.doResample = false;
+    conf.topPercent = 0.5;
     main(conf);
 end
 
 % reads bed files, make them into a single mat file and return it's content
 function mergedPeaksMin = preprocess(conf)
-    PROCESSED_FILEPATH = sprintf('../data/peaks/mergedPeaksMinimized_L%db%d.mat', conf.L, conf.withBackground);
-    if ~isfile(PROCESSED_FILEPATH)
-        peaks.beds2mats(conf.L);
-        mergedPeaks = peaks.mergePeakFiles(conf.withBackground, true);
-        peaks.minimizeMergePeak(mergedPeaks, conf.L, tissueNames, PROCESSED_FILEPATH);
+    minimizedMergedFilePath = sprintf('../data/peaks/mergedPeaksMinimized_L%db%dp%d.mat', conf.L, ...
+                                 conf.withBackground, floor(100 * conf.topPercent));
+    mergedFilePath = sprintf('../data/peaks/mergedPeaks_L%db%dp%d.mat', conf.L, ...
+                                 conf.withBackground, floor(100 * conf.topPercent));
+    if ~isfile(minimizedMergedFilePath)
+        % peaks.beds2mats(conf.L);
+        if ~isfile(mergedFilePath)
+            [mergedPeaks, tissueNames] = peaks.mergePeakFiles(conf.withBackground, true, mergedFilePath);
+        else
+            mergedPeaks = load(minimizedMergedFilePath);
+        end
+        mergedPeaksMin = peaks.minimizeMergePeak(mergedPeaks.mergedPeaks, mergedPeaks.tissueNames, minimizedMergedFilePath, conf.topPercent);
+    else
+        mergedPeaksMin = load(minimizedMergedFilePath);
     end
-    mergedPeaksMin = load(PROCESSED_FILEPATH);
 end
 
 
@@ -37,22 +49,24 @@ function main(conf)
     mergedPeaksMin = preprocess(conf);
     testTrainRatio = 0.15;
     params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, conf.doESharing);
-    params = misc.genParams(m, k);
     [test, train] = misc.crossValidationSplit(params, mergedPeaksMin, testTrainRatio);
-    [theta, ~] = EM.EM(train, params, conf.maxIters, conf.doBound, conf.patience, conf.repeat);
+    [theta, ~] = EM.EM(train, params, conf.maxIters, conf.doGTBound, conf.doResample, conf.patience, conf.repeat);
     show.showTheta(theta);
-    YEst = misc.viterbi(params, theta, train.X, train.pcPWMp);
-    theta = permuteTheta(theta, params, train.Y(:, :), YEst(:, :, 1));
+    outpath = sprintf('real_posterior_m%da%dk%do%db%dN%dL%d.jpg', conf.m, conf.backgroundAmount, ...
+                      conf.k, conf.order, conf.doGTBound, conf.N, conf.L);
+    seqSampleCertaintyReal(params, theta, train, conf.sequencesToShow, outpath);
 
-    classify(theta, params, train);
-    [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, train.X, train.pcPWMp);
-    show.seqSampleCertainty(params, train.Y, gamma, psi, 8, false);
+    % YEst = misc.viterbi(params, theta, train.X, train.pcPWMp);
+    % theta = permuteTheta(theta, params, train.Y(:, :), YEst(:, :, 1));
 
-    classify(theta, params, test);
-    [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, test.X, test.pcPWMp);
-    show.seqSampleCertainty(params, test.Y, gamma, psi, 8, false);
+    % classify(theta, params, train);
+    % [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, train.X, train.pcPWMp);
+    % show.seqSampleCertainty(params, train.Y, gamma, psi, 8, false);
+
+    % classify(theta, params, test);
+    % [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, test.X, test.pcPWMp);
+    % show.seqSampleCertainty(params, test.Y, gamma, psi, 8, false);
     keyboard
-
 end
 
 

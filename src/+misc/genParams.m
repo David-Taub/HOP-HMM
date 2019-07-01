@@ -1,14 +1,15 @@
 % m - number of base states in the model
 % k - number of sub states each base state has in the model
 % backgroundAmount - number of background states
-function params = genParams(m, k, backgroundAmount, L, order, doESharing)
+function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBound, doResampling)
     params.doESharing = doESharing;
     params.m = m;
     params.k = k;
     params.order = order;
     params.backgroundAmount = backgroundAmount;
     params = loadPWMs(params);
-
+    params.doGTBound = doGTBound;
+    params.doResampling = doResampling;
     % params.enhancerLength = 500;
     % meanEnhancerCountInSeq = 1.5;
     % % percent of background out of the sequence
@@ -108,7 +109,7 @@ function params = loadPWMs(params)
         PWMImage = permute(params.PWMs, [3,2,1]);
         PWMImage = cat(2, PWMImage, zeros(params.J, 4, params.k ));
         PWMImage = PWMImage(:, :);
-        figure;
+        figure('units', 'pixels', 'Position', [0 0 1000 1000]);
         imagesc(PWMImage);
         title('PWMs');
         drawnow;

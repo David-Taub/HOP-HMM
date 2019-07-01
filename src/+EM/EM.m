@@ -8,7 +8,7 @@
 % order - the HMM order of the E matrix
 % initial estimation parameters
 % TODO: too many args, move to struct
-function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doGTBound, doResample, patience, repeat)
+function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, patience, repeat)
 
     [N, L] = size(dataset.X);
     fprintf('Starting EM algorithm on %d x %d\n', N, L);
@@ -18,21 +18,21 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, doGTBound, d
         % X = X(randperm(N), :);
         fprintf('Repeat %d / %d\n', rep, repeat);
         initTheta = misc.genTheta(params, true);
-        [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, doGTBound, doResample, patience);
+        [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, false, patience);
         if bestLikelihood < iterLike
             bestLikelihood = iterLike;
             bestTheta = theta;
         end
     end
-    if doGTBound
-        [bestLikelihood, bestTheta] = EMRun(dataset, params, initTheta, maxIter, false, doResample, patience);
+    if params.doGTBound
+        [bestLikelihood, bestTheta] = EMRun(dataset, params, initTheta, maxIter, true, patience);
     end
 end
 
 
 
 % iterates the EM algorithm, returns the likelihood of the best iteration, and theta parameters at that iteration
-function [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, doGTBound, doResample, patience)
+function [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, doGTBound, patience)
     LIKELIHOOD_THRESHOLD = 10 ^ -6;
     theta(1) = initTheta;
     iterLikes = -inf(maxIter, 1);
@@ -40,7 +40,7 @@ function [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, doGTBoun
     for it = 1:maxIter
         fprintf('EM iteration %d / %d\n', it, maxIter);
         tic;
-        [theta(it + 1), iterLike] = EM.EMIteration(params, dataset, theta(it), doGTBound, doResample);
+        [theta(it + 1), iterLike] = EM.EMIteration(params, dataset, theta(it), doGTBound);
         motifsPer = sum(exp(theta(it + 1).G(:)), 1).*100;
         timeLapse = toc();
         fprintf('It %d: log-like: %.2f Time: %.2fs, motifs: ~%.2f%%\n', it, iterLike, timeLapse, motifsPer);
@@ -64,7 +64,7 @@ function [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, doGTBoun
 % pX - N x 1
 % gamma - N x m x L
 function drawStatus(theta, params, alpha, beta, gamma, pX, xi, psi)
-    figure;
+    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     YsEst = mean(gamma, 3);
     YsEst = YsEst(:, 1);
     subplot(2,2,1);

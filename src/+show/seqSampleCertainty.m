@@ -27,7 +27,7 @@ function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
     pwm_val = params.m + 2;
     error_val = params.m + 1;
     LOW_BAR_HIEGHT = 0.2;
-    figure('units','normalized','outerposition',[0 0 1 1]);
+    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     for i = 1:sequencesToShow
         ind = inds(i);
         subplot(sequencesToShow, 1, i);
@@ -43,12 +43,15 @@ function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
         imagesc([.5, L-.5], [-3 * LOW_BAR_HIEGHT / 4, -LOW_BAR_HIEGHT / 4], heatmap, [1, params.m + 3]);
         colormap(cMapWithError);
 
-        im = imagesc([.5, L-.5], [-52 * LOW_BAR_HIEGHT / 100, -48 * LOW_BAR_HIEGHT / 100], [errorHeat; errorHeat], [1, params.m + 3]);
-        colormap(cMapWithError);
-        im.AlphaData = [errorMask;errorMask] > 0;
-        text(L + 1, 0.5, 'Posterior Probability', 'FontSize', 8)
-        text(L + 1, -LOW_BAR_HIEGHT / 4, 'Viterbi Estimation', 'FontSize', 8)
-        text(L + 1, -3 * LOW_BAR_HIEGHT / 4, 'Real States', 'FontSize', 8)
+        % % line between bars
+        % im = imagesc([.5, L-.5], [-52 * LOW_BAR_HIEGHT / 100, -48 * LOW_BAR_HIEGHT / 100], [errorHeat; errorHeat], [1, params.m + 3]);
+        % colormap(cMapWithError);
+        % im.AlphaData = [errorMask;errorMask] > 0;
+        plot([0, L], [-LOW_BAR_HIEGHT / 2, -LOW_BAR_HIEGHT / 2], 'LineWidth', 1, 'Color', 'k');
+
+        text(L + 1, 0.5, 'Posterior Probability', 'FontSize', 10)
+        text(L + 1, -LOW_BAR_HIEGHT / 4, 'Viterbi Estimation', 'FontSize', 10)
+        text(L + 1, -3 * LOW_BAR_HIEGHT / 4, 'Real States', 'FontSize', 10)
 
         % m x L
         YOneHot = matUtils.vec2mat(dataset.Y(ind, :), params.m);

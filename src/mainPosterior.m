@@ -14,7 +14,7 @@ function  mainPosterior()
     conf.m = 5;
     conf.k = 10;
     conf.backgroundAmount = 1;
-    conf.doBound = false;
+    conf.doGTBound = false;
     conf.doResample = false;
     main(conf);
 end
@@ -26,14 +26,14 @@ function main(conf)
     mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.startWithBackground);
     thetaOrig = mergedPeaksMin.theta;
     [trainDataset, testDataset] = misc.crossValidationSplit(params, mergedPeaksMin, 0.15);
-    [thetaEst, ~] = EM.EM(trainDataset, params, conf.maxIters, conf.doBound, conf.doResample, conf.patience, conf.repeat);
+    [thetaEst, ~] = EM.EM(trainDataset, params, conf.maxIters, conf.doGTBound, conf.doResample, conf.patience, conf.repeat);
 
     thetaEst = misc.permThetaByAnother(params, thetaOrig, thetaEst);
-    outpath = sprintf('Posterior_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, conf.N, conf.L);
+    outpath = sprintf('Posterior_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doGTBound, conf.N, conf.L);
     show.seqSampleCertainty(params, thetaEst, testDataset, 3, outpath);
-    outpath = sprintf('Posterior2_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, conf.N, conf.L);
+    outpath = sprintf('Posterior2_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doGTBound, conf.N, conf.L);
     show.seqSampleCertainty(params, thetaEst, testDataset, 3, outpath);
-    outpath = sprintf('Posterior3_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doBound, conf.N, conf.L);
+    outpath = sprintf('Posterior3_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doGTBound, conf.N, conf.L);
     show.seqSampleCertainty(params, thetaEst, testDataset, 3, outpath);
     show.showTheta(thetaEst);
     show.showTheta(thetaOrig);

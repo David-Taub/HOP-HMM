@@ -1,4 +1,6 @@
-function typesOfCells = beds2mats(L)
+% fields of peaks.mat - ['chr', 'peakFrom', 'peakTo', 'seqFrom',
+%                        'seqTo', 'peakLength', 'height', 'peakPos', 'overlap']
+function typesOfCells = beds2mats(seqMaxLength)
     dbstop if error
     BEDS_DIR = '../data/peaks/processed';
     HG19_MM_DIR = '../data/peaks/mm';
@@ -20,7 +22,7 @@ function typesOfCells = beds2mats(L)
             matPath = ['../data/peaks/mat/', name, '.peaks.mat'];
             fprintf('Converting %d / %d: [%s] %s -> %s\n', index, ...
                     typesOfCells, name, bedFilePath, matPath);
-            bed2mat(index, name, bedFilePath, matPath, typesOfCells, L, dict);
+            bed2mat(index, name, bedFilePath, matPath, typesOfCells, seqMaxLength, dict);
             assert(isfile(matPath));
         end
     end
@@ -29,7 +31,7 @@ end
 
 
 % cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
-function bed2mat(index, name, bedFilePath, matPath, typesOfCells, L, dict)
+function bed2mat(index, name, bedFilePath, matPath, typesOfCells, seqMaxLength, dict)
     fprintf('Loading bed\n');
     fid = fopen(bedFilePath);
     if strcmp(name, 'genes')
@@ -73,7 +75,7 @@ function bed2mat(index, name, bedFilePath, matPath, typesOfCells, L, dict)
         S{newSeqId}.overlap = zeros(1, typesOfCells);
         S{newSeqId}.overlap(index) = max(heights(i), 1);
         chrLength = length(dict(S{newSeqId}.chr).Data);
-        [S{newSeqId}.seqTo, S{newSeqId}.seqFrom] = fitToL(S{newSeqId}.peakPos, L, chrLength);
+        [S{newSeqId}.seqTo, S{newSeqId}.seqFrom] = fitToL(S{newSeqId}.peakPos, seqMaxLength, chrLength);
         S{newSeqId}.seq = dict(S{newSeqId}.chr).Data(S{newSeqId}.seqFrom:S{newSeqId}.seqTo)';
         if mod(i, 1000) == 0
             fprintf('%%%.2f\r', 100*i/N);
@@ -86,14 +88,14 @@ function bed2mat(index, name, bedFilePath, matPath, typesOfCells, L, dict)
 
 end
 
-% function [newTo, newFrom] = fitToL(to, from, L)
-function [newTo, newFrom] = fitToL(peakPos, L, chrLength)
+% function [newTo, newFrom] = fitToL(to, from, seqMaxLength)
+function [newTo, newFrom] = fitToL(peakPos, seqMaxLength, chrLength)
     center = peakPos;
-    newTo = min(center + floor(L / 2), chrLength);
-    newFrom = newTo - L + 1;
+    newTo = min(center + floor(seqMaxLength / 2), chrLength);
+    newFrom = newTo - seqMaxLength + 1;
     if newFrom < 1
         newFrom = 1;
-        newTo = L;
+        newTo = seqMaxLength;
     end
 end
 
