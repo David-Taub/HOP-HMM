@@ -4,11 +4,15 @@ function mergedPeaksMin = minimizeMergePeak(topPercent, doEnhSpecific, withBackg
     minimizedMergedFilePath = sprintf('../data/peaks/mergedPeaksMinimized_L%db%dg%dp%des%dspt%dmin%dmax%d.mat', L, ...
                                       withBackground, withGenes, floor(100 * topPercent), doEnhSpecific, seqsPerTissue, ...
                                       peakMinL, peakMaxL);
+    fprintf('Looking for %s ...\n', minimizedMergedFilePath);
     if isfile(minimizedMergedFilePath)
+        fprintf('Found %s . loading...\n', minimizedMergedFilePath);
         mergedPeaksMin = load(minimizedMergedFilePath);
+        fprintf('Done.\n');
         return
     end
-    [mergedPeaks, tissueNames] = peaks.mergePeakFiles(withBackground, withGenes, true, mergedFilePath, L);
+    fprintf('Does not exist, calculating...\n');
+    [mergedPeaks, tissueNames] = peaks.mergePeakFiles(withBackground, withGenes, true, L);
     assert(length(mergedPeaks(end).seq) == L);
     [overlaps, peakLengths, peakPos] = extractOverlaps(mergedPeaks);
     size(overlaps, 1)
@@ -42,6 +46,7 @@ end
 
 
 function [seqs, overlaps, peakLengths, peakPos] = enhancerSpecific(seqs, overlaps, peakLengths, peakPos)
+    fprintf('enhancer specific\n');
     mask = sum(overlaps > 0, 2) == 1;
     [seqs, overlaps, peakLengths, peakPos] = reduceData(mask, seqs, overlaps, peakLengths, peakPos);
 end
@@ -49,12 +54,14 @@ end
 
 
 function [seqs, overlaps, peakLengths, peakPos] = limitPeakLength(seqs, overlaps, peakLengths, peakPos, peakMinL, peakMaxL)
+    fprintf('peak length\n');
     mask = peakMinL < peakLengths < peakMaxL;
     [seqs, overlaps, peakLengths, peakPos] = reduceData(mask, seqs, overlaps, peakLengths, peakPos);
 end
 
 
 function [seqs, overlaps, peakLengths, peakPos] = balanceOverlaps(seqs, overlaps, peakLengths, peakPos, seqsPerTissue)
+    fprintf('balancing seqs count per tissue\n');
     mask = false(size(seqs, 1), 1);
     for i = 1:size(overlaps, 2)
         [vals, inds] = sort(overlaps(:, i), 1, 'descend');
@@ -66,6 +73,7 @@ end
 
 
 function [seqs, overlaps, peakLengths, peakPos] = reduceData(mask, seqs, overlaps, peakLengths, peakPos)
+    fprintf('reducing %.2f%% of seqs\n', 100 * mean(mask, 1));
     seqs = seqs(mask, :);
     overlaps = overlaps(mask, :);
     peakLengths = peakLengths(mask);

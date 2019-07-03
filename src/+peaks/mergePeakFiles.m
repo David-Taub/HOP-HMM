@@ -7,11 +7,16 @@
 % withBackground - sees the background as a tissue, and takes sequences from it
 % withSeq - saves a sequences actual data in file, instead only the metadata of the sequences
 function [mergedPeaks, tissueNames] = mergePeakFiles(withBackground, withGenes, withSeq, L)
-    mergedFilePath = sprintf('../data/peaks/mergedPeaks_L%db%dws%d.mat', L, withBackground, withSeq);
+    mergedFilePath = sprintf('../data/peaks/mergedPeaks_L%db%dg%dws%d.mat', L, withBackground, withGenes, withSeq);
+
+    fprintf('Looking for %s ...\n', mergedFilePath);
     if isfile(mergedFilePath)
+        fprintf('Found %s . loading...\n', mergedFilePath);
         load(mergedFilePath);
+        fprintf('Done.\n');
         return;
     end
+    fprintf('Does not exist, calculating...\n');
     ROADMAP_NAMES_CSV_PATH = '../data/peaks/help/full_tissue_names.csv';
     assert(isfile(ROADMAP_NAMES_CSV_PATH))
 
