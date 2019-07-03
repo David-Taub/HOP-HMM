@@ -2,7 +2,7 @@
 function selectedPWMs = PWMsFeatureSelect(mergedPeaksMin, tissueList, PWMs, lengths, wantedK)
     dbstop if error
     m = length(tissueList);
-    outFilepath = sprintf('../data/precomputation/SelectedPWMs_N%dL%dk%dwk%dm%dtissues%s.mat', N, L, k,...
+    outFilepath = sprintf('../data/precomputation/SelectedPWMs_L%dwk%dm%dtissues%s.mat', L,...
                           wantedK, m, sprintf('%d', tissueList));
     if isfile(outFilepath)
         load(outFilepath);

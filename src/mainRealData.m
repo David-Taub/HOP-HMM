@@ -23,6 +23,7 @@ function mainRealData()
     conf.doGTBound = false;
     conf.doResampling = false;
     conf.topPercent = 0.5;
+    conf.tissueList = [1:4]
     main(conf);
 end
 
@@ -33,7 +34,10 @@ function main(conf)
     mergedPeaksMin = peaks.minimizeMergePeak(conf.topPercent, conf.doEnhSpecific, conf.withBackground, conf.withGenes,...
                                              conf.seqsPerTissue, conf.L, conf.peakMinL, conf.peakMaxL)
     testTrainRatio = 0.15;
-    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, conf.doESharing, conf.doGTBound, conf.doResampling);
+    [PWMs, lengths, ~] = misc.PWMs();
+    selectedPWMs = misc.PWMsFeatureSelect(mergedPeaksMin, conf.tissueList, PWMs, lengths, conf.k);
+    params = misc.genParams(conf.m, selectedPWMs, conf.backgroundAmount, conf.L, conf.order, ...
+                            conf.doESharing, conf.doGTBound, conf.doResampling);
     [test, train] = misc.crossValidationSplit(params, mergedPeaksMin, testTrainRatio);
     [theta, ~] = EM.EM(train, params, conf.maxIters, conf.doGTBound, conf.doResampling, conf.patience, conf.repeat);
     show.showTheta(theta);

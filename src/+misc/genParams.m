@@ -1,35 +1,28 @@
 % m - number of base states in the model
 % k - number of sub states each base state has in the model
 % backgroundAmount - number of background states
-function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBound, doResampling)
+function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBound,...
+                            doResampling)
     params.doESharing = doESharing;
     params.m = m;
+    if length(k) > 1
+        selectedPWMs = k;
+        k = length(selectedPWMs);
+    else
+        selectedPWMs = 1:k;
+    end
     params.k = k;
     params.order = order;
     params.backgroundAmount = backgroundAmount;
-    params = loadPWMs(params);
+    [params.PWMs, params.lengths, params.names] = misc.PWMs();
+    params.PWMs = params.PWMs(selectedPWMs, :, :);
+    params.lengths = params.lengths(selectedPWMs);
+    params.names = {params.names{selectedPWMs}};
+
+
     params.doGTBound = doGTBound;
     params.doResampling = doResampling;
-    % params.enhancerLength = 500;
-    % meanEnhancerCountInSeq = 1.5;
-    % % percent of background out of the sequence
-    % params.backgroundRatio = 1 - ((params.enhancerLength * meanEnhancerCountInSeq) / L);
-    % % probability that for a cross enhancer transition at end of enhancer
-    % params.crossEnhancer = 0.02;
-    % params.enhancerMotifsRatio = 0.10; % max limit
 
-    % PTotalBaseToOthers = 1 / ((1 - params.enhancerMotifsRatio) * params.enhancerLength);
-
-    % params.PTotalBaseToSub = misc.ratio2TransitionProb(mean(params.lengths, 2), params.enhancerMotifsRatio);
-    % params.PBackgroundToEnhancer = misc.ratio2TransitionProb(params.enhancerLength, 1 - params.backgroundRatio) / ((params.m - 1) * params.backgroundAmount);
-    % params.PEnhancerToBackground = PTotalBaseToOthers * (1 - params.crossEnhancer) / params.backgroundAmount;
-    % params.PCrossEnhancers = PTotalBaseToOthers * params.crossEnhancer / (params.m - 1 - params.backgroundAmount);
-
-    % if params.m - params.backgroundAmount == 1
-    %     params.PCrossEnhancers = 0;
-    % end
-
-    % params.maxPRatio = 3;
     params.batchSize = 100;
     [kMax, params.n, params.J] = size(params.PWMs);
     params.k = min(k, kMax);
@@ -91,33 +84,4 @@ function [maxT, maxG] = genMaxGT(params)
     end
     maxG = ones(params.m, params.k) .* params.maxEnhMotif;
     maxG(end - params.backgroundAmount + 1:end, :) = params.maxBgMotif;
-end
-
-
-function params = loadPWMs(params)
-    [params.PWMs, params.lengths, params.names] = misc.PWMs();
-    try
-        SELECTED_PWMS_FILEPATH = '../data/precomputation/SelectedPWMs.mat';
-        loaded = load(SELECTED_PWMS_FILEPATH);
-        inds = loaded.selectedPWMs;
-        params.k = length(inds);
-        params.PWMs = params.PWMs(inds(end - params.k + 1 : end), :, :);
-        params.lengths = params.lengths(inds(end-params.k+1:end));
-        params.names = {params.names{inds(end-params.k+1:end)}};
-
-        % k x n x J -> J x n x k
-        PWMImage = permute(params.PWMs, [3,2,1]);
-        PWMImage = cat(2, PWMImage, zeros(params.J, 4, params.k ));
-        PWMImage = PWMImage(:, :);
-        figure('units', 'pixels', 'Position', [0 0 1000 1000]);
-        imagesc(PWMImage);
-        title('PWMs');
-        drawnow;
-        fprintf('loaded feature selected PWMs from %s\n', SELECTED_PWMS_FILEPATH)
-    catch
-        params.PWMs = params.PWMs(1:params.k, :, :);
-        params.lengths = params.lengths(1:params.k);
-        params.names = {params.names{1:params.k}};
-        fprintf('loaded non-optimized PWMs');
-    end
 end
