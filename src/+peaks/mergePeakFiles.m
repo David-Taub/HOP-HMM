@@ -6,7 +6,7 @@
 % mergedPeaks fields: ['seqTo', 'peakTo', 'peakFrom', 'overlap', 'height', 'peakPos']
 % withBackground - sees the background as a tissue, and takes sequences from it
 % withSeq - saves a sequences actual data in file, instead only the metadata of the sequences
-function [mergedPeaks, tissueNames] = mergePeakFiles(withBackground, withGenes, withSeq, L)
+function [mergedPeaks, tissueNames, backgroundInd, genesInd] = mergePeakFiles(withBackground, withGenes, withSeq, L)
     mergedFilePath = sprintf('../data/peaks/mergedPeaks_L%db%dg%dws%d.mat', L, withBackground, withGenes, withSeq);
 
     fprintf('Looking for %s ...\n', mergedFilePath);
@@ -32,7 +32,7 @@ function [mergedPeaks, tissueNames] = mergePeakFiles(withBackground, withGenes, 
     end
     namesDict = roadmapNamesDict(ROADMAP_NAMES_CSV_PATH);
     fprintf('Reading mat files...\n');
-    [unmergedPeaks, tissueNames] = readMatFiles(inputMatDirPath, withBackground, withGenes);
+    [unmergedPeaks, tissueNames, backgroundInd, genesInd] = readMatFiles(inputMatDirPath, withBackground, withGenes);
     tissueNames = convertNames(tissueNames, namesDict);
     fprintf('Merging...\n');
     mergedPeaks = mergePeaks(unmergedPeaks, withSeq);
@@ -58,9 +58,11 @@ function tissueNames = convertNames(tissueNames, namesDict)
     end
 end
 
-function [unmergedPeaks, tissueNames] = readMatFiles(matDirPath, withBackground, withGenes)
+function [unmergedPeaks, tissueNames, backgroundInd, genesInd] = readMatFiles(matDirPath, withBackground, withGenes)
     unmergedPeaks = [];
     tissueNames = {};
+    backgroundInd = 0;
+    genesInd = 0;
     peakFiles = dir(fullfile(matDirPath, '*.peaks.mat'));
     assert(length(peakFiles) > 0);
     for i = 1:length(peakFiles)
@@ -70,13 +72,19 @@ function [unmergedPeaks, tissueNames] = readMatFiles(matDirPath, withBackground,
         fprintf('loaded mat peak data from %s\n', matFilepath);
         filenameParts = strsplit(filename, '.');
         tissueName = filenameParts{1};
-        if strcmp(tissueName , 'background') && ~withBackground
-            fprintf('skipping background\n');
-            continue
+        if strcmp(tissueName , 'background')
+            if ~withBackground
+                fprintf('skipping background\n');
+                continue
+            end
+            backgroundInd = i;
         end
-        if strcmp(tissueName , 'genes') && ~withGenes
-            fprintf('skipping genes\n');
-            continue
+        if strcmp(tissueName , 'genes')
+            if ~withGenes
+                fprintf('skipping genes\n');
+                continue
+            end
+            genesInd = i;
         end
         if length(peaks.S) > 0
             tissueNames{find(peaks.S{1}.overlap)} = tissueName;

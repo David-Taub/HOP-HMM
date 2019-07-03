@@ -1,29 +1,22 @@
 
-function selectedPWMs = PWMsFeatureSelect(mergedPeaksMin, tissueList, PWMs, lengths, wantedK)
+function selectedPWMs = PWMsFeatureSelect(mergedPeaksMin, wantedK)
     dbstop if error
-    m = length(tissueList);
     outFilepath = sprintf('../data/precomputation/SelectedPWMs_L%dwk%dm%dtissues%s.mat', L,...
-                          wantedK, m, sprintf('%d', tissueList));
+                          wantedK, m, sprintf('%d', mergedPeaksMin.tissueList));
     if isfile(outFilepath)
         load(outFilepath);
         return;
     end
-    % profile on
-    % close all;
-    BEST_PWM_TO_CHOOSE_PER_TISSUE = 25;
-    m = length(tissueList);
+    [PWMs, lengths, ~] = misc.PWMs();
+    m = size(mergedPeaksMin.overlaps, 2);
     L = size(mergedPeaksMin.seqs, 2);
     k = size(PWMs, 1);
-    for tissueID = tissueList
-        mergedPeaksMin.tissueNames{tissueID}
-    end
 
-    [X, Y] = preprocess(mergedPeaksMin, tissueList);
+    [X, Y] = preprocess(mergedPeaksMin);
 
     % m x k
     aucRocs = misc.oneVsAllAucRoc(X, Y, PWMs, lengths);
     [aucRocsSorted, aucRocsSortedInd] = sort(aucRocs, 2, 'descend');
-    % m x BEST_PWM_TO_CHOOSE_PER_TISSUE
 
     selectedPWMs = [];
     i = 1;
@@ -37,14 +30,10 @@ end
 
 
 
-function [X, Y] = preprocess(mergedPeaksMin, tissueList)
-    mask = sum(overlaps(:, tissueList) > 0, 2) == 1;
-    overlaps = overlaps(mask, :);
-    overlaps = overlaps(:, tissueList);
-    assert(all(sum(overlaps > 0, 1) > 0))
+function [X, Y] = preprocess(mergedPeaksMin)
     X = mergedPeaksMin.seqs(mask, :);
-    Y = (overlaps > 0) * (1:size(overlaps, 2))'
-    [overlaps, seqInd] = sortrows(overlaps);
+    Y = (mergedPeaksMin.overlaps > 0) * (1:size(mergedPeaksMin.overlaps, 2))'
+    [overlaps, seqInd] = sortrows(mergedPeaksMin.overlaps);
     X = X(seqInd, :);
     Y = Y(seqInd);
 end

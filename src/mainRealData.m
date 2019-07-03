@@ -32,10 +32,10 @@ function main(conf)
     dbstop if error
     close all;
     mergedPeaksMin = peaks.minimizeMergePeak(conf.topPercent, conf.doEnhSpecific, conf.withBackground, conf.withGenes,...
-                                             conf.seqsPerTissue, conf.L, conf.peakMinL, conf.peakMaxL)
+                                             conf.seqsPerTissue, conf.L, conf.peakMinL, conf.peakMaxL, conf.tissueList)
     testTrainRatio = 0.15;
     [PWMs, lengths, ~] = misc.PWMs();
-    selectedPWMs = misc.PWMsFeatureSelect(mergedPeaksMin, conf.tissueList, PWMs, lengths, conf.k);
+    selectedPWMs = misc.PWMsFeatureSelect(mergedPeaksMin, PWMs, lengths, conf.k);
     params = misc.genParams(conf.m, selectedPWMs, conf.backgroundAmount, conf.L, conf.order, ...
                             conf.doESharing, conf.doGTBound, conf.doResampling);
     [test, train] = misc.crossValidationSplit(params, mergedPeaksMin, testTrainRatio);

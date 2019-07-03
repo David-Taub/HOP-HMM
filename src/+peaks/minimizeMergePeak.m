@@ -1,9 +1,9 @@
 % fields of minimizeMergePeak - ['seqs', 'overlaps', 'peakLengths', 'tissueNames']
 function mergedPeaksMin = minimizeMergePeak(topPercent, doEnhSpecific, withBackground, withGenes,...
-                                            seqsPerTissue, L, peakMinL, peakMaxL)
-    minimizedMergedFilePath = sprintf('../data/peaks/mergedPeaksMinimized_L%db%dg%dp%des%dspt%dmin%dmax%d.mat', L, ...
+                                            seqsPerTissue, L, peakMinL, peakMaxL, tissueList)
+    minimizedMergedFilePath = sprintf('../data/peaks/mergedPeaksMinimized_L%db%dg%dp%des%dspt%dmin%dmax%dT%s.mat', L, ...
                                       withBackground, withGenes, floor(100 * topPercent), doEnhSpecific, seqsPerTissue, ...
-                                      peakMinL, peakMaxL);
+                                      peakMinL, peakMaxL, sprintf('%d', tissueList));
     fprintf('Looking for %s ...\n', minimizedMergedFilePath);
     if isfile(minimizedMergedFilePath)
         fprintf('Found %s . loading...\n', minimizedMergedFilePath);
@@ -12,7 +12,7 @@ function mergedPeaksMin = minimizeMergePeak(topPercent, doEnhSpecific, withBackg
         return
     end
     fprintf('Does not exist, calculating...\n');
-    [mergedPeaks, tissueNames] = peaks.mergePeakFiles(withBackground, withGenes, true, L);
+    [mergedPeaks, tissueNames, backgroundInd, genesInd] = peaks.mergePeakFiles(withBackground, withGenes, true, L);
     assert(length(mergedPeaks(end).seq) == L);
     [overlaps, peakLengths, peakPos] = extractOverlaps(mergedPeaks);
     size(overlaps, 1)
@@ -34,15 +34,42 @@ function mergedPeaksMin = minimizeMergePeak(topPercent, doEnhSpecific, withBackg
             size(overlaps, 1)
         end
     end
+    if length(tissueList) > 1
+        [seqs, overlaps, peakLengths, peakPos, tissueNames] = filterByTissueList(seqs, overlaps, peakLengths, ...
+                                                                                 tissueList, backgroundInd, ...
+                                                                                 genesInd, tissueNames);
+    end
     % outFilepath = '../data/peaks/mergedPeaksMinimized.mat';
-    save(minimizedMergedFilePath, '-v7.3', 'seqs', 'overlaps', 'peakLengths', 'tissueNames', 'peakPos');
+    save(minimizedMergedFilePath, '-v7.3', 'seqs', 'overlaps', 'peakLengths', 'tissueNames', ...
+         'peakPos', 'backgroundInd', 'genesInd', 'tissueList');
     fprintf('Saved peaks in %s\n', outFilepath);
     mergedPeaksMin.seqs = seqs;
     mergedPeaksMin.overlaps = overlaps;
     mergedPeaksMin.peakLengths = peakLengths;
-    mergedPeaksMin.peakPos = peakPos;
     mergedPeaksMin.tissueNames = tissueNames;
+    mergedPeaksMin.peakPos = peakPos;
+    mergedPeaksMin.backgroundInd = backgroundInd
+    mergedPeaksMin.genesInd = genesInd;
+    mergedPeaksMin.tissueList = tissueList;
 end
+
+
+
+function [seqs, overlaps, peakLengths, peakPos, tissueNames] = filterByTissueList(seqs, overlaps, peakLengths, tissueList, backgroundInd,...
+                                                                                  genesInd, tissueNames);
+    fprintf('tissue list\n');
+    if backgroundInd > 0
+        tissueList = [tissueList, backgroundInd]
+    end
+    if genesInd > 0
+        tissueList = [tissueList, genesInd]
+    end
+    mask = sum(overlaps(:, tissueList) > 0, 2) > 0;
+    [seqs, overlaps, peakLengths, peakPos] = reduceData(mask, seqs, overlaps, peakLengths, peakPos);
+    overlaps = overlaps(:, tissueList);
+    tissueNames = tissueNames(tissueList);
+end
+
 
 
 function [seqs, overlaps, peakLengths, peakPos] = enhancerSpecific(seqs, overlaps, peakLengths, peakPos)
