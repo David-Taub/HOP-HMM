@@ -8,6 +8,7 @@ function mainRealData()
     conf.canCrossLayer = true;
     conf.patience = 4;
     conf.L = 1000;
+    conf.peakMaxLength = 1000;
     conf.peakMinL = 300;
     conf.peakMaxL = 800;
     conf.withExponent = false;
@@ -34,8 +35,7 @@ function main(conf)
     mergedPeaksMin = peaks.minimizeMergePeak(conf.topPercent, conf.doEnhSpecific, conf.withBackground, conf.withGenes,...
                                              conf.seqsPerTissue, conf.L, conf.peakMinL, conf.peakMaxL, conf.tissueList)
     testTrainRatio = 0.15;
-    [PWMs, lengths, ~] = misc.PWMs();
-    selectedPWMs = misc.PWMsFeatureSelect(mergedPeaksMin, PWMs, lengths, conf.k);
+    selectedPWMs = misc.PWMsFeatureSelect(mergedPeaksMin, conf.k);
     params = misc.genParams(conf.m, selectedPWMs, conf.backgroundAmount, conf.L, conf.order, ...
                             conf.doESharing, conf.doGTBound, conf.doResampling);
     [test, train] = misc.crossValidationSplit(params, mergedPeaksMin, testTrainRatio);

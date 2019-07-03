@@ -6,8 +6,9 @@
 % mergedPeaks fields: ['seqTo', 'peakTo', 'peakFrom', 'overlap', 'height', 'peakPos']
 % withBackground - sees the background as a tissue, and takes sequences from it
 % withSeq - saves a sequences actual data in file, instead only the metadata of the sequences
-function [mergedPeaks, tissueNames, backgroundInd, genesInd] = mergePeakFiles(withBackground, withGenes, withSeq, L)
-    mergedFilePath = sprintf('../data/peaks/mergedPeaks_L%db%dg%dws%d.mat', L, withBackground, withGenes, withSeq);
+function [mergedPeaks, tissueNames, backgroundInd, genesInd] = mergePeakFiles(withBackground, withGenes, withSeq)
+    mergedFilePath = sprintf('../data/peaks/mergedPeaks_b%dg%dws%d.mat', withBackground, ...
+                             withGenes, withSeq);
 
     fprintf('Looking for %s ...\n', mergedFilePath);
     if isfile(mergedFilePath)
@@ -28,7 +29,7 @@ function [mergedPeaks, tissueNames, backgroundInd, genesInd] = mergePeakFiles(wi
     matFilesCount = length(dir(inputMatDirPath)) - 2;
     if matFilesCount < 40
         fprintf('Found only %d mat files at %s. Generating mat files...\n', matFilepath, inputMatDirPath);
-        peaks.beds2mats(L);
+        peaks.beds2mats();
     end
     namesDict = roadmapNamesDict(ROADMAP_NAMES_CSV_PATH);
     fprintf('Reading mat files...\n');

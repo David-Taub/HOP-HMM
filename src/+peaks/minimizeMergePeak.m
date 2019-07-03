@@ -12,7 +12,7 @@ function mergedPeaksMin = minimizeMergePeak(topPercent, doEnhSpecific, withBackg
         return
     end
     fprintf('Does not exist, calculating...\n');
-    [mergedPeaks, tissueNames, backgroundInd, genesInd] = peaks.mergePeakFiles(withBackground, withGenes, true, L);
+    [mergedPeaks, tissueNames, backgroundInd, genesInd] = peaks.mergePeakFiles(withBackground, withGenes, true);
     assert(length(mergedPeaks(end).seq) == L);
     [overlaps, peakLengths, peakPos] = extractOverlaps(mergedPeaks);
     size(overlaps, 1)
@@ -122,7 +122,7 @@ function seqs = trimSeqs(mergedPeaks, L)
         seq = seqsCells{i};
         center = round(length(seq) / 2);
         % seqs(i, :) = nt2int(seq(center-L/2+1:center+L/2));
-        start_peakPos = center - L / 2 +1;
+        start_peakPos = center - L / 2 + 1;
         end_peakPos = start_peakPos + L - 1 ;
         seqs(i, :) = seq(start_peakPos:end_peakPos);
     end

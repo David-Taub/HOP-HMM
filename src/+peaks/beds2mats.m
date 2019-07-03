@@ -1,6 +1,6 @@
 % fields of peaks.mat - ['chr', 'peakFrom', 'peakTo', 'seqFrom',
 %                        'seqTo', 'peakLength', 'height', 'peakPos', 'overlap']
-function typesOfCells = beds2mats(seqMaxLength)
+function typesOfCells = beds2mats()
     dbstop if error
     BEDS_DIR = '../data/peaks/processed';
     HG19_MM_DIR = '../data/peaks/mm';
@@ -19,10 +19,14 @@ function typesOfCells = beds2mats(seqMaxLength)
             nameParts = strsplit(bedFiles(index).name, '.');
             nameParts = strsplit(nameParts{1}, '-');
             name = nameParts{1};
-            matPath = ['../data/peaks/mat/', name, '.peaks.mat'];
+            matPath = sprintf('../data/peaks/mat/%s.peaks.mat', name);
+            if isfile(matPath)
+                fprintf('file already exists, skipping. [%s]\n', matPath);
+                skip;
+            end
             fprintf('Converting %d / %d: [%s] %s -> %s\n', index, ...
                     typesOfCells, name, bedFilePath, matPath);
-            bed2mat(index, name, bedFilePath, matPath, typesOfCells, seqMaxLength, dict);
+            bed2mat(index, name, bedFilePath, matPath, typesOfCells, dict);
             assert(isfile(matPath));
         end
     end
@@ -31,7 +35,7 @@ end
 
 
 % cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
-function bed2mat(index, name, bedFilePath, matPath, typesOfCells, seqMaxLength, dict)
+function bed2mat(index, name, bedFilePath, matPath, typesOfCells, dict)
     fprintf('Loading bed\n');
     fid = fopen(bedFilePath);
     if strcmp(name, 'genes')
@@ -75,29 +79,17 @@ function bed2mat(index, name, bedFilePath, matPath, typesOfCells, seqMaxLength, 
         S{newSeqId}.overlap = zeros(1, typesOfCells);
         S{newSeqId}.overlap(index) = max(heights(i), 1);
         chrLength = length(dict(S{newSeqId}.chr).Data);
-        [S{newSeqId}.seqTo, S{newSeqId}.seqFrom] = fitToL(S{newSeqId}.peakPos, seqMaxLength, chrLength);
+        % [S{newSeqId}.seqTo, S{newSeqId}.seqFrom] = fitToL(S{newSeqId}.peakPos, L, chrLength);
         S{newSeqId}.seq = dict(S{newSeqId}.chr).Data(S{newSeqId}.seqFrom:S{newSeqId}.seqTo)';
         if mod(i, 1000) == 0
             fprintf('%%%.2f\r', 100*i/N);
         end
     end
     fprintf('\n');
-
     save(matPath, 'S', '-v7.3');
     fprintf('Saved bed in mat format in %s \n', matPath);
-
 end
 
-% function [newTo, newFrom] = fitToL(to, from, seqMaxLength)
-function [newTo, newFrom] = fitToL(peakPos, seqMaxLength, chrLength)
-    center = peakPos;
-    newTo = min(center + floor(seqMaxLength / 2), chrLength);
-    newFrom = newTo - seqMaxLength + 1;
-    if newFrom < 1
-        newFrom = 1;
-        newTo = seqMaxLength;
-    end
-end
 
 function dict = makeMMDict(HG19_MM_DIR)
 
