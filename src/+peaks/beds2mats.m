@@ -131,26 +131,3 @@ function dict = makeMMDict(HG19Dir)
     end
 end
 
-
-% row example:
-% chr1    5113983 5113984 2.03288
-function bedGraph = readBedGraph(bedGraphFilePath)
-    fprintf('Loading bed\n');
-    fid = fopen(bedGraphFilePath);
-
-    bedGraphData = textscan(fid, '%s%d%d%f', 'delimiter','\t');
-    bedGraph.chrs = bedGraphData{1};
-    bedGraph.froms = bedGraphData{2};
-    bedGraph.tos = bedGraphData{3};
-    bedGraph.vals = bedGraphData{4};
-    fclose(fid);
-end
-
-
-function ret = getTrack(bedGraph, trackChr, trackFrom, trackTo)
-    mask = strcmp(bedGraph.chrs, trackChr) & (bedGraph.tos > trackFrom) & (bedGraph.froms < trackTo);
-    % linear interp
-    ret = interp1((bedGraph.tos(mask) + bedGraph.froms(mask)) / 2, bedGraph.vals(mask), trackFrom : trackTo);
-end
-
-

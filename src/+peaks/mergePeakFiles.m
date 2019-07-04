@@ -6,9 +6,8 @@
 % mergedPeaks fields: ['seqTo', 'peakTo', 'peakFrom', 'overlap', 'height', 'peakPos']
 % withBackground - sees the background as a tissue, and takes sequences from it
 % withSeq - saves a sequences actual data in file, instead only the metadata of the sequences
-function [mergedPeaks, tissueNames, backgroundInd, genesInd] = mergePeakFiles(withBackground, withGenes, withSeq, L)
+function [mergedPeaks, tissueEIDs, backgroundInd, genesInd] = mergePeakFiles(withBackground, withGenes, withSeq, L)
     mergedFilePath = sprintf('../data/peaks/mergedPeaks_L%db%dg%dws%d.mat', L, withBackground, withGenes, withSeq);
-
     fprintf('Looking for %s ...\n', mergedFilePath);
     if isfile(mergedFilePath)
         fprintf('Found %s . loading...\n', mergedFilePath);
@@ -17,39 +16,16 @@ function [mergedPeaks, tissueNames, backgroundInd, genesInd] = mergePeakFiles(wi
         return;
     end
     fprintf('Does not exist, calculating...\n');
-    ROADMAP_NAMES_CSV_PATH = '../data/peaks/help/full_tissue_names.csv';
-    assert(isfile(ROADMAP_NAMES_CSV_PATH))
 
     matFiles = peaks.beds2mats(L);
-    namesDict = roadmapNamesDict(ROADMAP_NAMES_CSV_PATH);
     fprintf('Reading mat files...\n');
     [unmergedPeaks, tissueEIDs, backgroundInd, genesInd] = readMatFiles(withBackground, withGenes, matFiles);
-    tissueNames = EIDsToTissueNames(tissueEIDs, namesDict);
     fprintf('Merging...\n');
     mergedPeaks = mergePeaks(unmergedPeaks, withSeq);
-
-    save('-v7.3', mergedFilePath, 'mergedPeaks', 'tissueNames', 'backgroundInd', 'genesInd');
+    save('-v7.3', mergedFilePath, 'mergedPeaks', 'tissueEIDs', 'backgroundInd', 'genesInd');
     fprintf('Saved peaks in %s\n', mergedFilePath);
 end
 
-
-function namesDict = roadmapNamesDict(namesCSVPath)
-    fid = fopen(namesCSVPath);
-    csvData = textscan(fid, '%s%s', 'delimiter',',');
-    fclose(fid);
-    namesDict = containers.Map(csvData{1}, csvData{2});
-end
-
-
-function tissueNames = EIDsToTissueNames(tissueNames, namesDict)
-    for i = 1:length(tissueNames)
-        if any(strcmp(tissueNames{i}, namesDict.keys))
-            EID = tissueNames{i};
-            tissueNames{i} = namesDict(EID);
-            fprintf('Tissue name found: %s -> %s\n', EID, tissueNames{i});
-        end
-    end
-end
 
 function [unmergedPeaks, tissueEIDs, backgroundInd, genesInd] = readMatFiles(withBackground, withGenes, matFiles)
     unmergedPeaks = [];
@@ -83,6 +59,7 @@ function [unmergedPeaks, tissueEIDs, backgroundInd, genesInd] = readMatFiles(wit
         end
     end
 end
+
 
 function mergedPeaks = mergePeaks(unmergedPeaks, withSeq)
 

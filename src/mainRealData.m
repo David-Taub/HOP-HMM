@@ -44,7 +44,7 @@ function main(conf)
     show.showTheta(theta);
     outpath = sprintf('real_posterior_m%da%dk%do%db%dN%dL%d.jpg', conf.m, conf.backgroundAmount, ...
                       conf.k, conf.order, conf.doGTBound, N, conf.L);
-    show.seqSampleCertaintyReal(params, theta, train, outpath);
+    show.seqSampleCertaintyReal(params, theta, train, outpath, mergedPeaksMin.tissueEIDs);
     % seqSampleCertaintyReal(params, theta, test, conf.sequencesToShow, outpath);
 
     % YEst = misc.viterbi(params, theta, train.X, train.pcPWMp);

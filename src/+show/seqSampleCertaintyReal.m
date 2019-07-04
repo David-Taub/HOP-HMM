@@ -1,6 +1,6 @@
 % sample sequences, and draw for each colorful plots with what the posterior
 % probability was compared to the correct state per letter
-    function seqSampleCertaintyReal(params, theta, dataset, outpath)
+    function seqSampleCertaintyReal(params, theta, dataset, outpath, tissueEIDs)
     [N, L] = size(dataset.X);
     % gamma - N x m x L
     % psi - N x m x k x L
@@ -30,22 +30,24 @@
     ylabel(['Seq ', num2str(seqInd)]);
     xlabel('Position in Sequence');
 
+    ax = gca;
+    ax.YDir = 'normal';
     plotProbMap(params, posterior(seqInd, :, :), YEst(seqInd, :, 1), cMap);
 
-    % TODO: read from bedgraphs
-    H3K27ac = rand(N, params.m, L);
-    DNase = rand(N, params.m, L);
-
+    H3K27ac = readAllTissuesBedGraphs(dataset.chrs{seqInd}, dataset.starts(seqInd),...
+                                      dataset.starts(seqInd) + L, tissueEIDs, 'H3K27ac');
+    DNase = readAllTissuesBedGraphs(dataset.chrs{seqInd}, dataset.starts(seqInd),...
+                                      dataset.starts(seqInd) + L, tissueEIDs, 'DNase');
     subplot(3, 1, 1);
     set(gca,'xtick',[]);
     title('Posterior & Viterbi Estimation');
     text(L + 1, 0.5, 'H3K27ac', 'FontSize', 10);
-    plotProbMap(params, H3K27ac(seqInd, :, :), YEst(seqInd, :, 1), cMap);
+    plotProbMap(params, H3K27ac(:, :), YEst(seqInd, :, 1), cMap);
 
     subplot(3, 1, 2);
     set(gca,'xtick',[]);
     text(L + 1, 0.5, 'DNase', 'FontSize', 10);
-    plotProbMap(params, DNase(seqInd, :, :), YEst(seqInd, :, 1), cMap);
+    plotProbMap(params, DNase(:, :), YEst(seqInd, :, 1), cMap);
 
 
     legendStrings1 = strcat({'Enhancer Type '}, num2str([1:params.m - params.backgroundAmount]'));
@@ -56,10 +58,24 @@
     saveas(gcf, outpath);
 end
 
+
+% tracks - m x L
+function tracks = readAllTissuesBedGraphs(chr, from, to, tissueEIDs, trackName)
+    L = to - from;
+    m = length(tissueEIDs);
+    tracks = zeros(m, L)
+    for i = 1:m
+        EID = tissueEIDs{i};
+        bedGraph = readBedGraph(EID, trackName);
+        tracks(i, :) = getTrack(bedGraph, chr, from, to);
+    end
+end
+
+
 % YEst - 1 x L
 % probMap - 1 x m x L
 function plotProbMap(params, probMap, YEst, cMap)
-
+    BARS_PLOT_DARKNESS_FACTOR = 0.85;
     probMap = permute(probMap, [2, 3, 1]);
     L = size(YEst, 2);
     hold on;
@@ -77,10 +93,10 @@ function plotProbMap(params, probMap, YEst, cMap)
     % m + 1 x L
     b = bar(1:L, selectedProb', 1, 'stacked', 'FaceColor','flat');
     for j = 1:size(selectedProb, 1)
-        b(j).CData = cMap(j, :) * 0.85;
+        b(j).CData = cMap(j, :) * BARS_PLOT_DARKNESS_FACTOR;
     end
     ylim([0, 1]);
-    xlim([1, L])
+    xlim([1, L]);
     hold off;
     yticks([0:0.2:1]);
     rotateYLabel();
@@ -106,3 +122,28 @@ function posterior = calcPosterior(params, gamma, psi)
     end
     posterior = exp(posterior);
 end
+
+
+% row example:
+% chr1    5113983 5113984 2.03288
+function bedGraph = readBedGraph(EID, trackName)
+    bedGraphFilePath = sprintf('../data/peaks/processed_bedgraphs/%s-%s.enh.bedgraph', EID, trackName);
+    fprintf('Loading bed graph from %s\n', bedGraphFilePath);
+    fid = fopen(bedGraphFilePath);
+
+    bedGraphData = textscan(fid, '%s%d%d%f', 'delimiter','\t');
+    bedGraph.chrs = bedGraphData{1};
+    bedGraph.froms = bedGraphData{2};
+    bedGraph.tos = bedGraphData{3};
+    bedGraph.vals = bedGraphData{4};
+    fclose(fid);
+end
+
+
+function ret = getTrack(bedGraph, trackChr, trackFrom, trackTo)
+    mask = strcmp(bedGraph.chrs, trackChr) & (bedGraph.tos > trackFrom) & (bedGraph.froms < trackTo);
+    % linear interp
+    ret = interp1((bedGraph.tos(mask) + bedGraph.froms(mask)) / 2, bedGraph.vals(mask), trackFrom : trackTo);
+    fprintf('got track %s: %d-%d\n', trackChr, trackFrom, trackTo);
+end
+

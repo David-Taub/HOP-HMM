@@ -12,7 +12,12 @@ function mergedPeaksMin = minimizeMergePeak(topPercent, doEnhSpecific, withBackg
         return
     end
     fprintf('Does not exist, calculating...\n');
-    [mergedPeaks, mergedPeaksMin.backgroundInd, mergedPeaksMin.genesInd] = peaks.mergePeakFiles(withBackground, withGenes, true, L);
+    [mergedPeaks, tissueEIDs, backgroundInd, genesInd] = peaks.mergePeakFiles(withBackground, withGenes, true, L);
+    mergedPeaksMin.backgroundInd = backgroundInd;
+    mergedPeaksMin.genesInd = genesInd;
+    mergedPeaksMin.tissueEIDs = tissueEIDs;
+    mergedPeaksMin.tissueNames = EIDsToTissueNames(tissueEIDs);;
+
     mergedPeaksMin = extractFields(mergedPeaks, mergedPeaksMin);
     size(mergedPeaksMin.overlaps, 1)
     % the merging of the peaks result in longer peaks (unless they are in the exact same location)
@@ -42,6 +47,23 @@ function mergedPeaksMin = minimizeMergePeak(topPercent, doEnhSpecific, withBackg
     fprintf('Saved peaks in %s\n', minimizedMergedFilePath);
 end
 
+
+function tissueNames = EIDsToTissueNames(tissueEIDs)
+    ROADMAP_NAMES_CSV_PATH = '../data/peaks/help/full_tissue_names.csv';
+    assert(isfile(ROADMAP_NAMES_CSV_PATH))
+    fid = fopen(ROADMAP_NAMES_CSV_PATH);
+    csvData = textscan(fid, '%s%s', 'delimiter',',');
+    fclose(fid);
+    namesDict = containers.Map(csvData{1}, csvData{2});
+    tissueNames = tissueEIDs;
+    for i = 1:length(tissueNames)
+        if any(strcmp(tissueEIDs{i}, namesDict.keys))
+            EID = tissueEIDs{i};
+            tissueNames{i} = namesDict(EID);
+            fprintf('Tissue name found: %s -> %s\n', EID, tissueNames{i});
+        end
+    end
+end
 
 
 function mergedPeaksMin = filterByTissueList(mergedPeaksMin, tissueList);
@@ -138,8 +160,6 @@ function minimizeMergePeak = extractFields(mergedPeaks, minimizeMergePeak)
     minimizeMergePeak.peakLengths = [mergedPeaks.peakLength]';
     minimizeMergePeak.chrs = {mergedPeaks.chr};
     minimizeMergePeak.starts = [mergedPeaks.seqFrom]';
-    minimizeMergePeak.tissueNames = {mergedPeaks.tissueNames};
-    minimizeMergePeak.tissueEIDs = {mergedPeaks.tissueEIDs};
     % N x numerOfTissues
     minimizeMergePeak.overlaps = reshape(overlapsFlat, [numerOfTissues, length(mergedPeaks)])';
 end
