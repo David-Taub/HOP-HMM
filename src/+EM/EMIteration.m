@@ -5,7 +5,7 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
         % N x L - order + 1
         dataset.XIndicesHotMap = misc.genXInidcesHotMap(params, dataset);
     end
-    batchAmount = ceil(N / params.batchSize);
+    batchAmount = floor(N / params.batchSize);
     batchesTheta = inputTheta;
     batchesTheta.T = batchesTheta.T * 0;
     batchesTheta.E = batchesTheta.E * 0;
@@ -13,9 +13,9 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
     batchesTheta.startT = batchesTheta.startT * 0;
     batchesLikelihood = 0;
     for u = 1:batchAmount
-        fprintf('Batch %d / %d\n', u, batchAmount);
         % N x m x k+m x L
         batchMask = mod(1:N, batchAmount) == u - 1;
+        fprintf('Batch %d / %d [%d / %d] \n', u, batchAmount, sum(batchMask, 2), N);
         XBatch = dataset.X(batchMask, :);
         pcPWMpBatch = dataset.pcPWMp(batchMask, :, :);
         XIndicesHotMapBatch = dataset.XIndicesHotMap(batchMask, :, :);

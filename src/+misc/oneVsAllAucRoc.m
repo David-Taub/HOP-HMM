@@ -15,7 +15,8 @@ function aucRocs = oneVsAllAucRoc(X, Y, PWMs, lengths)
             neg = misc.maxN(PWMLogLike(~tissueMask, :), 2, EXPECTED_NUM_OF_PEAKS_IN_SEQ);
             aucRocs(tissueID, pwmId) = matUtils.getAucRoc(pos(:), neg(:), false, true);
             [v, i] = max(aucRocs(:));
-            fprintf('Best 1vsAll AucRocs for tissue %d of PWM %d is %.2f / %.2f (%d)\n', tissueID, pwmId, aucRocs(tissueID, pwmId), v, i);
+            fprintf('Best 1vsAll AucRocs for tissue %d / %d of PWM %d / %d is %.2f / %.2f (%d)\n', tissueID, m, ...
+                    pwmId, k, aucRocs(tissueID, pwmId), v, i);
         end
     end
 end

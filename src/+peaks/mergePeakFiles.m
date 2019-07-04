@@ -6,9 +6,8 @@
 % mergedPeaks fields: ['seqTo', 'peakTo', 'peakFrom', 'overlap', 'height', 'peakPos']
 % withBackground - sees the background as a tissue, and takes sequences from it
 % withSeq - saves a sequences actual data in file, instead only the metadata of the sequences
-function [mergedPeaks, tissueNames, backgroundInd, genesInd] = mergePeakFiles(withBackground, withGenes, withSeq)
-    mergedFilePath = sprintf('../data/peaks/mergedPeaks_b%dg%dws%d.mat', withBackground, ...
-                             withGenes, withSeq);
+function [mergedPeaks, tissueNames, backgroundInd, genesInd] = mergePeakFiles(withBackground, withGenes, withSeq, L)
+    mergedFilePath = sprintf('../data/peaks/mergedPeaks_L%db%dg%dws%d.mat', L, withBackground, withGenes, withSeq);
 
     fprintf('Looking for %s ...\n', mergedFilePath);
     if isfile(mergedFilePath)
@@ -21,26 +20,18 @@ function [mergedPeaks, tissueNames, backgroundInd, genesInd] = mergePeakFiles(wi
     ROADMAP_NAMES_CSV_PATH = '../data/peaks/help/full_tissue_names.csv';
     assert(isfile(ROADMAP_NAMES_CSV_PATH))
 
-    if withSeq
-        inputMatDirPath = '../data/peaks/mat';
-    else
-        inputMatDirPath = '../data/peaks/mat_no_seq';
-    end
-    matFilesCount = length(dir(inputMatDirPath)) - 2;
-    if matFilesCount < 40
-        fprintf('Found only %d mat files at %s. Generating mat files...\n', matFilepath, inputMatDirPath);
-        peaks.beds2mats();
-    end
+    matFiles = peaks.beds2mats(L);
     namesDict = roadmapNamesDict(ROADMAP_NAMES_CSV_PATH);
     fprintf('Reading mat files...\n');
-    [unmergedPeaks, tissueNames, backgroundInd, genesInd] = readMatFiles(inputMatDirPath, withBackground, withGenes);
-    tissueNames = convertNames(tissueNames, namesDict);
+    [unmergedPeaks, tissueEIDs, backgroundInd, genesInd] = readMatFiles(withBackground, withGenes, matFiles);
+    tissueNames = EIDsToTissueNames(tissueEIDs, namesDict);
     fprintf('Merging...\n');
     mergedPeaks = mergePeaks(unmergedPeaks, withSeq);
 
-    save('-v7.3', mergedFilePath, 'mergedPeaks', 'tissueNames');
+    save('-v7.3', mergedFilePath, 'mergedPeaks', 'tissueNames', 'backgroundInd', 'genesInd');
     fprintf('Saved peaks in %s\n', mergedFilePath);
 end
+
 
 function namesDict = roadmapNamesDict(namesCSVPath)
     fid = fopen(namesCSVPath);
@@ -49,38 +40,37 @@ function namesDict = roadmapNamesDict(namesCSVPath)
     namesDict = containers.Map(csvData{1}, csvData{2});
 end
 
-function tissueNames = convertNames(tissueNames, namesDict)
+
+function tissueNames = EIDsToTissueNames(tissueNames, namesDict)
     for i = 1:length(tissueNames)
         if any(strcmp(tissueNames{i}, namesDict.keys))
-            key = tissueNames{i};
-            tissueNames{i} = namesDict(key);
-            fprintf('Tissue name found: %s -> %s\n', key, tissueNames{i});
+            EID = tissueNames{i};
+            tissueNames{i} = namesDict(EID);
+            fprintf('Tissue name found: %s -> %s\n', EID, tissueNames{i});
         end
     end
 end
 
-function [unmergedPeaks, tissueNames, backgroundInd, genesInd] = readMatFiles(matDirPath, withBackground, withGenes)
+function [unmergedPeaks, tissueEIDs, backgroundInd, genesInd] = readMatFiles(withBackground, withGenes, matFiles)
     unmergedPeaks = [];
-    tissueNames = {};
+    tissueEIDs = {};
     backgroundInd = 0;
     genesInd = 0;
-    peakFiles = dir(fullfile(matDirPath, '*.peaks.mat'));
-    assert(length(peakFiles) > 0);
-    for i = 1:length(peakFiles)
-        filename = peakFiles(i).name;
-        matFilepath = fullfile(matDirPath, filename);
+    for i = 1:length(matFiles)
+        filename = matFiles(i).name;
+        matFilepath = fullfile(matFiles(i).folder, matFiles(i).name);
         peaks = load(matFilepath);
         fprintf('loaded mat peak data from %s\n', matFilepath);
-        filenameParts = strsplit(filename, '.');
-        tissueName = filenameParts{1};
-        if strcmp(tissueName , 'background')
+        filenameParts = strsplit(matFiles(i).name, '_');
+        tissueEID = filenameParts{1};
+        if strcmp(tissueEID , 'background')
             if ~withBackground
                 fprintf('skipping background\n');
                 continue
             end
             backgroundInd = i;
         end
-        if strcmp(tissueName , 'genes')
+        if strcmp(tissueEID , 'genes')
             if ~withGenes
                 fprintf('skipping genes\n');
                 continue
@@ -88,7 +78,7 @@ function [unmergedPeaks, tissueNames, backgroundInd, genesInd] = readMatFiles(ma
             genesInd = i;
         end
         if length(peaks.S) > 0
-            tissueNames{find(peaks.S{1}.overlap)} = tissueName;
+            tissueEIDs{find(peaks.S{1}.overlap)} = tissueEID;
             unmergedPeaks = [unmergedPeaks, [peaks.S{:}]];
         end
     end
@@ -111,7 +101,9 @@ function mergedPeaks = mergePeaks(unmergedPeaks, withSeq)
                 fprintf('.')
                 % merge
                 if withSeq
-                    oldPeak.seq = [oldPeak.seq, newPeak.seq(end-(newPeak.seqTo-oldPeak.seqTo) + 1:end)];
+                    oldPeak.seq = [oldPeak.seq, newPeak.seq(end - (newPeak.seqTo - oldPeak.seqTo) + 1:end)];
+                    % oldPeak.seqH3K27ac = [oldPeak.seqH3K27ac, newPeak.seqH3K27ac(end - (newPeak.seqTo - oldPeak.seqTo) + 1:end)];
+                    % oldPeak.seqDNase = [oldPeak.seqDNase, newPeak.seqDNase(end - (newPeak.seqTo - oldPeak.seqTo) + 1:end)];
                 end
                 oldPeak.seqTo = newPeak.seqTo;
                 oldPeak.peakTo = max(newPeak.peakTo, oldPeak.peakTo);
@@ -119,6 +111,7 @@ function mergedPeaks = mergePeaks(unmergedPeaks, withSeq)
                 % oldPeak.pos = round((oldPeak.seqFrom + newPeak.seqTo)/2) ;
                 oldPeak.overlap = max(oldPeak.overlap, newPeak.overlap);
                 oldPeak.height = max(oldPeak.height, newPeak.height);
+                % builds an average of the peak location
                 oldPeak.peakPos = ((sum(oldPeak.overlap > 0, 2) - 1) * oldPeak.peakPos + newPeak.peakPos) / sum(oldPeak.overlap > 0, 2);
                 % oldPeak.min = min(oldPeak.min, newPeak.min);
 

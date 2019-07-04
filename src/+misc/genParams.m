@@ -23,7 +23,7 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
     params.doGTBound = doGTBound;
     params.doResampling = doResampling;
 
-    params.batchSize = 100;
+    params.batchSize = 500;
     [kMax, params.n, params.J] = size(params.PWMs);
     params.k = min(k, kMax);
     params.EPS = 10 ^ -7;

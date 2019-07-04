@@ -1,2 +1,3 @@
 /bedtools2/
 *.gz
+/bigWigToBedGraph

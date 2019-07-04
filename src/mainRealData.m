@@ -4,7 +4,7 @@ function mainRealData()
     conf.startWithBackground = false;
     conf.doEnhSpecific = true;
     conf.seqsPerTissue = 300;
-    conf.maxIters = 1000;
+    conf.maxIters = 3;
     conf.canCrossLayer = true;
     conf.patience = 4;
     conf.L = 1000;
@@ -17,14 +17,14 @@ function mainRealData()
     conf.m = 5;
     conf.k = 10;
     conf.withBackground = true;
-    conf.withGenes = true;
+    conf.withGenes = false;
     conf.sequencesToShow = 5;
     conf.backgroundAmount = 1;
     conf.doESharing = false;
     conf.doGTBound = false;
     conf.doResampling = false;
     conf.topPercent = 0.5;
-    conf.tissueList = [1:4]
+    conf.tissueList = [1]
     main(conf);
 end
 
@@ -34,16 +34,18 @@ function main(conf)
     close all;
     mergedPeaksMin = peaks.minimizeMergePeak(conf.topPercent, conf.doEnhSpecific, conf.withBackground, conf.withGenes,...
                                              conf.seqsPerTissue, conf.L, conf.peakMinL, conf.peakMaxL, conf.tissueList)
+    N = size(mergedPeaksMin.seqs, 1);
     testTrainRatio = 0.15;
     selectedPWMs = misc.PWMsFeatureSelect(mergedPeaksMin, conf.k);
     params = misc.genParams(conf.m, selectedPWMs, conf.backgroundAmount, conf.L, conf.order, ...
                             conf.doESharing, conf.doGTBound, conf.doResampling);
     [test, train] = misc.crossValidationSplit(params, mergedPeaksMin, testTrainRatio);
-    [theta, ~] = EM.EM(train, params, conf.maxIters, conf.doGTBound, conf.doResampling, conf.patience, conf.repeat);
+    [theta, ~] = EM.EM(train, params, conf.maxIters, conf.patience, conf.repeat);
     show.showTheta(theta);
     outpath = sprintf('real_posterior_m%da%dk%do%db%dN%dL%d.jpg', conf.m, conf.backgroundAmount, ...
-                      conf.k, conf.order, conf.doGTBound, conf.N, conf.L);
-    seqSampleCertaintyReal(params, theta, train, conf.sequencesToShow, outpath);
+                      conf.k, conf.order, conf.doGTBound, N, conf.L);
+    show.seqSampleCertaintyReal(params, theta, train, outpath);
+    % seqSampleCertaintyReal(params, theta, test, conf.sequencesToShow, outpath);
 
     % YEst = misc.viterbi(params, theta, train.X, train.pcPWMp);
     % theta = permuteTheta(theta, params, train.Y(:, :), YEst(:, :, 1));
@@ -90,11 +92,13 @@ function theta = permuteTheta(theta, params, Y, YEst)
     theta.startT = theta.startT(perm);
 end
 
+
 % P - u x 1
 % Q - u x 1
 function ret = relativeEntropy(P, Q)
     ret = sum(P .* (log(P) - log(Q)), 1);
 end
+
 
 % Y - N x L
 function YEstViterbi = classify(theta, params, dataset)
@@ -123,8 +127,8 @@ function YEstViterbi = classify(theta, params, dataset)
         subplot(1,6,6);
         imagesc(dataset.Y2'); colorbar;title('Real Motifs');
     end
-
 end
+
 
 function YEst = maxPostEstimator(theta, params, psi, gamma)
     [N, ~, L] = size(gamma);

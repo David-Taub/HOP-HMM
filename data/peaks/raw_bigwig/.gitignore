@@ -1,2 +1,3 @@
 *.bigwig
 wget-log*
+*.bed

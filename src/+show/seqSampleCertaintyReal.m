@@ -1,67 +1,53 @@
 % sample sequences, and draw for each colorful plots with what the posterior
 % probability was compared to the correct state per letter
-    function seqSampleCertaintyReal(params, theta, dataset, sequencesToShow, outpath)
+    function seqSampleCertaintyReal(params, theta, dataset, outpath)
     [N, L] = size(dataset.X);
     % gamma - N x m x L
     % psi - N x m x k x L
     [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
     % N x m x L
     posterior = calcPosterior(params, gamma, psi);
-    % sequencesToShow = 10;
     cMap = lines(params.m);
-    cellCMap = {};
-    for i=1:params.m
-        cellCMap{i, 1} = cMap(i, :);
-    end
 
     PWM_COLOR = [0, 0, 0];
     cMapWithError = [cMap;  PWM_COLOR];
-    inds = randsample(N, sequencesToShow);
-    inds = sort(inds);
+    seqInd = randsample(N, 1);
     figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    % N x L x 2
     YEst = misc.viterbi(params, theta, dataset.X, dataset.pcPWMp);
     pwm_val = params.m + 1;
     LOW_BAR_HIEGHT = 0.1;
-    for i = 1:sequencesToShow
-        ind = inds(i);
-        subplot(sequencesToShow, 1, i);
-        hold on;
-        % lowbar
-        ylim([-LOW_BAR_HIEGHT, 1]);
 
-        YEstOneHot = matUtils.vec2mat(YEst(ind, :, 1), params.m);
-        YEst(ind, YEst(ind, :, 2) > 0, 1) = pwm_val;
+    subplot(3, 1, 3);
+    ylim([-LOW_BAR_HIEGHT, 1]);
+    YEstColored = YEst;
+    YEstColored(seqInd, YEst(seqInd, :, 2) > 0, 1) = pwm_val;
+    imagesc([.5, L-.5], [-3 * LOW_BAR_HIEGHT / 4, -LOW_BAR_HIEGHT / 4], ...
+            [YEstColored(seqInd, :, 1); YEstColored(seqInd,:,1)], [1, pwm_val]);
+    colormap(cMapWithError);
+    text(L + 1, 0.5, 'Posterior Probability', 'FontSize', 10);
+    text(L + 1, -LOW_BAR_HIEGHT / 2, 'Viterbi Estimation', 'FontSize', 10);
+    ylabel(['Seq ', num2str(seqInd)]);
+    xlabel('Position in Sequence');
 
-        imagesc([.5, L-.5], [-3 * LOW_BAR_HIEGHT / 4, -LOW_BAR_HIEGHT / 4], [YEst(ind,:,1);YEst(ind,:,1)], [1, pwm_val]);
-        colormap(cMapWithError);
-        text(L + 1, 0.5, 'Posterior Probability', 'FontSize', 8)
-        text(L + 1, -LOW_BAR_HIEGHT / 2, 'Viterbi Estimation', 'FontSize', 8)
+    plotProbMap(params, posterior(seqInd, :, :), YEst(seqInd, :, 1), cMap);
 
-        % m x L
-        selectedPosterior = permute(posterior(ind, :, :), [2, 3, 1]) .* YEstOneHot;
-        % m + 1 x L
-        b = bar(1:L, selectedPosterior', 1, 'stacked', 'FaceColor','flat');
-        ylabel(['Seq ', num2str(ind)]);
+    % TODO: read from bedgraphs
+    H3K27ac = rand(N, params.m, L);
+    DNase = rand(N, params.m, L);
 
-        rotateYLabel();
-        xlim([1, L])
-        for j = 1:size(selectedPosterior, 1)
-            b(j).CData = cMap(j, :) * 0.85;
-        end
+    subplot(3, 1, 1);
+    set(gca,'xtick',[]);
+    title('Posterior & Viterbi Estimation');
+    text(L + 1, 0.5, 'H3K27ac', 'FontSize', 10);
+    plotProbMap(params, H3K27ac(seqInd, :, :), YEst(seqInd, :, 1), cMap);
 
-        if i == 1
-            title('Posterior & Viterbi Estimation');
-        end
-        if i == sequencesToShow
-            xlabel('Position in Sequence');
-        else
-            set(gca,'xtick',[]);
-        end
-        p = plot(1:L, permute(posterior(ind, :, :), [3, 2, 1]), 'LineWidth', 1.5);
-        set(p, {'Color'}, cellCMap);
-        yticks([0:0.2:1]);
-        hold off;
-    end
+    subplot(3, 1, 2);
+    set(gca,'xtick',[]);
+    text(L + 1, 0.5, 'DNase', 'FontSize', 10);
+    plotProbMap(params, DNase(seqInd, :, :), YEst(seqInd, :, 1), cMap);
+
+
     legendStrings1 = strcat({'Enhancer Type '}, num2str([1:params.m - params.backgroundAmount]'));
     legendStrings2 = strcat({'Background '}, num2str([1:params.backgroundAmount]'));
     legendStrings = {legendStrings1{:}, legendStrings2{:}};
@@ -69,6 +55,37 @@
     legend(legendStrings);
     saveas(gcf, outpath);
 end
+
+% YEst - 1 x L
+% probMap - 1 x m x L
+function plotProbMap(params, probMap, YEst, cMap)
+
+    probMap = permute(probMap, [2, 3, 1]);
+    L = size(YEst, 2);
+    hold on;
+    % m x L
+    YEstOneHot = matUtils.vec2mat(YEst, params.m);
+    p = plot(1:L, probMap', 'LineWidth', 1.5);
+    cellCMap = {};
+    for i = 1:params.m
+        cellCMap{i, 1} = cMap(i, :);
+    end
+
+    set(p, {'Color'}, cellCMap);
+    % m x L
+    selectedProb = probMap .* YEstOneHot;
+    % m + 1 x L
+    b = bar(1:L, selectedProb', 1, 'stacked', 'FaceColor','flat');
+    for j = 1:size(selectedProb, 1)
+        b(j).CData = cMap(j, :) * 0.85;
+    end
+    ylim([0, 1]);
+    xlim([1, L])
+    hold off;
+    yticks([0:0.2:1]);
+    rotateYLabel();
+end
+
 
 function rotateYLabel()
     ylh = get(gca,'ylabel');
