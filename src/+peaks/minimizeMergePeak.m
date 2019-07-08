@@ -16,53 +16,35 @@ function mergedPeaksMin = minimizeMergePeak(topPercent, doEnhSpecific, withBackg
     mergedPeaksMin.backgroundInd = backgroundInd;
     mergedPeaksMin.genesInd = genesInd;
     mergedPeaksMin.tissueEIDs = tissueEIDs;
-    mergedPeaksMin.tissueNames = EIDsToTissueNames(tissueEIDs);;
+    mergedPeaksMin.tissueNames = misc.EIDsToTissueNames(tissueEIDs);
 
     mergedPeaksMin = extractFields(mergedPeaks, mergedPeaksMin);
-    size(mergedPeaksMin.overlaps, 1)
+    fprintf('Seqs number for tissues %d (%s): %d\n', 1:size(mergedPeaksMin.overlaps, 2), mergedPeaksMin.tissueNames{:}, sum(mergedPeaksMin.overlaps > 0, 1));
     % the merging of the peaks result in longer peaks (unless they are in the exact same location)
     mergedPeaksMin.seqs = extractSeqs(mergedPeaks, L);
-    size(mergedPeaksMin.overlaps, 1)
     mergedPeaksMin = removeLowHeight(mergedPeaksMin, topPercent);
-    size(mergedPeaksMin.overlaps, 1)
+    fprintf('Seqs number for tissues %d (%s): %d\n', 1:size(mergedPeaksMin.overlaps, 2), mergedPeaksMin.tissueNames{:}, sum(mergedPeaksMin.overlaps > 0, 1));
     mergedPeaksMin = removeNonLetters(mergedPeaksMin);
+    fprintf('Seqs number for tissues %d (%s): %d\n', 1:size(mergedPeaksMin.overlaps, 2), mergedPeaksMin.tissueNames{:}, sum(mergedPeaksMin.overlaps > 0, 1));
     if (peakMaxL > 0) & (peakMinL > 0)
-        size(mergedPeaksMin.overlaps, 1)
         mergedPeaksMin = limitPeakLength(mergedPeaksMin, peakMinL, peakMaxL)
+        fprintf('Seqs number for tissues %d (%s): %d\n', 1:size(mergedPeaksMin.overlaps, 2), mergedPeaksMin.tissueNames{:}, sum(mergedPeaksMin.overlaps > 0, 1));
     end
-    size(mergedPeaksMin.overlaps, 1)
     if doEnhSpecific
         mergedPeaksMin = enhancerSpecific(mergedPeaksMin);
-        size(mergedPeaksMin.overlaps, 1)
+        fprintf('Seqs number for tissues %d (%s): %d\n', 1:size(mergedPeaksMin.overlaps, 2), mergedPeaksMin.tissueNames{:}, sum(mergedPeaksMin.overlaps > 0, 1));
     end
     if length(tissueList) > 1 | withBackground | withGenes
         mergedPeaksMin = filterByTissueList(mergedPeaksMin, tissueList);
+        fprintf('Seqs number for tissues %d (%s): %d\n', 1:size(mergedPeaksMin.overlaps, 2), mergedPeaksMin.tissueNames{:}, sum(mergedPeaksMin.overlaps > 0, 1));
     end
     if seqsPerTissue > 0
         mergedPeaksMin = balanceOverlaps(mergedPeaksMin, seqsPerTissue);
-        size(mergedPeaksMin.overlaps, 1)
+        fprintf('Seqs number for tissues %d (%s): %d\n', 1:size(mergedPeaksMin.overlaps, 2), mergedPeaksMin.tissueNames{:}, sum(mergedPeaksMin.overlaps > 0, 1));
     end
     % outFilepath = '../data/peaks/mergedPeaksMinimized.mat';
     save(minimizedMergedFilePath, '-v7.3', 'mergedPeaksMin');
     fprintf('Saved peaks in %s\n', minimizedMergedFilePath);
-end
-
-
-function tissueNames = EIDsToTissueNames(tissueEIDs)
-    ROADMAP_NAMES_CSV_PATH = '../data/peaks/help/full_tissue_names.csv';
-    assert(isfile(ROADMAP_NAMES_CSV_PATH))
-    fid = fopen(ROADMAP_NAMES_CSV_PATH);
-    csvData = textscan(fid, '%s%s', 'delimiter',',');
-    fclose(fid);
-    namesDict = containers.Map(csvData{1}, csvData{2});
-    tissueNames = tissueEIDs;
-    for i = 1:length(tissueNames)
-        if any(strcmp(tissueEIDs{i}, namesDict.keys))
-            EID = tissueEIDs{i};
-            tissueNames{i} = namesDict(EID);
-            fprintf('Tissue name found: %s -> %s\n', EID, tissueNames{i});
-        end
-    end
 end
 
 
@@ -102,10 +84,12 @@ end
 function mergedPeaksMin = balanceOverlaps(mergedPeaksMin, seqsPerTissue)
     fprintf('balancing mergedPeaksMin.seqs count per tissue\n');
     mask = false(size(mergedPeaksMin.seqs, 1), 1);
+    foundMaxSeqsPerTissue = sum(mergedPeaksMin.overlaps > 0, 1);
+    foundMaxSeqsPerTissue = min(foundMaxSeqsPerTissue, [], 2);
     for i = 1:size(mergedPeaksMin.overlaps, 2)
         [vals, inds] = sort(mergedPeaksMin.overlaps(:, i), 1, 'descend');
-        assert(vals(seqsPerTissue) > 0);
-        mask(inds(1:seqsPerTissue)) = true;
+        assert(vals(foundMaxSeqsPerTissue) > 0);
+        mask(inds(1:foundMaxSeqsPerTissue)) = true;
     end
     mergedPeaksMin = reduceData(mask, mergedPeaksMin);
 end
@@ -138,7 +122,7 @@ end
 
 
 function seqs = extractSeqs(mergedPeaks, L)
-    fprintf('sequence\n');
+    fprintf('extract sequence\n');
     seqsCells = {mergedPeaks.seq};
     seqs = zeros(length(mergedPeaks), L);
     for i = 1:length(seqsCells)
@@ -154,7 +138,7 @@ end
 
 % TODO: get seq start end and chrs
 function minimizeMergePeak = extractFields(mergedPeaks, minimizeMergePeak)
-    fprintf('overlaps\n');
+    fprintf('fields extraction\n');
     numerOfTissues = length(mergedPeaks(1).overlap);
     overlapsFlat = [mergedPeaks.overlap];
     minimizeMergePeak.peakLengths = [mergedPeaks.peakLength]';

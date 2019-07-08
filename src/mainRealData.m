@@ -3,14 +3,14 @@
 function mainRealData()
     conf.startWithBackground = false;
     conf.doEnhSpecific = true;
-    conf.seqsPerTissue = 300;
-    conf.maxIters = 3;
+    conf.seqsPerTissue = 1000;
+    conf.maxIters = 1;
     conf.canCrossLayer = true;
     conf.patience = 4;
-    conf.L = 1000;
+    conf.L = 2000;
     conf.peakMaxLength = 1000;
     conf.peakMinL = 300;
-    conf.peakMaxL = 800;
+    conf.peakMaxL = 1500;
     conf.withExponent = false;
     conf.repeat = 1;
     conf.order = 2;
@@ -24,7 +24,7 @@ function mainRealData()
     conf.doGTBound = false;
     conf.doResampling = false;
     conf.topPercent = 0.5;
-    conf.tissueList = [1]
+    conf.tissueList = [2, 18]
     main(conf);
 end
 
@@ -33,7 +33,7 @@ function main(conf)
     dbstop if error
     close all;
     mergedPeaksMin = peaks.minimizeMergePeak(conf.topPercent, conf.doEnhSpecific, conf.withBackground, conf.withGenes,...
-                                             conf.seqsPerTissue, conf.L, conf.peakMinL, conf.peakMaxL, conf.tissueList)
+                                             conf.seqsPerTissue, conf.L, conf.peakMinL, conf.peakMaxL, conf.tissueList);
     N = size(mergedPeaksMin.seqs, 1);
     testTrainRatio = 0.15;
     selectedPWMs = misc.PWMsFeatureSelect(mergedPeaksMin, conf.k);

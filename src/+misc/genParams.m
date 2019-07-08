@@ -18,7 +18,7 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
     params.PWMs = params.PWMs(selectedPWMs, :, :);
     params.lengths = params.lengths(selectedPWMs);
     params.names = {params.names{selectedPWMs}};
-
+    params.learningRate = 1;
 
     params.doGTBound = doGTBound;
     params.doResampling = doResampling;
@@ -38,7 +38,7 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
 
     params.maxEnhMotif = maxEnhMotifRatio / mean(params.lengths);
     params.minEnhMotif = params.EPS;
-    params.maxCrossEnh = maxCrossEnhRatio / (minEnhLen * (params.m - params.backgroundAmount))
+    params.maxCrossEnh = maxCrossEnhRatio / (minEnhLen * (params.m - params.backgroundAmount));
     params.minCrossEnh = params.EPS;
     params.maxBgMotif = maxBbMotifRatio / ( mean(params.lengths) * params.k);
     params.minBgMotif = params.EPS;
