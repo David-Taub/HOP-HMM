@@ -47,7 +47,7 @@ function out = preComputePWMpAux(Xs1H, params)
     fprintf('Calculating pre-computed PWM probability\n');
     pcPWMp = calculate(params, Xs1H);
     sample = newSample;
-    assert(not(any(isnan(pcPWMp(:)))))
+    assert(not(any(isnan(pcPWMp(:)))));
 
     [basedir, ~, ~] = fileparts(pcPWMProbabilityFile);
     if ~exist(basedir, 'dir')

@@ -10,7 +10,7 @@ function multiEnhancers = multiEnhancerCaller(mergedPeaks, L, tissueList)
     multiEnhancers = findMultiEnhancers(mergedPeaks, L, binSize, amountToPick, tissueList);
     multiEnhancers = addSequences(multiEnhancers, L);
     multiEnhancers = addY(multiEnhancers, mergedPeaks, L);
-    multiEnhancersFilepath = fullfile('..', 'data', 'multiEnhancers.mat')
+    multiEnhancersFilepath = fullfile('..', 'data', 'multiEnhancers.mat');
     save(multiEnhancersFilepath, 'multiEnhancers');
     fprintf('Saved multiEnhancers in %s\n', multiEnhancersFilepath)
 end

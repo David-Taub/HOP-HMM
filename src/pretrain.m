@@ -54,7 +54,7 @@ function [dataset] = preprocess(params, mergedPeaksMin, tissueIndex, backgroundI
         overlaps = [overlaps(trimmedMask1, :); overlaps(trimmedMask2, :)];
         overlaps = overlaps(:, sort([tissueIndex, backgroundIndex]));
         Y = repmat((overlaps > 0) * [1;2], [1, L]);
-        assert(not(any(Y(:)==0)))
+        assert(not(any(Y(:)==0)));
     end
     % N x k x L
     dataset.title = 'dataset';

@@ -38,12 +38,12 @@ function [theta] = genTheta(params, startTUniform)
         [foundM, foundK] = size(G);
         foundOrder = ndims(E) - 1;
         if params.m == foundM + 1 & params.k == foundK  & foundOrder == params.order
-            fprintf('Loading pretrained theta...\n')
+            fprintf('Loading pretrained theta...\n');
             theta.E(1:foundM, :) = E(1:foundM, :);
             theta.G(1:foundM, 1:foundK) = G;
         end
     else
-        fprintf('Using random theta initialization...\n')
+        fprintf('Using random theta initialization...\n');
     end
 
     assert(not(any(isnan(theta.T(:)))));

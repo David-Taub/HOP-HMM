@@ -2,7 +2,7 @@
 function [PWMs, lengths, names] = removedPWMsDuplicates(PWMs, lengths, names, partToRemove)
 
     close all;
-    fprintf('Removing Duplicates\n')
+    fprintf('Removing Duplicates\n');
     k = size(PWMs, 1);
     dist = zeros(k, k);
     for i=1:k
@@ -28,10 +28,10 @@ function [PWMs, lengths, names] = removedPWMsDuplicates(PWMs, lengths, names, pa
     [~, j] = max(vals, [], 2);
     i = ind1(j);
     figure
-    subplot(1,2,1);imagesc(permute(exp(PWMs(i,:,:)), [2,3,1]))
-    title('most similar PWM selected')
-    subplot(1,2,2);imagesc(permute(exp(PWMs(j,:,:)), [2,3,1]))
-    title('most similar PWM selected')
+    subplot(1,2,1);imagesc(permute(exp(PWMs(i,:,:)), [2,3,1]));
+    title('most similar PWM selected');
+    subplot(1,2,2);imagesc(permute(exp(PWMs(j,:,:)), [2,3,1]));
+    title('most similar PWM selected');
     PWMs = PWMs(uniqueMask, :, :);
     lengths = lengths(uniqueMask);
     names = names(uniqueMask);

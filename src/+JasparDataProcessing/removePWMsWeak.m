@@ -1,6 +1,6 @@
 % PWMs - k x n x J
 function [PWMs, lengths, names] = removePWMsWeak(PWMs, lengths, names, partsToRemove)
-    fprintf('Removing "weak" background-like PWMs\n')
+    fprintf('Removing "weak" background-like PWMs\n');
     % k x J
     vars = var(exp(PWMs), 0, 2);
     % k x 1
@@ -15,7 +15,7 @@ function [PWMs, lengths, names] = removePWMsWeak(PWMs, lengths, names, partsToRe
     figure
     i = inds(ceil(length(inds)*partsToRemove));
     imagesc(permute(exp(PWMs(i,:,:)), [2,3,1]));
-    title('Weakest PWM selected')
+    title('Weakest PWM selected');
 
     PWMs = PWMs(strongMap, :, :);
     lengths = lengths(strongMap);

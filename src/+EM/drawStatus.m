@@ -7,7 +7,7 @@ function drawStatus(theta, params, gamma)%, alpha, beta, gamma, pX, xi)
     YsEst = mean(gamma, 3);
     YsEst = YsEst(:, 1);
     subplot(1,3,1);
-    title('Gamma')
+    title('Gamma');
     for i = 1:params.m
         hold on;
         plot(permute(gamma(1, i, :), [3,1,2]));
@@ -26,7 +26,7 @@ function drawStatus(theta, params, gamma)%, alpha, beta, gamma, pX, xi)
         plot(exp(theta.E(i,:)));
     end
     ylim([0,1]);
-    legend(num2str([1:params.m]'))
+    legend(num2str([1:params.m]'));
     title('E');
 
     subplot(1,3,3);
@@ -36,7 +36,7 @@ function drawStatus(theta, params, gamma)%, alpha, beta, gamma, pX, xi)
     end
 
     ylim([0,max(exp(theta.G(:)))]);
-    legend(num2str([1:params.m]'))
+    legend(num2str([1:params.m]'));
     title('G');
     drawnow
 end

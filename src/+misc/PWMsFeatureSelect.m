@@ -21,7 +21,6 @@ function selectedPWMs = PWMsFeatureSelect(mergedPeaksMin, wantedK)
     selectedPWMs = [];
     i = 1;
     while length(selectedPWMs) < wantedK
-        aucRocsSorted(1:i)
         selectedPWMs = unique(aucRocsSortedInd(1:i));
         i = i + 1;
     end

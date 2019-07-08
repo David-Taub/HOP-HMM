@@ -1,6 +1,6 @@
 % ret is equivilant to log(exp(A) + exp(B))
 function ret = logAdd(A, B)
-    assert(all(size(A) == size(B)))
+    assert(all(size(A) == size(B)));
     ret = zeros(size(A));
     ret(A > B) = A(A > B) + log(1+exp(B(A > B) - A(A > B)));
     ret(B >= A) = B(B >= A) + log(1+exp(A(B >= A) - B(B >= A)));

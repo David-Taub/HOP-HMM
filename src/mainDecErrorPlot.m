@@ -36,7 +36,7 @@ function main(conf)
     mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.startWithBackground);
     thetaOrig = mergedPeaksMin.theta;
 
-    [trainDataset, testDataset] = misc.crossValidationSplit(params, mergedPeaksMin, 0.15)
+    [trainDataset, testDataset] = misc.crossValidationSplit(params, mergedPeaksMin, 0.15);
 
     thetaOrig = trainDataset.theta;
     thetaEsts(1) = misc.genTheta(params, true);
@@ -48,7 +48,6 @@ function main(conf)
     testLikelihoodOrig = calcLikelihood(params, thetaOrig, testDataset.X, testDataset.pcPWMp);
 
     for i = 2:conf.maxIters
-        i
         [thetaEsts(i), trainLikelihood(i)] = EM.EMIteration(params, trainDataset, thetaEsts(i - 1),...
                                                                    conf.doGTBound);
         % thetaEsts(i) = misc.permThetaByAnother(params, thetaOrig, thetaEsts(i));
@@ -57,7 +56,6 @@ function main(conf)
 
         % errorsTrain(i) = rateTheta(params, thetaOrig, thetaEsts(i) , trainDataset);
         % errorsTest(i) = rateTheta(params, thetaOrig, thetaEsts(i), testDataset);
-        testLikelihood(end)
         convergeSpan = floor(0.1 * conf.maxIters);
         if length(trainLikelihood) > floor(0.1 * conf.maxIters) & ...
             abs(mean(trainLikelihood(end - convergeSpan:end), 2) - trainLikelihood(end)) < abs(0.001 * trainLikelihood(end))
@@ -82,8 +80,8 @@ function main(conf)
     title('Viterbi Classification Convergence');
     plot([errorsTrain(:).layerError] .* 100, 'LineWidth', 2);
     plot([errorsTest(:).layerError] .* 100, 'LineWidth', 2);
-    plot([1, length([errorsTrain(:).layerError])], [origTrainError.layerError, origTrainError.layerError] .* 100)
-    plot([1, length([errorsTrain(:).layerError])], [origTestError.layerError, origTestError.layerError] .* 100)
+    plot([1, length([errorsTrain(:).layerError])], [origTrainError.layerError, origTrainError.layerError] .* 100);
+    plot([1, length([errorsTrain(:).layerError])], [origTestError.layerError, origTestError.layerError] .* 100);
     hold off;
     ylabel('Misclassification Rate (lower is better)');
     ytickformat('percentage');
@@ -170,7 +168,7 @@ function showTwoThetasOverTime(params, thetaOrig, thetaEsts, withExponent, outpa
     xlabel('True \theta probabilities');
     ylabel('Estimated \theta probabilities');
     text(minVal + 0.1 * (maxVal - minVal), minVal + 0.8 * (maxVal - minVal), ...
-         sprintf('Final EM Iteration RMSE = %.2e', rmse), 'FontSize', 14)
+         sprintf('Final EM Iteration RMSE = %.2e', rmse), 'FontSize', 14);
     saveas(gcf, outpath);
 end
 

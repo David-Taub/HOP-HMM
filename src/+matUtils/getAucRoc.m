@@ -24,10 +24,10 @@ function [auc, wasSwitched, thresh] = getAucRoc(pos, neg, shouldPlot, shouldSwit
     if shouldPlot
         figure
         subplot(1,2,2);
-        plot(X,Y)
-        title(['ROC AUC = ', sprintf('%.2f', auc)])
-        xlabel('False positive rate')
-        ylabel('True positive rate')
+        plot(X,Y);
+        title(['ROC AUC = ', sprintf('%.2f', auc)]);
+        xlabel('False positive rate');
+        ylabel('True positive rate');
 
         subplot(1,2,1);
         h = histogram(pos, 50, 'Normalization', 'probability');

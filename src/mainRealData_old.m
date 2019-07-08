@@ -24,7 +24,7 @@ function mainRealData(mergedPeaksMin, m, k)
     show.showTheta(theta);
     YEst = classify(theta, params, train);
 
-    theta = permuteTheta(theta, params, train.Y(:, :, 1), YEst(:, :, 1))
+    theta = permuteTheta(theta, params, train.Y(:, :, 1), YEst(:, :, 1));
     [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, train.X, train.pcPWMp);
     show.seqSampleCertainty(params, train.Y, gamma, psi);
 

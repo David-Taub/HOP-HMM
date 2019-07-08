@@ -10,10 +10,10 @@ function mergedPeaksMin = mainGenSequences(N, L, params, startWithBackground)
     try
         mergedPeaksMin = load(fullfile('..', 'data', 'peaks', filename));
         mergedPeaksMin = mergedPeaksMin.mergedPeaksMin;
-        fprintf('loaded sequences from cache\n')
+        fprintf('loaded sequences from cache\n');
         return
     catch
-        fprintf('generating sequences\n')
+        fprintf('generating sequences\n');
     end
     delete(fullfile('..', 'data', 'precomputation', 'pcPWMp.mat'));
     % params = misc.genParams(m, k);
