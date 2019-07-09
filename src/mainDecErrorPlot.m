@@ -13,7 +13,7 @@ function mainDecErrorPlot()
     conf.withExponent = false;
 
     conf.order = 2;
-    conf.m = 6;
+    conf.m = 3;
     conf.k = 25;
     conf.backgroundAmount = 1;
     conf.doGTBound = false;

@@ -23,7 +23,7 @@ function mainRealData()
     conf.doESharing = false;
     conf.doGTBound = false;
     conf.doResampling = false;
-    conf.topPercent = 0.5;
+    conf.topPercent = 0.8;
     conf.tissueList = [2, 18]
     main(conf);
 end

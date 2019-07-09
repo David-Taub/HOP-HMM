@@ -11,11 +11,8 @@ function seqSampleCertaintyReal(params, theta, dataset, outpath, tissueEIDs)
 
     PWM_COLOR = [0, 0, 0];
     cMapWithError = [cMap;  PWM_COLOR];
-    H3K27ac = readAllTissuesBedGraphs(dataset, tissueEIDs, 'H3K27ac');
-    % DNase = readAllTissuesBedGraphs(dataset.chrs{seqInd}, dataset.starts(seqInd),...
-    %                                   dataset.starts(seqInd) + L, tissueEIDs, 'H3K27ac');
-    DNase = H3K27ac;
-    % seqInd = randsample(N, 1);
+    [tracks, seqInd] = getSeqWithTracks(dataset, tissueEIDs, {'H3K27ac', 'DNase'});
+
     figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     % N x L x 2
     YEst = misc.viterbi(params, theta, dataset.X, dataset.pcPWMp);
@@ -42,12 +39,12 @@ function seqSampleCertaintyReal(params, theta, dataset, outpath, tissueEIDs)
     set(gca,'xtick',[]);
     title('Posterior & Viterbi Estimation');
     text(L + 1, 0.5, 'H3K27ac', 'FontSize', 10);
-    plotProbMap(params, H3K27ac, YEst(seqInd, :, 1), cMap);
+    plotProbMap(params, tracks(:, :, 1), YEst(seqInd, :, 1), cMap);
 
     subplot(3, 1, 2);
     set(gca,'xtick',[]);
     text(L + 1, 0.5, 'DNase', 'FontSize', 10);
-    plotProbMap(params, DNase, YEst(seqInd, :, 1), cMap);
+    plotProbMap(params, tracks(:, :, 2), YEst(seqInd, :, 1), cMap);
 
 
     legendStrings1 = strcat({'Enhancer Type '}, num2str([1:params.m - params.backgroundAmount]'));
@@ -59,30 +56,47 @@ function seqSampleCertaintyReal(params, theta, dataset, outpath, tissueEIDs)
 end
 
 
-function [tracks, seqInd] = readAllTissuesBedGraphs(dataset, tissueEIDs, trackName)
-    L = size(dataset.X, 2);
-    m = length(tissueEIDs);
-    for i = 1:m
-        EID = tissueEIDs{i};
-        if startsWith(EID, 'E')
-            bedGraph{i} = readBedGraph(EID, trackName);
-        end
-    end
-    tracks = zeros(m, L);
-    for seqInd = 1:N
-        chr = dataset.chrs{seqInd};
-        to = dataset.starts(seqInd) + L;
-        from = dataset.starts(seqInd);
-        fprintf('Trying sequence %d\n', seqInd)
-        for i = 1:m
-            tracks(i, :) = getTrack(bedGraph, chr, from, to);
-            fprintf('Tissue %s has not enough samples\n', tissueEIDs{i})
-            if all(tracks(i, :) == 0)
-                break
+function bedGraphs = readAllBedGraphs(tissueEIDs, trackNames)
+    tissueWithTracksCount = length(tissueEIDs);
+    for trackInd = 1:length(trackNames)
+        for i = 1:tissueWithTracksCount
+            EID = tissueEIDs{i};
+            if startsWith(EID, 'E')
+                bedGraphs{i, trackInd} = readBedGraph(EID, trackNames{trackInd});
             end
         end
-        if all(tracks(:) > 0)
-            return
+    end
+end
+
+
+function [tracks, seqInd] = getSeqWithTracks(dataset, tissueEIDs, trackNames)
+    bedGraphs = readAllBedGraphs(tissueEIDs, trackNames);
+    N = size(dataset.X, 1);
+    for seqInd = 1:N
+        fprintf('Trying sequence %d\n', seqInd)
+        tracks = getTracks(dataset, bedGraphs, seqInd);
+        if all(all(any(tracks > 0, 2), 1), 3)
+            fprintf('Found!\n');
+            return;
+        end
+    end
+end
+
+
+function tracks = getTracks(dataset, bedGraphs, seqInd)
+    L = size(dataset.X, 2);
+    chr = dataset.chrs{seqInd};
+    to = dataset.starts(seqInd) + L;
+    from = dataset.starts(seqInd);
+    tracks = zeros(size(bedGraphs, 1), L, size(bedGraphs, 2));
+    for trackInd = 1:size(bedGraphs, 2)
+        for i = 1:size(bedGraphs, 1)
+            fprintf('looking for track index %d, for tissue index %d\n', trackInd, i)
+            tracks(i, :, trackInd) = getTrack(bedGraphs{i, trackInd}, chr, from, to);
+            if all(tracks(i, :, trackInd) == 0)
+                fprintf('Seq has not enough samples\n', trackInd)
+                return;
+            end
         end
     end
 end
@@ -162,22 +176,8 @@ function ret = getTrack(bedGraph, trackChr, trackFrom, trackTo)
     mask = strcmp(bedGraph.chrs, trackChr) & (bedGraph.tos >= trackFrom) & (bedGraph.froms <= trackTo);
     % linear interp
     foundSamples = sum(mask);
-    if foundSamples < (trackTo - trackFrom) / 100
-        % figure
-        % m = strcmp(bedGraph.chrs, 'chr1');
-        % frs = bedGraph.froms(m);
-        % tos = bedGraph.tos(m);
-        % vls = bedGraph.vals(m);
-        % plot((tos(1:5000) + frs(1:5000)) / 2, vls(1:5000), 'LineWidth', 1.5);
-        % hold on
-        % plot((tos(1:5000) + frs(1:5000)) / 2, , 'LineWidth', 1.5);
-        % plot([trackFrom, trackTo],[2, 2], 'LineWidth', 10);
-        % hold off
-        fprintf('Warning, found only %d sample points in (%s:%d-%d)\n', foundSamples, trackChr, trackFrom, trackTo);
-        % mlarge = strcmp(bedGraph.chrs, trackChr) & (bedGraph.tos >= trackFrom);
-        % msmall = strcmp(bedGraph.chrs, trackChr) & (bedGraph.froms <= trackTo);
-        % min(bedGraph.froms(mlarge)) - trackTo
-        % trackFrom - max(bedGraph.tos(msmall))
+    fprintf('Found %d sample points in (%s:%d-%d)\n', foundSamples, trackChr, trackFrom, trackTo);
+    if foundSamples < 10
         ret = zeros(trackTo - trackFrom, 1);
         return
     end
@@ -185,6 +185,5 @@ function ret = getTrack(bedGraph, trackChr, trackFrom, trackTo)
     knownVals = bedGraph.vals(mask)';
     wantedPoints = double([trackFrom : trackTo - 1]);
     ret = interp1(knownPoints, knownVals, wantedPoints);
-    fprintf('got track %s: %d-%d\n', trackChr, trackFrom, trackTo);
 end
 
