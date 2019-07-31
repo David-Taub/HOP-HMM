@@ -28,28 +28,30 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
     params.k = min(k, kMax);
     params.EPS = 10 ^ -7;
     maxBbMotifRatio = 1 / 90; % maximal ratio of all motif letters in BG section
-    maxEnhMotifRatio = 1 / 10; % maximal ratio of a single motif letters in enhancer section
-    maxCrossEnhRatio = 1 / 15; % maximal ratio of transition to any another enhancer
+    maxEnhMotifRatio = 1 / 4; % maximal ratio of a single motif letters in enhancer section
+    minEnhMotifRatio = 2 / 15; % maximal ratio of a single motif letters in enhancer section
+    maxCrossEnhRatio = 1 / 100; % maximal ratio of transition to any another enhancer
     maxCrossBgRatio = 1 / 20; % maximal ratio of transition to any another enhancer
-    maxEnhLen = min(700, floor(0.7 * L));
-    minEnhLen = min(100, floor(0.3 * L));
-    maxBgLen = L - minEnhLen;
-    minBgLen = L - maxEnhLen;
+    maxEnhLen = 1000;
+    minEnhLen = 300;
+    maxBgLen = 1500;
+    minBgLen = 500;
 
     params.maxEnhMotif = maxEnhMotifRatio / mean(params.lengths);
+    params.minEnhMotifTotal = minEnhMotifRatio / mean(params.lengths);
     params.minEnhMotif = params.EPS;
-    params.maxCrossEnh = maxCrossEnhRatio / (minEnhLen * (params.m - params.backgroundAmount));
+    params.maxCrossEnh = maxCrossEnhRatio / minEnhLen;
     params.minCrossEnh = params.EPS;
     params.maxBgMotif = maxBbMotifRatio / ( mean(params.lengths) * params.k);
     params.minBgMotif = params.EPS;
-    params.maxStayEnh = 1 - (1 / maxEnhLen);
+    params.maxStayEnh = 1;
     params.minStayEnh = 1 - (1 / minEnhLen);
     params.maxStayBg = 1 - (1 / maxBgLen);
     params.minStayBg = 1 - (1 / minBgLen);
     params.maxCrossBg = 1 / minBgLen;
     params.minCrossBg = params.EPS;
     params.maxBgToEnh = 1 / minBgLen;
-    params.minBgToEnh = 1 / maxBgLen;
+    params.minBgToEnh = 1 / (maxBgLen * (params.m - params.backgroundAmount));
     params.maxEnhToBg = 1 / minEnhLen;
     params.minEnhToBg = 1 / (maxEnhLen * params.backgroundAmount);
 
@@ -70,6 +72,7 @@ function [minT, minG] = genMinGT(params)
     end
     minG = ones(params.m, params.k) .* params.minEnhMotif;
     minG(end - params.backgroundAmount + 1:end, :) = params.minBgMotif;
+    assert(all(sum(minG, 2) + sum(minT, 2) < 1))
 end
 
 

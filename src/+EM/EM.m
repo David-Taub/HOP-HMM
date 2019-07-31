@@ -7,7 +7,7 @@
 % pcPWMp - N x k x L
 % order - the HMM order of the E matrix
 % initial estimation parameters
-function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, patience, repeat)
+function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, patience, repeat, startTUniform)
 
     [N, L] = size(dataset.X);
     fprintf('Starting EM algorithm on %d x %d\n', N, L);
@@ -16,16 +16,16 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, patience, re
     for rep = 1:repeat
         % X = X(randperm(N), :);
         fprintf('Repeat %d / %d\n', rep, repeat);
-        initTheta = misc.genTheta(params, true);
-        [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, false, patience);
+        initTheta = misc.genTheta(params, startTUniform);
+        [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, params.doGTBound, patience);
         if bestLikelihood < iterLike
             bestLikelihood = iterLike;
             bestTheta = theta;
         end
     end
-    if params.doGTBound
-        [bestLikelihood, bestTheta] = EMRun(dataset, params, initTheta, maxIter, true, patience);
-    end
+%     if params.doGTBound
+%         [bestLikelihood, bestTheta] = EMRun(dataset, params, initTheta, maxIter, true, patience);
+%     end
 end
 
 

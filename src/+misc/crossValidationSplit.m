@@ -15,8 +15,10 @@ function [test, train] = crossValidationSplit(params, mergedPeaksMin, testTrainR
     if isfield(mergedPeaksMin, 'starts')
         train.starts = mergedPeaksMin.starts(trainMask);
         train.chrs = mergedPeaksMin.chrs(trainMask);
+        train.samplesCount = mergedPeaksMin.samplesCount(trainMask);
         test.starts = mergedPeaksMin.starts(~trainMask);
         test.chrs = mergedPeaksMin.chrs(~trainMask);
+        test.samplesCount = mergedPeaksMin.samplesCount(~trainMask);
     end
     if isfield(mergedPeaksMin, 'Y')
         train.Y = mergedPeaksMin.Y(trainMask, :);

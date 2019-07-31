@@ -5,6 +5,7 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
         dataset.XIndicesHotMap = misc.genXInidcesHotMap(params, dataset);
     end
     batchAmount = floor(N / params.batchSize);
+    assert(batchAmount > 0)
     batchesTheta = inputTheta;
     batchesTheta.T = batchesTheta.T * 0;
     batchesTheta.E = batchesTheta.E * 0;
@@ -49,6 +50,7 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
         batchesTheta.G = batchesTheta.G + exp(G);
         batchesTheta.startT = batchesTheta.startT + exp(startT);
         batchesLikelihood = batchesLikelihood + sum(pX, 1);
+        EM.GTbound(params, exp(G), exp(T));
     end
     % geometric average is more stable than regular mean for very small likelihood values
     iterLike = batchesLikelihood / N;
@@ -56,8 +58,9 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
     theta.E = log(exp(inputTheta.E) .* (1 - params.learningRate) + params.learningRate .* batchesTheta.E / batchAmount);
     theta.G = log(exp(inputTheta.G) .* (1 - params.learningRate) + params.learningRate .* batchesTheta.G / batchAmount);
     theta.startT = log(exp(inputTheta.startT) .* (1 - params.learningRate) + params.learningRate .* batchesTheta.startT / batchAmount);
+    theta.startT = inputTheta.startT;
     if doGTBound
-        [theta.G, theta.T] = EM.GTbound(params, theta.G, theta.T);
+        [theta.G, theta.T] = EM.GTbound(params, exp(theta.G), exp(theta.T));
     end
     if params.doResampling
         [theta.E, theta.G] = EM.resampleEG(params, theta.E, theta.G);

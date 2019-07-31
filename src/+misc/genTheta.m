@@ -7,25 +7,16 @@ function [theta] = genTheta(params, startTUniform)
     end
     % theta.T = log((rand(params.m) .* (params.maxT - params.minT)) + params.minT);
     % theta.G = log((rand(params.m, params.k) .* (params.maxG - params.minG)) + params.minG);
-    T = log(normrnd((params.maxT + params.minT) / 2, (params.maxT - params.minT) / 3));
-    G = log(normrnd((params.maxG + params.minG) / 2, (params.maxG - params.minG) / 3));
-    [theta.G, theta.T] = EM.GTbound(params, G, T);
-
-    % theta.startT = rand(params.m, 1);
-    % theta.startT = ones(params.m, 1);
-    % theta.startT = log(theta.startT / sum(theta.startT));
-
-
-
-    % theta.T = eye(params.m) + params.PCrossEnhancers * rand(params.m);
-    % theta.T = bsxfun(@times, theta.T, 1 ./ sum(theta.T, 2));
-
-    % theta.G = rand(params.m, params.k);
-    % theta.G = bsxfun(@times, theta.G, 1 ./ sum(theta.G, 2));
-    % F = ones(params.m, 1) * 0.02;
-    % theta.G = log(theta.G .* repmat(F, [1, params.k]));
-    % theta.T = log(theta.T .* repmat(1-F, [1, params.m]));
-
+    % T = normrnd((params.maxT + params.minT) / 2, (params.maxT - params.minT) / 3);
+    % G = normrnd((params.maxG + params.minG) / 2, (params.maxG - params.minG) / 3);
+    s = sum(params.minT, 2) + sum(params.minG, 2);
+    Ta = (params.maxT - params.minT) .* rand(params.m, params.m);
+    Ga = (params.maxG - params.minG) .* rand(params.m, params.k);
+    Ga = (params.maxEnhMotif .* (Ga + params.minG) ./ repmat(sum(Ga + params.minG, 2), [1, params.k])) - params.minG;
+    Ta = (1 - s) .* Ta ./ repmat((sum(Ta, 2) + sum(Ga, 2)), [1, params.m]);
+    Ga = (1 - s) .* Ga ./ repmat((sum(Ta, 2) + sum(Ga, 2)), [1, params.k]);
+    theta.T = log(params.minT + Ta);
+    theta.G = log(params.minG + Ga);
 
     % m x n
     theta.E = rand([params.m, ones(1, params.order) .* params.n]);
@@ -53,5 +44,3 @@ function [theta] = genTheta(params, startTUniform)
     assert(isreal(theta.E));
     assert(isreal(theta.G));
 end
-
-

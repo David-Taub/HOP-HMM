@@ -277,95 +277,95 @@ rm -f *.gz
 
 mkdir ../raw_bigwig
 cd ../raw_bigwig
-wget -O E003-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E003-DNase.pval.signal.bigwig" &
-wget -O E004-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E004-DNase.pval.signal.bigwig" &
-wget -O E005-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E005-DNase.pval.signal.bigwig" &
-wget -O E006-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E006-DNase.pval.signal.bigwig" &
-wget -O E007-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E007-DNase.pval.signal.bigwig" &
-wget -O E008-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E008-DNase.pval.signal.bigwig" &
-wget -O E017-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E017-DNase.pval.signal.bigwig" &
-wget -O E021-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E021-DNase.pval.signal.bigwig" &
-wget -O E022-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E022-DNase.pval.signal.bigwig" &
-wget -O E029-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E029-DNase.pval.signal.bigwig" &
-wget -O E032-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E032-DNase.pval.signal.bigwig" &
-wget -O E034-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E034-DNase.pval.signal.bigwig" &
-wget -O E046-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E046-DNase.pval.signal.bigwig" &
-wget -O E050-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E050-DNase.pval.signal.bigwig" &
-wget -O E055-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E055-DNase.pval.signal.bigwig" &
-wget -O E056-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E056-DNase.pval.signal.bigwig" &
-wget -O E059-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E059-DNase.pval.signal.bigwig" &
-wget -O E080-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E080-DNase.pval.signal.bigwig" &
-wget -O E084-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E084-DNase.pval.signal.bigwig" &
-wget -O E085-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E085-DNase.pval.signal.bigwig" &
-wget -O E089-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E089-DNase.pval.signal.bigwig"
-wget -O E090-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E090-DNase.pval.signal.bigwig" &
-wget -O E091-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E091-DNase.pval.signal.bigwig" &
-wget -O E092-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E092-DNase.pval.signal.bigwig" &
-wget -O E093-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E093-DNase.pval.signal.bigwig" &
-wget -O E094-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E094-DNase.pval.signal.bigwig" &
-wget -O E097-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E097-DNase.pval.signal.bigwig" &
-wget -O E098-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E098-DNase.pval.signal.bigwig" &
-wget -O E100-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E100-DNase.pval.signal.bigwig" &
-wget -O E109-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E109-DNase.pval.signal.bigwig" &
-wget -O E114-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E114-DNase.pval.signal.bigwig" &
-wget -O E116-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E116-DNase.pval.signal.bigwig" &
-wget -O E117-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E117-DNase.pval.signal.bigwig" &
-wget -O E118-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E118-DNase.pval.signal.bigwig" &
-wget -O E119-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E119-DNase.pval.signal.bigwig" &
-wget -O E120-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E120-DNase.pval.signal.bigwig" &
-wget -O E121-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E121-DNase.pval.signal.bigwig" &
-wget -O E122-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E122-DNase.pval.signal.bigwig" &
-wget -O E123-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E123-DNase.pval.signal.bigwig" &
-wget -O E124-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E124-DNase.pval.signal.bigwig" &
-wget -O E125-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E125-DNase.pval.signal.bigwig" &
-wget -O E126-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E126-DNase.pval.signal.bigwig" &
-wget -O E127-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E127-DNase.pval.signal.bigwig" &
-wget -O E128-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E128-DNase.pval.signal.bigwig" &
+wget -O E003-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E003-DNase.imputed.pval.signal.bigwig" &
+wget -O E004-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E004-DNase.imputed.pval.signal.bigwig" &
+wget -O E005-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E005-DNase.imputed.pval.signal.bigwig" &
+wget -O E006-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E006-DNase.imputed.pval.signal.bigwig" &
+wget -O E007-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E007-DNase.imputed.pval.signal.bigwig" &
+wget -O E008-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E008-DNase.imputed.pval.signal.bigwig" &
+wget -O E017-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E017-DNase.imputed.pval.signal.bigwig" &
+wget -O E021-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E021-DNase.imputed.pval.signal.bigwig" &
+wget -O E022-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E022-DNase.imputed.pval.signal.bigwig" &
+wget -O E029-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E029-DNase.imputed.pval.signal.bigwig" &
+wget -O E032-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E032-DNase.imputed.pval.signal.bigwig" &
+wget -O E034-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E034-DNase.imputed.pval.signal.bigwig" &
+wget -O E046-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E046-DNase.imputed.pval.signal.bigwig" &
+wget -O E050-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E050-DNase.imputed.pval.signal.bigwig" &
+wget -O E055-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E055-DNase.imputed.pval.signal.bigwig" &
+wget -O E056-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E056-DNase.imputed.pval.signal.bigwig" &
+wget -O E059-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E059-DNase.imputed.pval.signal.bigwig" &
+wget -O E080-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E080-DNase.imputed.pval.signal.bigwig" &
+wget -O E084-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E084-DNase.imputed.pval.signal.bigwig" &
+wget -O E085-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E085-DNase.imputed.pval.signal.bigwig" &
+wget -O E089-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E089-DNase.imputed.pval.signal.bigwig"
+wget -O E090-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E090-DNase.imputed.pval.signal.bigwig" &
+wget -O E091-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E091-DNase.imputed.pval.signal.bigwig" &
+wget -O E092-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E092-DNase.imputed.pval.signal.bigwig" &
+wget -O E093-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E093-DNase.imputed.pval.signal.bigwig" &
+wget -O E094-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E094-DNase.imputed.pval.signal.bigwig" &
+wget -O E097-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E097-DNase.imputed.pval.signal.bigwig" &
+wget -O E098-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E098-DNase.imputed.pval.signal.bigwig" &
+wget -O E100-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E100-DNase.imputed.pval.signal.bigwig" &
+wget -O E109-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E109-DNase.imputed.pval.signal.bigwig" &
+wget -O E114-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E114-DNase.imputed.pval.signal.bigwig" &
+wget -O E116-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E116-DNase.imputed.pval.signal.bigwig" &
+wget -O E117-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E117-DNase.imputed.pval.signal.bigwig" &
+wget -O E118-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E118-DNase.imputed.pval.signal.bigwig" &
+wget -O E119-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E119-DNase.imputed.pval.signal.bigwig" &
+wget -O E120-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E120-DNase.imputed.pval.signal.bigwig" &
+wget -O E121-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E121-DNase.imputed.pval.signal.bigwig" &
+wget -O E122-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E122-DNase.imputed.pval.signal.bigwig" &
+wget -O E123-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E123-DNase.imputed.pval.signal.bigwig" &
+wget -O E124-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E124-DNase.imputed.pval.signal.bigwig" &
+wget -O E125-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E125-DNase.imputed.pval.signal.bigwig" &
+wget -O E126-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E126-DNase.imputed.pval.signal.bigwig" &
+wget -O E127-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E127-DNase.imputed.pval.signal.bigwig" &
+wget -O E128-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E128-DNase.imputed.pval.signal.bigwig" &
 
-wget -O E003-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E003-H3K27ac.pval.signal.bigwig" &
-wget -O E004-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E004-H3K27ac.pval.signal.bigwig" &
-wget -O E005-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E005-H3K27ac.pval.signal.bigwig" &
-wget -O E006-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E006-H3K27ac.pval.signal.bigwig" &
-wget -O E007-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E007-H3K27ac.pval.signal.bigwig" &
-wget -O E008-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E008-H3K27ac.pval.signal.bigwig" &
-wget -O E017-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E017-H3K27ac.pval.signal.bigwig" &
-wget -O E021-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E021-H3K27ac.pval.signal.bigwig" &
-wget -O E022-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E022-H3K27ac.pval.signal.bigwig" &
-wget -O E029-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E029-H3K27ac.pval.signal.bigwig" &
-wget -O E032-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E032-H3K27ac.pval.signal.bigwig" &
-wget -O E034-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E034-H3K27ac.pval.signal.bigwig" &
-wget -O E046-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E046-H3K27ac.pval.signal.bigwig" &
-wget -O E050-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E050-H3K27ac.pval.signal.bigwig" &
-wget -O E055-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E055-H3K27ac.pval.signal.bigwig" &
-wget -O E056-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E056-H3K27ac.pval.signal.bigwig" &
-wget -O E059-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E059-H3K27ac.pval.signal.bigwig" &
-wget -O E080-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E080-H3K27ac.pval.signal.bigwig" &
-wget -O E084-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E084-H3K27ac.pval.signal.bigwig" &
-wget -O E085-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E085-H3K27ac.pval.signal.bigwig" &
-wget -O E089-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E089-H3K27ac.pval.signal.bigwig" &
-wget -O E090-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E090-H3K27ac.pval.signal.bigwig"
-wget -O E091-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E091-H3K27ac.pval.signal.bigwig" &
-wget -O E092-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E092-H3K27ac.pval.signal.bigwig" &
-wget -O E093-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E093-H3K27ac.pval.signal.bigwig" &
-wget -O E094-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E094-H3K27ac.pval.signal.bigwig" &
-wget -O E097-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E097-H3K27ac.pval.signal.bigwig" &
-wget -O E098-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E098-H3K27ac.pval.signal.bigwig" &
-wget -O E100-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E100-H3K27ac.pval.signal.bigwig" &
-wget -O E109-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E109-H3K27ac.pval.signal.bigwig" &
-wget -O E114-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E114-H3K27ac.pval.signal.bigwig" &
-wget -O E116-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E116-H3K27ac.pval.signal.bigwig" &
-wget -O E117-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E117-H3K27ac.pval.signal.bigwig" &
-wget -O E118-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E118-H3K27ac.pval.signal.bigwig" &
-wget -O E119-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E119-H3K27ac.pval.signal.bigwig" &
-wget -O E120-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E120-H3K27ac.pval.signal.bigwig" &
-wget -O E121-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E121-H3K27ac.pval.signal.bigwig" &
-wget -O E122-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E122-H3K27ac.pval.signal.bigwig" &
-wget -O E123-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E123-H3K27ac.pval.signal.bigwig" &
-wget -O E124-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E124-H3K27ac.pval.signal.bigwig" &
-wget -O E125-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E125-H3K27ac.pval.signal.bigwig" &
-wget -O E126-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E126-H3K27ac.pval.signal.bigwig" &
-wget -O E127-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E127-H3K27ac.pval.signal.bigwig" &
-wget -O E128-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidated/macs2signal/pval/E128-H3K27ac.pval.signal.bigwig" &
+wget -O E003-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E003-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E004-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E004-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E005-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E005-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E006-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E006-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E007-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E007-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E008-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E008-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E017-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E017-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E021-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E021-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E022-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E022-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E029-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E029-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E032-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E032-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E034-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E034-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E046-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E046-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E050-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E050-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E055-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E055-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E056-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E056-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E059-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E059-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E080-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E080-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E084-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E084-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E085-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E085-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E089-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E089-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E090-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E090-H3K27ac.imputed.pval.signal.bigwig"
+wget -O E091-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E091-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E092-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E092-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E093-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E093-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E094-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E094-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E097-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E097-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E098-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E098-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E100-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E100-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E109-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E109-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E114-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E114-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E116-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E116-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E117-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E117-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E118-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E118-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E119-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E119-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E120-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E120-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E121-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E121-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E122-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E122-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E123-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E123-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E124-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E124-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E125-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E125-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E126-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E126-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E127-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E127-H3K27ac.imputed.pval.signal.bigwig" &
+wget -O E128-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E128-H3K27ac.imputed.pval.signal.bigwig" &
 
 
 # bedgraph of ac and dnase on enhancer sequences
@@ -420,6 +420,7 @@ cat ../processed/E127-H3K27ac.cleaned.narrowPeak >> ../tmp/enhancers.bed
 cat ../processed/E128-H3K27ac.cleaned.narrowPeak >> ../tmp/enhancers.bed
 bedtools sort -i ../tmp/enhancers.bed > ../tmp/enhancers.sorted.bed
 bedtools merge -i ../tmp/enhancers.sorted.bed > ../tmp/enhancers.merged.bed
+bedtools slop -i ../tmp/enhancers.merged.bed -g ../raw_bed/hg19.chrom.sizes -b 1500 > ../tmp/enhancers.slopped.bed
 
 cd /mnt/d/projects/HOP-HMM/data/peaks/scripts
 export PROMPT_COMMAND="echo -n \[\$(date +%H:%M:%S)\]\ "
@@ -471,55 +472,6 @@ export PROMPT_COMMAND="echo -n \[\$(date +%H:%M:%S)\]\ "
 ll ../raw_bedgraphs/
 
 
-#######################
-
-
-bedtools intersect -a ../raw_bedgraphs/E003-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E003-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E004-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E004-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E005-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E005-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E006-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E006-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E007-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E007-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E008-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E008-H3K27ac.enh.bedgraph 
-bedtools intersect -a ../raw_bedgraphs/E017-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E017-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E021-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E021-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E022-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E022-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E029-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E029-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E032-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E032-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E034-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E034-H3K27ac.enh.bedgraph 
-bedtools intersect -a ../raw_bedgraphs/E046-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E046-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E050-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E050-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E055-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E055-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E056-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E056-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E059-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E059-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E080-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E080-H3K27ac.enh.bedgraph 
-bedtools intersect -a ../raw_bedgraphs/E084-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E084-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E085-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E085-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E089-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E089-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E090-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E090-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E091-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E091-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E092-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E092-H3K27ac.enh.bedgraph 
-bedtools intersect -a ../raw_bedgraphs/E093-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E093-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E094-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E094-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E097-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E097-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E098-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E098-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E100-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E100-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E109-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E109-H3K27ac.enh.bedgraph 
-bedtools intersect -a ../raw_bedgraphs/E114-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E114-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E116-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E116-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E117-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E117-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E118-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E118-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E119-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E119-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E120-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E120-H3K27ac.enh.bedgraph 
-bedtools intersect -a ../raw_bedgraphs/E121-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E121-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E122-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E122-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E123-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E123-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E124-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E124-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E125-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E125-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E126-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E126-H3K27ac.enh.bedgraph 
-bedtools intersect -a ../raw_bedgraphs/E127-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E127-H3K27ac.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E128-H3K27ac.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E128-H3K27ac.enh.bedgraph &
-
-
 
 ../scripts/bigWigToBedGraph ../raw_bigwig/E003-DNase.pval.signal.bigwig ../raw_bedgraphs/E003-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E004-DNase.pval.signal.bigwig ../raw_bedgraphs/E004-DNase.pval.bedgraph &
@@ -544,101 +496,215 @@ bedtools intersect -a ../raw_bedgraphs/E128-H3K27ac.pval.bedgraph -b ../tmp/enha
 ../scripts/bigWigToBedGraph ../raw_bigwig/E089-DNase.pval.signal.bigwig ../raw_bedgraphs/E089-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E090-DNase.pval.signal.bigwig ../raw_bedgraphs/E090-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E091-DNase.pval.signal.bigwig ../raw_bedgraphs/E091-DNase.pval.bedgraph &
-../scripts/bigWigToBedGraph ../raw_bigwig/E092-DNase.pval.signal.bigwig ../raw_bedgraphs/E092-DNase.pval.bedgraph
+../scripts/bigWigToBedGraph ../raw_bigwig/E092-DNase.pval.signal.bigwig ../raw_bedgraphs/E092-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E093-DNase.pval.signal.bigwig ../raw_bedgraphs/E093-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E094-DNase.pval.signal.bigwig ../raw_bedgraphs/E094-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E097-DNase.pval.signal.bigwig ../raw_bedgraphs/E097-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E098-DNase.pval.signal.bigwig ../raw_bedgraphs/E098-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E100-DNase.pval.signal.bigwig ../raw_bedgraphs/E100-DNase.pval.bedgraph &
-../scripts/bigWigToBedGraph ../raw_bigwig/E109-DNase.pval.signal.bigwig ../raw_bedgraphs/E109-DNase.pval.bedgraph
+../scripts/bigWigToBedGraph ../raw_bigwig/E109-DNase.pval.signal.bigwig ../raw_bedgraphs/E109-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E114-DNase.pval.signal.bigwig ../raw_bedgraphs/E114-DNase.pval.bedgraph &
-../scripts/bigWigToBedGraph ../raw_bigwig/E116-DNase.pval.signal.bigwig ../raw_bedgraphs/E116-DNase.pval.bedgraph &
+../scripts/bigWigToBedGraph ../raw_bigwig/E116-DNase.pval.signal.bigwig ../raw_bedgraphs/E116-DNase.pval.bedgraph
 ../scripts/bigWigToBedGraph ../raw_bigwig/E117-DNase.pval.signal.bigwig ../raw_bedgraphs/E117-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E118-DNase.pval.signal.bigwig ../raw_bedgraphs/E118-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E119-DNase.pval.signal.bigwig ../raw_bedgraphs/E119-DNase.pval.bedgraph &
-../scripts/bigWigToBedGraph ../raw_bigwig/E120-DNase.pval.signal.bigwig ../raw_bedgraphs/E120-DNase.pval.bedgraph
+../scripts/bigWigToBedGraph ../raw_bigwig/E120-DNase.pval.signal.bigwig ../raw_bedgraphs/E120-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E121-DNase.pval.signal.bigwig ../raw_bedgraphs/E121-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E122-DNase.pval.signal.bigwig ../raw_bedgraphs/E122-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E123-DNase.pval.signal.bigwig ../raw_bedgraphs/E123-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E124-DNase.pval.signal.bigwig ../raw_bedgraphs/E124-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E125-DNase.pval.signal.bigwig ../raw_bedgraphs/E125-DNase.pval.bedgraph &
-../scripts/bigWigToBedGraph ../raw_bigwig/E126-DNase.pval.signal.bigwig ../raw_bedgraphs/E126-DNase.pval.bedgraph
+../scripts/bigWigToBedGraph ../raw_bigwig/E126-DNase.pval.signal.bigwig ../raw_bedgraphs/E126-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E127-DNase.pval.signal.bigwig ../raw_bedgraphs/E127-DNase.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E128-DNase.pval.signal.bigwig ../raw_bedgraphs/E128-DNase.pval.bedgraph &
-
-bedtools intersect -a ../raw_bedgraphs/E003-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E003-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E004-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E004-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E005-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E005-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E006-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E006-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E007-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E007-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E008-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E008-DNase.enh.bedgraph 
-bedtools intersect -a ../raw_bedgraphs/E017-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E017-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E021-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E021-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E022-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E022-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E029-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E029-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E032-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E032-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E034-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E034-DNase.enh.bedgraph 
-bedtools intersect -a ../raw_bedgraphs/E046-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E046-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E050-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E050-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E055-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E055-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E056-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E056-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E059-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E059-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E080-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E080-DNase.enh.bedgraph 
-bedtools intersect -a ../raw_bedgraphs/E084-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E084-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E085-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E085-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E089-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E089-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E090-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E090-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E091-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E091-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E092-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E092-DNase.enh.bedgraph 
-bedtools intersect -a ../raw_bedgraphs/E093-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E093-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E094-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E094-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E097-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E097-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E098-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E098-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E100-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E100-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E109-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E109-DNase.enh.bedgraph 
-bedtools intersect -a ../raw_bedgraphs/E114-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E114-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E116-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E116-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E117-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E117-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E118-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E118-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E119-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E119-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E120-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E120-DNase.enh.bedgraph 
-bedtools intersect -a ../raw_bedgraphs/E121-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E121-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E122-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E122-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E123-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E123-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E124-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E124-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E125-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E125-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E126-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E126-DNase.enh.bedgraph 
-bedtools intersect -a ../raw_bedgraphs/E127-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E127-DNase.enh.bedgraph &
-bedtools intersect -a ../raw_bedgraphs/E128-DNase.pval.bedgraph -b ../tmp/enhancers.merged.bed > ../processed_bedgraphs/E128-DNase.enh.bedgraph &
+#######################
 
 
-
-
+bedtools intersect -a ../raw_bedgraphs/E003-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E003-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E004-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E004-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E005-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E005-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E006-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E006-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E007-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E007-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E008-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E008-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E017-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E017-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E021-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E021-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E022-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E022-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E029-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E029-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E032-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E032-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E034-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E034-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E046-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E046-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E050-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E050-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E055-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E055-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E056-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E056-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E059-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E059-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E080-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E080-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E084-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E084-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E085-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E085-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E089-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E089-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E090-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E090-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E091-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E091-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E092-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E092-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E093-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E093-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E094-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E094-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E097-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E097-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E098-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E098-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E100-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E100-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E109-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E109-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E114-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E114-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E116-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E116-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E117-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E117-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E118-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E118-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E119-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E119-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E120-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E120-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E121-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E121-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E122-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E122-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E123-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E123-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E124-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E124-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E125-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E125-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E126-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E126-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E127-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E127-H3K27ac.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E128-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E128-H3K27ac.enh.bedgraph &
 
 
 
+bedtools intersect -a ../raw_bedgraphs/E003-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E003-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E004-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E004-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E005-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E005-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E006-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E006-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E007-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E007-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E008-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E008-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E017-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E017-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E021-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E021-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E022-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E022-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E029-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E029-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E032-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E032-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E034-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E034-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E046-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E046-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E050-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E050-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E055-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E055-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E056-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E056-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E059-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E059-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E080-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E080-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E084-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E084-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E085-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E085-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E089-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E089-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E090-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E090-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E091-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E091-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E092-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E092-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E093-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E093-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E094-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E094-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E097-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E097-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E098-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E098-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E100-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E100-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E109-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E109-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E114-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E114-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E116-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E116-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E117-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E117-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E118-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E118-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E119-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E119-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E120-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E120-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E121-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E121-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E122-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E122-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E123-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E123-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E124-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E124-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E125-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E125-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E126-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E126-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E127-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E127-DNase.enh.bedgraph &
+bedtools intersect -a ../raw_bedgraphs/E128-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E128-DNase.enh.bedgraph &
+
+~~~
+
+
+cat ../processed_bedgraphs/E003-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E003-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E004-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E004-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E005-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E005-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E006-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E006-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E007-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E007-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E008-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E008-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E017-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E017-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E021-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E021-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E022-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E022-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E029-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E029-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E032-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E032-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E034-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E034-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E046-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E046-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E050-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E050-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E055-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E055-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E056-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E056-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E059-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E059-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E080-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E080-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E084-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E084-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E085-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E085-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E089-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E089-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E090-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E090-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E091-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E091-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E092-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E092-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E093-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E093-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E094-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E094-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E097-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E097-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E098-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E098-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E100-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E100-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E109-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E109-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E114-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E114-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E116-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E116-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E117-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E117-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E118-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E118-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E119-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E119-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E120-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E120-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E121-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E121-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E122-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E122-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E123-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E123-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E124-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E124-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E125-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E125-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E126-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E126-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E127-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E127-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E128-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E128-H3K27ac.enh.u.bedgraph
 
 
 
+cat ../processed_bedgraphs/E003-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E003-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E004-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E004-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E005-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E005-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E006-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E006-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E007-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E007-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E008-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E008-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E017-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E017-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E021-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E021-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E022-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E022-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E029-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E029-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E032-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E032-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E034-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E034-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E046-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E046-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E050-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E050-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E055-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E055-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E056-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E056-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E059-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E059-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E080-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E080-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E084-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E084-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E085-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E085-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E089-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E089-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E090-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E090-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E091-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E091-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E092-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E092-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E093-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E093-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E094-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E094-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E097-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E097-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E098-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E098-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E100-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E100-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E109-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E109-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E114-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E114-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E116-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E116-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E117-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E117-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E118-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E118-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E119-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E119-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E120-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E120-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E121-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E121-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E122-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E122-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E123-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E123-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E124-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E124-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E125-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E125-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E126-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E126-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E127-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E127-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E128-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E128-DNase.enh.u.bedgraph
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+rm ../processed_bedgraphs/*.enh.bedgraph

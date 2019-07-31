@@ -1,9 +1,9 @@
 % fields of minimizeMergePeak - ['mergedPeaksMin.seqs', 'mergedPeaksMin.overlaps', 'mergedPeaksMin.peakLengths', 'mergedPeaksMin.tissueNames']
 function mergedPeaksMin = minimizeMergePeak(topPercent, doEnhSpecific, withBackground, withGenes,...
-                                            seqsPerTissue, L, peakMinL, peakMaxL, tissueList)
-    minimizedMergedFilePath = sprintf('../data/peaks/mergedPeaksMinimized_L%db%dg%dp%des%dspt%dmin%dmax%dT%s.mat', L, ...
+                                            seqsPerTissue, L, peakMinL, peakMaxL, tissueList, minSamplesCount)
+    minimizedMergedFilePath = sprintf('../data/peaks/mergedPeaksMinimized_L%db%dg%dp%des%dspt%dmin%dmax%dsc%dT%s.mat', L, ...
                                       withBackground, withGenes, floor(100 * topPercent), doEnhSpecific, seqsPerTissue, ...
-                                      peakMinL, peakMaxL, sprintf('%d', tissueList));
+                                      peakMinL, peakMaxL, minSamplesCount, sprintf('%d', tissueList));
     fprintf('Looking for %s ...\n', minimizedMergedFilePath);
     if isfile(minimizedMergedFilePath)
         fprintf('Found %s . loading...\n', minimizedMergedFilePath);
@@ -17,30 +17,33 @@ function mergedPeaksMin = minimizeMergePeak(topPercent, doEnhSpecific, withBackg
     mergedPeaksMin.genesInd = genesInd;
     mergedPeaksMin.tissueEIDs = tissueEIDs;
     mergedPeaksMin.tissueNames = misc.EIDsToTissueNames(tissueEIDs);
-
     mergedPeaksMin = extractFields(mergedPeaks, mergedPeaksMin);
-    fprintf('Seqs number for tissues %d (%s): %d\n', 1:size(mergedPeaksMin.overlaps, 2), mergedPeaksMin.tissueNames{:}, sum(mergedPeaksMin.overlaps > 0, 1));
+
+    fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
     % the merging of the peaks result in longer peaks (unless they are in the exact same location)
     mergedPeaksMin.seqs = extractSeqs(mergedPeaks, L);
+    mergedPeaksMin.samplesCount = zeros(size(mergedPeaksMin.seqs, 1), 1);
     mergedPeaksMin = removeLowHeight(mergedPeaksMin, topPercent);
-    fprintf('Seqs number for tissues %d (%s): %d\n', 1:size(mergedPeaksMin.overlaps, 2), mergedPeaksMin.tissueNames{:}, sum(mergedPeaksMin.overlaps > 0, 1));
+    fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
     mergedPeaksMin = removeNonLetters(mergedPeaksMin);
-    fprintf('Seqs number for tissues %d (%s): %d\n', 1:size(mergedPeaksMin.overlaps, 2), mergedPeaksMin.tissueNames{:}, sum(mergedPeaksMin.overlaps > 0, 1));
+    fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
     if (peakMaxL > 0) & (peakMinL > 0)
-        mergedPeaksMin = limitPeakLength(mergedPeaksMin, peakMinL, peakMaxL)
-        fprintf('Seqs number for tissues %d (%s): %d\n', 1:size(mergedPeaksMin.overlaps, 2), mergedPeaksMin.tissueNames{:}, sum(mergedPeaksMin.overlaps > 0, 1));
+        mergedPeaksMin = removeByLength(mergedPeaksMin, peakMinL, peakMaxL)
+        fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
     end
     if doEnhSpecific
-        mergedPeaksMin = enhancerSpecific(mergedPeaksMin);
-        fprintf('Seqs number for tissues %d (%s): %d\n', 1:size(mergedPeaksMin.overlaps, 2), mergedPeaksMin.tissueNames{:}, sum(mergedPeaksMin.overlaps > 0, 1));
+        mergedPeaksMin = removeNonSpecific(mergedPeaksMin);
+        fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
     end
     if length(tissueList) > 1 | withBackground | withGenes
-        mergedPeaksMin = filterByTissueList(mergedPeaksMin, tissueList);
-        fprintf('Seqs number for tissues %d (%s): %d\n', 1:size(mergedPeaksMin.overlaps, 2), mergedPeaksMin.tissueNames{:}, sum(mergedPeaksMin.overlaps > 0, 1));
+        mergedPeaksMin = removeByTissueList(mergedPeaksMin, tissueList);
+        fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
     end
+    mergedPeaksMin = removeBySampleCount(mergedPeaksMin, minSamplesCount);
+    fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
     if seqsPerTissue > 0
         mergedPeaksMin = balanceOverlaps(mergedPeaksMin, seqsPerTissue);
-        fprintf('Seqs number for tissues %d (%s): %d\n', 1:size(mergedPeaksMin.overlaps, 2), mergedPeaksMin.tissueNames{:}, sum(mergedPeaksMin.overlaps > 0, 1));
+        fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
     end
     % outFilepath = '../data/peaks/mergedPeaksMinimized.mat';
     save(minimizedMergedFilePath, '-v7.3', 'mergedPeaksMin');
@@ -48,13 +51,14 @@ function mergedPeaksMin = minimizeMergePeak(topPercent, doEnhSpecific, withBackg
 end
 
 
-function mergedPeaksMin = filterByTissueList(mergedPeaksMin, tissueList);
+
+function mergedPeaksMin = removeByTissueList(mergedPeaksMin, tissueList);
     fprintf('tissue list\n');
     if mergedPeaksMin.backgroundInd > 0
-        tissueList = [tissueList, mergedPeaksMin.backgroundInd]
+        tissueList = [tissueList, mergedPeaksMin.backgroundInd];
     end
     if mergedPeaksMin.genesInd > 0
-        tissueList = [tissueList, mergedPeaksMin.genesInd]
+        tissueList = [tissueList, mergedPeaksMin.genesInd];
     end
     mask = sum(mergedPeaksMin.overlaps(:, tissueList) > 0, 2) > 0;
     mergedPeaksMin = reduceData(mask, mergedPeaksMin);
@@ -65,16 +69,28 @@ function mergedPeaksMin = filterByTissueList(mergedPeaksMin, tissueList);
 end
 
 
-
-function mergedPeaksMin = enhancerSpecific(mergedPeaksMin)
+function mergedPeaksMin = removeNonSpecific(mergedPeaksMin)
     fprintf('enhancer specific\n');
     mask = sum(mergedPeaksMin.overlaps > 0, 2) == 1;
     mergedPeaksMin = reduceData(mask, mergedPeaksMin);
 end
 
 
+function mergedPeaksMin = removeBySampleCount(mergedPeaksMin, minSamplesCount)
+    fprintf('filter by samples count\n');
+    mergedPeaksMin = countSamplesNumber(mergedPeaksMin);
+    mask = mergedPeaksMin.samplesCount > minSamplesCount;
+    if (mergedPeaksMin.backgroundInd > 0) | (mergedPeaksMin.genesInd > 0)
+        mask = mask | mergedPeaksMin.overlaps(:, end) > 0
+        if (mergedPeaksMin.backgroundInd > 0) & (mergedPeaksMin.genesInd > 0)
+            mask = mask | mergedPeaksMin.overlaps(:, end - 1) > 0
+        end
+    end
+    mergedPeaksMin = reduceData(mask, mergedPeaksMin);
+end
 
-function mergedPeaksMin = limitPeakLength(mergedPeaksMin, peakMinL, peakMaxL)
+
+function mergedPeaksMin = removeByLength(mergedPeaksMin, peakMinL, peakMaxL)
     fprintf('peak length\n');
     mask = peakMinL < mergedPeaksMin.peakLengths < peakMaxL;
     mergedPeaksMin = reduceData(mask, mergedPeaksMin);
@@ -149,11 +165,40 @@ function minimizeMergePeak = extractFields(mergedPeaks, minimizeMergePeak)
 end
 
 
-function [mergedPeaksMin] = reduceData(mask, mergedPeaksMin);
-    fprintf('reducing %.2f%% of mergedPeaksMin.seqs\n', 100 * mean(mask, 1));
+function mergedPeaksMin = reduceData(mask, mergedPeaksMin);
+    fprintf('keeping %.2f%% of mergedPeaksMin.seqs\n', 100 * mean(mask, 1));
     mergedPeaksMin.seqs = mergedPeaksMin.seqs(mask, :, :);
     mergedPeaksMin.overlaps = mergedPeaksMin.overlaps(mask, :);
     mergedPeaksMin.peakLengths = mergedPeaksMin.peakLengths(mask);
     mergedPeaksMin.starts = mergedPeaksMin.starts(mask);
     mergedPeaksMin.chrs = mergedPeaksMin.chrs(mask);
+    mergedPeaksMin.samplesCount = mergedPeaksMin.samplesCount(mask);
+end
+
+
+function mergedPeaksMin = countSamplesNumber(mergedPeaksMin)
+    fprintf('counts samples\n');
+    trackNames = {'H3K27ac', 'DNase'};
+    bedGraphs = misc.readAllBedGraphs(mergedPeaksMin.tissueEIDs, trackNames);
+    [N, L] = size(mergedPeaksMin.seqs);
+    mergedPeaksMin.samplesCount = zeros(N, 1);
+    for i = 1:N
+        chr = mergedPeaksMin.chrs{i};
+        from = mergedPeaksMin.starts(i);
+        to = mergedPeaksMin.starts(i) + L;
+        mergedPeaksMin.samplesCount(i) = countSamples(bedGraphs, chr, from, to);
+        if mod(i, 100) == 0
+            fprintf('count sequence %d, %s: %d-%d [%d]\n', i, chr, from, to, mergedPeaksMin.samplesCount(i));
+        end
+    end
+end
+
+
+function samplesCount = countSamples(bedGraphs, trackChr, trackFrom, trackTo)
+    samplesCount = inf;
+    for bedGraph = [bedGraphs{:}]
+        mask = strcmp(bedGraph.chrs, trackChr) & (bedGraph.tos >= trackFrom) & (bedGraph.froms <= trackTo);
+        % linear interp
+        samplesCount = min(samplesCount, sum(mask));
+    end
 end
