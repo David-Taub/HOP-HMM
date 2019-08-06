@@ -6766,15 +6766,22 @@ Choosing the PWMs
 
 \begin_layout Standard
 Part of the definition of a HOP-HMM is a set of PWMs emitted by the PWM-states.
- JASPAR has 719 vertebrates PWMs, out of which we would want to use the
- most indicative for the tissue specific enhancers.
- The ideal PWM would be a long motif, strongly distinguishable from the
- background nucleotide probability and that occurs multiple times in the
- enhancer, and only in the enhancers that are active in a single tissue.
-\end_layout
+ JASPAR has 719 vertebrates PWMs, and because of limitations related to
+ the implementation of algorithm, we needed to select around 30 out of the
+ possible 719 PWMs.
+ The selected PWMs should be the most indicative for the tissue specific
+ enhancers.
+ In the process of choosing the PWMs, we aim to choose the PWMs that appear
+ in one of the tested enhancers and not the others.
+ we used the correlation (marked as 
+\begin_inset Formula $L_{W}\left(x_{t-|W|},...,x_{t-1}\right)$
+\end_inset
 
-\begin_layout Standard
-##########################
+ in above sections) to measure the appearance of a PWM in a sequence in
+ a position in a sequence.
+ We calculated the 3 best matching positions of every PWM in every sequence,
+ and calculated how successful, in terms of AUC-ROC, this sum can separate
+ one sequence type from the other using a threshold.
 \end_layout
 
 \begin_layout Subsubsection*
