@@ -33,7 +33,7 @@
 \index_command default
 \paperfontsize default
 \spacing single
-\use_hyperref false
+\use_hyperref true
 \papersize default
 \use_geometry true
 \use_package amsmath 2
@@ -47,7 +47,7 @@
 \use_package stmaryrd 0
 \use_package undertilde 0
 \cite_engine natbib
-\cite_engine_type numerical
+\cite_engine_type authoryear
 \biblio_style plainnat
 \use_bibtopic false
 \use_indices false
@@ -111,7 +111,6 @@ The genome of every organism contains the inherited information that defines
  adenine or thymine or in short A,C,G and T.
  The nucleotides are organized in pairs called base pairs where each of
  the paired nucleotides are complimentary to each other and provide redundancy.
-
 \end_layout
 
 \begin_layout Standard
@@ -141,31 +140,38 @@ Gene sequences are built out fragmented introns and exons, where only the
  For example, the humans and Caenorhabditis elegans roundworms both have
  about 19,000 genes (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-16"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-57"
+
 \end_inset
-), with roughly the same total exon length
- and number, although the human body is vastly more diverse and complex.
+
+), with roughly the same total exon length and number, although the human
+ body is vastly more diverse and complex.
  The source for the organisms complexity differences is attributed to the
  gene regulation mechanism.
  The human genome is 3.23 Gb long, and it is estimated that gene regulation
- involves 10-20% of it (
+ regions involve 10-20% of it (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-46"
-\end_inset
-), compared to 1% that are exon regions (
-\begin_inset CommandInset citation
-LatexCommand citep
-key "key-45"
-\end_inset
-).
 
+\end_inset
+
+), compared to exon regions that involve only 1% (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-45"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Subsubsection*
@@ -185,16 +191,20 @@ n of a gene adjacent to the promoter (see figure 1).
  It can be located up to a megabase upstream or downstream from their activating
  enhancer (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-43"
+
 \end_inset
+
 ), and are orientation independent to it.
  Moreover, the gene-enhancer connection is not exclusive, and the common
  case is that each enhancer has several target genes and vice versa (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-20"
+
 \end_inset
+
 ).
 \end_layout
 
@@ -219,11 +229,13 @@ Figure: A) An enhancer and its distal target gene.
 \begin_layout Standard
 In VISTA Project (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-60"
+
 \end_inset
-), mouse fertilized eggs where injected enhancers sequences, adjacent
- to LacZ reporter gene, encoding enzyme with blue color.
+
+), mouse fertilized eggs where injected enhancers sequences, adjacent to
+ LacZ reporter gene, encoding enzyme with blue color.
  The injected DNA sequences bared no epigenetic information and integrated
  in an arbitrary position in the mouse genome.
  The transgenic embryos where photographed after 11.5 days and, for some
@@ -270,27 +282,28 @@ Transcription factors (TF) are proteins that bind to the DNA, and together
  which are motifs of nucleotides on the DNA with average length of 12 bp
  in humans (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-36"
+
 \end_inset
+
 ) that are conserved between species (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-12"
+
 \end_inset
+
 ).
  On genome-wide association studies (GWAS) done with ChIP-seq method, different
  TFs have different distributions of TFBS they are observed attached to
  (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-32"
+
 \end_inset
-;
-\begin_inset CommandInset citation
-LatexCommand citep
-key "key-22"
-\end_inset
+
 ).
 \end_layout
 
@@ -301,44 +314,57 @@ Both enhancers and promoters contain TFBSs that are critical for the their
  the expression of the regulated gene and are a major cause of different
  human diseases (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-35"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-44"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-54"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-53"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-6"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-13"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-39"
+
 \end_inset
+
 ).
  From the sequence aspect, enhancers and promoters have a similar structure
  of a background nucleotide sequence with distribution different from other
  part of the genome, with TFBS motifs tiled inside this background sequence.
-
 \end_layout
 
 \begin_layout Standard
@@ -363,7 +389,6 @@ PWMs
 \begin_layout Standard
 Generating a compact model for estimating the binding potential of a DNA
  sequence to a TF, i.e.
-
 \begin_inset Formula $P(x_{1:n}|binding)$
 \end_inset
 
@@ -411,7 +436,6 @@ Where n is the size of relevant sequence.
 \end_inset
 
  the nucleotide index of A,C,G and T.
-
 \end_layout
 
 \begin_layout Standard
@@ -457,51 +481,63 @@ Inter TFBS Sequences and Conservation
 \begin_layout Standard
 Conserved non-coding elements (CNE) reside in clusters, usually with low
  gene density but with vicinity to genes.
- Typically, CNE are structured in arrays called GRB, with a mean length
- of 1.4 Mb (
+ Typically, CNE are structured in arrays known as genomic regulatory block
+ (GRB), with a mean length of 1.4 Mb (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-11"
+
 \end_inset
+
 ).
  The correlation between conservation of non-coding region and enhancer
  functionality is not strong.
- Some verified enhancers are weakly or not conserved between distant species
- (
+ Some verified enhancers are weakly or not conserved between species (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-21"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-52"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-56"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-40"
+
 \end_inset
-) and some highly conserved areas in
- the mouse genome are not associated to regulatory activity and their deletion
- and yielded viable mice (
+
+) and some highly conserved areas in the mouse genome are not associated
+ to regulatory activity and their deletion and yielded viable mice (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-1"
+
 \end_inset
+
 ).
  Nevertheless, an assay of elements with 100% sequence identity of over
  200 bp between human and mouse found that 50% showed enhancers activity
  in mice (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-60"
+
 \end_inset
+
 ).
  The reason for such ultra-conservation of 200 bp sequences when the TFBS
  is only 4-8 bp long is unclear.
@@ -509,14 +545,18 @@ key "key-60"
  of overlapping TFBS or that the enhancer has another function as a eRNA,
  that the exact nature of its mechanisms is no understood (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-23"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-3"
+
 \end_inset
+
 ).
 \end_layout
 
@@ -534,7 +574,6 @@ Almost all cells in every organism contain its genome, but only part of
  The location and presence of TFBS, background nucleotides distribution
  and other sequence related properties are not enough to explain regulatory
  role of regions in the genome.
-
 \end_layout
 
 \begin_layout Standard
@@ -582,9 +621,11 @@ In eukaryotes, the DNA is packed around a structure of 8 histone proteins,
  The location of the nucleosome binding is not random over the DNA sequence,
  but has a tendency for specific DNA binding sites (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-9"
+
 \end_inset
+
 ).
  DNA that is wrapped around a nucleosome has a lesser probability to interact
  with proteins, as it is physically inaccessible.
@@ -605,21 +646,27 @@ Histone Marks
 
 \begin_layout Standard
 Chromatin modifications signatures, also called histone marks, are predictive
- of enhancer position and activity status and can be assessed (
+ of enhancer position and activity status (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-60"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-19"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-18"
+
 \end_inset
+
 ).
  The histone marks are considered to contain a certain
 \begin_inset Quotes eld
@@ -634,18 +681,19 @@ histone code
  Comparing to other epigenetic information, and especially DNA methylation
  (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-48"
-\end_inset
-), chromatin modifications have a short time-scale of seconds or hours
- (
-\begin_inset CommandInset citation
-LatexCommand citep
-key "key-25"
-\end_inset
-), hence they are considered part of the dynamic
- changes of the cell's modes.
 
+\end_inset
+
+), chromatin modifications have a short time-scale of seconds or hours (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-25"
+
+\end_inset
+
+), hence they are considered part of the dynamic changes of the cell's modes.
 \end_layout
 
 \begin_layout Standard
@@ -653,72 +701,95 @@ H3K4me1 and H3K27ac are among the predominant histone marks of active enhancers,
  where H3K4me1 are enriched on transcribed genes and enhancers prior to
  activation (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-7"
+
 \end_inset
+
 ), and is thought to precede the H3K27ac modification (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-8"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-51"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-62"
+
 \end_inset
-) which is known
- to occur during the activation.
+
+) which is known to occur during the activation.
  Other histone marks that are present on active enhancers and are used for
  their detection are H3K9ac (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-15"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-30"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-34"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-62"
+
 \end_inset
+
 ) and H3K18ac (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-28"
+
 \end_inset
+
 ).
  Even though H3K27ac have been identified as an important mark for distinguishin
 g active enhancers from poised enhancers (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-8"
+
 \end_inset
-), it is not enough as its own since when present alongside H3K4me3
- it is an indication for active promoters (
+
+), it is not enough as its own since when present alongside H3K4me3 it is
+ an indication for active promoters (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-26"
+
 \end_inset
+
 ).
  In contrast, H3K27ac absence and H3K4me1and H3K27me3 enrichment are typical
  for poised enhancers (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-8"
+
 \end_inset
+
 ).
 \begin_inset Newline newline
 \end_inset
@@ -752,26 +823,31 @@ DNA Methylation
 DNA methylation at cytosine and CpG sites has been involved in genome silencing
  in multiple processes (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-29"
+
 \end_inset
-), and has been documented as largely correlated with gene expression
- inhibition when present in promoters.
+
+), and has been documented as largely correlated with gene expression inhibition
+ when present in promoters.
  In enhancer elements, anti-correlation was found between DNA methylation
  density and enrichment of active enhancer histone marks and TF binding
  (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-55"
-\end_inset
-;
-\begin_inset CommandInset citation
-LatexCommand citep
-key "key-58"
-\end_inset
-), although the cause and consequence
- relationship underlying these correlations is not yet clear.
 
+\end_inset
+
+;
+ \begin_inset CommandInset citation
+LatexCommand citealp
+key "key-58"
+
+\end_inset
+
+), although the cause and consequence relationship underlying these correlations
+ is not yet clear.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -783,7 +859,6 @@ The currently most accurate method for predicting the location of tissue
  specific enhancers in a genome wide scale, is analyzing the histone marks
  and TF and cofactors presence using ChIP-seq from a cell line or from a
  tissue, combined with DNase I hypersensative (DHS).
-
 \end_layout
 
 \begin_layout Standard
@@ -807,9 +882,11 @@ in-silico
  has produced positive, yet far from sufficient results in the last years,
  as reviewed in (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-33"
+
 \end_inset
+
 ).
 \end_layout
 
@@ -846,13 +923,14 @@ There are several achievements in the task of predicting epigenetic and
  learning algorithms.
  DeepSEA (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-63"
+
 \end_inset
-) deep convolutional neural network
- (DCNN) is fed with 1000 bp DNA sequence and predicts an output vector of
- 919 binary features which represents the chromatin modifications of 200
- bp bin in the center of the input sequence.
+
+) deep convolutional neural network (DCNN) is fed with 1000 bp DNA sequence
+ and predicts an output vector of 919 binary features which represents the
+ chromatin modifications of 200 bp bin in the center of the input sequence.
  The training labels used are the chromatin modification are extracted from
  ENCODE and Roadmap Epigenomics data releases.
 \end_layout
@@ -860,37 +938,44 @@ key "key-63"
 \begin_layout Standard
 Basset (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-32"
+
 \end_inset
-) also used DCNN with known PWM as weights initialization on ENCODE
- and Roadmap Epigenomics data to predict a binary vector that represents
- accessibility in 164 cell types based on 600 bp DNA sequence.
+
+) also used DCNN with known PWM as weights initialization on ENCODE and
+ Roadmap Epigenomics data to predict a binary vector that represents accessibili
+ty in 164 cell types based on 600 bp DNA sequence.
  In DeepBind (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-2"
+
 \end_inset
-) a DCNN was used to predict binding of 538 TFs and 194 RNA binding
- proteins from DNA sequences of varying lengths.
+
+) a DCNN was used to predict binding of 538 TFs and 194 RNA binding proteins
+ from DNA sequences of varying lengths.
  In gkm-SVM (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-5"
+
 \end_inset
-), gapped kmers presence indicator vector were used as features for
- an SVM classifier to predict the role of DNA sequences with varying lengths.
+
+), gapped kmers presence indicator vector were used as features for an SVM
+ classifier to predict the role of DNA sequences with varying lengths.
 \end_layout
 
 \begin_layout Standard
 ChromHMM (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-14"
+
 \end_inset
-) is a widely used software that tackles
- the problem of analyzing the epigenetic data for concluding roles in the
- genomic sequence.
+
+) is a widely used software that tackles the problem of analyzing the epigenetic
+ data for concluding roles in the genomic sequence.
  The algorithm uses chromatin mark reads, threshold to binary values, as
  input to HMM which then allows classifying the genome state in each position
  in the genome.
@@ -902,39 +987,41 @@ A disadvantage of these method is their need for a training data of known
  from GWAS surveys done on 127 obtained human cell types in the Roadmap
  and ENCODE projects (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-37"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-15"
+
 \end_inset
+
 ).
  The number of different cell types in the human body is estimated to be
  higher than 2200 (
 \begin_inset CommandInset citation
-LatexCommand citep
-key "key-24"
-\end_inset
-;
-\begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-10"
+
 \end_inset
-), where then number and location of tissue specific enhancers of the
- rest of the cell types is a mystery.
+
+), and so we cannot know in certainty the number and location of tissue
+ specific enhancers active in most of these cell types.
 \end_layout
 
 \begin_layout Standard
 HOP-HMM extends the algorithm of Kaplan et al., 2011 (
-
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-64"
+
 \end_inset
-), which also contains hidden states that emit TFBS sampled from PWMs
- to predict enhancers location in the genome.
+
+), which also contains hidden states that emit TFBS sampled from PWMs to
+ predict enhancers location in the genome.
  Both algorithms are part of the generalized hidden Markov model (gHMM)
  family, which are HMM variants that contain hidden states that may emit
  multiple observed variables.
@@ -942,16 +1029,20 @@ key "key-64"
  emission are dependent on previous hidden states where used previously
  (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-17"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-47"
+
 \end_inset
-), an HMM variant in which the emission is
- dependent on previous emissions is a less researched field.
+
+), an HMM variant in which the emission is dependent on previous emissions
+ is a less researched field.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -968,7 +1059,6 @@ The DNA sequence, when read from cells, is usually stored in files, such
  For many algorithms, such as in DeepSEA, Basset, and our HOP-Baum-Welch,
  it is more suitable to represent the DNA sequence in a one-hot encoding
  as described in figure 3.
-
 \end_layout
 
 \begin_layout Standard
@@ -978,7 +1068,6 @@ A common feature extraction technique is representing a DNA sequence as
  In this technique, similarly to the bag of words technique in text analysis
  and natural language processing, the order of the kmer locations is sacrificed
  for a more meaning-oriented, structured and fixed-length data encoding.
-
 \end_layout
 
 \begin_layout Section*
@@ -994,11 +1083,13 @@ The main mission of this research is to locate genomic regions with potential
 \begin_layout Standard
 It has been shown in vivo (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-60"
+
 \end_inset
-) that the insertion of an enhancer sequence and an adjacent target
- gene will often cause an activation of the target gene in mice.
+
+) that the insertion of an enhancer sequence and an adjacent target gene
+ will often cause an activation of the target gene in mice.
  The transgenic mice shows the activation of the inserted enhancer although
  it was inserted to an arbitrary location in the genome and without epigenetic
  information.
@@ -1026,11 +1117,12 @@ Markov Models
 \begin_layout Standard
 Markov model (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-42"
+
 \end_inset
-) is a stochastic model named after Andrey Markov,
- a Russian mathematician.
+
+) is a stochastic model named after Andrey Markov, a Russian mathematician.
  In a Markov model, at any time the model is at one of m states
 \begin_inset Formula $\left\{ S_{1},...,S_{m}\right\} $
 \end_inset
@@ -1180,31 +1272,36 @@ Multiple signal processing algorithms have been used in computational biology,
  Hidden Markov model (HMM) is a statistical model proposed by Leonard Baum
  (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-4"
+
 \end_inset
+
 ) and is based on the Markov model for modeling regions with alternating
  frequencies of patterns and symbols.
  It was used extensively in various engineering fields since the 1980s,
  especially in speech recognition (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-49"
+
 \end_inset
-), handwriting
- recognition (
+
+), handwriting recognition (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-27"
+
 \end_inset
+
 ) and digital communication (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-59"
-\end_inset
-) and was adopted
- in the computational biology field.
 
+\end_inset
+
+) and was adopted in the computational biology field.
 \end_layout
 
 \begin_layout Standard
@@ -1397,7 +1494,6 @@ P_{\theta}\left(x_{1:L},y_{1:L}\right)=P_{\theta}\left(y_{1}\right)\cdot P_{\the
 Although the complete-data likelihood computation is linear-by-L, computing
  the incomplete-data with all possible hidden sequences would be exponential-by-
 L and is not efficient.
-
 \end_layout
 
 \begin_layout Standard
@@ -1406,11 +1502,12 @@ An alternative method, which answers both the likelihood and the posterior
  of HMM.
  It is the Forward-Backward algorithm (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-50"
+
 \end_inset
-), a method that dynamically
- calculates two matrices,
+
+), a method that dynamically calculates two matrices,
 \begin_inset Formula $\alpha$
 \end_inset
 
@@ -1755,7 +1852,6 @@ The building of the table is based on the HMM basic assumptions that each
 \end_inset
 
 .
-
 \end_layout
 
 \begin_layout Standard
@@ -2151,7 +2247,6 @@ Although HMM is simple and efficient, applying it on DNA sequences has a
 
 , large enough to introduce problems such as unfeasible memory complexity
  and overfitting.
-
 \end_layout
 
 \begin_layout Standard
@@ -2177,19 +2272,25 @@ A way that was previously used to increase the complexity of HMM in the
  aspect of higher conditioning order is by making the transition and emission
  dependent on previous hidden states (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-41"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-47"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-38"
+
 \end_inset
+
 ).
  Although these HMM variants are capable of expressing the complex structure
  of a DNA sequence (different k-mers frequencies in the genomic regions),
@@ -2237,7 +2338,6 @@ Generalized hidden Markov models (gHMM) are a family of variants of HMM,
  It is a way to generalize emission of the HMM, and the EM algorithm can
  be adjusted to accommodate such generalization, as we will demonstrate
  in our EM adaptation.
-
 \end_layout
 
 \begin_layout Standard
@@ -2280,13 +2380,14 @@ Here we present HOP-HMM, a variant model of HMM, that is well fitted to
 
 \begin_layout Standard
 HOP-HMM extends the algorithm of Kaplan et al., 2011 (
-
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-64"
+
 \end_inset
-), which also contains hidden states emitting TFBS sampled from PWMs
- to predict enhancers location in the genome.
+
+), which also contains hidden states emitting TFBS sampled from PWMs to
+ predict enhancers location in the genome.
  Both algorithms are part of the generalized hidden Markov model (gHMM)
  family, which are HMM variants that contain hidden states that may emit
  multiple observed variables.
@@ -2294,16 +2395,20 @@ key "key-64"
  emission are dependent on previous hidden states where used previously
  (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-17"
+
 \end_inset
+
 ;
-\begin_inset CommandInset citation
-LatexCommand citep
+ \begin_inset CommandInset citation
+LatexCommand citealp
 key "key-47"
+
 \end_inset
-), an HMM variant in which the emission is
- dependent on previous emissions is a less researched field.
+
+), an HMM variant in which the emission is dependent on previous emissions
+ is a less researched field.
 \end_layout
 
 \begin_layout Standard
@@ -2323,7 +2428,6 @@ Figure 9: A small HOP-HMM that similarly to gHMM in figure 8, has one background
  Unlike gHMM, in HOP-HMM TF-state can not be the start hidden state and
  the emission of the background-state is of order two (o=2), meaning it
  is conditioned on the previous observable variable.
-
 \end_layout
 
 \begin_layout Standard
@@ -2457,7 +2561,6 @@ TF-state
 s (green).
  Not all transitions are possible, moving between the rows is possible only
  by a background-state to background-state transition.
-
 \end_layout
 
 \begin_layout Standard
@@ -2601,7 +2704,6 @@ G for background-state to TF-state transitions a
 \end_inset
 
 .
-
 \end_layout
 
 \begin_layout Standard
@@ -2658,7 +2760,6 @@ To be able to learn a DNA sequence with a HMM, we need to find parameters
 
 \begin_layout Standard
 Even though the incomplete-data likelihood of HMM in (1) is derivable by
-
 \begin_inset Formula $\theta$
 \end_inset
 
@@ -2878,7 +2979,6 @@ After stating the intentions of each EM iteration in (4), (5) and (6), we
  now need to calculated them in order to successfully learn the HMM parameters.
  Specifically, notice that to resolve all the parameters update states in
  (4), (5) and (6), it is enough to calculate the two terms during the E-step:
-
 \end_layout
 
 \begin_layout Standard
@@ -2902,7 +3002,6 @@ P_{\theta^{'}}\left(y_{t-1}=j_{1},y_{t}=j_{2}|x_{1:L}\right)
 
 \begin_layout Standard
 We will calculate these terms by using the Forward-Backward algorithm.
-
 \end_layout
 
 \begin_layout Subsubsection*
@@ -2932,7 +3031,6 @@ Having the forward and backward probability matrices
 \color none
 (8) and (9), using once more the HMM conditional independence in our calculation
 s.
-
 \family default
 \series default
 \shape default
@@ -3123,7 +3221,6 @@ where
 \end_inset
 
 , therefore it is not optimized in the m-steps.
-
 \end_layout
 
 \begin_layout Standard
@@ -3132,7 +3229,6 @@ The
 \end_inset
 
  which optimizes Q, i.e.
-
 \begin_inset Formula $\theta_{max}=argmax_{\theta}Q(\theta,\theta')$
 \end_inset
 
@@ -3995,7 +4091,6 @@ Note that when
 
 \series bold
 Figure 5: In our version of the forward-backward algorithm, each of the
-
 \begin_inset Formula $\alpha$
 \end_inset
 
@@ -4005,7 +4100,6 @@ Figure 5: In our version of the forward-backward algorithm, each of the
 
  cells are filled from both the adjacent background-states transitions and
  the background-states preceding or proceeding the motifs emitted by the
-
 \series default
 TF-state
 \series bold
@@ -4604,7 +4698,6 @@ Now with (13), (14), (15) at hand, we can calculate
 \end_inset
 
  by assigning them at (9), (10), (11), (12).
-
 \end_layout
 
 \begin_layout Subsubsection*
@@ -5838,12 +5931,13 @@ The algorithm here is described for learning a single sequence of observable
  from multiple sequences at once, we can use the same method as introduced
  in the original paper of Baum-Welch algorithm (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-50"
+
 \end_inset
-), which calculates
- the E step probabilities for every sequence, and in the m-step sums all
- positions from all sequence for the parameters update.
+
+), which calculates the E step probabilities for every sequence, and in
+ the m-step sums all positions from all sequence for the parameters update.
 \end_layout
 
 \begin_layout Section*
@@ -6921,7 +7015,6 @@ Synthetic Sequences
 \begin_layout Standard
 Before applying the algorithm to a real DNA data, we checked its capabilities
  on synthetic data.
-
 \end_layout
 
 \begin_layout Standard
@@ -6953,7 +7046,6 @@ We sampled
 
  using the train sequences, and measuring its accuracy over both the train
  and the test sequences.
-
 \end_layout
 
 \begin_layout Standard
@@ -7025,7 +7117,6 @@ Figure 12: Over multiple runs of HOP-Baum-Welch, a correlation exists between
 \end_inset
 
  likelihood over the learned sequences and the error comparing the true
-
 \begin_inset Formula $\theta$
 \end_inset
 
@@ -7125,7 +7216,6 @@ Figure: (A) the EM iterations draws the estimated
  1000 long.
  The trained model had 6 hidden background-states with emission order of
  2, each background-state had 25 PWMs-states.
-
 \end_layout
 
 \begin_layout Subsubsection*
@@ -7188,7 +7278,6 @@ TODO: Violine graph of the posterior of places Viterbi marked as PWMs and
  of the places marked by the Viterbi on real DNA.
  also, deep tool of the acc.
  and ME3 of these sequences.
-
 \end_layout
 
 \begin_layout Subsubsection*
@@ -7314,7 +7403,7 @@ References
 
 \begin_layout Standard
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "key-1"
 
 \end_inset
@@ -7462,7 +7551,6 @@ per nucleotide binary classification (background vs enhancer)
  around the enhancer's peak, where the center is the max of the H3K27ac
  signal, showing the sequences are most likely enhancers surrounded by non
  enhancers .
-
 \end_layout
 
 \begin_layout Standard
@@ -7525,712 +7613,1075 @@ E M F T-> posterior of whole genome -> see if known critical SNPs are critical
  in classification
 \end_layout
 
-
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Ahituv et al., 2007"
+label "Ahituv et al.(2007)"
 key "key-1"
 
 \end_inset
 
-Ahituv et al., 2007
+ Ahituv, N., Zhu, Y., Visel, A., Holt, A., Afzal, V., Pennacchio, L.
+ A., & Rubin, E.
+ M.
+ (2007).
+ Deletion of ultraconserved elements yields viable mice.
+ PLoS biology, 5(9), e234.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Alipanahi et al., 2015"
+label "Alipanahi et al.(2015)"
 key "key-2"
 
 \end_inset
 
-Alipanahi et al., 2015
+ Alipanahi, B., Delong, A., Weirauch, M.
+ T., & Frey, B.
+ J.
+ (2015).
+ Predicting the sequence specificities of DNA-and RNA-binding proteins by
+ deep learning.
+ Nature biotechnology, 33(8), 831.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Andersson et al., 2014"
+label "Andersson et al.(2014)"
 key "key-3"
 
 \end_inset
 
-Andersson et al., 2014
+ Andersson, R., Gebhard, C., Miguel-Escalada, I., Hoof, I., Bornholdt, J., Boyd,
+ M., ...
+ & Ntini, E.
+ (2014).
+ An atlas of active enhancers across human cell types and tissues.
+ Nature, 507(7493), 455.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Baum et al., 1966"
+label "Baum et al.(1966)"
 key "key-4"
 
 \end_inset
 
-Baum et al., 1966
+ Baum, L.
+ E., & Petrie, T.
+ (1966).
+ Statistical inference for probabilistic functions of finite state Markov
+ chains.
+ The annals of mathematical statistics, 37(6), 1554-1563.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Beer et al., 2014"
+label "Beer et al.(2014)"
 key "key-5"
 
 \end_inset
 
-Beer et al., 2014
+ De Beer, Z.
+ W., Duong, T.
+ A., Barnes, I., Wingfield, B.
+ D., & Wingfield, M.
+ J.
+ (2014).
+ Redefining Ceratocystis and allied genera.
+ Studies in Mycology, 79, 187-219.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Benko, 2009"
+label "Benko et al.(2009)"
 key "key-6"
 
 \end_inset
 
-Benko, 2009
+ Benko, S., Fantes, J.
+ A., Amiel, J., Kleinjan, D., Thomas, S., Ramsay, J., et al.
+ (2009).
+ Highly conserved non.
+ Nature Genetics 64(2), p.
+ 10-12.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Calo et al., 2013"
+label "Calo et al.(2013)"
 key "key-7"
 
 \end_inset
 
-Calo et al., 2013
+ Calo, E., & Wysocka, J.
+ (2013).
+ Modification of enhancer chromatin: what, how, and why?.
+ Molecular cell, 49(5), 825-837.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Creyghton et al., 2010"
+label "Creyghton et al.(2010)"
 key "key-8"
 
 \end_inset
 
-Creyghton et al., 2010
+ Creyghton, M.
+ P., Cheng, A.
+ W., Welstead, G.
+ G., Kooistra, T., Carey, B.
+ W., Steine, E.
+ J., ...
+ & Boyer, L.
+ A.
+ (2010).
+ Histone H3K27ac separates active from poised enhancers and predicts development
+al state.
+ Proceedings of the National Academy of Sciences, 107(50), 21931-21936.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Cutter et al., 2015"
+label "Cutter et al.(2015)"
 key "key-9"
 
 \end_inset
 
-Cutter et al., 2015
+ Cutter, A.
+ R., & Hayes, J.
+ J.
+ (2015).
+ A brief review of nucleosome structure.
+ FEBS letters, 589(20), 2914-2922.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Diehl et al., 2016"
+label "Diehl et al.(2016)"
 key "key-10"
 
 \end_inset
 
-Diehl et al., 2016
+ Diehl, A.
+ D., Meehan, T.
+ F., Bradford, Y.
+ M., Brush, M.
+ H., Dahdul, W.
+ M., Dougall, D.
+ S., ...
+ & Van Slyke, C.
+ E.
+ (2016).
+ The Cell Ontology 2016: enhanced content, modularization, and ontology
+ interoperability.
+ Journal of biomedical semantics, 7(1), 44.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Dong et al., 2009"
+label "Akalin et al.(2009)"
 key "key-11"
 
 \end_inset
 
-Dong et al., 2009
+ Akalin, A., Fredman, D., Arner, E., Dong, X., Bryne, J.
+ C., Suzuki, H., ...
+ & Lenhard, B.
+ (2009).
+ Transcriptional features of genomic regulatory blocks.
+ Genome biology, 10(4), R38.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Doniger et al., 2005"
+label "Doniger et al.(2005)"
 key "key-12"
 
 \end_inset
 
-Doniger et al., 2005
+ Doniger, S.
+ W., Huh, J., & Fay, J.
+ C.
+ (2005).
+ Identification of functional transcription factor binding sites using closely
+ related Saccharomyces species.
+ Genome research, 15(5), 701-709.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Emison, 2005"
+label "Emison et al.(2005)"
 key "key-13"
 
 \end_inset
 
-Emison, 2005
+ Emison, E.
+ S., McCallion, A.
+ S., Kashuk, C.
+ S., Bush, R.
+ T., Grice, E., Lin, S., ...
+ & Chakravarti, A.
+ (2005).
+ A common sex-dependent mutation in a RET enhancer underlies Hirschsprung
+ disease risk.
+ Nature, 434(7035), 857.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Ernst and Kellis, 2012"
+label "Ernst and Kellis(2012)"
 key "key-14"
 
 \end_inset
 
-Ernst and Kellis, 2012
+ Ernst, J., & Kellis, M.
+ (2012).
+ ChromHMM: automating chromatin-state discovery and characterization.
+ Nature methods, 9(3), 215.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Ernst et al., 2011"
+label "Ernst et al.(2011)"
 key "key-15"
 
 \end_inset
 
-Ernst et al., 2011
+ Ernst, J., Kheradpour, P., Mikkelsen, T.
+ S., Shoresh, N., Ward, L.
+ D., Epstein, C.
+ B., ...
+ & Ku, M.
+ (2011).
+ Mapping and analysis of chromatin state dynamics in nine human cell types.
+ Nature, 473(7345), 43.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Ezkurdia et al., 2014"
+label "Ezkurdia et al.(2014)"
 key "key-16"
 
 \end_inset
 
-Ezkurdia et al., 2014
+ Ezkurdia, I., Juan, D., Rodriguez, J.
+ M., Frankish, A., Diekhans, M., Harrow, J., ...
+ & Tress, M.
+ L.
+ (2014).
+ Multiple evidence strands suggest that there may be as few as 19 000 human
+ protein-coding genes.
+ Human molecular genetics, 23(22), 5866-5878.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Ferguson, 1980"
+label "Ferguson(1980)"
 key "key-17"
 
 \end_inset
 
-Ferguson, 1980
+ Ferguson, J.
+ D.
+ (1980).
+ pp.
+ 143–179, Variable duration models for speech.
+ In Proc.
+ of the Symposium on the applications of hidden Markov models to text and
+ speech, JD Ferguson, Ed.
+ Princeton: IDA-CRD.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Fernandez et al., 2012"
+label "Fernandez et al.(2012)"
 key "key-18"
 
 \end_inset
 
-Fernandez et al., 2012
+ Galperin, M.
+ Y., & Fernández-Suarez, X.
+ M.
+ (2011).
+ The 2012 nucleic acids research database issue and the online molecular
+ biology database collection.
+ Nucleic acids research, 40(D1), D1-D8.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Firbi et al., 2010"
+label "Heintzman et al.(2009)"
 key "key-19"
 
 \end_inset
 
-Firbi et al., 2010
+ Heintzman, N.
+ D., Hon, G.
+ C., Hawkins, R.
+ D., Kheradpour, P., Stark, A., Harp, L.
+ F., ...
+ & Ching, K.
+ A.
+ (2009).
+ Histone modifications at human enhancers reflect global cell-type-specific
+ gene expression.
+ Nature, 459(7243), 108.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Fishilevich et al., 2017"
+label "Fishilevich et al.(2017)"
 key "key-20"
 
 \end_inset
 
-Fishilevich et al., 2017
+ Fishilevich, S., Nudel, R., Rappaport, N., Hadar, R., Plaschkes, I., Iny Stein,
+ T., ...
+ & Lancet, D.
+ (2017).
+ GeneHancer: genome-wide integration of enhancers and target genes in GeneCards.
+ Database, 2017.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Friedli et al., 2010"
+label "Friedli et al.(2010)"
 key "key-21"
 
 \end_inset
 
-Friedli et al., 2010
+ Friedli, M., Barde, I., Arcangeli, M., Verp, S., Quazzola, A., Zakany, J., ...
+ & Duboule, D.
+ (2010).
+ A systematic enhancer screen using lentivector transgenesis identifies
+ conserved and non-conserved functional elements at the Olig1 and Olig2
+ locus.
+ PLoS One, 5(12), e15741.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Gheorghe et al., 2018"
-key "key-22"
-
-\end_inset
-
-Gheorghe et al., 2018
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Haeussler et al., 2011"
+label "Kim et al.(2010)"
 key "key-23"
 
 \end_inset
 
-Haeussler et al., 2011
+ Kim, T.
+ K., Hemberg, M., Gray, J.
+ M., Costa, A.
+ M., Bear, D.
+ M., Wu, J., ...
+ & Markenscoff-Papadimitriou, E.
+ (2010).
+ Widespread transcription at neuronal activity-regulated enhancers.
+ Nature, 465(7295), 182.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Hatano et al., 2011"
-key "key-24"
-
-\end_inset
-
-Hatano et al., 2011
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Hayashi-Takanaka et al., 2011"
+label "Hayashi-Takanaka et al.(2011)"
 key "key-25"
 
 \end_inset
 
-Hayashi-Takanaka et al., 2011
+ Hayashi-Takanaka, Y., Yamagata, K., Wakayama, T., Stasevich, T.
+ J., Kainuma, T., Tsurimoto, T., ...
+ & Kimura, H.
+ (2011).
+ Tracking epigenetic histone modifications in single cells using Fab-based
+ live endogenous modification labeling.
+ Nucleic acids research, 39(15), 6475-6488.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Heintzman et al., 2007"
+label "Heintzman et al.(2007)"
 key "key-26"
 
 \end_inset
 
-Heintzman et al., 2007
+ Heintzman, N.
+ D., Stuart, R.
+ K., Hon, G., Fu, Y., Ching, C.
+ W., Hawkins, R.
+ D., ...
+ & Wang, W.
+ (2007).
+ Distinct and predictive chromatin signatures of transcriptional promoters
+ and enhancers in the human genome.
+ Nature genetics, 39(3), 311.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Hu et al., 1996"
+label "Hu et al.(1996)"
 key "key-27"
 
 \end_inset
 
-Hu et al., 1996
+ Hu, J., Brown, M.
+ K., & Turin, W.
+ (1996).
+ HMM based online handwriting recognition.
+ IEEE Transactions on pattern analysis and machine intelligence, 18(10),
+ 1039-1045.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Jin et al., 2011"
+label "Jin et al.(2011)"
 key "key-28"
 
 \end_inset
 
-Jin et al., 2011
+ Jin Q, Yu L-R, Wang L, Zhang Z, Kasper LH, Lee J-E, Wang C, Brindle PK,
+ Dent SYR, Ge K.
+ 2011.
+ Distinct roles of GCN5/PCAF-mediated H3K9ac and CBP/p300-mediated H3K18/27ac
+ in nuclear receptor transactivation.
+ The EMBO Journal 30:249–262.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Jones et al., 2012"
+label "Jones et al.(2012)"
 key "key-29"
 
 \end_inset
 
-Jones et al., 2012
+ Jones, P.
+ A.
+ (2012).
+ Functions of DNA methylation: islands, start sites, gene bodies and beyond.
+ Nature Reviews Genetics, 13(7), 484.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Karmodiya et al., 2012"
-key "key-30"
-
-\end_inset
-
-Karmodiya et al., 2012
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Kelley et al., 2016"
-key "key-31"
-
-\end_inset
-
-Kelley et al., 2016
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Khan et al., JASPAR 2018"
-key "key-32"
-
-\end_inset
-
-Khan et al., JASPAR 2018
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Kleftogiannis et al., 2016"
-key "key-33"
-
-\end_inset
-
-Kleftogiannis et al., 2016
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Krebs et al., 2011"
-key "key-34"
-
-\end_inset
-
-Krebs et al., 2011
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Kreimer et al., 2017"
-key "key-35"
-
-\end_inset
-
-Kreimer et al., 2017
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Kulakovskiy et al., 2011"
-key "key-36"
-
-\end_inset
-
-Kulakovskiy et al., 2011
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Kundaje et al., 2015"
-key "key-37"
-
-\end_inset
-
-Kundaje et al., 2015
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Lee and Lee, 2006"
-key "key-38"
-
-\end_inset
-
-Lee and Lee, 2006
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Lettice, 2003"
-key "key-39"
-
-\end_inset
-
-Lettice, 2003
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Lindblad-Toh, 2011"
-key "key-40"
-
-\end_inset
-
-Lindblad-Toh 2011
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Mari et al., 1997"
-key "key-41"
-
-\end_inset
-
-Mari et al., 1997
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Markov, 1906"
-key "key-42"
-
-\end_inset
-
-Markov, 1906
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "May et al., 2011"
-key "key-43"
-
-\end_inset
-
-May et al., 2011
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Miguel-Escalada 2015"
-key "key-44"
-
-\end_inset
-
-Miguel-Escalada 2015
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Ng et al., 2009"
-key "key-45"
-
-\end_inset
-
-Ng et al., 2009
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Pennacchio et al., 2015"
-key "key-46"
-
-\end_inset
-
-Pennacchio et al., 2015
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Preez, 1997"
-key "key-47"
-
-\end_inset
-
-Preez, 1997
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Przybilla et al., 2012"
-key "key-48"
-
-\end_inset
-
-Przybilla et al., 2012
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Rabiner and Juang, 1993"
-key "key-49"
-
-\end_inset
-
-Rabiner and Juang, 1993
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Rabiner, 1989"
-key "key-50"
-
-\end_inset
-
-Rabiner, 1989
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Rada-Iglesias et al., 2011"
-key "key-51"
-
-\end_inset
-
-Rada-Iglesias et al., 2011
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Rosin et al., 2013"
-key "key-52"
-
-\end_inset
-
-Rosin et al., 2013
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Smemo S., 2012"
-key "key-53"
-
-\end_inset
-
-Smemo S., 2012
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Soldner, 2016"
-key "key-54"
-
-\end_inset
-
-Soldner, 2016
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Stadler et al., 2011"
-key "key-55"
-
-\end_inset
-
-Stadler et al., 2011
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Taher, 2011"
-key "key-56"
-
-\end_inset
-
-Taher, 2011
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "The C. elegans Sequencing Consortium, 1998"
-key "key-57"
-
-\end_inset
-
-The C. elegans Sequencing Consortium, 1998
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Thurman et al., 2012"
-key "key-58"
-
-\end_inset
-
-Thurman et al., 2012
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Turin and Sondhi, 1993"
-key "key-59"
-
-\end_inset
-
-Turin and Sondhi, 1993
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Visel et al., 2007"
-key "key-60"
-
-\end_inset
-
-Visel et al., 2007
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Visel et al., 2009"
-key "key-61"
-
-\end_inset
-
-Visel et al., 2009
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Zentner et al., 2011"
-key "key-62"
-
-\end_inset
-
-Zentner et al., 2011
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Zhou and Troyanskaya, 2015"
-key "key-63"
-
-\end_inset
-
-Zhou and Troyanskaya, 2015
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Kaplan et al., 2011"
+label "Kaplan et al.(2012)"
 key "key-64"
 
 \end_inset
 
-Kaplan et al., 2011
+ Kaplan, T., & Biggin, M.
+ D.
+ (2012).
+ Quantitative models of the mechanisms that control genome-wide patterns
+ of animal transcription factor binding.
+ In Methods in cell biology (Vol.
+ 110, pp.
+ 263-283).
+ Academic Press.
 \end_layout
 
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Karmodiya et al.(2012)"
+key "key-30"
 
+\end_inset
+
+ Karmodiya, K., Krebs, A.
+ R., Oulad-Abdelghani, M., Kimura, H., & Tora, L.
+ (2012).
+ H3K9 and H3K14 acetylation co-occur at many gene regulatory elements, while
+ H3K14ac marks a subset of inactive inducible promoters in mouse embryonic
+ stem cells.
+ BMC genomics, 13(1), 424.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Kelley et al.(2016)"
+key "key-31"
+
+\end_inset
+
+ Kelley, D.
+ R., Snoek, J., & Rinn, J.
+ L.
+ (2016).
+ Basset: learning the regulatory code of the accessible genome with deep
+ convolutional neural networks.
+ Genome research, 26(7), 990-999.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Khan et al., JASPA(2018)"
+key "key-32"
+
+\end_inset
+
+ Khan, A., Fornes, O., Stigliani, A., Gheorghe, M., Castro-Mondragon, J.
+ A., van der Lee, R., ...
+ & Baranasic, D.
+ (2017).
+ JASPAR 2018: update of the open-access database of transcription factor
+ binding profiles and its web framework.
+ Nucleic acids research, 46(D1), D260-D266.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Kleftogiannis et al.(2016)"
+key "key-33"
+
+\end_inset
+
+ Kleftogiannis, D., Kalnis, P., Arner, E., & Bajic, V.
+ B.
+ (2016).
+ Discriminative identification of transcriptional responses of promoters
+ and enhancers after stimulus.
+ Nucleic acids research, 45(4), e25-e25.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Karmodiya et al.(2012)"
+key "key-34"
+
+\end_inset
+
+ Karmodiya, K., Krebs, A.
+ R., Oulad-Abdelghani, M., Kimura, H., & Tora, L.
+ (2012).
+ H3K9 and H3K14 acetylation co-occur at many gene regulatory elements, while
+ H3K14ac marks a subset of inactive inducible promoters in mouse embryonic
+ stem cells.
+ BMC genomics, 13(1), 424.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Kreimer et al.(2017)"
+key "key-35"
+
+\end_inset
+
+ Kreimer, A., Zeng, H., Edwards, M.
+ D., Guo, Y., Tian, K., Shin, S., ...
+ & Li, Y.
+ (2017).
+ Predicting gene expression in massively parallel reporter assays: a comparative
+ study.
+ Human mutation, 38(9), 1240-1250.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Kulakovskiy et al.(2011)"
+key "key-36"
+
+\end_inset
+
+ Kulakovskiy, I.
+ V., Belostotsky, A.
+ A., Kasianov, A.
+ S., Esipova, N.
+ G., Medvedeva, Y.
+ A., Eliseeva, I.
+ A., & Makeev, V.
+ J.
+ (2011).
+ A deeper look into transcription regulatory code by preferred pair distance
+ templates for transcription factor binding sites.
+ Bioinformatics, 27(19), 2621-2624.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Kundaje et al.(2015)"
+key "key-37"
+
+\end_inset
+
+ Kundaje, A., Meuleman, W., Ernst, J., Bilenky, M., Yen, A., Heravi-Moussavi,
+ A., ...
+ & Amin, V.
+ (2015).
+ Integrative analysis of 111 reference human epigenomes.
+ Nature, 518(7539), 317.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Lee and Lee(2006)"
+key "key-38"
+
+\end_inset
+
+ Lee, L.
+ M., & Lee, J.
+ C.
+ (2006, June).
+ A study on high-order hidden Markov models and applications to speech recogniti
+on.
+ In International Conference on Industrial, Engineering and Other Applications
+ of Applied Intelligent Systems (pp.
+ 682-690).
+ Springer, Berlin, Heidelberg.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Lettice et al.(2003)"
+key "key-39"
+
+\end_inset
+
+ Lettice, L.
+ A., Heaney, S.
+ J., Purdie, L.
+ A., Li, L., de Beer, P., Oostra, B.
+ A., ...
+ & de Graaff, E.
+ (2003).
+ A long-range Shh enhancer regulates expression in the developing limb and
+ fin and is associated with preaxial polydactyly.
+ Human molecular genetics, 12(14), 1725-1735.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Lindblad-Toh et al.(2011)"
+key "key-40"
+
+\end_inset
+
+ Lindblad-Toh, K., Garber, M., Zuk, O., Lin, M.
+ F., Parker, B.
+ J., Washietl, S., ...
+ & Ward, L.
+ D.
+ (2011).
+ A high-resolution map of human evolutionary constraint using 29 mammals.
+ Nature, 478(7370), 476.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Mari et al.(1997)"
+key "key-41"
+
+\end_inset
+
+ Mari, J.
+ F., Haton, J.
+ P., & Kriouile, A.
+ (1997).
+ Automatic word recognition based on second-order hidden Markov models.
+ IEEE Transactions on speech and Audio Processing, 5(1), 22-25.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Markov(1906)"
+key "key-42"
+
+\end_inset
+
+ Markov, A.
+ A.
+ (1906).
+ Extension of the law of large numbers to dependent quantities.
+ Izv.
+ Fiz.-Matem.
+ Obsch.
+ Kazan Univ.(2nd Ser), 15, 135-156.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Williamson et al.(2011)"
+key "key-43"
+
+\end_inset
+
+ Williamson, I., Hill, R.
+ E., & Bickmore, W.
+ A.
+ (2011).
+ Enhancers: from developmental genetics to the genetics of common human
+ disease.
+ Developmental cell, 21(1), 17-19.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Miguel-Escalada et al.(2015)"
+key "key-44"
+
+\end_inset
+
+ Miguel-Escalada, I., Pasquali, L., & Ferrer, J.
+ (2015).
+ Transcriptional enhancers: functional insights and role in human disease.
+ Current opinion in genetics & development, 33, 71-76.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Ng et al.(2009)"
+key "key-45"
+
+\end_inset
+
+ Ng, S.
+ B., Turner, E.
+ H., Robertson, P.
+ D., Flygare, S.
+ D., Bigham, A.
+ W., Lee, C., ...
+ & Bamshad, M.
+ (2009).
+ Targeted capture and massively parallel sequencing of 12 human exomes.
+ Nature, 461(7261), 272.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Pennacchio et al.(2015)"
+key "key-46"
+
+\end_inset
+
+ Pennacchio, L.
+ A., Bickmore, W., Dean, A., Nobrega, M.
+ A., & Bejerano, G.
+ (2013).
+ Enhancers: five essential questions.
+ Nature Reviews Genetics, 14(4), 288.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Preez(1998)"
+key "key-47"
+
+\end_inset
+
+ du Preez, J.
+ A.
+ (1998).
+ Efficient training of high-order hidden Markov models using first-order
+ representations.
+ Computer speech & language, 12(1), 23-39.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Przybilla et al.(2012)"
+key "key-48"
+
+\end_inset
+
+ Przybilla, J., Galle, J., & Rohlf, T.
+ (2012).
+ Is adult stem cell aging driven by conflicting modes of chromatin remodeling?.
+ Bioessays, 34(10), 841-848.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Rabiner \\&{} Juang(1993)"
+key "key-49"
+
+\end_inset
+
+ Rabiner, L., & Juang, B.
+ H.
+ (1993).
+ Fundamentals of speech processing.
+ Prantice Hall.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Rabiner(1989)"
+key "key-50"
+
+\end_inset
+
+ Rabiner, L.
+ R.
+ (1989).
+ A tutorial on hidden Markov models and selected applications in speech
+ recognition.
+ Proceedings of the IEEE, 77(2), 257-286.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Rada-Iglesias et al.(2011)"
+key "key-51"
+
+\end_inset
+
+ Rada-Iglesias, A., Bajpai, R., Swigut, T., Brugmann, S.
+ A., Flynn, R.
+ A., & Wysocka, J.
+ (2011).
+ A unique chromatin signature uncovers early developmental enhancers in
+ humans.
+ Nature, 470(7333), 279.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Rosin et al.(2013)"
+key "key-52"
+
+\end_inset
+
+ Rosin, J.
+ M., Abassah-Oppong, S., & Cobb, J.
+ (2013).
+ Comparative transgenic analysis of enhancers from the human SHOX and mouse
+ Shox2 genomic regions.
+ Human molecular genetics, 22(15), 3063-3076.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Smemo S.(2012)"
+key "key-53"
+
+\end_inset
+
+ Smemo, S., Campos, L.
+ C., Moskowitz, I.
+ P., Krieger, J.
+ E., Pereira, A.
+ C., & Nobrega, M.
+ A.
+ (2012).
+ Regulatory variation in a TBX5 enhancer leads to isolated congenital heart
+ disease.
+ Human molecular genetics, 21(14), 3255-3263.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Soldner et al.(2016)"
+key "key-54"
+
+\end_inset
+
+ Soldner, F., Stelzer, Y., Shivalila, C.
+ S., Abraham, B.
+ J., Latourelle, J.
+ C., Barrasa, M.
+ I., ...
+ & Jaenisch, R.
+ (2016).
+ Parkinson-associated risk variant in distal enhancer of α-synuclein modulates
+ target gene expression.
+ Nature, 533(7601), 95.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Stadler et al.(2011)"
+key "key-55"
+
+\end_inset
+
+ Stadler, M.
+ B., Murr, R., Burger, L., Ivanek, R., Lienert, F., Schöler, A., ...
+ & Tiwari, V.
+ K.
+ (2011).
+ DNA-binding factors shape the mouse methylome at distal regulatory regions.
+ Nature, 480(7378), 490.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Taher et al.(2011)"
+key "key-56"
+
+\end_inset
+
+ Taher, L., McGaughey, D.
+ M., Maragh, S., Aneas, I., Bessling, S.
+ L., Miller, W., ...
+ & Ovcharenko, I.
+ (2011).
+ Genome-wide identification of conserved regulatory function in diverged
+ sequences.
+ Genome research, 21(7), 1139-1149.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Ainscough et al.(1998)"
+key "key-57"
+
+\end_inset
+
+ Ainscough, R., Bardill, S., Barlow, K., Basham, V., Baynes, C., Beard, L., ...
+ & Burrows, C.
+ (1998).
+ Genome sequence of the nematode C.
+ elegans: a platform for investigating biology.
+ Science, 282(5396), 2012-2018.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Thurman et al.(2012)"
+key "key-58"
+
+\end_inset
+
+ Thurman, R.
+ E., Rynes, E., Humbert, R., Vierstra, J., Maurano, M.
+ T., Haugen, E., ...
+ & Garg, K.
+ (2012).
+ The accessible chromatin landscape of the human genome.
+ Nature, 489(7414), 75.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Turin and Sondhi(1993)"
+key "key-59"
+
+\end_inset
+
+ Turin, W., & Sondhi, M.
+ M.
+ (1993).
+ Modeling error sources in digital channels.
+ IEEE Journal on Selected Areas in Communications, 11(3), 340-347.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Visel et al.(2007)"
+key "key-60"
+
+\end_inset
+
+ Visel, A., Minovitsky, S., Dubchak, I., & Pennacchio, L.
+ A.
+ (2007).
+ VISTA Enhancer Browser—a database of tissue-specific human enhancers.
+ Nucleic Acids Research, 35(Database issue), D88.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Visel et al.(2009)"
+key "key-61"
+
+\end_inset
+
+ Visel, A., Blow, M.
+ J., Li, Z., Zhang, T., Akiyama, J.
+ A., Holt, A., ...
+ & Afzal, V.
+ (2009).
+ ChIP-seq accurately predicts tissue-specific activity of enhancers.
+ Nature, 457(7231), 854.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Zentner et al.(2011)"
+key "key-62"
+
+\end_inset
+
+ Zentner, G.
+ E., Tesar, P.
+ J., & Scacheri, P.
+ C.
+ (2011).
+ Epigenetic signatures distinguish multiple classes of enhancers with distinct
+ cellular functions.
+ Genome research, 21(8), 1273-1283.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Zhou and Troyanskaya(2015)"
+key "key-63"
+
+\end_inset
+
+ Zhou, J., & Troyanskaya, O.
+ G.
+ (2015).
+ Predicting effects of noncoding variants with deep learning–based sequence
+ model.
+ Nature methods, 12(10), 931.
+\end_layout
 
 \end_body
 \end_document
