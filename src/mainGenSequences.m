@@ -1,25 +1,26 @@
 
 % mainGenSequences(300, 10000, 5, 25, true);
 % mainGenSequences(10000, 500, 5, 25, false);
-function mergedPeaksMin = mainGenSequences(N, L, params, startWithBackground)
+function mergedPeaksMin = mainGenSequences(N, L, params, startWithBackground, background_g_noise)
     dbstop if error
     clear pcPWMp
     close all;
 
     filename = sprintf('mergedPeaksMin_generated_m%dk%dN%dL%do%dbg%d.mat', params.m, params.k, N, L, params.order, params.backgroundAmount);
     try
-        mergedPeaksMin = load(fullfile('..', 'data', 'peaks', filename));
+        filepath = fullfile('..', 'data', 'peaks', filename);
+        mergedPeaksMin = load(filepath);
         mergedPeaksMin = mergedPeaksMin.mergedPeaksMin;
-        fprintf('loaded sequences from cache\n');
+        fprintf('loaded sequences from cache %s\n', filepath);
         return
     catch
         fprintf('generating sequences\n');
     end
     delete(fullfile('..', 'data', 'precomputation', 'pcPWMp.mat'));
     % params = misc.genParams(m, k);
-    theta = misc.genTheta(params, false);
+    theta = misc.genTheta(params, false, false);
     T = exp(theta.T);
-    G = exp(genHumanG(params));
+    G = exp(genHumanG(params, background_g_noise));
     theta.T = log(T ./ repmat(sum(T, 2) + sum(G, 2), [1, params.m]));
     theta.G = log(G ./ repmat(sum(T, 2) + sum(G, 2), [1, params.k]));
 
@@ -52,10 +53,9 @@ function T = genHumanT(params)
 end
 
 
-function G = genHumanG(params)
-    BACKGROUND_G_NOISE = 0.10;
+function G = genHumanG(params, background_g_noise)
     G = params.minG;
-    G = G + (rand(params.m, params.k) .* BACKGROUND_G_NOISE .* params.maxG);
+    G = G + (rand(params.m, params.k) .* background_g_noise ./ params.k);
     for i = 1:params.m - params.backgroundAmount
         G(i, datasample(1:params.k, ceil(params.k / params.m))) = params.maxEnhMotif;
     end
@@ -89,10 +89,10 @@ function E = genHumanE(params)
 end
 
 
-function theta = genHumanTheta(params, startWithBackground, canCrossLayer)
+function theta = genHumanTheta(params, startWithBackground, canCrossLayer, background_g_noise)
     theta.E = genHumanE(params);
     theta.T = genHumanT(params, canCrossLayer);
-    theta.G = genHumanG(params);
+    theta.G = genHumanG(params, background_g_noise);
     T = exp(theta.T);
     G = exp(theta.G) * 3;
 

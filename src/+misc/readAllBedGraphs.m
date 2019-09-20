@@ -1,3 +1,4 @@
+% bedGraphs - tissues x tracks
 function bedGraphs = readAllBedGraphs(tissueEIDs, trackNames)
     tissueWithTracksCount = length(tissueEIDs);
     for trackInd = 1:length(trackNames)

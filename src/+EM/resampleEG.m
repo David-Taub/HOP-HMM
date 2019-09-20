@@ -1,9 +1,16 @@
 
-function [E, G] = resampleEG(params, E, G)
+function [E, G, T] = resampleEG(params, E, G, T)
     EFlat = E(:, :);
-    randTheta = misc.genTheta(params, false);
+    randTheta = misc.genTheta(params, true, true);
     E(:, :) = replaceSimRows(E(:, :), randTheta.E(:, :));
     G(:, :) = replaceSimRows(G(:, :), randTheta.G(:, :));
+    T = exp(T);
+    G = exp(G);
+    s = sum(G, 2) + sum(T, 2);
+    T = T ./ repmat(s, [1, params.m]);
+    G = G ./ repmat(s, [1, params.k]);
+    G = log(G);
+    T = log(T);
 end
 
 
@@ -38,5 +45,5 @@ function M = replaceSimRows(M, randM)
         fprintf('Resampling row %d in matrix %d x %d\n', i, size(M, 1), size(M, 2));
         M(rowToReplace, :) = randM(rowToReplace, :);
     end
-    error('Should not reach here, replaced too many rows. Bad randM?');
+    %error('Should not reach here, replaced too many rows. Bad randM?');
 end

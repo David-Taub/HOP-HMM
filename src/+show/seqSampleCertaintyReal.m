@@ -13,9 +13,10 @@ function seqSampleCertaintyReal(params, theta, dataset, outpath, tissueEIDs)
     cMapWithError = [cMap;  PWM_COLOR];
     seqInd = 1;
     trackNames = {'H3K27ac', 'DNase'};
+    % tissues x 2
     bedGraphs = misc.readAllBedGraphs(tissueEIDs, trackNames);
     YEst = misc.viterbi(params, theta, dataset.X, dataset.pcPWMp);
-    for i = 1:10
+    for i = 1:20
         [tracks, seqInd] = getSeqWithTracks(dataset, bedGraphs, seqInd + 1);
         H3K27acTrack = tracks(:, :, 1);
         DNaseTrack = tracks(:, :, 2);
@@ -71,7 +72,7 @@ function seqSampleCertaintyReal(params, theta, dataset, outpath, tissueEIDs)
     end
 end
 
-
+% tracks - tissues x L x tracks
 function [tracks, seqInd] = getSeqWithTracks(dataset, bedGraphs, startInd)
     N = size(dataset.X, 1);
     for seqInd = startInd:N
@@ -84,7 +85,7 @@ function [tracks, seqInd] = getSeqWithTracks(dataset, bedGraphs, startInd)
     end
 end
 
-
+% tracks - tissues x L x tracks
 function tracks = getTracks(dataset, bedGraphs, seqInd)
     L = size(dataset.X, 2);
     chr = dataset.chrs{seqInd};
@@ -111,7 +112,7 @@ function plotProbMap(params, probMap, YEst, cMap)
     % probMap = permute(probMap, [2, 3, 1]);
     L = size(YEst, 2);
     hold on;
-    if size(probMap, 1) == params.m
+    % if params.m >= size(probMap, 1) >= params.m - params.backgroundAmount
         % m x L
         YEstOneHot = matUtils.vec2mat(YEst, params.m);
         selectedProb = probMap .* YEstOneHot(1:size(probMap, 1), :);
@@ -120,7 +121,7 @@ function plotProbMap(params, probMap, YEst, cMap)
         for j = 1:size(selectedProb, 1)
             b(j).CData = cMap(j, :) * BARS_PLOT_DARKNESS_FACTOR;
         end
-    end
+    % end
 
     p = plot(1:L, probMap', 'LineWidth', 1.5);
     cellCMap = {};

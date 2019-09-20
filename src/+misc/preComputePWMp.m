@@ -16,7 +16,7 @@ function out = preComputePWMpAux(Xs1H, params)
     persistent sample
     [N, L, ~] = size(Xs1H);
     % L = L - fJ;
-    filename = misc.pathMaker(params, N, L, 'pcPWMp', '.mat');
+    filename = misc.pathMaker(params, N, L, 0, 'pcPWMp', '.mat');
     pcPWMProbabilityFile = fullfile('..', 'data', 'precomputation', filename);
 
     newSample = [Xs1H(1:500), Xs1H(end-499:end), params.k, L, N];

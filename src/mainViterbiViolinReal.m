@@ -1,75 +1,100 @@
 
 function mainViterbiViolin()
-    conf.doESharing = false;
     conf.startWithBackground = false;
-    conf.doResampling = false;
-    conf.maxIters = 1000;
+    conf.doEnhSpecific = true;
+    conf.seqsPerTissue = 1000;
+    conf.maxIters = 25;
+    conf.repeat = 1;
     conf.canCrossLayer = true;
     conf.patience = 4;
-    conf.L = 1000;
-    conf.N = 100;
+    conf.L = 2000;
+    conf.peakMaxLength = 1000;
+    conf.peakMinL = 200;
+    conf.peakMaxL = 1500;
     conf.withExponent = false;
-    conf.repeat = 1;
-    conf.order = 2;
-    conf.m = 5;
-    conf.k = 10;
+    conf.order = 3;
+    conf.m = 3;
+    conf.k = 20;
+    conf.withBackground = true;
+    conf.withGenes = false;
+    conf.minSamplesCount = 10;
+    conf.sequencesToShow = 5;
     conf.backgroundAmount = 1;
-    conf.doGTBound = false;
+    conf.doESharing = false;
+    conf.doGTBound = true;
+    conf.doResampling = false;
+    conf.topPercent = 0.5;
+    % conf.tissueList = [2, 37];
+    % conf.tissueList = [3, 23];
+    conf.tissueList = [2, 18];
+    conf.startTUniform = false;
     main(conf);
-
 end
 
 function main(conf)
     dbstop if error
     close all;
-    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, conf.doESharing, conf.doGTBound, conf.doResampling);
-    mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.startWithBackground);
-    thetaOrig = mergedPeaksMin.theta;
-    outpath = misc.pathMaker(params, conf.N, conf.L, 'viterbiViolin', '.jpg');
-    subtitle = sprintf('m=%d, k=%d, %d%% of data', conf.m, conf.k);
-    dataset.title = subtitle;
-    dataset.X = mergedPeaksMin.seqs;
-    dataset.theta = mergedPeaksMin.theta;
-    dataset.pcPWMp = misc.preComputePWMp(mergedPeaksMin.seqs, params);
-    [thetaEst, ~] = EM.EM(dataset, params, conf.maxIters, conf.patience, conf.repeat);
-    thetaEst = misc.permThetaByAnother(params, thetaOrig, thetaEst);
-    [~, ~, ~, ~, ~, psi] = EM.EStep(params, thetaEst, dataset.X, dataset.pcPWMp);
+    mergedPeaksMin = peaks.minimizeMergePeak(conf.topPercent, conf.doEnhSpecific, conf.withBackground, conf.withGenes,...
+                                             conf.seqsPerTissue, conf.L, conf.peakMinL, conf.peakMaxL, conf.tissueList,...
+                                             conf.minSamplesCount);
+    N = size(mergedPeaksMin.seqs, 1);
+    testTrainRatio = 0.01;
+    selectedPWMs = misc.PWMsFeatureSelect(mergedPeaksMin, conf.k);
+    params = misc.genParams(conf.m, selectedPWMs, conf.backgroundAmount, conf.L, conf.order, ...
+                            conf.doESharing, conf.doGTBound, conf.doResampling);
+    [test, train] = misc.crossValidationSplit(params, mergedPeaksMin, testTrainRatio);
+    [thetaEst, ~] = EM.EM(train, params, conf.maxIters, conf.patience, conf.repeat, conf.startTUniform);
     % N x L x 2
-    YEstViterbi = misc.viterbi(params, thetaEst, dataset.X, dataset.pcPWMp);
+    plotViolins(params, thetaEst, train, mergedPeaksMin.tissueEIDs)
+end
 
+function plotViolins(params, thetaEst, dataset, tissueEIDs)
+    YEstViterbi = misc.viterbi(params, thetaEst, dataset.X, dataset.pcPWMp);
+    % estMask - N x L
     estMask1 = YEstViterbi(:, :, 1) == 1;
     estMask2 = YEstViterbi(:, :, 1) == 2;
     estMask3 = YEstViterbi(:, :, 1) == 3;
-
-    bedGraphs = misc.readAllBedGraphs(mergedPeaksMin.tissueEIDs, {'DNase'});
+    % bedGraphs - tissues x tracks
+    bedGraphs = misc.readAllBedGraphs(tissueEIDs, {'DNase'});
     % N x L x tissues
-    % TODO
-    tracks = getTracks(bedGraphs)
+    tracks = getTracks(dataset, bedGraphs, 1);
+    % estVals - N x L
+    tracks1 = tracks(:, :, 1);
+    estVals1 = tracks1(estMask1);
+    estVals2 = tracks1(estMask2);
+    estVals3 = tracks1(estMask3);
+    outpath = misc.pathMaker(params, size(estMask1, 1), conf.L, 0, '3violine_1', '.jpg');
+    violinViterbi3(estVals1, estVals2, estVals3, outpath);
 
-    estVals1 = tracks(estMask1, 1);
-    estVals2 = tracks(estMask2, 1);
-    estVals3 = tracks(estMask3, 1);
-    violinViterbi3(estVals1, estVals2, estVals3);
-
-    estVals1 = tracks(estMask1, 2);
-    estVals2 = tracks(estMask2, 2);
-    estVals3 = tracks(estMask3, 2);
-    % TODO
-    violinViterbi3(estVals1, estVals2, estVals3);
+    tracks2 = tracks(:, :, 2);
+    estVals1 = tracks2(estMask1);
+    estVals2 = tracks2(estMask2);
+    estVals3 = tracks2(estMask3);
+    outpath = misc.pathMaker(params, size(estMask1, 1), conf.L, 0, '3violine_2', '.jpg');
+    violinViterbi3(estVals1, estVals2, estVals3, outpath);
 end
 
 
-function violinViterbi3(truePosVals, trueNegVals, estPosVals, estNegVals, outpath)
+% TODO
+% estVals1 - N1, 1
+% estVals2 - N2, 1
+% estVals3 - N3, 1
+
+function violinViterbi3(estVals1, estVals2, estVals3, outpath)
+    % outpath = 'c:\tmp\tmp.jpg'
+    % estVals1 = r1;
+    % estVals2 = r2;
+    % estVals3 = r3;
     fig = figure('units', 'pixels', 'Position', [0 0 1000 1000]);
-    maxRange = max([truePosVals; trueNegVals; estPosVals; estNegVals], [], 1);
-    minRange = min([truePosVals; trueNegVals; estPosVals; estNegVals], [], 1);
-    show.distributionPlot({[truePosVals; minRange; maxRange], [trueNegVals; minRange; maxRange]}, 'histOri', 'right', 'color', 'r', 'widthDiv', [2 2], 'showMM', 0, 'histOpt', 0, 'divFactor', [minRange: maxRange]);
-    show.distributionPlot({[estPosVals; minRange; maxRange], [estNegVals; minRange; maxRange]}, 'histOri', 'left', 'color', 'b', 'widthDiv', [2 1], 'showMM', 0, 'histOpt', 0, 'divFactor', [minRange: maxRange]);
+    maxRange = max([estVals1; estVals2; estVals3], [], 1);
+    minRange = min([estVals1; estVals2; estVals3], [], 1);
+    % show.distributionPlot({estVals1, estVals2, estVals3}, 'showMM', 0);
+    show.distributionPlot(estVals1, 'showMM', 0, 'color', 'r', 'xValues', 1);
+    show.distributionPlot(estVals2, 'showMM', 0, 'color', 'b', 'xValues', 2);
+    show.distributionPlot(estVals3, 'showMM', 0, 'color', 'k', 'xValues', 3);
     jf = java.text.DecimalFormat;
-    tick1 = sprintf('TFBS Positions [n=%s, n=%s]', char(jf.format(length(truePosVals))), char(jf.format(length(estPosVals))));
-    tick2 = sprintf('Non-TFBS Positions [n=%s, n=%s]', char(jf.format(length(trueNegVals))), char(jf.format(length(estNegVals))));
-    set(gca,'xtick', [1:2], 'xticklabel', {tick1, tick2});
-    ylabel({'Log Posterior';'Probability (log\gamma)'});
+    set(gca,'xtick', [1:3], 'xticklabel', {'State 1', 'State 2', 'State 3'});
+    ylabel('DNase -log(p-value)');
     ylh = get(gca,'ylabel');
     ylp = get(ylh, 'Position');
     ext = get(ylh,'Extent');
@@ -78,3 +103,43 @@ function violinViterbi3(truePosVals, trueNegVals, estPosVals, estNegVals, outpat
     title('Posterior Probability of TFBS and non-TFBS Locations');
     saveas(fig, outpath);
 end
+
+% bedGraphs - tissues x tracks
+% tracks - N x L x tissues
+function tracks = getTracks(dataset, bedGraphs, trackInd)
+    [N, L] = size(dataset.X);
+    tissues = size(bedGraphs, 1);
+    tracks = zeros(N, L, tissues);
+    for tissueInd = 1:size(bedGraphs, 1)
+        fprintf('getting tracks for tissue index %d\n', tissueInd)
+        for seqInd = 1:N
+            chr = dataset.chrs{seqInd};
+            to = dataset.starts(seqInd) + L;
+            from = dataset.starts(seqInd);
+            tracks(seqInd, :, tissueInd) = getTrack(bedGraphs{tissueInd, trackInd}, chr, from, to);
+            % if all(tracks(i, :, trackInd) == 0)
+            %     fprintf('Seq has not enough samples\n', trackInd)
+            %     return;
+            % end
+        end
+    end
+end
+
+% ret - L x 1
+function ret = getTrack(bedGraph, trackChr, trackFrom, trackTo)
+    MIN_SAMPLES_IN_SEQ = 100;
+    mask = strcmp(bedGraph.chrs, trackChr) & (bedGraph.tos >= trackFrom) & (bedGraph.froms <= trackTo);
+    % dilation of bin vector
+    mask = [mask(2:end); false] | mask | [false; mask(1:end-1)];
+    % linear interp
+    foundSamples = sum(mask);
+    if foundSamples == 0
+        ret = zeros(trackTo - trackFrom, 1);
+        return
+    end
+    knownPoints = double([(bedGraph.tos(mask) + bedGraph.froms(mask)) / 2]');
+    knownVals = bedGraph.vals(mask)';
+    wantedPoints = double([trackFrom : trackTo - 1]);
+    ret = interp1(knownPoints, knownVals, wantedPoints);
+end
+

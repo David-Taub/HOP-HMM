@@ -18,18 +18,18 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
     params.PWMs = params.PWMs(selectedPWMs, :, :);
     params.lengths = params.lengths(selectedPWMs);
     params.names = {params.names{selectedPWMs}};
-    params.learningRate = 1;
+    params.learningRate = 0.8;
 
     params.doGTBound = doGTBound;
     params.doResampling = doResampling;
 
-    params.batchSize = 500;
+    params.batchSize = 10   ;
     [kMax, params.n, params.J] = size(params.PWMs);
     params.k = min(k, kMax);
     params.EPS = 10 ^ -7;
     maxBbMotifRatio = 1 / 90; % maximal ratio of all motif letters in BG section
-    maxEnhMotifRatio = 1 / 4; % maximal ratio of a single motif letters in enhancer section
-    minEnhMotifRatio = 2 / 15; % maximal ratio of a single motif letters in enhancer section
+    maxEnhMotifRatio = 1 / 20; % maximal ratio of a single motif letters in enhancer section
+    % minEnhMotifRatio = 1 / 15; % minimal ratio of a single motif letters in enhancer section
     maxCrossEnhRatio = 1 / 100; % maximal ratio of transition to any another enhancer
     maxCrossBgRatio = 1 / 20; % maximal ratio of transition to any another enhancer
     maxEnhLen = 1000;
@@ -38,7 +38,7 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
     minBgLen = 500;
 
     params.maxEnhMotif = maxEnhMotifRatio / mean(params.lengths);
-    params.minEnhMotifTotal = minEnhMotifRatio / mean(params.lengths);
+    % params.minEnhMotifTotal = minEnhMotifRatio / mean(params.lengths);
     params.minEnhMotif = params.EPS;
     params.maxCrossEnh = maxCrossEnhRatio / minEnhLen;
     params.minCrossEnh = params.EPS;

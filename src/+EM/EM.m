@@ -16,7 +16,7 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, patience, re
     for rep = 1:repeat
         % X = X(randperm(N), :);
         fprintf('Repeat %d / %d\n', rep, repeat);
-        initTheta = misc.genTheta(params, startTUniform);
+        initTheta = misc.genTheta(params, startTUniform, true);
         [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, params.doGTBound, patience);
         if bestLikelihood < iterLike
             bestLikelihood = iterLike;

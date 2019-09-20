@@ -1,22 +1,30 @@
-function [theta] = genTheta(params, startTUniform)
+function [theta] = genTheta(params, startTUniform, totalRandom)
     % normalized random probabilities
     if startTUniform || params.backgroundAmount == 0
         theta.startT = log(ones(params.m, 1) ./ params.m);
     else
         theta.startT = log([ones(params.m - params.backgroundAmount, 1) * params.EPS; ones(params.backgroundAmount, 1) * (1 - params.EPS * (params.m - params.backgroundAmount)) / params.backgroundAmount]);
     end
-    % theta.T = log((rand(params.m) .* (params.maxT - params.minT)) + params.minT);
-    % theta.G = log((rand(params.m, params.k) .* (params.maxG - params.minG)) + params.minG);
-    % T = normrnd((params.maxT + params.minT) / 2, (params.maxT - params.minT) / 3);
-    % G = normrnd((params.maxG + params.minG) / 2, (params.maxG - params.minG) / 3);
-    s = sum(params.minT, 2) + sum(params.minG, 2);
-    Ta = (params.maxT - params.minT) .* rand(params.m, params.m);
-    Ga = (params.maxG - params.minG) .* rand(params.m, params.k);
-    Ga = (params.maxEnhMotif .* (Ga + params.minG) ./ repmat(sum(Ga + params.minG, 2), [1, params.k])) - params.minG;
-    Ta = (1 - s) .* Ta ./ repmat((sum(Ta, 2) + sum(Ga, 2)), [1, params.m]);
-    Ga = (1 - s) .* Ga ./ repmat((sum(Ta, 2) + sum(Ga, 2)), [1, params.k]);
-    theta.T = log(params.minT + Ta);
-    theta.G = log(params.minG + Ga);
+    if totalRandom
+        M = rand(params.m, params.m + params.k);
+        M = M ./ repmat(sum(M, 2), [1, params.m + params.k]);
+        theta.T = M(:, 1:params.m);
+        theta.G = M(:, params.m + 1:end);
+        s = sum(theta.G, 2) + sum(theta.T, 2);
+        theta.T = theta.T ./ repmat(s, [1, params.m]);
+        theta.G = theta.G ./ repmat(s, [1, params.k]);
+        theta.T = log(theta.T);
+        theta.G = log(theta.G);
+    else
+        s = sum(params.minT, 2) + sum(params.minG, 2);
+        Ta = (params.maxT - params.minT) .* rand(params.m, params.m);
+        Ga = (params.maxG - params.minG) .* rand(params.m, params.k);
+        Ga = (params.maxEnhMotif .* (Ga + params.minG) ./ repmat(sum(Ga + params.minG, 2), [1, params.k])) - params.minG;
+        Ta = (1 - s) .* Ta ./ repmat((sum(Ta, 2) + sum(Ga, 2)), [1, params.m]);
+        Ga = (1 - s) .* Ga ./ repmat((sum(Ta, 2) + sum(Ga, 2)), [1, params.k]);
+        theta.T = log(params.minT + Ta);
+        theta.G = log(params.minG + Ga);
+    end
 
     % m x n
     theta.E = rand([params.m, ones(1, params.order) .* params.n]);

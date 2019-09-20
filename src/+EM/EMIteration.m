@@ -50,7 +50,6 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
         batchesTheta.G = batchesTheta.G + exp(G);
         batchesTheta.startT = batchesTheta.startT + exp(startT);
         batchesLikelihood = batchesLikelihood + sum(pX, 1);
-        EM.GTbound(params, exp(G), exp(T));
     end
     % geometric average is more stable than regular mean for very small likelihood values
     iterLike = batchesLikelihood / N;
@@ -58,12 +57,12 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
     theta.E = log(exp(inputTheta.E) .* (1 - params.learningRate) + params.learningRate .* batchesTheta.E / batchAmount);
     theta.G = log(exp(inputTheta.G) .* (1 - params.learningRate) + params.learningRate .* batchesTheta.G / batchAmount);
     theta.startT = log(exp(inputTheta.startT) .* (1 - params.learningRate) + params.learningRate .* batchesTheta.startT / batchAmount);
-    theta.startT = inputTheta.startT;
+    % theta.startT = inputTheta.startT;
     if doGTBound
-        [theta.G, theta.T] = EM.GTbound(params, exp(theta.G), exp(theta.T));
+        [theta.G, theta.T, theta.startT] = EM.GTbound2(params, exp(theta.G), exp(theta.T), exp(theta.startT));
     end
     if params.doResampling
-        [theta.E, theta.G] = EM.resampleEG(params, theta.E, theta.G);
+        [theta.E, theta.G, theta.T] = EM.resampleEG(params, theta.E, theta.G, theta.T);
     end
     % clf
     % show.showTwoThetas(params, dataset.theta, theta, false, sprintf('%d', it), 'tmp.jpg');

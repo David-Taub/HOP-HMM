@@ -4,7 +4,7 @@ function mainRealData()
     conf.startWithBackground = false;
     conf.doEnhSpecific = true;
     conf.seqsPerTissue = 1000;
-    conf.maxIters = 10;
+    conf.maxIters = 25;
     conf.repeat = 1;
     conf.canCrossLayer = true;
     conf.patience = 4;
@@ -13,8 +13,8 @@ function mainRealData()
     conf.peakMinL = 200;
     conf.peakMaxL = 1500;
     conf.withExponent = false;
-    conf.order = 2;
-    conf.m = 5;
+    conf.order = 3;
+    conf.m = 3;
     conf.k = 20;
     conf.withBackground = true;
     conf.withGenes = false;
@@ -24,8 +24,10 @@ function mainRealData()
     conf.doESharing = false;
     conf.doGTBound = true;
     conf.doResampling = false;
-    conf.topPercent = 0.8;
-    conf.tissueList = [3, 23];
+    conf.topPercent = 0.5;
+    conf.tissueList = [2, 23];
+    % conf.tissueList = [3, 23];
+    % conf.tissueList = [2, 18];
     conf.startTUniform = false;
     main(conf);
 end
@@ -38,7 +40,7 @@ function main(conf)
                                              conf.seqsPerTissue, conf.L, conf.peakMinL, conf.peakMaxL, conf.tissueList,...
                                              conf.minSamplesCount);
     N = size(mergedPeaksMin.seqs, 1);
-    testTrainRatio = 0.15;
+    testTrainRatio = 0.01;
     selectedPWMs = misc.PWMsFeatureSelect(mergedPeaksMin, conf.k);
     params = misc.genParams(conf.m, selectedPWMs, conf.backgroundAmount, conf.L, conf.order, ...
                             conf.doESharing, conf.doGTBound, conf.doResampling);
