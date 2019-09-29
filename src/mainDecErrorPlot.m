@@ -5,7 +5,7 @@
 function mainDecErrorPlot()
     conf.doESharing = false;
     conf.startWithBackground = false;
-    conf.maxIters = 20;
+    conf.maxIters = 30;
     conf.canCrossLayer = true;
     conf.patience = 10;
     conf.L = 1000;
@@ -15,28 +15,29 @@ function mainDecErrorPlot()
     conf.k = 25;
     conf.backgroundAmount = 1;
     conf.doResampling = false;
-    conf.background_g_noise = 0.003;
+    conf.background_g_noise = 0.010;
 
-    conf.order = 2;
-    conf.N = 4000;
-    conf.doGTBound = true;
-    conf.doResampling = true;
-    main(conf);
-
-    conf.order = 2;
-    conf.N = 4000;
-    conf.doGTBound = false;
-    conf.doResampling = false;
-    main(conf);
-
-    conf.order = 2;
-    conf.N = 200;
+    conf.order = 3;
+    conf.N = 1000;
     conf.doGTBound = true;
     conf.doResampling   = true;
-    main(conf);[]
+    main(conf);
 
-    conf.order = 2;
-    conf.N = 200;
+    conf.order = 3;
+    conf.N = 1000;
+    conf.doGTBound = false;
+    conf.doResampling   = false;
+    main(conf);
+
+    conf.background_g_noise = 0.030;
+    conf.order = 3;
+    conf.N = 1000;
+    conf.doGTBound = true;
+    conf.doResampling   = true;
+    main(conf);
+
+    conf.order = 3;
+    conf.N = 1000;
     conf.doGTBound = false;
     conf.doResampling   = false;
     main(conf);
@@ -82,7 +83,7 @@ function [likelihood, rmse] = main(conf)
     mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.startWithBackground, conf.background_g_noise);
     thetaOrig = mergedPeaksMin.theta;
     [trainDataset, testDataset] = misc.crossValidationSplit(params, mergedPeaksMin, 0.15);
-    for j = 1:2
+    for j = 1:15
         close all;
         show.showTheta(thetaOrig)
         thetaEsts(1) = misc.genTheta(params, true, true);
