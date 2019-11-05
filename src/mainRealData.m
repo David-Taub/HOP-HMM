@@ -25,7 +25,7 @@ function mainRealData()
     conf.doGTBound = true;
     conf.doResampling = false;
     conf.topPercent = 0.5;
-    conf.tissueList = [2, 23];
+    conf.tissueList = [2, 37];
     % conf.tissueList = [3, 23];
     % conf.tissueList = [2, 18];
     conf.startTUniform = false;

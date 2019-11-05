@@ -63,14 +63,14 @@ function plotViolins(params, thetaEst, dataset, tissueEIDs)
     estVals1 = tracks1(estMask1);
     estVals2 = tracks1(estMask2);
     estVals3 = tracks1(estMask3);
-    outpath = misc.pathMaker(params, size(estMask1, 1), conf.L, 0, '3violine_1', '.jpg');
+    outpath = misc.pathMaker(params, size(estMask1, 1), size(estMask1, 2), 0, '3violine_1', '.jpg');
     violinViterbi3(estVals1, estVals2, estVals3, outpath);
 
     tracks2 = tracks(:, :, 2);
     estVals1 = tracks2(estMask1);
     estVals2 = tracks2(estMask2);
     estVals3 = tracks2(estMask3);
-    outpath = misc.pathMaker(params, size(estMask1, 1), conf.L, 0, '3violine_2', '.jpg');
+    outpath = misc.pathMaker(params, size(estMask1, 1), size(estMask1, 2), 0, '3violine_2', '.jpg');
     violinViterbi3(estVals1, estVals2, estVals3, outpath);
 end
 
