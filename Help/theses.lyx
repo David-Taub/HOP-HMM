@@ -1,5 +1,5 @@
-#LyX 2.2 created this file. For more info see http://www.lyx.org/
-\lyxformat 508
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
 \begin_document
 \begin_header
 \save_transient_properties true
@@ -2747,11 +2747,15 @@ When in a background-state, after the observable variable emission, the
 \end_layout
 
 \begin_layout Standard
-Figure 12: Instead of holding a single sparse 8x8 transition matrix, an
- alternative compact form holds only the non-fixed transition probabilities,
- split into T and G matrices.
- The transitions non-fixed transitions probabilities are in between background-s
-tates, and between background-states to their TF-states (marked in blue).
+Figure 12: Instead of holding a single sparse 8
+\begin_inset Formula $\times$
+\end_inset
+
+8 transition matrix, an alternative compact form holds only the non-fixed
+ transition probabilities, split into T and G matrices.
+ The non-fixed transitions probabilities held in the compact form are the
+ ones in between background-states, and between background-states to their
+ TF-states (outlined with blue).
  A concatenation of a row in T and G holds the probability of the next hidden-st
 ate given the current background-state.
 \end_layout
@@ -7144,7 +7148,11 @@ n
 \begin_inset Formula $\theta$
 \end_inset
 
- converged into different result parameters.
+ converged into different result 
+\begin_inset Formula $\theta$
+\end_inset
+
+.
  There is a correlation between the log likelihood yielded by the 
 \begin_inset Formula $\theta$
 \end_inset
@@ -7162,7 +7170,7 @@ n
 \begin_inset Formula $\theta$
 \end_inset
 
- is unknown and so it the error.
+ is unknown.
  This correlation suggests a strategy of redoing several EM runs, and choosing
  the one with the highest likelihood will result in an estimation closer
  to the true 
@@ -7197,6 +7205,10 @@ Adding regularization on T in
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Standard
 Figure 12: Over multiple runs of HOP-Baum-Welch, a correlation exists between
  the estimated 
 \begin_inset Formula $\theta$
@@ -7232,16 +7244,6 @@ Figure 12: Over multiple runs of HOP-Baum-Welch, a correlation exists between
 
 \begin_layout Standard
 \begin_inset Graphics
-	filename Figures/dec_theta_error.jpg.png
-	scale 50
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Graphics
 	filename Figures/dec_viterbi.jpg
 	scale 50
 
@@ -7251,7 +7253,7 @@ Figure 12: Over multiple runs of HOP-Baum-Welch, a correlation exists between
 \end_layout
 
 \begin_layout Standard
-Figure: (A) the EM iterations draws the estimated 
+Figure 13: (A) the EM iterations draws the estimated 
 \begin_inset Formula $\theta$
 \end_inset
 
