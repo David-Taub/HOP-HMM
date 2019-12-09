@@ -15,7 +15,7 @@ function mainRealData()
     conf.withExponent = false;
     conf.order = 3;
     conf.m = 3;
-    conf.k = 20;
+    conf.k = 100;
     conf.withBackground = true;
     conf.withGenes = false;
     conf.minSamplesCount = 10;
@@ -25,9 +25,9 @@ function mainRealData()
     conf.doGTBound = true;
     conf.doResampling = false;
     conf.topPercent = 0.5;
-    conf.tissueList = [2, 37];
+    % conf.tissueList = [2, 37];
     % conf.tissueList = [3, 23];
-    % conf.tissueList = [2, 18];
+    conf.tissueList = [2, 18];
     conf.startTUniform = false;
     main(conf);
 end

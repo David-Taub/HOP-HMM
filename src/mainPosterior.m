@@ -10,11 +10,13 @@ function  mainPosterior()
     conf.withExponent = false;
     conf.repeat = 3;
 
+    conf.background_g_noise = 0.010;
+
     conf.order = 3;
     conf.m = 5;
     conf.k = 10;
     conf.backgroundAmount = 1;
-    conf.doGTBound = false;
+    conf.doGTBound = true;
     conf.doResampling = false;
     main(conf);
 end
@@ -22,18 +24,15 @@ end
 function main(conf)
     dbstop if error
     close all;
-    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, conf.doESharing);
-    mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.startWithBackground);
+    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, ...
+                            conf.doESharing, conf.doGTBound, conf.doResampling);
+    mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.startWithBackground, conf.background_g_noise);
     thetaOrig = mergedPeaksMin.theta;
     [trainDataset, testDataset] = misc.crossValidationSplit(params, mergedPeaksMin, 0.15);
-    [thetaEst, ~] = EM.EM(trainDataset, params, conf.maxIters, conf.doGTBound, conf.doResampling, conf.patience, conf.repeat);
+    [thetaEst, ~] = EM.EM(trainDataset, params, conf.maxIters, conf.patience, conf.repeat, false);
 
     thetaEst = misc.permThetaByAnother(params, thetaOrig, thetaEst);
-    outpath = sprintf('Posterior_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doGTBound, conf.N, conf.L);
-    show.seqSampleCertainty(params, thetaEst, testDataset, 3, outpath);
-    outpath = sprintf('Posterior2_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doGTBound, conf.N, conf.L);
-    show.seqSampleCertainty(params, thetaEst, testDataset, 3, outpath);
-    outpath = sprintf('Posterior3_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doGTBound, conf.N, conf.L);
+    outpath = sprintf('seqSample_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doGTBound, conf.N, conf.L);
     show.seqSampleCertainty(params, thetaEst, testDataset, 3, outpath);
     show.showTheta(thetaEst);
     show.showTheta(thetaOrig);

@@ -55,6 +55,8 @@ function Y = viterbi(params, theta, X, pcPWMp)
             else
                 t = t - 1;
             end
+            enhancerStates = Y(:, : , 1);
+            assert(all(enhancerStates(:) <= params.m))
         end
     end
 end

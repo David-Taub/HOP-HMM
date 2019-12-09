@@ -14,6 +14,7 @@ function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
     for i = 1:params.m
         cellCMap{i, 1} = cMap(i, :);
     end
+    % YEst - N x L x 2
     YEst = misc.viterbi(params, theta, dataset.X, dataset.pcPWMp);
     ERROR_COLOR = [1.0, 0.1, 0.1];
     PWM_COLOR = [0, 0, 0];
@@ -89,6 +90,10 @@ function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
     legendStrings{pwm_val} = 'TFBS';
     legend(legendStrings);
     saveas(gcf, outpath);
+    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    outpath = "confMat_" + outpath;
+    showConfusionMatrix(params, YEst, Y);
+    saveas(gcf, outpath);
 end
 
 function rotateYLabel()
@@ -109,4 +114,18 @@ function posterior = calcPosterior(params, gamma, psi)
         end
     end
     posterior = exp(posterior);
+end
+
+% YEst - N x L x 2
+% Y - N x L x 2
+function showConfusionMatrix(params, YEst, Y)
+    enhancerStateY = Y(:, :, 1);
+    enhancerStateYEst = YEst(:, :, 1);
+    confMat = confusionmat(enhancerStateY(:), enhancerStateYEst(:));
+
+    imagesc(confMat);
+    colorbar();
+    ax = gca;
+    ax.XTick = [1 : params.m];
+    ax.YTick = [1 : params.m];
 end
