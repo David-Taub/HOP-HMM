@@ -14,15 +14,15 @@ function Y = viterbi(params, theta, X, pcPWMp)
         O1 = -inf(params.m, L+params.J);
         O2 = zeros(params.m, L, 2);
         % m x L x 2
-        O1(:, 1+params.J) = theta.startT + Eps(i, :, 1)';
+        O1(:, 1 + params.J) = theta.startT + Eps(i, :, 1)';
         % Viterbi dynamic programming
         for t = 2:L
             % m x m
-            baseSteps = repmat(O1(:, t-1+params.J), [1, params.m]) + theta.T + repmat(Eps(i, :, t), [params.m, 1]);
+            baseSteps = repmat(O1(:, t - 1 + params.J), [1, params.m]) + theta.T + repmat(Eps(i, :, t), [params.m, 1]);
             % m x k
             subSteps = zeros(params.m, params.k);
             for j = 1:params.k
-                subSteps(:, j) = O1(:, t-params.lengths(j)-1+params.J) + permute(pcPWMp(i, j, t-params.lengths(j)'+params.J), [1,3,2]);
+                subSteps(:, j) = O1(:, t - params.lengths(j) - 1+params.J) + permute(pcPWMp(i, j, t - params.lengths(j)' + params.J), [1,3,2]);
             end
             % m x k
             subSteps = subSteps + theta.G + repmat(Eps(i, :, t)', [1, params.k]);
@@ -37,7 +37,7 @@ function Y = viterbi(params, theta, X, pcPWMp)
             % end
             O2(baseMask, t, 2) = 0;
             O2(baseMask, t, 1) = maxBaseStepInds(baseMask);
-            O1(baseMask, t+params.J) = maxBaseStep(baseMask);
+            O1(baseMask, t + params.J) = maxBaseStep(baseMask);
         end
 
         % back trailing
@@ -46,17 +46,18 @@ function Y = viterbi(params, theta, X, pcPWMp)
         t = L;
         while t >= 2
             % m x m
-            Y(i, t-1, :) = O2(Y(i, t, 1), t, :);
-            if Y(i, t-1, 2) > 0
-                motifLen = params.lengths(Y(i, t-1, 2));
-                Y(i, t-motifLen-1:t-1, :) = repmat(Y(i, t-1, :), [1, motifLen+1, 1]);
-                Y(i, t-motifLen-1, 2) = 0;
-                t = t-params.lengths(Y(i, t-1, 2))-1;
+            Y(i, t - 1, :) = O2(Y(i, t, 1), t, :);
+            if Y(i, t - 1, 2) > 0
+                motifLen = params.lengths(Y(i, t - 1, 2));
+                Y(i, t - motifLen - 1:t - 1, :) = repmat(Y(i, t - 1, :), [1, motifLen + 1, 1]);
+                Y(i, t - motifLen - 1, 2) = 0;
+                t = t - params.lengths(Y(i, t - 1, 2)) - 1;
             else
                 t = t - 1;
             end
-            enhancerStates = Y(:, : , 1);
-            assert(all(enhancerStates(:) <= params.m))
         end
     end
+    enhancerStates = Y(:, : , 1);
+    assert(all(enhancerStates(:) <= params.m))
+    assert(all(enhancerStates(:) >= 1))
 end

@@ -4,7 +4,8 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
         % N x L - order + 1
         dataset.XIndicesHotMap = misc.genXInidcesHotMap(params, dataset);
     end
-    batchAmount = floor(N / params.batchSize);
+    batchSize = min(N, params.batchSize);
+    batchAmount = floor(N / batchSize);
     assert(batchAmount > 0)
     batchesTheta = inputTheta;
     batchesTheta.T = batchesTheta.T * 0;

@@ -7311,6 +7311,124 @@ Figure 13: (A) the EM iterations draws the estimated
 TODO: confusion graph of the states classification of the Viterbi algo.
 \end_layout
 
+\begin_layout Subsubsection*
+TODO: Remove research question part, insert into the results head paragraph.
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: remove sub titles of the background section, 
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: background -> Introduction
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: math parts should be in methods
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: generative paragraph should be before Markov models paragraph
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: After generative paragraph, explain why we chose the Markov model
+ (no memory)
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: Algorithm psaudocode jumps in pdf
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: typo in FA 
+\backslash
+ BA t -> t+1 j->j'
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: Cite generative HMM Kulp David https://www.semanticscholar.org/paper/A-Gener
+alized-Hidden-Markov-Model-for-the-of-Human-Kulp-Haussler/8d68b92eed31134ccddd66
+73f5b0c5dcc68d114a
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: typo next to citation of tommy, next to the part we extend his work
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: add spaces after citation ;
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: A* -> A_?
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: move compact figure before the HOP HMM figure
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: After description of HOP HMM, add inference section about: 1.
+ viterbi 2.
+ postirior 3: postirior sum hirizontal 4.
+ postirior sum vertical 5.
+ transition postirior (with figures all over) 
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: Add code usage section
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: Baum-Welch -> Learning title
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: remove duplication of math in P(Xi) sum of alpha times beta in denuminator
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: in algo psaudocode, base-state to bg state
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: in results, open with intor paragraph: what can we do now? we will
+ use this to check the data on synthetics and real DNA
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: explain the sampling part of synthetic data with figure.
+ also, explain the two rows of real and viterbi in the sequence sample figure
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: describe the regularization (in methods?) aka bound
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: scatter plot, remove stuff that are bounded, like T, add to figure
+ description
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: in postirior of sequences figure, add plot sum of all TFs postirior
+ that should rise in the TFs
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: confusion matrix should be added with enhancer type (floor) and per
+ each specific TF
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: recall + precision for each state
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: add sections about the params in great detail
+\end_layout
+
 \begin_layout Subsection*
 Roadmap Dataset
 \end_layout

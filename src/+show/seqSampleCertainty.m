@@ -16,6 +16,16 @@ function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
     end
     % YEst - N x L x 2
     YEst = misc.viterbi(params, theta, dataset.X, dataset.pcPWMp);
+
+
+
+    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    conf_outpath = "confMat_" + outpath;
+    size(dataset.Y)
+    showConfusionMatrix(params, YEst, dataset.Y);
+    saveas(gcf, conf_outpath);
+
+
     ERROR_COLOR = [1.0, 0.1, 0.1];
     PWM_COLOR = [0, 0, 0];
     MATCH_COLOR = [1, 1, 1];
@@ -49,9 +59,9 @@ function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
         % im.AlphaData = [errorMask;errorMask] > 0;
         plot([0, L], [-LOW_BAR_HIEGHT / 2, -LOW_BAR_HIEGHT / 2], 'LineWidth', 1, 'Color', 'k');
 
-        text(L + 1, 0.5, 'Posterior Probability', 'FontSize', 10)
-        text(L + 1, -LOW_BAR_HIEGHT / 4, 'Viterbi Estimation', 'FontSize', 10)
-        text(L + 1, -3 * LOW_BAR_HIEGHT / 4, 'Real States', 'FontSize', 10)
+        text(L + 1, 0.5, 'Posterior Probability', 'FontSize', 10);
+        text(L + 1, -LOW_BAR_HIEGHT / 4, 'Viterbi Estimation', 'FontSize', 10);
+        text(L + 1, -3 * LOW_BAR_HIEGHT / 4, 'Real States', 'FontSize', 10);
 
         % m x L
         YOneHot = matUtils.vec2mat(dataset.Y(ind, :), params.m);
@@ -90,17 +100,14 @@ function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
     legendStrings{pwm_val} = 'TFBS';
     legend(legendStrings);
     saveas(gcf, outpath);
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
-    outpath = "confMat_" + outpath;
-    showConfusionMatrix(params, YEst, Y);
-    saveas(gcf, outpath);
+
 end
 
 function rotateYLabel()
     ylh = get(gca,'ylabel');
     gyl = get(ylh);
     ylp = get(ylh, 'Position');
-    set(ylh, 'Rotation', 0, 'Position', ylp, 'VerticalAlignment', 'middle', 'HorizontalAlignment', 'right')
+    set(ylh, 'Rotation', 0, 'Position', ylp, 'VerticalAlignment', 'middle', 'HorizontalAlignment', 'right');
 end
 
 % posterior - N x m x L
@@ -119,13 +126,19 @@ end
 % YEst - N x L x 2
 % Y - N x L x 2
 function showConfusionMatrix(params, YEst, Y)
+        % plot a confusion matrix
+
+
     enhancerStateY = Y(:, :, 1);
     enhancerStateYEst = YEst(:, :, 1);
-    confMat = confusionmat(enhancerStateY(:), enhancerStateYEst(:));
-
-    imagesc(confMat);
-    colorbar();
+    confusion = confusionmat(enhancerStateY(:), enhancerStateYEst(:));
+    confusion = confusion ./ (size(enhancerStateY, 1) * size(enhancerStateY, 2));
+    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    imagesc(confusion); colorbar; title('Viterbi Confusion Matrix');
+    caxis([0 1]);
     ax = gca;
     ax.XTick = [1 : params.m];
     ax.YTick = [1 : params.m];
+    xlabel('Estimated Enhancer States');
+    ylabel('True Enhancer States');
 end
