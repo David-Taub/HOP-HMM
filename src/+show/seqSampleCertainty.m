@@ -1,6 +1,5 @@
 % sample sequences, and draw for each colorful plots with what the posterior
 % probability was compared to the correct state per letter
-% Y - N x L
 function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
     [N, L] = size(dataset.Y);
     % gamma - N x m x L
@@ -21,8 +20,9 @@ function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
 
     figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     conf_outpath = "confMat_" + outpath;
-    size(dataset.Y)
-    showConfusionMatrix(params, YEst, dataset.Y);
+    Y = dataset.Y;
+    Y(:, :, 2) = dataset.Y2;
+    showConfusionMatrix(params, YEst, Y);
     saveas(gcf, conf_outpath);
 
 
@@ -127,18 +127,30 @@ end
 % Y - N x L x 2
 function showConfusionMatrix(params, YEst, Y)
         % plot a confusion matrix
-
-
     enhancerStateY = Y(:, :, 1);
     enhancerStateYEst = YEst(:, :, 1);
     confusion = confusionmat(enhancerStateY(:), enhancerStateYEst(:));
-    confusion = confusion ./ (size(enhancerStateY, 1) * size(enhancerStateY, 2));
+    confusion = confusion ./ repmat(sum(confusion, 2), [1, size(confusion, 2)]);
     figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     imagesc(confusion); colorbar; title('Viterbi Confusion Matrix');
     caxis([0 1]);
     ax = gca;
-    ax.XTick = [1 : params.m];
-    ax.YTick = [1 : params.m];
+    ax.XTick = [1 : size(confusion, 1)];
+    ax.YTick = [1 : size(confusion, 1)];
+    xlabel('Estimated Enhancer States');
+    ylabel('True Enhancer States');
+
+
+    enhancerStateY = 100 * Y(:, :, 1) + Y(:, :, 2);
+    enhancerStateYEst = 100 * YEst(:, :, 1) + YEst(:, :, 2);
+    confusion = confusionmat(enhancerStateY(:), enhancerStateYEst(:));
+    confusion = confusion ./ repmat(sum(confusion, 2), [1, size(confusion, 2)]);
+    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    imagesc(confusion); colorbar; title('Viterbi Confusion Matrix');
+    caxis([0 1]);
+    ax = gca;
+    ax.XTick = [1 : size(confusion, 1)];
+    ax.YTick = [1 : size(confusion, 1)];
     xlabel('Estimated Enhancer States');
     ylabel('True Enhancer States');
 end
