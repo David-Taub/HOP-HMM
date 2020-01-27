@@ -2,15 +2,15 @@
 function  mainPosterior()
     conf.doESharing = false;
     conf.startWithBackground = true;
-    conf.maxIters = 100;
+    conf.maxIters = 220;
     conf.canCrossLayer = true;
     conf.patience = 10;
     conf.L = 1500;
     conf.N = 1000;
     conf.withExponent = false;
-    conf.repeat = 3;
+    conf.repeat = 6;
 
-    conf.background_g_noise = 0.010;
+    conf.background_g_noise = 0.007;
 
     conf.order = 3;
     conf.m = 5;
