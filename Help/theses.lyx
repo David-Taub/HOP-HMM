@@ -1045,7 +1045,7 @@ When a DNA sequence is read from a tissue sample, it is often stored as
 \begin_layout Standard
 A common feature extraction technique often used is representing the DNA
  sequence as a vector of the in-sequence frequencies of all the possible
- k-mer as used in gkm-SVM.
+ kmer as used in gkm-SVM.
  In this technique, similarly to the bag of words technique in text analysis
  and natural language processing, the order of the kmer locations is sacrificed
  for a more meaning-oriented, structured and fixed-length data encoding.
@@ -2297,9 +2297,16 @@ Figure: a GHMM with a TF state which emits using a PWM.
 \end_layout
 
 \begin_layout Standard
-Another generalization made to the HMM is the usage of conditional distributions
-, by making the transition and emission dependent on previous hidden states
- (
+Another generalization made to the HMM called higher-order HMM uses conditional
+ distribution by making the transition and emission dependent on previous
+ hidden states (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-17"
+
+\end_inset
+
+; 
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-41"
@@ -2322,19 +2329,19 @@ key "key-38"
 
 ).
  Although these HMM variants are capable of expressing a more complex structure
- of DNA sequence (different k-mers frequencies in the genomic regions),
- the number of parameters required for DNA analysis tends to rise with the
- increase of the assumed complexity of the DNA structure.
+ of DNA sequence (different kmers frequencies in the genomic regions), the
+ number of parameters required for DNA analysis tends to rise with the increase
+ of the assumed complexity of the DNA structure.
  The increase of hidden states needed may introduce overfitting in the learning
  process, when the data size is limited.
 \end_layout
 
 \begin_layout Standard
-Instead of conditional emission which depends on the previous hidden states,
- we suggest a high-order emission which depends on previous emitted observable
- variables.
+Instead of higher-order emission which depends on the previous hidden states
+ was previous used, high-order emission which depends on previous emitted
+ observable variables is a less researched field.
  Such a HMM variant fits better to the locality nature for the task of emission
- k-mer structures, but it only requires 
+ kmer structures, but it only requires 
 \begin_inset Formula $O\left(m^{2}+4^{K}\right)$
 \end_inset
 
@@ -2346,7 +2353,7 @@ Instead of conditional emission which depends on the previous hidden states,
 \begin_inset Formula $\left(m^{K}\right)$
 \end_inset
 
- parameters that would have been required for holding a k-mer distribution
+ parameters that would have been required for holding a kmer distribution
  in a regular HMM, where m is the number of hidden states of the HOP-HMM,
  and K is the number of previous states in the dependency.
  
@@ -2361,6 +2368,11 @@ Here we present HOP-HMM, a variant model of HMM, that is well fitted to
  utilize the structure of enhancers containing TFBSs inside them, due to
  the TFBS emitting TF-states that take part in the generation process of
  the sequence.
+ Due to the assumed local physical nature of the TF binding of the DNA sequence
+ and success of HMM in gene prediction, we think the memorylessness of HMMs
+ fit well to the task of enhancer prediction.
+ HOP-HMM balances between the Markovian memorylessness and the observed
+ kmer of the TFBS present in regulatory regions in the DNA.
 \end_layout
 
 \begin_layout Standard
@@ -2375,24 +2387,7 @@ key "key-64"
  enhancers location in the genome.
  In HOP-HMM we added the high order conditional emission probability on
  non-PWM states.
- Higher-order HMMs were previously used (
-\begin_inset CommandInset citation
-LatexCommand citealp
-key "key-17"
-
-\end_inset
-
-; 
-\begin_inset CommandInset citation
-LatexCommand citealp
-key "key-47"
-
-\end_inset
-
-), but only with the transition and emission dependency on previous hidden
- states and not previous observable variables.
- HMM variant with emission dependency on previous emissions is less researched
- field.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -2409,9 +2404,9 @@ key "key-47"
 Figure 9: A small HOP-HMM that has one background-state which emits a single
  observable variable, and one TF-state which emits multiple observable variable
  that represent a TFBS sampled from a PWM.
- Unlike gHMM, in HOP-HMM TF-state can not be the start hidden state and
- the emission of the background-state is of order two (o=2), meaning it
- is conditioned on the previous observable variable.
+ Unlike GHMM, in HOP-HMM TF-state can not be the starting hidden state and
+ the background-state is has 2-order emission, meaning it is conditioned
+ on the previous observable variable.
 \end_layout
 
 \begin_layout Standard
@@ -2550,9 +2545,8 @@ s (green).
 \begin_layout Standard
 While most background-states represent an enhancer type, we also would like
  to have background regions in between the enhancer.
- For that end we predefine one or more background-states as non-enhancers,
- by restricting the probability of transferring from these background-states
- into their TF-states.
+ For that end we predefine one or more background-states as non-enhancers
+ by restricting their transfer probability into their TF-states.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -7223,15 +7217,6 @@ TODO: math parts should be in methods
 \end_layout
 
 \begin_layout Subsubsection*
-TODO: generative paragraph should be before Markov models paragraph
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: After generative paragraph, explain why we chose the Markov model
- (no memory)
-\end_layout
-
-\begin_layout Subsubsection*
 TODO: Algorithm psaudocode jumps in pdf
 \end_layout
 
@@ -7521,8 +7506,8 @@ The TF inside the nucleus of specific tissues are thought to be a key factor
  Studies using TFBS of TF present in specific cell types are used to classify
  cell specific enhancer sequences.
  show heat map of AUC-ROC results.
- Between these TFBS, k-mer frequencies varies between enhancers and non
- regulatory
+ Between these TFBS, kmer frequencies varies between enhancers and non regulator
+y
 \begin_inset Quotes eld
 \end_inset
 
@@ -7531,12 +7516,12 @@ background
 \end_inset
 
  DNA, and was used to classify enhancers from background using only the
- k-mer distribution (Inbar and tommy, gkm-SVM), and is thought to play a
+ kmer distribution (Inbar and tommy, gkm-SVM), and is thought to play a
  role in spacial properties, nucleosome location and cleavage that cause
  accessibility of near-by TFBS.
  Using 44 out of 127 epigenetic data of Roadmap Project to select tissue
  specific enhancer sequences dataset.
- In our method, we look for different TFBS and k-mer presence in sequences
+ In our method, we look for different TFBS and kmer presence in sequences
  to classify cell-specific sequences, inside regulatory modules.
 \end_layout
 
