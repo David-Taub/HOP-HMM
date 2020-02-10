@@ -1,0 +1,8844 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{babel}
+\usepackage{float}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding T1
+\font_roman "times" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "newtxmath" "auto"
+\font_default_family rmdefault
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 1
+\output_sync_macro "\synctex=1"
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 0
+\use_package mhchem 0
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine natbib
+\cite_engine_type authoryear
+\biblio_style plainnat
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\headheight 0cm
+\headsep 0cm
+\footskip 0cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+The Hebrew University of Jerusalem – the Faculty of Computer Science and
+ Engineering
+\end_layout
+
+\begin_layout Title
+High-Order Generalized Hidden Markov Model to Classify Regulatory Sequences
+ in the Human Genome
+\end_layout
+
+\begin_layout Part*
+Introduction
+\end_layout
+
+\begin_layout Subsection*
+The Genome
+\end_layout
+
+\begin_layout Standard
+The genome of every organism contains the inherited information that defines
+ its complex structure and function.
+ The genome is built out of Deoxyribonucleic acid (DNA) molecule, that is
+ a built out of two chains of nucleotides units that form a double helix
+ shape.
+ Each nucleotide is built our of 4 different types bases: cytosine, guanine,
+ adenine or thymine or in short A,C,G and T.
+ The nucleotides are organized in pairs called base pairs where each of
+ the paired nucleotides are complimentary to each other and provide redundancy.
+\end_layout
+
+\begin_layout Standard
+Proteins are macromolecoles, which carry various roles and functions within
+ organisms.
+ They are built out of 20 different amino acids, which order and structure
+ is encoded inside genetic segments in the genome called genes.
+ Through the transcription and translation processes, the genes are expressed
+ and result in the formation of proteins.
+ In the transcription process the gene is read and transcribed into a single
+ strand sequence of RNA.
+ Later, the RNA molecules are translated into a sequence of amino acids
+ that constitute a protein.
+\end_layout
+
+\begin_layout Subsubsection*
+Genes
+\end_layout
+
+\begin_layout Standard
+Gene sequences are built out fragmented introns and exons, where only the
+ exons becomes the RNA molecules that translates into proteins while the
+ introns are spliced away beforehand.
+ Although the exons alone hold the recipe for the construction of the organism's
+ proteins, the complexity of the organism is not a product of their number
+ or their length.
+ For example, the humans and Caenorhabditis elegans roundworms both have
+ about 19,000 genes (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-16"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-57"
+
+\end_inset
+
+), with roughly the same total exon length and number, although the human
+ body is vastly more diverse and complex.
+ The source for the organisms complexity differences is attributed to the
+ gene regulation mechanism.
+ The human genome is 3.23 Gb long, and it is estimated that gene regulation
+ regions involve 10-20% of it (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-46"
+
+\end_inset
+
+), compared to exon regions that involve only 1% (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-45"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Subsubsection*
+Enhancers
+\end_layout
+
+\begin_layout Standard
+Enhancers are are non-coding regulatory DNA sequences that play a key role
+ in the regulation transcription of genes.
+ In humans there are hundreds of thousands of enhancers, scattered over
+ the non-coding regions of the genome, and their length are usually between
+ 100-1000 bp.
+ When activated, the DNA folding draws the enhancer spatially closer to
+ another type of regulatory element called promoter, resulting in the translatio
+n of a gene adjacent to the promoter (see figure 1).
+ The enhancer's target gene is the expressed gene from this activation process.
+ It can be located up to a megabase upstream or downstream from their activating
+ enhancer (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-43"
+
+\end_inset
+
+), and are orientation independent to it.
+ Moreover, the gene-enhancer connection is not exclusive, and the common
+ case is that each enhancer has several target genes and vice versa (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-20"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/Enhancer_gene_transcription.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure: A) An enhancer and its distal target gene.
+ B) The DNA folds and the attached with transcription factors draw other
+ co-factor proteins that together form the transcription complex.
+ C) The RNA Polymerase II is recruited and while moving along the gene it
+ generates a new RNA molecule that is transcribed off the gene sequence.
+\end_layout
+
+\begin_layout Standard
+In VISTA Project (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-60"
+
+\end_inset
+
+), mouse fertilized eggs where injected enhancers sequences, adjacent to
+ LacZ reporter gene, encoding enzyme with blue color.
+ The injected DNA sequences bared no epigenetic information and integrated
+ in an arbitrary position in the mouse genome.
+ The transgenic embryos where photographed after 11.5 days and, for some
+ of the DNA sequences, a similar pattern was present over several instances.
+ These results imply that for many DNA sequences, the DNA code alone possess
+ the potential to become a tissue specific enhancer, even without epigenetic
+ information.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/f735.jpg
+	scale 15
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename Figures/experiment_process.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure: Transgenic mouse embryo in the 11.5 day.
+ As an fertilized egg a synthetic enhancer sequence was injected, which
+ is related to the dorsal root ganglia spinal neurons.
+ The enhancer became activated and caused the expression of the blue color
+ marker gene that was coupled to it.
+ Taken from Vista Enhancer Browser, experiment hs-51 embryo 2.
+\end_layout
+
+\begin_layout Subsubsection*
+Transcription Factor Binding
+\end_layout
+
+\begin_layout Standard
+Transcription factors (TF) are proteins that bind to the DNA, and together
+ with other co-factor proteins initiate the gene transcription process.
+ TFs tend to bind to certain transcription factor binding sites (TFBS),
+ which are motifs of nucleotides on the DNA with average length of 12 bp
+ in humans (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-36"
+
+\end_inset
+
+) that are conserved between species (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-12"
+
+\end_inset
+
+).
+ On genome-wide association studies (GWAS) done with ChIP-seq method, different
+ TFs have different distributions of TFBS they are observed attached to
+ (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-32"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Both enhancers and promoters contain TFBSs that are critical for the their
+ correct regulatory operation.
+ Multiple studies have shown that genetic alternations in TFBS can affect
+ the expression of the regulated gene and are a major cause of different
+ human diseases (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-35"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-44"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-54"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-53"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-6"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-13"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-39"
+
+\end_inset
+
+).
+ From the sequence aspect, enhancers and promoters have a similar structure
+ of a background nucleotide sequence with distribution different from other
+ part of the genome, with TFBS motifs tiled inside this background sequence.
+\end_layout
+
+\begin_layout Standard
+The enrichment of TFBS is a good predictor for the location of promoter
+ and enhancer regulatory regions and the type of cells they will be active
+ in.
+ Folding of DNA allows the enhancer-promoter interactions, in which the
+ TFs take major part.
+ Once bounded to the DNA, the TFs recruit other cofactor proteins to them,
+ and together they form a transcription preinitiation complex (PIC), a very
+ large assembly of proteins.
+ Out of the tens of proteins constructing the PIC, the sub-unit RNA Polymerase
+ (RNA pol II) has the role of transcribing the adjacent gene.
+ it opens the double stranded DNA, so that one strand of nucleotides is
+ exposed and becomes a template for RNA synthesis.
+\end_layout
+
+\begin_layout Subsubsection*
+Positional Weight Matrices (PWMs)
+\end_layout
+
+\begin_layout Standard
+For generating a simplistic yet accurate model for representing the TF binding
+ potential of a DNA sequence, i.e.
+ 
+\begin_inset Formula $P(x_{1:n}|binding)$
+\end_inset
+
+, we are usually required to assume independence between positions and a
+ small span of influence by the sequence around the binding site.
+ The peaks of the ChIP-seq data are used as the ground truth of TF binding
+ locations, from which different models can be built.
+ Position weight matrix (PWM) as introduced in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "key-7"
+
+\end_inset
+
+ is the most widely used probabilistic model for addressing this task.
+ The underlying assumption of the PWM model is that every position in the
+ DNA sequence has an independent probability to attach to the TF, and therefore
+ the total binding probability is a multiplication of all the per-position
+ probabilities in the motif:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P(x_{1:n}|binding)=\prod_{i\in[n]}P(x_{i}|binding)
+\]
+
+\end_inset
+
+Where n is the size of relevant sequence.
+ The size of the sequence that is affected by the binding event is derived
+ from the physical characteristics of the TF.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $P(x_{i}|binding)$
+\end_inset
+
+ is estimated by counting the nucleotides frequency in every position of
+ the observed binding sites, which are the ChIP-seq peaks.
+ For a motif of length J, this probability estimation is stored in a PWM
+ matrix W as followed: 
+\begin_inset Formula $W_{i,j}=\frac{1}{N}\sum_{k\in N}\boldsymbol{1}(X_{i,k}=j)$
+\end_inset
+
+ where 
+\begin_inset Formula $i\in[J]$
+\end_inset
+
+ the position in the motif and 
+\begin_inset Formula $j\in[4]$
+\end_inset
+
+ the nucleotide index of A,C,G and T.
+\end_layout
+
+\begin_layout Standard
+From a generative model point of view, the sequence is generated by a TFBS
+ motifs emission system.
+ For this needs, the log of the matrix often comes handy for calculation
+ of 
+\begin_inset Formula $log\left(L(W;x_{1:n})\right)$
+\end_inset
+
+, the log of the probability that a motif was generated by a PWM 
+\begin_inset Formula $W$
+\end_inset
+
+.
+ This calculation is done be a convolution of 
+\begin_inset Formula $log(W)$
+\end_inset
+
+ on a one-hot encoding of the sequence.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/pwm_mult.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 2: a sub-sequence out of the DNA is represented in a one-hot encoding,
+ then entry-wise multiplied with the PWM.
+ Then, the sum of the logs of the maximal values of each column in the result
+ matrix is calculated, which is the log likelihood of the TF binding to
+ the sub-sequence.
+ This log likelihood is calculated for each location in the sequence, where
+ location with high values indicate high likelihood of TF binding.
+\end_layout
+
+\begin_layout Subsubsection*
+Inter TFBS Sequences and Conservation
+\end_layout
+
+\begin_layout Standard
+Conserved non-coding elements (CNE) reside in clusters, usually with low
+ gene density but with vicinity to genes.
+ Typically, CNE are structured in arrays known as genomic regulatory block
+ (GRB), with a mean length of 1.4 Mb (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-11"
+
+\end_inset
+
+).
+ The correlation between conservation of non-coding region and enhancer
+ functionality is not strong.
+ Some verified enhancers are weakly or not conserved between species (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-21"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-52"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-56"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-40"
+
+\end_inset
+
+) and some highly conserved areas in the mouse genome are not associated
+ to regulatory activity and their deletion and yielded viable mice (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-1"
+
+\end_inset
+
+).
+ Nevertheless, an assay of elements with 100% sequence identity of over
+ 200 bp between human and mouse found that 50% showed enhancers activity
+ in mice (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-60"
+
+\end_inset
+
+).
+ The reason for such ultra-conservation of 200 bp sequences when the TFBS
+ is only 4-8 bp long is unclear.
+ It is possible that these conserved sequences have spacial role when binding
+ to multiple TFs of the PIC or that these enhancers has other functions
+ which are not yet understood such as eRNA (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-23"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-3"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Subsection*
+Epigenetics
+\end_layout
+
+\begin_layout Standard
+Almost all cells in every organism contain its genome, but only part of
+ genome is active in any specific cell.
+ Cells of different types and in different operation modes differ by gene
+ expression patterns.
+ The reason for that lies in regulation components that are outside of the
+ genomic sequence.
+ The location and presence of TFBS, background nucleotides distribution
+ and other sequence related properties are not enough to explain regulatory
+ role of regions in the genome.
+\end_layout
+
+\begin_layout Standard
+Several epigenetic features (which do not involve the nucleotides sequence
+ directly) correlate with enhancer regions in the genome:
+\end_layout
+
+\begin_layout Itemize
+Accessibility
+\end_layout
+
+\begin_layout Itemize
+TF & cofactors binding
+\end_layout
+
+\begin_layout Itemize
+Histone modifications
+\end_layout
+
+\begin_layout Itemize
+DNA methylation
+\end_layout
+
+\begin_layout Standard
+These properties and mechanisms have measurable features that lie on top
+ of the genome.
+ Their combination is the main source of identification for enhancer regions
+ in the genome.
+ Each cell has its own epigenetic features, in a binaric form, e.g.
+ a specific part of the genome can be either accessible, or not.
+ When several similar cells from the same tissue sample are measured, a
+ frequency or count of the feature is measured per DNA loci, and generates
+ epigenetic data.
+ The epigenetic data is commonly used as the ground truth indication for
+ enhancer sequences, as done for the human genome in the ENCODE project.
+\end_layout
+
+\begin_layout Subsubsection*
+Accessibility
+\end_layout
+
+\begin_layout Standard
+In eukaryotes, the DNA is packed around a structure of 8 histone proteins,
+ together forming a nucleosome core.
+ The location of the nucleosome binding is not random over the DNA sequence,
+ but has a tendency for specific DNA binding sites (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-9"
+
+\end_inset
+
+).
+ DNA that is wrapped around a nucleosome has a lesser probability to interact
+ with proteins, as it is physically inaccessible.
+ Both the enhancer, the promoter and the gene need to be accessible for
+ a successful transcription.
+\end_layout
+
+\begin_layout Standard
+Since the scenario of TF binding on an enhancer requires an accessible DNA
+ region, I hypersensative sites are used for detecting a potential DNA cleavages
+ that have the potential of being regulatory elements, in usually a better
+ resolution than histone marks.
+\end_layout
+
+\begin_layout Subsubsection*
+Histone Marks
+\end_layout
+
+\begin_layout Standard
+Chromatin modifications signatures, also called histone marks, are predictive
+ of enhancer position and activity status (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-60"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-19"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-18"
+
+\end_inset
+
+).
+ The histone marks are considered to contain a certain
+\begin_inset Quotes eld
+\end_inset
+
+histone code
+\begin_inset Quotes erd
+\end_inset
+
+ which encode complex information, additionally to the DNA, regarding the
+ transcription regulation and other aspects.
+ Comparing to other epigenetic information, and especially DNA methylation
+ (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-48"
+
+\end_inset
+
+), chromatin modifications have a short time-scale of seconds or hours (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-25"
+
+\end_inset
+
+), hence they are considered part of the dynamic changes of the cell's modes.
+\end_layout
+
+\begin_layout Standard
+H3K4me1 and H3K27ac are among the predominant histone marks of active enhancers,
+ where H3K4me1 are enriched on transcribed genes and enhancers prior to
+ activation (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-7"
+
+\end_inset
+
+), and is thought to precede the H3K27ac modification (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-8"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-51"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-62"
+
+\end_inset
+
+) which is known to occur during the activation.
+ Other histone marks that are present on active enhancers and are used for
+ their detection are H3K9ac (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-15"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-30"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-62"
+
+\end_inset
+
+) and H3K18ac (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-28"
+
+\end_inset
+
+).
+ Even though H3K27ac have been identified as an important mark for distinguishin
+g active enhancers from poised enhancers (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-8"
+
+\end_inset
+
+), it is not enough as its own since when present alongside H3K4me3 it is
+ an indication for active promoters (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-26"
+
+\end_inset
+
+).
+ In contrast, H3K27ac absence and H3K4me1and H3K27me3 enrichment are typical
+ for poised enhancers (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-8"
+
+\end_inset
+
+).
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/Enhancers_status.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 3: The accessibility of the enhancer's sequence and its surrounding
+ histone marks are connected to its regulatory activity state.
+ On the upper part an active enhancer sequence that is accessible for protein
+ interaction needed for transcription, where as on the lower part an inactive
+ enhancer is inaccessible since it is wrapped around a nucleosome.
+\end_layout
+
+\begin_layout Subsubsection*
+DNA Methylation
+\end_layout
+
+\begin_layout Standard
+DNA methylation at cytosine and CpG sites has been involved in genome silencing
+ in multiple processes (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-29"
+
+\end_inset
+
+), and has been documented as largely correlated with gene expression inhibition
+ when present in promoters.
+ In enhancer elements, anti-correlation was found between DNA methylation
+ density and enrichment of active enhancer histone marks and TF binding
+ (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-55"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-58"
+
+\end_inset
+
+), although the cause and consequence relationship underlying these correlations
+ is not yet clear.
+\end_layout
+
+\begin_layout Subsubsection*
+Epigenetics Limitation
+\end_layout
+
+\begin_layout Standard
+The currently most accurate method for predicting the location of tissue
+ specific enhancers in a genome wide scale, is analyzing the histone marks
+ and TF and cofactors presence using ChIP-seq from a cell line or from a
+ tissue, combined with DNase I hypersensative (DHS).
+\end_layout
+
+\begin_layout Standard
+Several approaches have faced the problem of locating enhancers by modeling
+ gene expression based on epigenetic marks.
+ However, these models rely on experimental data, and are inherently limited
+ to the specific tissues we can extract and isolate for epigenetic examination.
+ Furthermore, such models do no supply  a classification of enhancers for
+ new variation found in the population.
+ Another disadvantage is the need for live cells for the verification of
+ the regulatory activity of a sequence.
+ The ultimate goal of an efficient computational method for predicting and
+ explaining the reason for the functional nature of sequences
+\begin_inset Quotes eld
+\end_inset
+
+in-silico
+\begin_inset Quotes erd
+\end_inset
+
+ has produced positive, yet far from sufficient results in the last years,
+ as reviewed in (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-33"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/genome_browser.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 4: Epigenetic feature tracks measured by ENCODE, taken from the tenth
+ chromosome of a H1-hESC cell line.
+ Highlighted in light blue, the peaks of the H3K27ac (1st green plot) and
+ H3K4me1 (2nd green plot) histone marks and the DNaseI hyper sensitivity
+ feature (4th green plot) together with the lack of H3K27me3 (3rd green
+ plot) signal are indication of an active enhancer, as indicated by the
+ ChromHMM classification (bottom).
+ Note the decrease between the two peaks of H3K27ac and H3K4me1 is located
+ on top of the increase of the DNaseI hyper sensitivity, which implies a
+ cleavage in between two nucleosomes with modifications.
+\end_layout
+
+\begin_layout Subsubsection*
+Previous Work
+\end_layout
+
+\begin_layout Standard
+There are several achievements in the task of predicting epigenetic and
+ regulatory properties of DNA elements given only their sequence using machine
+ learning algorithms.
+ DeepSEA (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-63"
+
+\end_inset
+
+) deep convolutional neural network (DCNN) is fed with 1000 bp DNA sequence
+ and predicts an output vector of 919 binary features which represents the
+ chromatin modifications of 200 bp bin in the center of the input sequence.
+ The training labels used are the chromatin modification are extracted from
+ ENCODE and Roadmap Epigenomics data releases.
+\end_layout
+
+\begin_layout Standard
+Basset (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-32"
+
+\end_inset
+
+) also used DCNN with known PWM as weights initialization on ENCODE and
+ Roadmap Epigenomics data to predict a binary vector that represents accessibili
+ty in 164 cell types based on 600 bp DNA sequence.
+ In DeepBind (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-2"
+
+\end_inset
+
+) a DCNN was used to predict binding of 538 TFs and 194 RNA binding proteins
+ from DNA sequences of varying lengths.
+ In gkm-SVM (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-5"
+
+\end_inset
+
+), gapped kmers presence indicator vector were used as features for an SVM
+ classifier to predict the role of DNA sequences with varying lengths.
+\end_layout
+
+\begin_layout Standard
+ChromHMM (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-14"
+
+\end_inset
+
+) is a widely used software that tackles the problem of analyzing the epigenetic
+ data for concluding roles in the genomic sequence.
+ The algorithm uses chromatin mark reads, threshold to binary values, as
+ input to HMM which then allows classifying the genome state in each position
+ in the genome.
+\end_layout
+
+\begin_layout Standard
+A disadvantage of these method is their need for a training data of known
+ regulatory elements or with epigenetic data, which is commonly obtained
+ from GWAS surveys done on 127 obtained human cell types in the Roadmap
+ and ENCODE projects (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-37"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-15"
+
+\end_inset
+
+).
+ The number of different cell types in the human body is estimated to be
+ higher than 2200 (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-10"
+
+\end_inset
+
+), and so we cannot know in certainty the number and location of tissue
+ specific enhancers active in most of these cell types.
+\end_layout
+
+\begin_layout Subsubsection*
+
+\series bold
+Data Representation
+\end_layout
+
+\begin_layout Standard
+When a DNA sequence is read from a tissue sample, it is often stored as
+ a sequence of letters A,C,G and T in FASTA format.
+ For an algorithm to process it, these characters are mapped into a data
+ structure of integers 1,2,3 and 4 respectively.
+ For many algorithms, such as in DeepSEA, Basset, and our HOP-Baum-Welch,
+ it is preferable to encode these sequences of integers as a sequence one-hot
+ vectors (also called indicator vectors), as described in figure 3.
+\end_layout
+
+\begin_layout Standard
+A common feature extraction technique often used is representing the DNA
+ sequence as a vector of the in-sequence frequencies of all the possible
+ kmer as used in gkm-SVM.
+ In this technique, similarly to the bag of words technique in text analysis
+ and natural language processing, the order of the kmer locations is sacrificed
+ for a more meaning-oriented, structured and fixed-length data encoding.
+\end_layout
+
+\begin_layout Section*
+Stochastic Models
+\end_layout
+
+\begin_layout Subsection*
+Generative & Discriminative Models
+\end_layout
+
+\begin_layout Standard
+In machine learning classification models, there are a two main approaches
+ called generative models and discriminative models.
+ Both assumes an observed variables X and target variables Y, also commonly
+ referred to as data samples and labels.
+\end_layout
+
+\begin_layout Itemize
+The generative models assume a joint probability 
+\begin_inset Formula $P\left(X,Y\right)$
+\end_inset
+
+.
+ Using the data one can estimate the distribution 
+\begin_inset Formula $P\left(X,Y\right)$
+\end_inset
+
+, then from it estimate 
+\begin_inset Formula $P\left(Y|X\right)$
+\end_inset
+
+.
+ It is assumed that such a model can generate the random instances of the
+ data either as pairs of 
+\begin_inset Formula $\left(x,y\right)$
+\end_inset
+
+ or generate instances of x given y.
+\end_layout
+
+\begin_layout Itemize
+Discriminative models assume conditional probability 
+\begin_inset Formula $P\left(Y|X\right)$
+\end_inset
+
+, which is estimated directly from the data.
+\end_layout
+
+\begin_layout Standard
+In classification problems, the task at hand is to arrive from the observed
+ X to its label Y, e.g.
+ given a DNA sequence X, deciding its role label Y.
+ Both models eventually use the 
+\begin_inset Formula $P\left(Y|X\right)$
+\end_inset
+
+ estimation to base their classification.
+ Namely, classifying a data sample 
+\begin_inset Formula $x$
+\end_inset
+
+ by 
+\begin_inset Formula $y_{est}=argmax_{y}P\left(Y=y|X=x\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Discriminative models are more widely used than generative models.
+ They are often easier to use and build since they require less assumptions
+ on the origin or generation of the data.
+ For example, a discriminative model such as a DNN classifying the role
+ of DNA sequence assumes very little on the way the DNA sequence is related
+ to it's role and generated based on it, but instead it finds features in
+ the sequence that indicate its role.
+ Such a model often gives very little for later understanding of the nature
+ of the data generation process, and can generate no new data later for
+ other uses.
+\end_layout
+
+\begin_layout Subsection*
+Markov Model
+\end_layout
+
+\begin_layout Standard
+Markov model (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-42"
+
+\end_inset
+
+), named after a Russian mathematician Andrey Markov, is a stochastic model
+ which models a system that changes randomly such as the weather or car
+ traffic.
+ In a Markov model, at any time the model is at one of m states 
+\begin_inset Formula $\left\{ S_{1},...,S_{m}\right\} $
+\end_inset
+
+, where the first state is sampled from a distribution 
+\begin_inset Formula $\pi_{i}=P\left(y_{1}=S_{i}\right)$
+\end_inset
+
+ and the probability of transitions between the states is denoted by 
+\begin_inset Formula $T_{i,j}=P\left(y_{t}=S_{i}|y_{t-1}=S_{j}\right)$
+\end_inset
+
+.
+ The model's travel over the states is called a Markov process, and the
+ sequence of states visited in the process is called a Markov chain.
+\end_layout
+
+\begin_layout Standard
+The likelihood of a Markov chain X generated by a Markov Model 
+\begin_inset Formula $\theta=\{\pi,T\}$
+\end_inset
+
+ is a joint probability of the first state and all following transition,
+ which due to the independence between transition events can be written
+ as :
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+L(\theta;X)=P_{\theta}(x_{0},x_{1},...,x_{L})=\pi_{x_{0}}\cdot T_{x_{0},x_{1}}\cdot T_{x_{1},x_{2}}\cdot...\cdot T_{x_{L-1},x_{L}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/Markov_model.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 6: A) Markov model with 3 states (yellow green and blue).
+ B,C) The model starts with a state sampled from 
+\begin_inset Formula $\pi$
+\end_inset
+
+, and travels between the states with a transition distribution 
+\begin_inset Formula $T$
+\end_inset
+
+.
+ D) The model can generate Markov chains of states, where the transition
+ between the states is conditioned on the previous state alone, causing
+ the Markov process to be memoryless.
+\end_layout
+
+\begin_layout Subsection*
+Hidden Markov Model
+\end_layout
+
+\begin_layout Standard
+Hidden Markov model (HMM) is a Markov model variation that models a system
+ that travels over hidden states in a Markov process, and while doing so
+ it emits variables called observed variables.
+ As the Markov model, HMM is an generative model, and therefore it assumes
+ the existence of a joint probability 
+\begin_inset Formula $P\left(x_{1:L},y_{1:L}\right)$
+\end_inset
+
+ that is derived from the compact parameters 
+\begin_inset Formula $\theta$
+\end_inset
+
+.
+ HMM relies on the assumption that the observed DNA sequence 
+\begin_inset Formula $X=x_{1},...,x_{L}$
+\end_inset
+
+ is generated by a parameterized model 
+\begin_inset Formula $\theta$
+\end_inset
+
+, and has an hidden state sequence 
+\begin_inset Formula $Y=y_{1},...,y_{L}$
+\end_inset
+
+ that are generated alongside it.
+ In this generation process, a single observed variable is emitted per step
+ of the model, and so the observed sequence is generated with the same length
+ as the hidden Markov chain.
+ The observed variables 
+\begin_inset Formula $V_{1},...,V_{n}$
+\end_inset
+
+ are sampled from an emission distribution 
+\begin_inset Formula $E_{i,j}=P\left(x_{t}=V_{j}|y_{t}=S_{i}\right)$
+\end_inset
+
+, that is conditioned on the hidden state of the model.
+ Similarly to the Markov model, the distribution to the first hidden state
+ is marked as 
+\begin_inset Formula $\pi$
+\end_inset
+
+ and the transition distribution is marked as 
+\begin_inset Formula $T$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/HMM_two_states.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 7: A) a HMM with 2 hidden states.
+ B) The observed variables (dark blue) are emitted by the hidden state at
+ their location, sampled from the discrete conditional distribution E.
+ C,D) The hidden states (yellow and green) behave as Markov model states
+ with starting and transition probabilities, 
+\begin_inset Formula $\pi$
+\end_inset
+
+ and 
+\begin_inset Formula $T$
+\end_inset
+
+.
+ E) The output of the model is a observable sequence with an underlying
+ hidden sequence.
+ The hidden sequence is a Markov chain, where on each step the hidden state
+ emits a single observed variable.
+\end_layout
+
+\begin_layout Standard
+Multiple signal processing algorithms have been used in computational biology,
+ and HMM is especially popular among them.
+ Hidden Markov model (HMM) is a statistical model proposed by Leonard Baum
+ (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-4"
+
+\end_inset
+
+) and is based on the Markov model for modeling regions with alternating
+ frequencies of patterns and symbols.
+ It was used extensively in various engineering fields since the 1980s,
+ especially in speech recognition (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-49"
+
+\end_inset
+
+), handwriting recognition (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-27"
+
+\end_inset
+
+) and digital communication (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-59"
+
+\end_inset
+
+) and was adopted in the computational biology field.
+\end_layout
+
+\begin_layout Standard
+For example, in the case where the observable sequence is made out of DNA,
+ a simplistic model can assume the DNA sequence is composed out of 4 states:
+ genes, promoter enhancers and background regions.
+ Each of these types will have different nucleotide frequency, and we assume
+ the DNA sequence was generated by a HMM with underlying sequence of 4 hidden
+ states, one for each region type.
+ The emitted observed DNA sequence x is determined by the underlying hidden
+ sequence y that describes the
+\begin_inset Quotes eld
+\end_inset
+
+mode
+\begin_inset Quotes erd
+\end_inset
+
+ of the sequence in each position.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+HMM Likelihood and Posterior Probability
+\end_layout
+
+\begin_layout Standard
+Having a HMM with 
+\begin_inset Formula $\theta$
+\end_inset
+
+ on hand, two questions arise given an observed sequence x:
+\end_layout
+
+\begin_layout Itemize
+What is the likelihood that x was generated by the HMM? 
+\begin_inset Formula $P_{\theta}\left(x_{1:L}\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+What is the probability of a hidden state at every location? 
+\begin_inset Formula $P_{\theta}\left(y_{t}=j|x_{1:L}\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The two probabilities in the questions above are the likelihood and the
+ posterior probabilities of HMM.
+\end_layout
+
+\begin_layout Standard
+As in many generative models, HMM's likelihood function 
+\begin_inset Formula $\mathcal{L}\left(\theta|x_{1:L}\right)$
+\end_inset
+
+ from the first question, can be split by the total probability law to the
+ sum of all possible hidden sequences:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\mathcal{L}\left(\theta|x_{1:L}\right)=P_{\theta}\left(x_{1:L}\right)=\sum_{y_{1:L}\in\left[m\right]^{L}}P_{\theta}\left(x_{1:L},y_{1:L}\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The probability 
+\begin_inset Formula $P_{\theta}\left(x_{1:L}\right)$
+\end_inset
+
+ is called the incomplete-data likelihood function and the probability 
+\begin_inset Formula $P_{\theta}\left(x_{1:L},y_{1:L}\right)$
+\end_inset
+
+ is called the complete-data likelihood function.
+ In the case of HMM with parameters 
+\begin_inset Formula $\theta$
+\end_inset
+
+, the complete-data can be calculated by:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+P_{\theta}\left(x_{1:L},y_{1:L}\right)=P_{\theta}\left(y_{1}\right)\cdot P_{\theta}\left(x_{1}|y_{1}\right)\cdot\prod_{i=2}^{N}P_{\theta}\left(y_{i}|y_{i-1}\right)\cdot P_{\theta}\left(x_{i}|y_{i}\right)=\pi_{y_{1}}E_{y_{1},x_{1}}\prod_{i=2}^{L}T_{y_{i-1},y_{i}}E_{y_{i},x_{i}}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Although the computation of the complete-data likelihood of 
+\begin_inset Formula $\theta$
+\end_inset
+
+ in (2) is linear-by-L, computing the incomplete-data likelihood naively
+ as in (1) involves the summation of all possible hidden sequences, an impractic
+able exponential-by-L operation.
+ A dynamic approach could be introduced here to utilize the Markovian memoryless
+ness feature of HMM, and answer both the likelihood and the posterior questions
+ we raised above.
+ This approach is called Forward-Backward algorithm, and it was suggested
+ as a step in the Baum-Welch algorithm (
+\begin_inset CommandInset citation
+LatexCommand citet
+key "key-4"
+
+\end_inset
+
+), which is a EM algorithm for finding the unknown 
+\begin_inset Formula $\theta$
+\end_inset
+
+ given a observed sequence, further described in a later section.
+ In the Forward-Backward algorithm, two matrices of size 
+\begin_inset Formula $m\times L$
+\end_inset
+
+ are dynamically calculated, holding the probabilities:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\alpha_{j,t}=P_{\theta}\left(y_{t}=j,x_{1:t}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\beta_{j,t}=P_{\theta}\left(x_{t+1:L}|y_{t}=j\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Forward Algorithm
+\end_layout
+
+\begin_layout Standard
+The forward probabilities matrix 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ holds the probability that a sequence 
+\begin_inset Formula $x_{1:t}$
+\end_inset
+
+ was emitted and that the hidden sequence ended with the state j:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\alpha_{j,t}=P_{\theta}\left(y_{t}=j,x_{1:t}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It is calculated by the dynamic algorithm:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Forward Algorithm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Input:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\begin_inset Formula $x_{1:L}$
+\end_inset
+
+ - Observed DNA sequence
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Algorithm:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $for\,j=[1,...,m]:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\alpha_{j,1}=\pi_{j}\cdot E_{j,x_{1}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $for\,t=[2,...,L]:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $for\,j=[1,...,m]:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\alpha_{j,t}=\sum_{j'\in[m]}\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The building of the table is based on the HMM basic assumptions that each
+ hidden state 
+\begin_inset Formula $y_{t}$
+\end_inset
+
+ is dependent only on the previous one 
+\begin_inset Formula $y_{t-1}$
+\end_inset
+
+ and that each observed variable 
+\begin_inset Formula $x_{t}$
+\end_inset
+
+ is dependent only on its hidden state that emitted it 
+\begin_inset Formula $y_{t}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\alpha_{j,t}=P_{\theta}\left(y_{t}=j,x_{1:t}\right)=P_{\theta}\left(x_{t}|y_{t}=j,x_{1:t-1}\right)\cdot P_{\theta}\left(y_{t}=j,x_{1:t-1}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=P_{\theta}\left(x_{t}|y_{t}=j\right)\cdot\sum_{j'\in[m]}P_{\theta}\left(y_{t}=j,y_{t-1}=j',x_{1:t-1}\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=P_{\theta}\left(x_{t}|y_{t}=j\right)\cdot\sum_{j'\in[m]}P_{\theta}\left(y_{t}=j|y_{t-1}=j'\right)\cdot P_{\theta}\left(y_{t-1}=j',x_{1:t-1}\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=E_{j,x_{t}}\cdot\sum_{j'\in[m]}T_{j',j}\cdot\alpha_{j',t-1}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/HMM forward Algorithm.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure: forward algorithm dynamically calculates the probability stored
+ in 
+\begin_inset Formula $\alpha_{j,t}$
+\end_inset
+
+ by using the previously calculated 
+\begin_inset Formula $\alpha_{j',t-1}$
+\end_inset
+
+ values
+\end_layout
+
+\begin_layout Subsubsection*
+Backwards Algorithm
+\end_layout
+
+\begin_layout Standard
+The backwards probabilities matrix 
+\begin_inset Formula $\beta$
+\end_inset
+
+ holds the probability that a sequence 
+\begin_inset Formula $x_{t+1:L}$
+\end_inset
+
+ was emitted given the hidden state at position t had value j:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\beta_{j,t}=P_{\theta}\left(x_{t+1:L}|y_{t}=j\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It is calculated by the dynamic algorithm:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Backward Algorithm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Input:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+X - Observed DNA sequence
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Algorithm:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\beta_{1:m,L}=1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $for\,t=[L-1,...,1]:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $for\,j=[1,...,m]:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\beta_{j,t}=\sum_{j'\in[m]}\beta_{j',t+1}\cdot T_{j,j'}\cdot E_{j',x_{t}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This matrix building process is similarly explained by:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\beta_{j,t}=P_{\theta}\left(x_{t+1:L}|y_{t}=j\right)=\sum_{j'\in[m]}P_{\theta}\left(y_{t+1}=j',x_{t+1:L}|y_{t}=j\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\sum_{j'\in[m]}P_{\theta}\left(x_{t+2:L}|y_{t}=j\right)\cdot P_{\theta}\left(x_{t+1}|y_{t}=j,y_{t+1}=j'\right)\cdot P_{\theta}\left(y_{t+1}=j'|y_{t}=j\right)=
+\]
+
+\end_inset
+
+ 
+\begin_inset Formula 
+\[
+=\sum_{j'\in[m]}P_{\theta}\left(x_{t+2:L}|y_{t+1}=j'\right)\cdot P_{\theta}\left(x_{t+1}|y_{t+1}=j'\right)\cdot P_{\theta}\left(y_{t+1}=j'|y_{t}=j\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\sum_{j'\in[m]}\beta_{j',t+1}\cdot E_{j',x_{t+1}}\cdot T_{j,j'}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/HMM backward Algorithm.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure: backward algorithm dynamically calculates the probability stored
+ in 
+\begin_inset Formula $\beta_{j,t}$
+\end_inset
+
+ by using the previously calculated 
+\begin_inset Formula $\beta_{j',t+1}$
+\end_inset
+
+ values
+\end_layout
+
+\begin_layout Standard
+Once we obtain 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta$
+\end_inset
+
+ probabilities, the incomplete-data likelihood of HMM can be linearly calculated
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P_{\theta}\left(x_{1:L}\right)=\sum_{j\in[m]}P_{\theta}\left(y_{t}=j,x_{1:t}\right)=\sum_{j\in[m]}\alpha_{j,L}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And now the posterior probability can be computed:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P_{\theta}\left(y_{t}=j|x_{1:L}\right)=\frac{P_{\theta}\left(y_{t}=j,x_{1:L}\right)}{P\left(x_{1:L}\right)}=\frac{P_{\theta}\left(y_{t}=j,x_{1:t}\right)\cdot P_{\theta}\left(x_{t+1:L}|y_{t}=j\right)}{P\left(x_{1:L}\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{P_{\theta}\left(x_{1:L}\right)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+HMM Limitations
+\end_layout
+
+\begin_layout Standard
+Although HMM is simple and efficient, applying it on DNA sequences has a
+ major disadvantage: the inherit Markovian lack-of-memory property.
+ That is, the model's next state is always dependent only on the previous
+ state, without further history consideration.
+ For the task of emitting a TFBS motif, where each position has a different
+ emission distribution depending on the location in the motif, a HMM would
+ need to different hidden states per position in the motif.
+ This means that for an HMM to be able to emit even a small number of short
+ motifs, it needs to hold a large number of states that require learning
+ a large number of parameters, e.g.
+ for the ability to emit 50 motifs of length 5, an HMM needs to have over
+ 60,000 parameters.
+ Furthermore, the enhancer modeling task at hand is even more complex, since
+ we would like to model multiple enhancers and backgrounds states, each
+ having different probability of emitting motifs and unique k-order emission
+ distribution when not in those motifs.
+ For our data structure prior assumption the required number of model's
+ parameters would have been about 
+\begin_inset Formula $10^{7}$
+\end_inset
+
+, large enough to introduce problems such as unfeasible memory complexity
+ and overfitting.
+\end_layout
+
+\begin_layout Standard
+A common way to avoid overfitting the data when training machine learning
+ models is reducing the model's complexity by fixing some of its parameters.
+ Our proposed HOP-HMM addresses both the memory issue and the overfitting
+ issue while remaining equivalent to a regularized HMM with a large number
+ of states with fixed parameters.
+ Namely, most of the transition probabilities are fixed to zero and therefore
+ never stored in memory, and some of the emission probabilities are predetermine
+d and are fixed during the training.
+ This allows us to learn a model with the enhancer prior assumptions of
+ motifs and high-order emission without overfitting, and with reasonable
+ memory complexity.
+\end_layout
+
+\begin_layout Subsubsection*
+Generalized HMM
+\end_layout
+
+\begin_layout Standard
+In a generalized HMM (GHMM), the transition or the emission are sampled
+ from a different distribution type assigned to each of the states in the
+ model.
+ Some of the states in the system may emit zero or multiple observable variables
+, sampled from custom emission models specifically tailored for the expected
+ scenario.
+ Such models were used for genes prediction in the 1990's (
+\begin_inset CommandInset citation
+LatexCommand citet
+key "key-24"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "key-22"
+
+\end_inset
+
+), where specific exon states emitted codons instead of single nucleotides
+ and feed forward neural networks were used for evaluating the probability
+ of certain transitions.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/sHMM_two_states.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure: a GHMM with a TF state which emits using a PWM.
+ A) the model has one background hidden state (yellow) and one TF hidden
+ state.
+ Although the TF state emits 5 bases motifs, the rest of the emissions,
+ transitions and start probabilities remain the same as in a regular HMM
+ (B,C,D).
+ An example output generated from such model in (E) shows the TFBS motif
+ sampled in an arbitrary location inside a sequence.
+\end_layout
+
+\begin_layout Standard
+Another generalization made to the HMM called higher-order HMM uses conditional
+ distribution by making the transition and emission dependent on previous
+ hidden states (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-17"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-41"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-47"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-38"
+
+\end_inset
+
+).
+ Although these HMM variants are capable of expressing a more complex structure
+ of DNA sequence (different kmers frequencies in the genomic regions), the
+ number of parameters required for DNA analysis tends to rise with the increase
+ of the assumed complexity of the DNA structure.
+ The increase of hidden states needed may introduce overfitting in the learning
+ process, when the data size is limited.
+\end_layout
+
+\begin_layout Standard
+Instead of higher-order emission which depends on the previous hidden states
+ was previous used, high-order emission which depends on previous emitted
+ observable variables is a less researched field.
+ Such a HMM variant fits better to the locality nature for the task of emission
+ kmer structures, but it only requires 
+\begin_inset Formula $O\left(m^{2}+4^{K}\right)$
+\end_inset
+
+ compared to 
+\begin_inset Formula $O$
+\end_inset
+
+ 
+\begin_inset Formula $\left(m^{K}\right)$
+\end_inset
+
+ parameters that would have been required for holding a kmer distribution
+ in a regular HMM, where m is the number of hidden states of the HOP-HMM,
+ and K is the number of previous states in the dependency.
+ 
+\end_layout
+
+\begin_layout Subsection*
+HOP-HMM
+\end_layout
+
+\begin_layout Standard
+Here we present HOP-HMM, a variant model of HMM, that is well fitted to
+ utilize the structure of enhancers containing TFBSs inside them, due to
+ the TFBS emitting TF-states that take part in the generation process of
+ the sequence.
+ Due to the assumed local physical nature of the TF binding of the DNA sequence
+ and success of HMM in gene prediction, we think the memorylessness of HMMs
+ fit well to the task of enhancer prediction.
+ HOP-HMM balances between the Markovian memorylessness and the observed
+ kmer of the TFBS present in regulatory regions in the DNA.
+\end_layout
+
+\begin_layout Standard
+HOP-HMM extends the GHMM model of 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-64"
+
+\end_inset
+
+, where some of the hidden states emit TFBS sampled from PWMs to predict
+ enhancers location in the genome.
+ In HOP-HMM we added the high order conditional emission probability on
+ non-PWM states.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/HOP_HMM_two_states.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 9: A small HOP-HMM that has one background-state which emits a single
+ observable variable, and one TF-state which emits multiple observable variable
+ that represent a TFBS sampled from a PWM.
+ Unlike GHMM, in HOP-HMM TF-state can not be the starting hidden state and
+ the background-state is has 2-order emission, meaning it is conditioned
+ on the previous observable variable.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/HOP_HMM_multi_states.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 10: A) A more complex HOP-HMM with two background-state 
+\begin_inset Formula $BG_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $BG_{2}$
+\end_inset
+
+, where each has 3 TF-states.
+ B) each of the background-states has its own 2-order emission distribution
+ in a 4x4 matrix.
+ C) The start hidden state distribution 
+\begin_inset Formula $\pi$
+\end_inset
+
+ allows only background-states to start the hidden sequence.
+ D) The transition probability is held by matrices T and G.
+ E) The example generated sequence is built out of two types of sequences,
+ each has its own TFBS frequency and background nucleotide bigram frequency,
+ representing two alternating types of enhancers.
+\end_layout
+
+\begin_layout Subsubsection*
+Hidden States Indexing
+\end_layout
+
+\begin_layout Standard
+We use two indices to describe a hidden-state:
+\end_layout
+
+\begin_layout Itemize
+Background-states are indexed as 
+\begin_inset Formula $(j,0)$
+\end_inset
+
+ where 
+\begin_inset Formula $j\in[m]$
+\end_inset
+
+ and m is the number background-states.
+\end_layout
+
+\begin_layout Itemize
+TF-states are indexed as 
+\begin_inset Formula $(j,l)$
+\end_inset
+
+ where 
+\begin_inset Formula $j\in[m]$
+\end_inset
+
+, 
+\begin_inset Formula $l\in[k]$
+\end_inset
+
+.
+ and k is the number of TF-states each of the background-states has.
+\end_layout
+
+\begin_layout Standard
+For example, in figure 10 we see a HOP-HMM with 
+\begin_inset Formula $m=2$
+\end_inset
+
+ and 
+\begin_inset Formula $k=3$
+\end_inset
+
+ and a total of 8 hidden-states.
+ The TF-state indexed 
+\begin_inset Formula $(j,l)$
+\end_inset
+
+ belongs to the 
+\begin_inset Formula $(j,0)$
+\end_inset
+
+ background-state (see figure 11), and the model can transfer into 
+\begin_inset Formula $(j,l)$
+\end_inset
+
+ only from 
+\begin_inset Formula $(j,0)$
+\end_inset
+
+.
+ Note that we used simpler notation in figures 9 and 10 for readability.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/HOP_HMM_general_mk.jpg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\shape italic
+\emph on
+Figure 11: general hidden states graph of HOP-HMM.
+ Each row represents a sequence type, where each of the 
+\begin_inset Formula $m$
+\end_inset
+
+ background-states (yellow) has 
+\begin_inset Formula $k$
+\end_inset
+
+
+\shape default
+\emph default
+TF-state
+\shape italic
+\emph on
+s (green).
+ Not all transitions are possible, moving between the rows is possible only
+ by a background-state to background-state transition.
+\end_layout
+
+\begin_layout Standard
+While most background-states represent an enhancer type, we also would like
+ to have background regions in between the enhancer.
+ For that end we predefine one or more background-states as non-enhancers
+ by restricting their transfer probability into their TF-states.
+\end_layout
+
+\begin_layout Subsubsection*
+Emission
+\end_layout
+
+\begin_layout Standard
+HOP-HMM is defined with k PWMs 
+\begin_inset Formula $W_{1},W_{2},...,W_{k}$
+\end_inset
+
+ that remain fixed during training.
+ Each of the k PWMs is shared with m TF-states, e.g.
+ the PWM 
+\begin_inset Formula $W_{l}$
+\end_inset
+
+, where 
+\begin_inset Formula $l\in[k]$
+\end_inset
+
+, is shared between subs-states 
+\begin_inset Formula $(1,l),(2,l),...,(m,l)$
+\end_inset
+
+ and is used for the TF-state emission sampling.
+ The PWMs vary in their column amounts (as the different TFBSs vary in length),
+ where each column represents a nucleotide distribution at that position.
+ When the model enters a TF-state, it emits a motif by sampling from a PWM
+ column by column independently, as described in Figure 3.
+\end_layout
+
+\begin_layout Standard
+The background-states, denoted as 
+\begin_inset Formula $(1,0),(2,0),...,(m,0)$
+\end_inset
+
+, are responsible for the emission of inter-TFBS parts of the enhancers
+ lacking long motifs.
+ Similarly to regular states in HMM, background-states emit single nucleotides,
+ where their emission is conditional on the previous of letters emitted
+ in the DNA sequence.
+ The emission from background-states is done by sampling a nucleotide from
+ the distributions stored in E tensor.
+ E dimension is o+1, and its size is 
+\begin_inset Formula $\text{ }m\times4\times4\times...\times4$
+\end_inset
+
+ (with o fours) and its values are describe the emission probability 
+\begin_inset Formula $E_{j,x_{t-o+1},x_{t-o+2},...,x_{t}}=P\left(x_{t}|y_{t}=(j,0),x_{t-o+1},...,x_{t-1}\right)$
+\end_inset
+
+, meaning that when 
+\begin_inset Formula $x_{t}$
+\end_inset
+
+ is sampled by the model, the preceding 
+\begin_inset Formula $o-1$
+\end_inset
+
+ observed variables are used as indices of the tensor for getting emission
+ probability vector 
+\begin_inset Formula $E_{j,x_{t-o+1},x_{t-o+2},...,x_{t-1},*}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+For the first variables emitted in the sequence, the missing dimensions
+ of the preceding variables are summed to form the probability vector, e.g.
+ if 
+\begin_inset Formula $t=o-1$
+\end_inset
+
+, a single variable is missing for emitting 
+\begin_inset Formula $x_{t}$
+\end_inset
+
+ and the distribution used for emission sampling is 
+\begin_inset Formula $\sum_{i\in[4]}\frac{E_{j,i,x_{1},...,x_{t-1}}}{4}$
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Transition
+\end_layout
+
+\begin_layout Standard
+In HOP-HMM, the first hidden state in a sequence can only be a background-state.
+ The first background-state, as in HMM, is chosen by sampling from 
+\begin_inset Formula $\pi,$
+\end_inset
+
+ a probability vector 
+\begin_inset Formula $\pi_{j}=P(y_{1}=(j,0))$
+\end_inset
+
+.
+ Once in a background-state, the model can only transit into a small subset
+ of states, and since most of the possible transition are not allowed, a
+ single transition matrix from all states to all states would be sparse.
+ Instead, as described in figure 4, we hold only the possible transition
+ probabilities in two matrices, representing the two types of allowed transition
+s:
+\end_layout
+
+\begin_layout Itemize
+T for background-state to background-state transitions, a 
+\begin_inset Formula $m\times m$
+\end_inset
+
+ matrix where 
+\begin_inset Formula $T_{j_{1},j_{2}}=P\left(y_{t+1}=(j_{2},0)|y_{t}=(j_{1},0)\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+G for background-state to TF-state transitions a 
+\begin_inset Formula $m\times k$
+\end_inset
+
+ matrix where 
+\begin_inset Formula $G_{j,l}=P\left(y_{t+1:t+|W_{l}|}=(j,l)|y_{t}=(j,0)\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+When in a background-state, after the observable variable emission, the
+ model samples its next hidden state from a probability vector that is a
+ concatenation of a row in T and a row in G.
+ If a TF-state is chosen, after the TF-state's motif emission, the model
+ returns back to the background-state to emit another single observable
+ variable and so on.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/Transition_repack.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 12: Instead of holding a single sparse 8 
+\begin_inset Formula $\times$
+\end_inset
+
+8 transition matrix, an alternative compact form holds only the non-fixed
+ transition probabilities, split into T and G matrices.
+ The non-fixed transitions probabilities held in the compact form are the
+ ones in between background-states, and between background-states to their
+ TF-states (outlined with blue).
+ A concatenation of a row in T and G holds the probability of the next hidden-st
+ate given the current background-state.
+\end_layout
+
+\begin_layout Part*
+Learning HMMs
+\end_layout
+
+\begin_layout Subsection*
+Baum-Welch Algorithm
+\end_layout
+
+\begin_layout Standard
+For fitting a DNA sequence with a HMM, we need to find parameters 
+\begin_inset Formula $\theta^{*}$
+\end_inset
+
+ that best explain it.
+ Formally, given the observed DNA sequence 
+\begin_inset Formula $x_{1:L}$
+\end_inset
+
+, we would like find the parameters that maximize the incomplete-likelihood:
+ 
+\begin_inset Formula 
+\[
+\theta^{*}=argmax_{\theta}\mathcal{L}\left(\theta|x_{1:L}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Even though the incomplete-data likelihood of HMM in (1) is derivable by
+ 
+\begin_inset Formula $\theta$
+\end_inset
+
+, optimizing it is as difficult as calculating it, since it involves a summation
+ of exponential-by-L components.
+ Instead, the strategy of the EM algorithm is to optimize the expected value
+ of the complete-data log-likelihood 
+\begin_inset Formula $log\left(P\left(x_{1:L},y_{1:L}|\theta^{'}\right)\right)$
+\end_inset
+
+ where 
+\begin_inset Formula $\theta^{'}$
+\end_inset
+
+ is the model's parameters from previous EM iteration (or guessed parameters
+ in the first iteration) and while assuming a fixed observed X, as it is
+ our DNA sequence.
+ For this task we can formally define our target function Q:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+Q\left(\theta,\theta^{'}\right)=E_{Y}\left[log\left(P_{\theta}\left(x_{1:L},y_{1:L}\right)\right)|x_{1:L},\theta^{'}\right]=\sum_{y\in\left[m\right]^{N}}log\left(P_{\theta}\left(x_{1:L},y_{1:L}\right)\right)P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that here, E is expressing an expected value and not the HMM emission
+ probability.
+ Every EM iteration is built of two parts called the E-step and the M-step.
+ In the E-step we calculate the probabilities needed for the maximization
+ of Q and in the M-step we infer the 
+\begin_inset Formula $\theta$
+\end_inset
+
+ that maximizes it.
+ Although this seemingly still requires an exponential summation, we can
+ use a dynamic programming approach to overpass it, with the cost of 
+\begin_inset Formula $O(N\cdot m)$
+\end_inset
+
+ memory usage.
+\end_layout
+
+\begin_layout Standard
+Using equations (2) and (3) allows us to split the Q function to three independe
+nt parts.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+Q\left(\theta,\theta^{'}\right)= & \sum_{y\in\left[m\right]^{N}}log\pi_{y_{1}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)\\
++ & \sum_{y\in\left[m\right]^{N}}\left(\sum_{t\in2...L}logT_{y_{t-1},y_{t}}\right)\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)\\
++ & \sum_{y\in\left[m\right]^{N}}\left(\sum_{t\in[L]}logE_{y_{t},x_{t}}\right)\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+then by manipulating the summation and the state sequence cases could be
+ simplified to
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+Q\left(\theta,\theta^{'}\right)= & \sum_{j\in[m]}log\pi_{j}\cdot P_{\theta^{'}}\left(x_{1:L},y_{1}=j\right)\\
++ & \sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t-1}=j_{1},y_{t}=j_{2}\right)\\
++ & \sum_{t\in[L]}\sum_{j\in[m]}logE_{j,x_{t}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t}=j\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Each of the three parts could be derived and maximized independently using
+ a Lagrange multipliers, under the following probability constrains:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\sum_{j\in[m]}\pi_{j}=1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\sum_{j_{2}\in[m]}T_{j_{1},j_{2}}=1$
+\end_inset
+
+ for all 
+\begin_inset Formula $j_{1}\in[m]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\sum_{b\in[n]}E_{j,b}=1$
+\end_inset
+
+ for all 
+\begin_inset Formula $j\in[n]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $m$
+\end_inset
+
+ is the number of different hidden states and 
+\begin_inset Formula $n$
+\end_inset
+
+ is the number of different observed variables (4 in our case of DNA)
+\end_layout
+
+\begin_layout Standard
+We start with maximizing the first part using Lagrange multiplier 
+\begin_inset Formula $\lambda$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\partial}{\partial\pi_{j}}\left(\sum_{j'\in[m]}log\pi_{j'}P_{\theta^{'}}\left(x_{1:L},y_{1}=j'\right)+\lambda\left(\sum_{j'\in[m]}1-\pi_{j'}\right)\right)=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we derive the term and get 
+\begin_inset Formula $\frac{P_{\theta^{'}}\left(x_{1:L},y_{1}=j\right)}{\pi_{j}}=\lambda$
+\end_inset
+
+ for 
+\begin_inset Formula $j\in[m]$
+\end_inset
+
+.
+ Then we multiply each equation by the denominator and sum these m equations
+ to receive 
+\begin_inset Formula $\lambda=P_{\theta^{'}}\left(x_{1:L}\right)$
+\end_inset
+
+, which yields:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\pi_{j}=\frac{P_{\theta^{'}}\left(x_{1:L},y_{1}=j\right)}{P_{\theta^{'}}\left(x_{1:L}\right)}=P_{\theta^{'}}\left(y_{1}=j|x_{1:L}\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Similarly, we follow the Lagrange multipliers method in the second and third
+ parts, from which we'll receive:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=j_{1},y_{t}=j_{2}\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=j_{1}\right)}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=j_{1},y_{t}=j_{2}|x_{1:L}\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=j_{1}|x_{1:L}\right)}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+E_{j,b}=\frac{\sum_{t\in[L]}P_{\theta^{'}}\left(x_{1:L},y_{t}=j\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P_{\theta^{'}}\left(x_{1:L},y_{t}=j\right)}=\frac{\sum_{t\in[L]}P_{\theta^{'}}\left(y_{t}=j|x_{1:L}\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P_{\theta^{'}}\left(y_{t}=j|x_{1:L}\right)}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\boldsymbol{1}_{b}(x_{t})=\begin{cases}
+1 & b=x_{t}\\
+0 & otherwise
+\end{cases}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We would like to be able to calculate the probabilities updates written
+ in (4), (5) and (6) on every E-step in the EM iterations.
+ For that, we still need to calculate the two probabilities terms inside
+ them:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+P_{\theta^{'}}\left(y_{t}=j|x_{1:L}\right)
+\end{equation}
+
+\end_inset
+
+ 
+\begin_inset Formula 
+\begin{equation}
+P_{\theta^{'}}\left(y_{t-1}=j_{1},y_{t}=j_{2}|x_{1:L}\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Having the forward and backward probability matrices 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta$
+\end_inset
+
+, we now have all that is needed to calculate
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ (8) and (9), using once more the HMM conditional independence in our calculatio
+ns.
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ 
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+To resemble the notations coined in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "key-50"
+
+\end_inset
+
+, where the first widely accepted HMM application was described, we'll denote
+ the terms values of (7) as 
+\begin_inset Formula $\gamma$
+\end_inset
+
+, and (8) as 
+\begin_inset Formula $\xi$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\gamma_{t,j}=P_{\theta^{'}}\left(y_{t}=j|x_{1:L}\right)=\frac{P\left(y_{t}=j,x_{1:L}|\theta^{'}\right)}{P\left(x_{1:L}|\theta^{'}\right)}=\frac{P\left(x_{1:L}|y_{t}=j,\theta^{'}\right)\cdot P\left(y_{t}=j|\theta^{'}\right)}{P\left(x_{1:L}|\theta^{'}\right)}=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\frac{P\left(y_{t}=j,x_{1:t}\right)\cdot P\left(x_{t+1:L}|y_{t}=j\right)}{\sum_{j'\in[m]}P\left(y_{t}=j',x_{1:t}\right)\cdot P\left(x_{t+1:L}|y_{t}=j'\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{\sum_{j'\in[m]}\alpha_{j',t}\cdot\beta_{j',t}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\xi_{t,j_{1},j_{2}}=P\left(y_{t-1}=j_{1},y_{t}=j_{2}|x_{1:L},\theta^{'}\right)=\frac{P\left(y_{t-1}=j_{1},y_{t]}=j_{2},x_{1:L}|\theta^{'}\right)}{P\left(x_{1:L}|\theta^{'}\right)}=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\frac{P\left(y_{t-1}=j_{1},x_{1:t-1}\right)\cdot P\left(y_{t}=j_{2}|y_{t-1}=j_{1}\right)\cdot P\left(x_{t}|y_{t}=j_{2}\right)\cdot P\left(x_{t+1:L}|y_{t}=j_{2}\right)}{\sum_{j'\in[m]}P\left(y_{t}=j,x_{1:t}\right)\cdot P\left(x_{t+1:L}|y_{t}=j\right)}=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\frac{\alpha_{j_{1},t-1}\cdot T_{j_{1},j_{2},}\cdot E_{j_{2},x_{t}}\cdot\beta_{j',t}}{\sum_{j'\in[m]}\alpha_{j',t}\cdot\beta_{j',t}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Section*
+Baum-Welch Algorithm for HOP-HMM
+\end_layout
+
+\begin_layout Standard
+Since the transitions and emissions assumptions of HOP-HMM are different,
+ the complete-data likelihood requires different calculation for the EM
+ algorithm to hold.
+ The Baum-Welch algorithm can be adjusted to infer the parameters of the
+ HOP-HMM variant 
+\begin_inset Formula $\theta=\{\pi,E,G,T\}$
+\end_inset
+
+ from a DNA sequence X.
+ As in the regular Baum-Welch algorithm covered in the previous section,
+ given a sequence X at each EM iteration we calculate and optimize a Q function:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+Q\left(\theta,\theta^{'}\right)= & \sum_{j\in[m]}log\pi_{j}\cdot P_{\theta^{'}}\left(x_{1:L},y_{1}=(j,0)\right)\\
++ & \sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)\\
++ & \sum_{t\in2...L}\sum_{j\in[m],l\in[k]}logG_{j,l}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j,0),y_{t}=(j,l)\right)\\
++ & \sum_{t\in[L]}\sum_{j\in[m]}logE_{j,x_{t}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t}=(j,0)\right)\\
++ & \sum_{t\in[L]}\sum_{l\in[k]}logL_{W}(x_{t:t+|W_{l}|})\cdot P_{\theta^{'}}\left(x_{1:L},y_{t:t+|W_{l}|}=(j,l)\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $L_{W}(\overline{x})$
+\end_inset
+
+ is the likelihood of the TFBS 
+\begin_inset Formula $\overline{x}$
+\end_inset
+
+ to be emitted by PWM 
+\begin_inset Formula $W$
+\end_inset
+
+: 
+\begin_inset Formula $L_{M}(\overline{x})=P(\overline{x}|W)=\underset{i\in\{1,...,|\overline{x}|\}}{\prod}W_{\overline{x}_{i},i}$
+\end_inset
+
+.
+ The last component, with the TFBS likelihood does not contain elements
+ from 
+\begin_inset Formula $\theta$
+\end_inset
+
+, therefore it is not optimized in the m-steps.
+\end_layout
+
+\begin_layout Standard
+The 
+\begin_inset Formula $\theta$
+\end_inset
+
+ which optimizes Q, i.e.
+ 
+\begin_inset Formula $\theta_{max}=argmax_{\theta}Q(\theta,\theta')$
+\end_inset
+
+, is built similarly as in the regular Baum-Welch algorithm, as following:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\pi_{j}=\frac{P_{\theta^{'}}\left(x_{1:L},y_{1}=(j,0)|\theta^{'}\right)}{P_{\theta^{'}}\left(x_{1:L}|\theta^{'}\right)}=P_{\theta^{'}}\left(y_{1}=(j,0)|x_{1:L}\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j_{1},0)\right)}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|x_{1:L}\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j_{1},0)|x_{1:L}\right)}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+G_{j,l}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j,0),y_{t}=(j,l)\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j,0)\right)}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j,0),y_{t}=(j,l)|x_{1:L}\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j,0)|x_{1:L}\right)}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+E_{j,b_{1},...,b_{o}}=\frac{\sum_{t\in o,...,L}P_{\theta^{'}}\left(x_{1:L},y_{t}=(j,0)\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P_{\theta^{'}}\left(x_{1:L},y_{t}=(j,0)\right)}=
+\end{equation}
+
+\end_inset
+
+ 
+\begin_inset Formula 
+\[
+=\frac{\sum_{t\in o,...,L}P_{\theta^{'}}\left(y_{t}=(j,0)|X\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P_{\theta^{'}}\left(y_{t}=(j,0)|x_{1:L}\right)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Hence to complete the EM iteration, the three missing components in (9),
+ (10), (11), (12) are:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+ 
+\begin_inset Formula 
+\begin{equation}
+P_{\theta^{'}}\left(y_{t}=(j,0)|x_{1:L}\right)
+\end{equation}
+
+\end_inset
+
+ 
+\begin_inset Formula 
+\begin{equation}
+P_{\theta^{'}}\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|x_{1:L}\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+P_{\theta^{'}}\left(y_{t-1}=(j,0),y_{t}=(j,l)|x_{1:L}\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For the calculation of these probabilities, we will need to calculate the
+ forward and backward probabilities, and then few other auxiliary terms.
+ The forward and backward probabilities are only for indicating the sequence
+ entering-to and exiting-from background-states:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\alpha_{j,t}=P\left(y_{t}=(j,0),x_{1:t}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\beta_{j,t}=P\left(x_{t+1:L}|y_{t}=(j,0)\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+HOP-Forward Algorithm
+\end_layout
+
+\begin_layout Standard
+We calculate 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ of size 
+\begin_inset Formula $m\times L$
+\end_inset
+
+, iterating over 
+\begin_inset Formula $t=1,2,...,L$
+\end_inset
+
+ as following:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+HOP Forward Algorithm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Input:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+X - Observed DNA sequence
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Algorithm:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $for\,j=[1,...,m]:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\alpha_{j,1}=\pi_{j}\cdot E_{j,x_{1}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $for\,t=[2,...,L]:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $for\,j=[1,...,m]:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\alpha_{j,t}=\underset{\text{background-state transitions}}{\underbrace{\sum_{j'\in[m]}\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1},...,x_{t}}}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $+\underset{\text{TF-state transitions}}{\underbrace{\sum_{l\in[k]}\alpha_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Calculation notes: In the beginning of the sequence, when 
+\begin_inset Formula $1\leq t<o$
+\end_inset
+
+ , part of the preceding observable variables are missing.
+ Since E has 
+\begin_inset Formula $o+1$
+\end_inset
+
+ dimensions, 
+\begin_inset Formula $E_{j,x_{1},...,x_{t}}$
+\end_inset
+
+ is not defined, so we define it here as 
+\begin_inset Formula $E_{j,x_{1},...,x_{t}}=\underset{b_{1},...,b_{o-t}\in\{A,C,G,T\}}{\sum}\frac{1}{4^{o-t}}\cdot E_{j,b_{1},..,.b_{o-t},x_{1},...,x_{t}}$
+\end_inset
+
+ that is the expected probability upon possible preceding variables.
+ We used the fact that 
+\begin_inset Formula $P(A)=\sum_{b\in B}P(b)\cdot P(A|b)$
+\end_inset
+
+ and the assumption that the observable variables preceding the sequence
+ came from a uniform distribution, 
+\begin_inset Formula $P(x_{i})=\frac{1}{4}$
+\end_inset
+
+ where 
+\begin_inset Formula $i<1$
+\end_inset
+
+.
+ Also, when summing the TF-state transition part 
+\begin_inset Formula $l\in[k]$
+\end_inset
+
+, the PWMs 
+\begin_inset Formula $W_{l}$
+\end_inset
+
+ with length equal or bigger than 
+\begin_inset Formula $t+1$
+\end_inset
+
+ are not part of the summation.
+\end_layout
+
+\begin_layout Subsubsection*
+HOP-Backward Algorithm
+\end_layout
+
+\begin_layout Standard
+For 
+\begin_inset Formula $\beta$
+\end_inset
+
+ of size 
+\begin_inset Formula $m\times L$
+\end_inset
+
+, we iterating over 
+\begin_inset Formula $t=L,L-1,...,1$
+\end_inset
+
+ as following:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+HOP Backward Algorithm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Input:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+X - Observed DNA sequence
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Algorithm:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\beta_{1:m,L}=1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $for\,t=[L-1,...,1]:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $for\,j=[1,...,m]:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\beta_{j,t}=\underset{\text{background-state transitions}}{\underbrace{\sum_{j'\in[m]}\beta_{j',t+1}\cdot E_{j',x_{t-o+2},...,x_{t+1}}\cdot T_{j,j'}}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $+\underset{\text{TF-state transitions}}{\underbrace{\sum_{l\in[k]}\beta_{j,t+|W_{l}|+1}\cdot L_{W_{l}}\left(x_{t+1},...,x_{t+|W_{l}|}\right)\cdot E_{j,x_{t-o+|W_{l}|+2},...,x_{t+|W_{l}|+1}}\cdot G_{j,l}}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that when 
+\begin_inset Formula $t>L-|W_{l}|$
+\end_inset
+
+, there are missing observable variables to fully calculate the TF-state
+ transition.
+ In these situations this contribution of these component to the summation
+ is zero, meaning our HOP-HMM as the behavior of avoiding a transition into
+ a TF-state when the PWM is too long to fit into the sequence X length.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/HOP-EM forward Algorithm.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Figure 5: In HOP-HMM version of the forward-backward algorithm, each of
+ the  
+\begin_inset Formula $\alpha$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta$
+\end_inset
+
+ cells are filled from both the adjacent background-states transitions and
+ the background-states preceding or proceeding the motifs emitted by the
+\series default
+TF-state
+\series bold
+s.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Forward Algorithm Explanation
+\end_layout
+
+\begin_layout Standard
+We will now explain why the described dynamic calculation result with 
+\begin_inset Formula $\alpha_{j,t}=P\left(y_{t}=(j,0),x_{1:t}\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta_{j,t}=P\left(x_{t+1:L}|y_{t}=(j,0)\right)$
+\end_inset
+
+, starting with the forward probabilities 
+\begin_inset Formula $\alpha$
+\end_inset
+
+.
+ From the law of total probability, the probability 
+\begin_inset Formula $\alpha_{j,t}$
+\end_inset
+
+ is the sum of probabilities of all the possible transition that ended in
+ the background-state (j,0):
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\alpha_{j,t}=P\left(y_{t}=(j,0),x_{1:t}\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\underset{\text{base-state transitions}}{\underbrace{\underset{j'\in[m]}{\sum}P\left(y_{t-1}=(j',0),y_{t}=(j,0),x_{1:t}\right)}}+\underset{\text{sub-state transitions}}{\underbrace{\underset{l\in\{1,...,k\}}{\sum}P\left(y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We could develop the right term of a TF-state transition using the chain
+ rule:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+P\left(y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)= & \,P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot\\
+ & \cdot P\left(y_{t-|W_{l}|:t-1}=(j,l)|y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\\
+ & \cdot P\left(x_{t-|W_{l}|:t-1}|y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\\
+ & \cdot P\left(x_{t}|y_{t}=(j,0),x_{1:t-1},y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0)\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Because of 
+\begin_inset Formula $x_{t}$
+\end_inset
+
+ is dependent on only 
+\begin_inset Formula $y_{t}$
+\end_inset
+
+ (and also 
+\begin_inset Formula $x_{t-o:t-1}$
+\end_inset
+
+ if 
+\begin_inset Formula $y_{t}$
+\end_inset
+
+ is a background-state) and 
+\begin_inset Formula $y_{t}$
+\end_inset
+
+ is dependent on only 
+\begin_inset Formula $y_{t-1}$
+\end_inset
+
+, we can simplify the probabilities:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+P\left(y_{t-|W_{l}|:t-1}=(j',l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)= & \,P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\\
+ & \cdot P\left(y_{t-|W_{l}|:t-1}=(j,l)|y_{t-|W_{l}|-1}=(j,0)\right)\\
+ & \cdot P\left(x_{t-|W_{l}|:t-1}|y_{t-|W_{l}|:t-1}=(j,l)\right)\\
+ & \cdot P\left(x_{t}|y_{t}=(j,0),x_{t-o:t-1}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can now replace the received terms with the components of 
+\begin_inset Formula $\theta$
+\end_inset
+
+ and with already filled 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ cells:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P\left(y_{t-|W_{l}|:t-1}^{i}=(j,l),y_{t-|W_{l}|-1}^{i}=(j,0),x_{1:t}^{i}\right)=\alpha_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}
+\]
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This process is similar to the background-state transition.
+ Using the chain rule:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+P\left(y_{t-1}=(j',0),y_{t}=(j,0),x_{1:t}\right)= & P\left(y_{t-1}=(j',0),x_{1:t-1}\right)\\
+ & \cdot P\left(y_{t}=(j,0)|y_{t-1}=(j',0),x_{1:t-1}\right)\\
+ & \cdot P\left(x_{t}|y_{t}=(j,0),y_{t-1}=(j',0),x_{1:t-1}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Using the conditional independencies to simplify the probabilities:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P\left(y_{t-1}=(j',0),x_{1:t-1}\right)\cdot P\left(y_{t}=(j,0)|y_{t-1}=(j',0)\right)\cdot P\left(x_{t}|y_{t}=(j,0),x_{1:t-1}\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1},...,x_{t}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Backward Algorithm Explanation
+\end_layout
+
+\begin_layout Standard
+For the backward probabilities 
+\begin_inset Formula $\beta,$
+\end_inset
+
+ the explanation is similar.
+ The main difference between the regular HMM backward probability is the
+ condition on the o-1 preceding observable variables 
+\begin_inset Formula $x_{t-o+2:t}$
+\end_inset
+
+, which are necessary for the background-state emission is conditional on
+ them.
+\end_layout
+
+\begin_layout Standard
+Using the law of total probability:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P\left(x_{t+1:L}|y_{t}=(j,0),x_{t-o+2:t}\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\underset{\text{base-state transition}}{\underbrace{\sum_{j'}P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0),x_{t-o+2:t}\right)}}+\underset{\text{sub-state transition}}{\underbrace{\sum_{l}P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{t+1:L}|y_{t}=(j,0)\right)}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For the background-state transition term, we can use the chain rule and
+ the Markovian independence of the transitions and emissions:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0),x_{t-o+2:t}\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=P\left(x_{t+2:L}|y_{t+1}=(j',0),y_{t}=(j,0),x_{t-o+2:t+1}\right)\cdot P\left(x_{t+1}|y_{t+1}=(j',0),y_{t}=(j,0),x_{t-o+2:t}\right)\cdot
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\cdot P\left(y_{t+1}=(j',0)|y_{t}=(j,0),x_{t-o+2:t}\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=P\left(x_{t+2:L}|y_{t+1}=(j',0),x_{t-o+3:t+1}\right)\cdot P\left(x_{t+1}|y_{t+1}=(j',0),x_{t-o+2:t}\right)\cdot P\left(y_{t+1}=(j',0)|y_{t}=(j,0)\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\beta_{j',t+1}\cdot E_{j',x_{t-o+2},...,x_{t+1}}\cdot T_{j,j'}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For the TF-state transition term, we use once more the chain rule, followed
+ the simplification using the conditional independencies:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{t+1:L}|y_{t}=(j,0)\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P\left(x_{t+\left|W_{l}\right|+2:L}|x_{t+1:t+\left|W_{l}\right|+1},y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),y_{t}=(j,0)\right)\cdot
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\cdot P\left(x_{t+\left|W_{l}\right|+1}|x_{t+1:t+\left|W_{l}\right|},y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),y_{t}=(j,0)\right)\cdot
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\cdot P\left(x_{t+1:t+\left|W_{l}\right|}|y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),y_{t}=(j,0)\right)\cdot
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\cdot P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0)|y_{t}=(j,0)\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=P\left(x_{t+\left|W_{l}\right|+2:L}|y_{t+\left|W_{l}\right|+1}=(j,0)\right)\cdot P\left(x_{t+\left|W_{l}\right|+1}|y_{t+\left|W_{l}\right|+1}=(j,0)\right)\cdot
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\cdot P\left(x_{t+1:t+\left|W_{l}\right|}|y_{t+1:t+\left|W_{l}\right|}=(j,l)\right)\cdot P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0)|y_{t}=(j,0)\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\beta_{j,t+|W_{l}|+1}\cdot E_{j,x_{t-o+|W_{l}|+1},...,x_{t+|W_{l}|+1}}\cdot L_{W_{l}}\left(x_{t+1},...,x_{t+|W_{l}|}\right)\cdot G_{j,l}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Auxiliary Probabilities
+\end_layout
+
+\begin_layout Standard
+Using the forward and the backward probability matrices, we are ready to
+ calculate the auxiliary probabilities (13) (14) (15).
+ The first probability that will help us for that task is 
+\begin_inset Formula $\psi$
+\end_inset
+
+, a matrix of size 
+\begin_inset Formula $m\times k\times L$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\psi_{j,l,t}=P\left(y_{t}=(j,0),y_{t+1}=(j,l),X\right)=P\left(y_{t}=(j,0),y_{t+1}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),X\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=P\left(y_{t}=(j,0),y_{t+1}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{1:t+|W_{l}|+1}\right)\cdot P\left(x_{t+|W_{l}|+2:L}|y_{t+|W_{l}|+1}=(j,0),x_{1:t+|W_{l}|+1}\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=P\left(x_{1:t},y_{t}=(j,0)\right)\cdot P\left(y_{t+1}=(j,l)|y_{t}=(j,0)\right)\cdot P\left(x_{t+1:t+\left|W_{l}\right|}|y_{t+1:t+\left|W_{l}\right|}=(j,l)\right)\cdot
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\cdot P\left(x_{t+\left|W_{l}\right|+1}|y_{t+\left|W_{l}\right|+1}=(j,0)\right)\text{\cdot}P\left(x_{t+|W_{l}|+2:L}|y_{t+|W_{l}|+1}=(j,0),x_{t+|W_{l}|-o+3:t+|W_{l}|+1}\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\alpha_{j,t}\cdot G_{j,l}\cdot L_{W_{l,}}\left(x_{t+1},...,x_{t+|W_{l}|}\right)\cdot E_{j,x_{t+|W_{l}|-o+2},...,x_{t+|W_{l}|+1}}\cdot\beta_{j,t+|W_{l}|+1}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The second probability, is of the observed sequence X:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P\left(X\right)=\underset{j\in[m]}{\sum}\left(\alpha_{j,t}\cdot\beta_{j,t}+\underset{l\in\left[k\right],\ t'\in\left[|W_{l}|\right]}{\sum}\psi_{j,l,t-s}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now we can calculate probability (13) of the background-state at a given
+ position given the sequence X, denoted as 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ of size 
+\begin_inset Formula $m\times L$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\gamma_{j,t}= & P\left(y_{t}=(j,0)|X\right)=\frac{P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{1:t},y_{t}=(j,0)\right)}{P\left(x_{1:L}\right)}=
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\frac{P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{t-o+1:t},y_{t}=(j,0)\right)}{P\left(x_{1:L}\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{P\left(x_{1:L}\right)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The probability (14) is the background-state to background-state transition
+ given the sequence X, denoted as 
+\begin_inset Formula $\xi$
+\end_inset
+
+ of size 
+\begin_inset Formula $m\times m\times L$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\xi_{j_{1},j_{2},t}=P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|x_{1:L}\right)=\frac{P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0),x_{1:L}\right)}{P\left(x_{1:L}\right)}=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\frac{P\left(x_{1:t-1},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)\cdot P\left(x_{t:L}|y_{t}=(j_{2},0),x_{1:t-1}\right)}{P\left(x_{1:L}\right)}=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\frac{P\left(x_{1:t-1},y_{t-1}=(j_{1},0)\right)\cdot P\left(y_{t}=(j_{2},0)|y_{t-1}=(j_{1},0)\right)\cdot P\left(x_{t}|y_{t}=(j_{2},0),x_{1:t-1}\right)\cdot P\left(x_{t+1:L}|y_{t}=(j_{2},0),x_{1:t-1}\right)}{P\left(x_{1:L}\right)}=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\frac{\alpha_{j_{1},t-1}\cdot T_{j_{1},j_{2}}\cdot E_{j_{2},x_{t-o+1},...,x_{t}}\cdot\beta_{j_{2},t}}{P\left(x_{1:L}\right)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Finally, the probability (15) is the background-state to background-state
+ transition given the sequence X, denoted as 
+\begin_inset Formula $\xi$
+\end_inset
+
+ of size 
+\begin_inset Formula $m\times k\times L$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\eta_{j,l,t}= & P\left(y_{t-1}=(j,0),y_{t}=(j,l)|x_{1:L}\right)=\frac{\psi_{j,l,t}}{P\left(x_{1:L}\right)}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now with (13), (14), (15) at hand, we can calculate 
+\begin_inset Formula $\theta_{max}$
+\end_inset
+
+ by assigning them at (9), (10), (11), (12).
+\end_layout
+
+\begin_layout Subsubsection*
+HOP Baum-Welch
+\end_layout
+
+\begin_layout Standard
+To conclude, the total EM algorithm for HOP-HMM:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+[H]
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+HOP Baum-Welch
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Input:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+X - Observed DNA sequence
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Algorithm:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+for s=[1...MAX_EM_ITERATIONS]:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph on
+//e-step
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\alpha=\text{hop\_forward\_alg(x_{1:L}) }$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\beta=\text{hop\_backward\_alg(x_{1:L}) }$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+for 
+\begin_inset Formula $j=[1,...,m]$
+\end_inset
+
+, 
+\begin_inset Formula $l=[1,...,k]$
+\end_inset
+
+, 
+\begin_inset Formula $t=[1,...,L]$
+\end_inset
+
+ :
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\psi_{j,l,t}=\begin{cases}
+\alpha_{j,t}\cdot G_{j,l}\cdot L_{W_{l,}}\left(x_{t+1:t+|W_{l}|}\right)\cdot E_{j,x_{t+|W_{l}|-o+2},...,x_{t+|W_{l}|+1}}\cdot\beta_{j,t+|W_{l}|+1} & |\,t+|W_{l}|+1\leq L\\
+0 & |\,otherwise
+\end{cases}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $Px=\underset{j\in[m]}{\sum}\alpha_{j,L}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+for 
+\begin_inset Formula $j=[1,...,m]$
+\end_inset
+
+, 
+\begin_inset Formula $t=[1,...,L]$
+\end_inset
+
+ :
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\gamma_{j,t}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{Px}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+for 
+\begin_inset Formula $j=[1,...,m]$
+\end_inset
+
+, 
+\begin_inset Formula $l=[1,...,k]$
+\end_inset
+
+, 
+\begin_inset Formula $t=[1,...,L]$
+\end_inset
+
+ :
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\eta_{j,l,t}=\frac{\psi_{j,l,t}}{Px}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+for 
+\begin_inset Formula $j_{1}=[1,...,m]$
+\end_inset
+
+, 
+\begin_inset Formula $j_{2}=[1,...,m]$
+\end_inset
+
+, 
+\begin_inset Formula $t=[1,...,L]$
+\end_inset
+
+ :
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\xi_{j_{1},j_{2},t}=\frac{\alpha_{j_{1},t-1}\cdot T_{j_{1},j_{2}}\cdot E_{j_{2},x_{t-o+1},...,x_{t}}\cdot\beta_{j_{2},t}}{Px}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph on
+//m-step
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+for 
+\begin_inset Formula $j=[1,...,m]$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\pi_{j}=\gamma_{j,1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+for 
+\begin_inset Formula $b_{1},...,b_{o}=[1,...,1]$
+\end_inset
+
+ 
+\begin_inset Formula $,...,[4,...,4]$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $E_{j,b_{1},b_{2},...,b_{o}}=\frac{\sum_{t\in o,...,L}\gamma_{j,t}\cdot\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1},...,x_{t})}{\sum_{t\in o,...,L}\gamma_{j,t}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+for  
+\begin_inset Formula $l=[1,...,k]:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $G_{j,l}=\frac{\underset{t\in2,...,L}{\sum}\eta_{j,l,t}}{\underset{t\in1,...,L-1}{\sum}\gamma_{j_{1},t}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+for 
+\begin_inset Formula $j_{2}=[1,...,m]:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $T_{j,j_{2}}=\frac{\underset{t\in2,...,L}{\sum}\xi_{j,j_{2},t}}{\underset{t\in1,...,L-1}{\sum}\gamma_{j,t}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+If  
+\begin_inset Formula $\theta$
+\end_inset
+
+ converged, break EM for loop
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Learning Multiple Sequences at Once
+\end_layout
+
+\begin_layout Standard
+The algorithm here is described for learning a single sequence of observable
+ variables X.
+ For learning the parameters 
+\begin_inset Formula $\theta$
+\end_inset
+
+ from multiple sequences at once, we can use the same method as introduced
+ in the original paper of Baum-Welch algorithm (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-50"
+
+\end_inset
+
+), which calculates the E step probabilities for every sequence, and in
+ the m-step sums all positions from all sequence for the parameters update.
+\end_layout
+
+\begin_layout Section*
+Classifying DNA a Sequence
+\end_layout
+
+\begin_layout Standard
+One of the goals of the HMM and HOP-HMM learning process described above
+ is to be able to classify the DNA sequences by deciding their hidden state
+ per location.
+ After the Baum-Welch algorithm procedure, we might want to reach that goal
+ by choosing per position 
+\begin_inset Formula $t$
+\end_inset
+
+ the max-likelihood hidden state.
+ In the HOP-HMM case, this means getting the hidden sequence:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+y_{t}^{*}=argmax_{(j,l)}P\left(y_{t}=(j,l)|x_{1:L}\right)
+\]
+
+\end_inset
+
+Although simple to calculate with the 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ auxiliary probability, such a hidden sequence could be problematic.
+ Each hidden state maximizes the likelihood at its location, but the hidden
+ sequence together with its transitions might not be the maximal likelihood
+ one, and in fact might even include illegal transition (with probability
+ 0).
+\end_layout
+
+\begin_layout Standard
+Our task here is reaching the hidden sequence that maximizes the likelihood
+ of the observed sequence, where all the sequence is considered:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+y_{1:L}^{*}=argmax_{y_{1:L}}P\left(y_{1:L}|x_{1:L}\right)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+HOP-Viterbi Algorithm
+\end_layout
+
+\begin_layout Standard
+A common way to derive the hidden sequence that maximizes (16) is the Viterbi
+ algorithm, which is similar to the Forward algorithm.
+ The main differences between the two algorithms are the usage of 
+\begin_inset Formula $max$
+\end_inset
+
+ instead of summing over the possible transitions on each step of the dynamic
+ algorithm, and keeping information of the chosen maximal value used via
+ the 
+\begin_inset Formula $argmax$
+\end_inset
+
+ function.
+ The HOP-HMM adaptation to this algorithm includes supporting the TF-states
+ and the high order emission of the background-states.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+HOP-Viterbi Algorithm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Input:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\theta$
+\end_inset
+
+- HOP-HMM parameters 
+\begin_inset Formula $\{E,T,G,\pi\}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+X - Observed DNA sequence
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Algorithm:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $V_{j,1}^{1}=\pi_{j}\cdot E_{j,x_{1}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $V_{j,1}^{2}=0$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\begin_inset Formula $for\,t=[2,...,L]$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\begin_inset Formula $for\,j=[1,...,m]:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+create two vectors:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $A=\left\{ V_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1},...,x_{t}}|j'\in[m]\right\} $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $B=\left\{ V_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}|l\in[k]\right\} $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $V_{j,t}^{1}=max\left(A\cup B\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $V_{j,t}^{2}=\begin{cases}
+\left(argmax(A),0\right) & \ensuremath{max(A)>max(B)}\\
+\left(j,argmax(B)\right) & otherwise
+\end{cases}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $y_{L}=\left(argmax_{j}V_{j,L}^{1},0\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+t=L
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+while t > 1:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $\left(j,l\right)=V_{y_{t}[0],t}^{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+if 
+\begin_inset Formula $l=0:$
+\end_inset
+
+
+\emph on
+# if the hidden state at t-1 is a background-state
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $y_{t-1}=\left(j,0\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $t=t-1$
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+else:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $y_{t-|W_{l}|:t-1}=\left(j,l\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $y_{t-|W_{l}|-1}=y_{t}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $t=t-|W_{l}|-1$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Part*
+Results
+\end_layout
+
+\begin_layout Subsubsection*
+Synthetic Sequences
+\end_layout
+
+\begin_layout Standard
+Before applying the algorithm to a real DNA data, we checked its capabilities
+ on synthetic data.
+\end_layout
+
+\begin_layout Standard
+We sampled 
+\begin_inset Formula $\theta$
+\end_inset
+
+ parameters, while making sure some background-states had chance to transition
+ into TF-states to mimic enhancers, and some background-states had almost
+ no chance of such transitions, to mimic the PWM lacking background around
+ the shoulders of enhancers in the DNA.
+ We marked the sampled 
+\begin_inset Formula $\theta$
+\end_inset
+
+ as the true 
+\begin_inset Formula $\theta$
+\end_inset
+
+ which we would like to estimate in the HOP Baum-Welch algorithm.
+ We then generated several sequences using a HOP-HMMs with the true 
+\begin_inset Formula $\theta$
+\end_inset
+
+, keeping both the observed and the hidden sequences.
+ Finally, we split the sequences into train and test and estimated a 
+\begin_inset Formula $\theta$
+\end_inset
+
+ using the train sequences, and measuring its accuracy over both the train
+ and the test sequences.
+\end_layout
+
+\begin_layout Standard
+During our experiments, we noticed 2 interesting points:
+\end_layout
+
+\begin_layout Itemize
+As in other EM, running the HOP Baum-Welch algorithm multiple times with
+ different initialization 
+\begin_inset Formula $\theta$
+\end_inset
+
+ converged into different result 
+\begin_inset Formula $\theta$
+\end_inset
+
+.
+ In our experiments, the higher the log likelihood yielded by the 
+\begin_inset Formula $\theta$
+\end_inset
+
+ estimation and the RMSE of the estimated compared to the true 
+\begin_inset Formula $\theta$
+\end_inset
+
+ (see figure 12).
+ This is important since on real observed sequences, only the estimated
+ 
+\begin_inset Formula $\theta$
+\end_inset
+
+ likelihood is known while the true 
+\begin_inset Formula $\theta$
+\end_inset
+
+ is unknown.
+ This correlation suggests a strategy of redoing several EM runs, and choosing
+ the one with the highest likelihood will result in an estimation closer
+ to the true 
+\begin_inset Formula $\theta$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+Adding regularization on T in 
+\begin_inset Formula $\theta$
+\end_inset
+
+ by limiting it so the major diagonal of T (probability of staying in the
+ same hidden state) is larger than the sum of the rest of its values by
+ a factor caused to convergence to better 
+\begin_inset Formula $\theta$
+\end_inset
+
+ estimations, which are closer to the true 
+\begin_inset Formula $\theta$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/DecError_rmse_vs_likelihood_m5bg1k25o3b1s0r0N3000L1000.jpg
+	scale 25
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 12: Over multiple runs of HOP-Baum-Welch, a correlation exists between
+ the estimated 
+\begin_inset Formula $\theta$
+\end_inset
+
+ likelihood over the learned sequences and the error comparing the true
+ 
+\begin_inset Formula $\theta$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/dec_likelihood.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/dec_theta_error.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/dec_theta_error_scatter.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/dec_viterbi.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 13: (A) the EM iterations draws the estimated 
+\begin_inset Formula $\theta$
+\end_inset
+
+ values mostly closer to the values of the true 
+\begin_inset Formula $\theta$
+\end_inset
+
+.
+ (B) The error between the true and estimated 
+\begin_inset Formula $\theta$
+\end_inset
+
+ decrease, and after a few iterations converge to the same path regardless
+ of the initialization.
+ (C) During the EM iterations, the learned 
+\begin_inset Formula $\theta$
+\end_inset
+
+ yields a more accurate Viterbi estimation of the hidden states.
+ Note that not even the true 
+\begin_inset Formula $\theta$
+\end_inset
+
+ could produce Viterbi paths that is a perfect match to the true hidden
+ sequences.
+ (D) The mean log likelihood of the sequences increases during the EM iterations.
+ The experiment was done on 500 synthetic sequences (85% train, 15% test),
+ 1000 long.
+ The trained model had 6 hidden background-states with emission order of
+ 2, each background-state had 25 PWMs-states.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/synthetic_posterior_with_tfs.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure: posterior probability of the different hidden-states, estimated
+ by a trained HOP-HMM on test sequences.
+ The sequences were synthetically generated by a different HOP-HMM, which
+ the learning approximates.
+ The black TFBS is the sum of all the probabilities of being in any of the
+ TF-states.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/confusion_matrix.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure: confusion matrix between true and estimated states by the Viterbi
+ algorithm.
+ Rows are normalized so their sum is equal to 1.
+ The majority of prediction are in the background-states (1,0), (2,0), (3,0),
+ (4,0) and (5,0)
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: Remove research question part, insert into the results head paragraph
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: math parts should be in methods
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: Algorithm psaudocode jumps in pdf
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: move compact figure before the HOP HMM figure
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: After description of HOP HMM, add inference section about: 1.
+ viterbi 2.
+ postirior 3: postirior sum hirizontal 4.
+ postirior sum vertical 5.
+ transition postirior (with figures all over)
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: Add code usage section
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: remove duplication of math in P(Xi) sum of alpha times beta in denuminator
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: in results, open with intor paragraph: what can we do now? we will
+ use this to check the data on synthetics and real DNA
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: explain the sampling part of synthetic data with figure.
+ also, explain the two rows of real and viterbi in the sequence sample figure
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: describe the regularization (in methods?) aka bound
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: scatter plot, remove stuff that are bounded, like T, add to figure
+ description
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: in postirior of sequences figure, add plot sum of all TFs postirior
+ that should rise in the TFs
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: recall + precision for each state
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: add sections about the params in great detail
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: remove sub titles of the background section,
+\end_layout
+
+\begin_layout Subsection*
+Roadmap Dataset
+\end_layout
+
+\begin_layout Paragraph*
+Perprocessing
+\end_layout
+
+\begin_layout Standard
+For testing of HOP-HMM performance on human genetic data, we used the Roadmap
+ project tracks.
+ We defined the dataset of known enhancers as sequences around intersection
+ of DNAse, H3k27ac and H3k4me1 peaks, while removing peaks of H3k27me3 and
+ H3k4me3 and sequences within 5000bp from known genes.
+ Bed files manipulation was done with BEDTools (
+\begin_inset CommandInset citation
+LatexCommand citet
+key "key-68"
+
+\end_inset
+
+), which resulted in 1000bp long sequences centered around their H3k27ac
+ peaks.
+\end_layout
+
+\begin_layout Paragraph*
+Choosing the PWMs
+\end_layout
+
+\begin_layout Standard
+For the set of PWMs used by the TF-states of the HOP-HMM, we used JASPAR
+ dataset of 719 vertebrates PWMs, out of which we selected 30 PWMs for a
+ reasonable runtime.
+ The selected PWMs should be the most indicative for the tissue specific
+ enhancers.
+ In the process of choosing the PWMs, we aim to choose the PWMs that appear
+ in one of the tested enhancers and not the others.
+ we used the correlation (marked as 
+\begin_inset Formula $L_{W}\left(x_{t-|W|},...,x_{t-1}\right)$
+\end_inset
+
+ in above sections) to measure the appearance of a PWM in a sequence in
+ a position in a sequence.
+ We calculated the 3 best matching positions of every PWM in every sequence,
+ and calculated how successful, in terms of AUC-ROC, this sum can separate
+ one sequence type from the other using a threshold.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/sequence_roadmap.jpg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Figures/sequence_roadmap2.jpg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: Violine graph of the posterior of places Viterbi marked as PWMs and
+ didnt mark as PWMs.
+ violine of the acc.
+ of the places marked by the Viterbi on real DNA.
+ also, deep tool of the acc.
+ and ME3 of these sequences.
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: confusion graph of the states classification of the Viterbi algo.
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: deeptools: aligned heatmap sequences with the peak of the H3K27ac
+ and post.
+ prob., are they similar?]
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Figure: HOP-Viterbi classification of a region classified as an enhancer,
+ ChromHMM classification and the H3K27ac features
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: Use HUJI theses format, 12 point font size, with 1.5 line spacing
+\end_layout
+
+\begin_layout Standard
+1.
+ Opening page including:
+\end_layout
+
+\begin_layout Standard
+a.
+ Heading – “The Hebrew University of Jerusalem – the Faculty of Mathematics
+ and Natural Science – the Institute of (Chemistry, Life Sciences, Physics,
+ Mathematics, Earth Sciences, Computer Science)
+\end_layout
+
+\begin_layout Standard
+b.
+ Title of the thesis in Hebrew and English
+\end_layout
+
+\begin_layout Standard
+c.
+ Author’s name (+ student number)
+\end_layout
+
+\begin_layout Standard
+d.
+ Supervisor’s name
+\end_layout
+
+\begin_layout Standard
+e.
+ “Thesis for Master’s degree in Natural Science”
+\end_layout
+
+\begin_layout Standard
+f.
+ Date of submission in English and Hebrew
+\end_layout
+
+\begin_layout Standard
+2.
+ Personal page (dedication etc.)
+\end_layout
+
+\begin_layout Standard
+3.
+ Abstract
+\end_layout
+
+\begin_layout Standard
+4.
+ Table of contents
+\end_layout
+
+\begin_layout Standard
+5.
+ Body of the work
+\end_layout
+
+\begin_layout Standard
+6.
+ Bibliography
+\end_layout
+
+\begin_layout Standard
+7.
+ Appendices
+\end_layout
+
+\begin_layout Standard
+The body of the work (section 5 above) will include:
+\end_layout
+
+\begin_layout Standard
+1.
+ Scientific introduction
+\end_layout
+
+\begin_layout Standard
+2.
+ Thesis aims
+\end_layout
+
+\begin_layout Standard
+3.
+ Methods (theoretical or experimental part)
+\end_layout
+
+\begin_layout Standard
+4.
+ Results
+\end_layout
+
+\begin_layout Standard
+5.
+ Discussion and summary.
+\end_layout
+
+\begin_layout Part*
+Misc
+\end_layout
+
+\begin_layout Paragraph*
+Pretraining
+\end_layout
+
+\begin_layout Standard
+When sequences are labeled as tissue-specific enhancers are available, it
+ is possible to pretrain a multi-background-state HOP-HMM with them.
+ The E and G parts of such a model could be initialized with parameters
+ taken from a smaller HOP-HMM, trained on 2 class datasets built out of
+ tissue-specific enhancers and background DNA sequences.
+ For each tissue, we build a dataset and trained a 2 background-state HOP-HMM
+ model (one background-state for the enhancer and one for the background)
+ and used the learned parameters of the enhancer background-state to initialize
+ the bigger multi-background-state HOP-HMM.
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: number the chapters and figures
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: abstract
+\end_layout
+
+\begin_layout Standard
+The TF inside the nucleus of specific tissues are thought to be a key factor
+ in the activation of specific enhancer.
+ The TFs form a transcription complex and are connected to the enhancer
+ and promoter sequences on top of the TF binding sites (TFBS).
+ Studies using TFBS of TF present in specific cell types are used to classify
+ cell specific enhancer sequences.
+ show heat map of AUC-ROC results.
+ Between these TFBS, kmer frequencies varies between enhancers and non regulator
+y
+\begin_inset Quotes eld
+\end_inset
+
+background
+\begin_inset Quotes erd
+\end_inset
+
+ DNA, and was used to classify enhancers from background using only the
+ kmer distribution (Inbar and tommy, gkm-SVM), and is thought to play a
+ role in spacial properties, nucleosome location and cleavage that cause
+ accessibility of near-by TFBS.
+ Using 44 out of 127 epigenetic data of Roadmap Project to select tissue
+ specific enhancer sequences dataset.
+ In our method, we look for different TFBS and kmer presence in sequences
+ to classify cell-specific sequences, inside regulatory modules.
+\end_layout
+
+\begin_layout Subsubsection*
+
+\series bold
+\bar under
+TODO: Semi-Supervised Learning Scheme:
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Pre-training:
+\series default
+ Calculate maximal likelihood initialization parameters 
+\begin_inset Formula $\theta_{0}$
+\end_inset
+
+ with from observed labeled dataset of sequences 
+\begin_inset Formula $Y_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $X_{0}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Unsupervised learning:
+\series default
+ Learn the 
+\begin_inset Formula $\theta$
+\end_inset
+
+ given X unlabeled sequences by approximating 
+\begin_inset Formula $\theta_{best}=$
+\end_inset
+
+ 
+\begin_inset Formula $argmax_{\theta}\mathcal{L}\left(\theta|X\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Predicting labels:
+\series default
+Given learned 
+\begin_inset Formula $\theta$
+\end_inset
+
+, infer hidden states Y for unlabeled X
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Tuning:
+\series default
+ Preform hyperparameters optimization
+\end_layout
+
+\begin_layout Standard
+experiment graphs:
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+per nucleotide binary classification (background vs enhancer)
+\series default
+ - heatmap (x-location relative to peak, y-sequence index, color-post.
+ probability) use the 
+\begin_inset Formula $\gamma_{i,*}$
+\end_inset
+
+ of enhancers where i is the state of the enhancer, pick only the 2000+-
+ around the enhancer's peak, where the center is the max of the H3K27ac
+ signal, showing the sequences are most likely enhancers surrounded by non
+ enhancers .
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+per sequence mutli-class classification (background vs enhancer)
+\series default
+ - heatmap (state number, y-sequence index, color-maximal post.
+ probability for the sequence of that state) of 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ of enhancers, where the center is the max of the H3K27ac, showing the sequences
+ are most likely enhancers surrounded by non enhancers
+\end_layout
+
+\begin_layout Standard
+per sequence classification
+\end_layout
+
+\begin_layout Standard
+[per sequence binary classification - background vs enhancer]
+\end_layout
+
+\begin_layout Standard
+[per nucleotide binary classification - background vs enhancer]
+\end_layout
+
+\begin_layout Standard
+[per sequence binary classification - background vs enhancer]
+\end_layout
+
+\begin_layout Subsubsection*
+
+\series bold
+\bar under
+TODO: Possible Applications
+\end_layout
+
+\begin_layout Standard
+labeled enhancer seqs from multiple motifs-> EM to learn E M F per floor
+ + setting 
+\begin_inset Formula $T=\mathbb{I}_{m\times m}$
+\end_inset
+
+ -> posterior of whole genome with sliding window -> classify whole genome
+\end_layout
+
+\begin_layout Standard
+learn E M F -> check correlation with TF expression
+\end_layout
+
+\begin_layout Standard
+run EM on whole genome -> posterior of whole genome -> check correlation
+ of posterior to ChIP-Seq of histone modifications
+\end_layout
+
+\begin_layout Standard
+E M F T-> posterior of whole genome -> see if known critical SNPs are critical
+ in classification
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Ahituv et al. (2007)"
+key "key-1"
+
+\end_inset
+
+ Ahituv, N., Zhu, Y., Visel, A., Holt, A., Afzal, V., Pennacchio, L.
+ A., & Rubin, E.
+ M.
+ (2007).
+ Deletion of ultraconserved elements yields viable mice.
+ PLoS biology, 5(9), e234.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Ainscough et al. (1998)"
+key "key-57"
+
+\end_inset
+
+ Ainscough, R., Bardill, S., Barlow, K., Basham, V., Baynes, C., Beard, L., ...
+ & Burrows, C.
+ (1998).
+ Genome sequence of the nematode C.
+ elegans: a platform for investigating biology.
+ Science, 282(5396), 2012-2018.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Akalin et al. (2009)"
+key "key-11"
+
+\end_inset
+
+ Akalin, A., Fredman, D., Arner, E., Dong, X., Bryne, J.
+ C., Suzuki, H., ...
+ & Lenhard, B.
+ (2009).
+ Transcriptional features of genomic regulatory blocks.
+ Genome biology, 10(4), R38.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Alipanahi et al. (2015)"
+key "key-2"
+
+\end_inset
+
+ Alipanahi, B., Delong, A., Weirauch, M.
+ T., & Frey, B.
+ J.
+ (2015).
+ Predicting the sequence specificities of DNA-and RNA-binding proteins by
+ deep learning.
+ Nature biotechnology, 33(8), 831.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Andersson et al. (2014)"
+key "key-3"
+
+\end_inset
+
+ Andersson, R., Gebhard, C., Miguel-Escalada, I., Hoof, I., Bornholdt, J., Boyd,
+ M., ...
+ & Ntini, E.
+ (2014).
+ An atlas of active enhancers across human cell types and tissues.
+ Nature, 507(7493), 455.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Baum et al. (1966)"
+key "key-4"
+
+\end_inset
+
+ Baum, L.
+ E., & Petrie, T.
+ (1966).
+ Statistical inference for probabilistic functions of finite state Markov
+ chains.
+ The annals of mathematical statistics, 37(6), 1554-1563.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Benko et al. (2009)"
+key "key-6"
+
+\end_inset
+
+ Benko, S., Fantes, J.
+ A., Amiel, J., Kleinjan, D., Thomas, S., Ramsay, J., et al.
+ (2009).
+ Highly conserved non.
+ Nature Genetics 64(2), p.
+ 10-12.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Burge and Karlin (1997)"
+key "key-22"
+
+\end_inset
+
+Burge, C., & Karlin, S.
+ (1997).
+ Prediction of complete gene structures in human genomic DNA.
+ Journal of molecular biology, 268(1), 78-94.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Calo et al. (2013)"
+key "key-7"
+
+\end_inset
+
+ Calo, E., & Wysocka, J.
+ (2013).
+ Modification of enhancer chromatin: what, how, and why?.
+ Molecular cell, 49(5), 825-837.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Creyghton et al. (2010)"
+key "key-8"
+
+\end_inset
+
+ Creyghton, M.
+ P., Cheng, A.
+ W., Welstead, G.
+ G., Kooistra, T., Carey, B.
+ W., Steine, E.
+ J., ...
+ & Boyer, L.
+ A.
+ (2010).
+ Histone H3K27ac separates active from poised enhancers and predicts development
+al state.
+ Proceedings of the National Academy of Sciences, 107(50), 21931-21936.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Cutter et al. (2015)"
+key "key-9"
+
+\end_inset
+
+ Cutter, A.
+ R., & Hayes, J.
+ J.
+ (2015).
+ A brief review of nucleosome structure.
+ FEBS letters, 589(20), 2914-2922.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Beer et al. (2014)"
+key "key-5"
+
+\end_inset
+
+ De Beer, Z.
+ W., Duong, T.
+ A., Barnes, I., Wingfield, B.
+ D., & Wingfield, M.
+ J.
+ (2014).
+ Redefining Ceratocystis and allied genera.
+ Studies in Mycology, 79, 187-219.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Diehl et al. (2016)"
+key "key-10"
+
+\end_inset
+
+ Diehl, A.
+ D., Meehan, T.
+ F., Bradford, Y.
+ M., Brush, M.
+ H., Dahdul, W.
+ M., Dougall, D.
+ S., ...
+ & Van Slyke, C.
+ E.
+ (2016).
+ The Cell Ontology 2016: enhanced content, modularization, and ontology
+ interoperability.
+ Journal of biomedical semantics, 7(1), 44.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Doniger et al. (2005)"
+key "key-12"
+
+\end_inset
+
+ Doniger, S.
+ W., Huh, J., & Fay, J.
+ C.
+ (2005).
+ Identification of functional transcription factor binding sites using closely
+ related Saccharomyces species.
+ Genome research, 15(5), 701-709.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Emison et al. (2005)"
+key "key-13"
+
+\end_inset
+
+ Emison, E.
+ S., McCallion, A.
+ S., Kashuk, C.
+ S., Bush, R.
+ T., Grice, E., Lin, S., ...
+ & Chakravarti, A.
+ (2005).
+ A common sex-dependent mutation in a RET enhancer underlies Hirschsprung
+ disease risk.
+ Nature, 434(7035), 857.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Ernst and Kellis (2012)"
+key "key-14"
+
+\end_inset
+
+ Ernst, J., & Kellis, M.
+ (2012).
+ ChromHMM: automating chromatin-state discovery and characterization.
+ Nature methods, 9(3), 215.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Ernst et al. (2011)"
+key "key-15"
+
+\end_inset
+
+ Ernst, J., Kheradpour, P., Mikkelsen, T.
+ S., Shoresh, N., Ward, L.
+ D., Epstein, C.
+ B., ...
+ & Ku, M.
+ (2011).
+ Mapping and analysis of chromatin state dynamics in nine human cell types.
+ Nature, 473(7345), 43.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Ezkurdia et al. (2014)"
+key "key-16"
+
+\end_inset
+
+ Ezkurdia, I., Juan, D., Rodriguez, J.
+ M., Frankish, A., Diekhans, M., Harrow, J., ...
+ & Tress, M.
+ L.
+ (2014).
+ Multiple evidence strands suggest that there may be as few as 19 000 human
+ protein-coding genes.
+ Human molecular genetics, 23(22), 5866-5878.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Ferguson (1980)"
+key "key-17"
+
+\end_inset
+
+ Ferguson, J.
+ D.
+ (1980).
+ pp.
+ 143–179, Variable duration models for speech.
+ In Proc.
+ of the Symposium on the applications of hidden Markov models to text and
+ speech, JD Ferguson, Ed.
+ Princeton: IDA-CRD.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Fernandez and Galperin (2012)"
+key "key-18"
+
+\end_inset
+
+ Galperin, M.
+ Y., & Fernández-Suarez, X.
+ M.
+ (2011).
+ The 2012 nucleic acids research database issue and the online molecular
+ biology database collection.
+ Nucleic acids research, 40(D1), D1-D8.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Fishilevich et al. (2017)"
+key "key-20"
+
+\end_inset
+
+ Fishilevich, S., Nudel, R., Rappaport, N., Hadar, R., Plaschkes, I., Iny Stein,
+ T., ...
+ & Lancet, D.
+ (2017).
+ GeneHancer: genome-wide integration of enhancers and target genes in GeneCards.
+ Database, 2017.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Friedli et al. (2010)"
+key "key-21"
+
+\end_inset
+
+ Friedli, M., Barde, I., Arcangeli, M., Verp, S., Quazzola, A., Zakany, J., ...
+ & Duboule, D.
+ (2010).
+ A systematic enhancer screen using lentivector transgenesis identifies
+ conserved and non-conserved functional elements at the Olig1 and Olig2
+ locus.
+ PLoS One, 5(12), e15741.
+ 
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Haussler and Eeckman (1996)"
+key "key-24"
+
+\end_inset
+
+ Haussler, D.
+ K.
+ D., & Eeckman, M.
+ G.
+ R.
+ F.
+ H.
+ (1996).
+ A generalized hidden Markov model for the recognition of human genes in
+ DNA.
+ In Proc.
+ int.
+ conf.
+ on intelligent systems for molecular biology, st.
+ louis (pp.
+ 134-142).
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Hayashi-Takanaka et al. (2011)"
+key "key-25"
+
+\end_inset
+
+ Hayashi-Takanaka, Y., Yamagata, K., Wakayama, T., Stasevich, T.
+ J., Kainuma, T., Tsurimoto, T., ...
+ & Kimura, H.
+ (2011).
+ Tracking epigenetic histone modifications in single cells using Fab-based
+ live endogenous modification labeling.
+ Nucleic acids research, 39(15), 6475-6488.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Heintzman et al. (2007)"
+key "key-26"
+
+\end_inset
+
+ Heintzman, N.
+ D., Stuart, R.
+ K., Hon, G., Fu, Y., Ching, C.
+ W., Hawkins, R.
+ D., ...
+ & Wang, W.
+ (2007).
+ Distinct and predictive chromatin signatures of transcriptional promoters
+ and enhancers in the human genome.
+ Nature genetics, 39(3), 311.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Heintzman et al. (2009)"
+key "key-19"
+
+\end_inset
+
+ Heintzman, N.
+ D., Hon, G.
+ C., Hawkins, R.
+ D., Kheradpour, P., Stark, A., Harp, L.
+ F., ...
+ & Ching, K.
+ A.
+ (2009).
+ Histone modifications at human enhancers reflect global cell-type-specific
+ gene expression.
+ Nature, 459(7243), 108.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Hu et al. (1996)"
+key "key-27"
+
+\end_inset
+
+ Hu, J., Brown, M.
+ K., & Turin, W.
+ (1996).
+ HMM based online handwriting recognition.
+ IEEE Transactions on pattern analysis and machine intelligence, 18(10),
+ 1039-1045.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Jin et al. (2011)"
+key "key-28"
+
+\end_inset
+
+ Jin Q, Yu L-R, Wang L, Zhang Z, Kasper LH, Lee J-E, Wang C, Brindle PK,
+ Dent SYR, Ge K.
+ 2011.
+ Distinct roles of GCN5/PCAF-mediated H3K9ac and CBP/p300-mediated H3K18/27ac
+ in nuclear receptor transactivation.
+ The EMBO Journal 30:249–262.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Jones et al. (2012)"
+key "key-29"
+
+\end_inset
+
+ Jones, P.
+ A.
+ (2012).
+ Functions of DNA methylation: islands, start sites, gene bodies and beyond.
+ Nature Reviews Genetics, 13(7), 484.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Kaplan et al. (2012)"
+key "key-64"
+
+\end_inset
+
+ Kaplan, T., & Biggin, M.
+ D.
+ (2012).
+ Quantitative models of the mechanisms that control genome-wide patterns
+ of animal transcription factor binding.
+ In Methods in cell biology (Vol.
+ 110, pp.
+ 263-283).
+ Academic Press.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Karmodiya et al. (2012)"
+key "key-30"
+
+\end_inset
+
+ Karmodiya, K., Krebs, A.
+ R., Oulad-Abdelghani, M., Kimura, H., & Tora, L.
+ (2012).
+ H3K9 and H3K14 acetylation co-occur at many gene regulatory elements, while
+ H3K14ac marks a subset of inactive inducible promoters in mouse embryonic
+ stem cells.
+ BMC genomics, 13(1), 424.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Kelley et al. (2016)"
+key "key-31"
+
+\end_inset
+
+ Kelley, D.
+ R., Snoek, J., & Rinn, J.
+ L.
+ (2016).
+ Basset: learning the regulatory code of the accessible genome with deep
+ convolutional neural networks.
+ Genome research, 26(7), 990-999.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Khan et al. (2018)"
+key "key-32"
+
+\end_inset
+
+ Khan, A., Fornes, O., Stigliani, A., Gheorghe, M., Castro-Mondragon, J.
+ A., van der Lee, R., ...
+ & Baranasic, D.
+ (2017).
+ JASPAR 2018: update of the open-access database of transcription factor
+ binding profiles and its web framework.
+ Nucleic acids research, 46(D1), D260-D266.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Kim et al. (2010)"
+key "key-23"
+
+\end_inset
+
+ Kim, T.
+ K., Hemberg, M., Gray, J.
+ M., Costa, A.
+ M., Bear, D.
+ M., Wu, J., ...
+ & Markenscoff-Papadimitriou, E.
+ (2010).
+ Widespread transcription at neuronal activity-regulated enhancers.
+ Nature, 465(7295), 182.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Kleftogiannis et al. (2016)"
+key "key-33"
+
+\end_inset
+
+ Kleftogiannis, D., Kalnis, P., Arner, E., & Bajic, V.
+ B.
+ (2016).
+ Discriminative identification of transcriptional responses of promoters
+ and enhancers after stimulus.
+ Nucleic acids research, 45(4), e25-e25.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Kreimer et al. (2017)"
+key "key-35"
+
+\end_inset
+
+ Kreimer, A., Zeng, H., Edwards, M.
+ D., Guo, Y., Tian, K., Shin, S., ...
+ & Li, Y.
+ (2017).
+ Predicting gene expression in massively parallel reporter assays: a comparative
+ study.
+ Human mutation, 38(9), 1240-1250.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Kulakovskiy et al. (2011)"
+key "key-36"
+
+\end_inset
+
+ Kulakovskiy, I.
+ V., Belostotsky, A.
+ A., Kasianov, A.
+ S., Esipova, N.
+ G., Medvedeva, Y.
+ A., Eliseeva, I.
+ A., & Makeev, V.
+ J.
+ (2011).
+ A deeper look into transcription regulatory code by preferred pair distance
+ templates for transcription factor binding sites.
+ Bioinformatics, 27(19), 2621-2624.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Kundaje et al. (2015)"
+key "key-37"
+
+\end_inset
+
+ Kundaje, A., Meuleman, W., Ernst, J., Bilenky, M., Yen, A., Heravi-Moussavi,
+ A., ...
+ & Amin, V.
+ (2015).
+ Integrative analysis of 111 reference human epigenomes.
+ Nature, 518(7539), 317.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Lee and Lee (2006)"
+key "key-38"
+
+\end_inset
+
+ Lee, L.
+ M., & Lee, J.
+ C.
+ (2006, June).
+ A study on high-order hidden Markov models and applications to speech recogniti
+on.
+ In International Conference on Industrial, Engineering and Other Applications
+ of Applied Intelligent Systems (pp.
+ 682-690).
+ Springer, Berlin, Heidelberg.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Lettice et al. (2003)"
+key "key-39"
+
+\end_inset
+
+ Lettice, L.
+ A., Heaney, S.
+ J., Purdie, L.
+ A., Li, L., de Beer, P., Oostra, B.
+ A., ...
+ & de Graaff, E.
+ (2003).
+ A long-range Shh enhancer regulates expression in the developing limb and
+ fin and is associated with preaxial polydactyly.
+ Human molecular genetics, 12(14), 1725-1735.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Lindblad-Toh et al. (2011)"
+key "key-40"
+
+\end_inset
+
+ Lindblad-Toh, K., Garber, M., Zuk, O., Lin, M.
+ F., Parker, B.
+ J., Washietl, S., ...
+ & Ward, L.
+ D.
+ (2011).
+ A high-resolution map of human evolutionary constraint using 29 mammals.
+ Nature, 478(7370), 476.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Mari et al. (1997)"
+key "key-41"
+
+\end_inset
+
+ Mari, J.
+ F., Haton, J.
+ P., & Kriouile, A.
+ (1997).
+ Automatic word recognition based on second-order hidden Markov models.
+ IEEE Transactions on speech and Audio Processing, 5(1), 22-25.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Markov (1906)"
+key "key-42"
+
+\end_inset
+
+ Markov, A.
+ A.
+ (1906).
+ Extension of the law of large numbers to dependent quantities.
+ Izv.
+ Fiz.-Matem.
+ Obsch.
+ Kazan Univ.(2nd Ser), 15, 135-156.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Miguel-Escalada et al. (2015)"
+key "key-44"
+
+\end_inset
+
+ Miguel-Escalada, I., Pasquali, L., & Ferrer, J.
+ (2015).
+ Transcriptional enhancers: functional insights and role in human disease.
+ Current opinion in genetics & development, 33, 71-76.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Ng et al. (2009)"
+key "key-45"
+
+\end_inset
+
+ Ng, S.
+ B., Turner, E.
+ H., Robertson, P.
+ D., Flygare, S.
+ D., Bigham, A.
+ W., Lee, C., ...
+ & Bamshad, M.
+ (2009).
+ Targeted capture and massively parallel sequencing of 12 human exomes.
+ Nature, 461(7261), 272.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Pennacchio et al. (2015)"
+key "key-46"
+
+\end_inset
+
+ Pennacchio, L.
+ A., Bickmore, W., Dean, A., Nobrega, M.
+ A., & Bejerano, G.
+ (2013).
+ Enhancers: five essential questions.
+ Nature Reviews Genetics, 14(4), 288.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Preez (1998)"
+key "key-47"
+
+\end_inset
+
+ du Preez, J.
+ A.
+ (1998).
+ Efficient training of high-order hidden Markov models using first-order
+ representations.
+ Computer speech & language, 12(1), 23-39.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Przybilla et al. (2012)"
+key "key-48"
+
+\end_inset
+
+ Przybilla, J., Galle, J., & Rohlf, T.
+ (2012).
+ Is adult stem cell aging driven by conflicting modes of chromatin remodeling?.
+ Bioessays, 34(10), 841-848.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Quinlan and Hall (2010)"
+key "key-68"
+
+\end_inset
+
+ Quinlan, A.
+ R., & Hall, I.
+ M.
+ (2010).
+ BEDTools: a flexible suite of utilities for comparing genomic features.
+ Bioinformatics, 26(6), 841-842.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Rabiner and Juang (1993)"
+key "key-49"
+
+\end_inset
+
+ Rabiner, L., & Juang, B.
+ H.
+ (1993).
+ Fundamentals of speech processing.
+ Prantice Hall.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Rabiner (1989)"
+key "key-50"
+
+\end_inset
+
+ Rabiner, L.
+ R.
+ (1989).
+ A tutorial on hidden Markov models and selected applications in speech
+ recognition.
+ Proceedings of the IEEE, 77(2), 257-286.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Rada-Iglesias et al. (2011)"
+key "key-51"
+
+\end_inset
+
+ Rada-Iglesias, A., Bajpai, R., Swigut, T., Brugmann, S.
+ A., Flynn, R.
+ A., & Wysocka, J.
+ (2011).
+ A unique chromatin signature uncovers early developmental enhancers in
+ humans.
+ Nature, 470(7333), 279.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Rosin et al. (2013)"
+key "key-52"
+
+\end_inset
+
+ Rosin, J.
+ M., Abassah-Oppong, S., & Cobb, J.
+ (2013).
+ Comparative transgenic analysis of enhancers from the human SHOX and mouse
+ Shox2 genomic regions.
+ Human molecular genetics, 22(15), 3063-3076.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Smemo S.(2012)"
+key "key-53"
+
+\end_inset
+
+ Smemo, S., Campos, L.
+ C., Moskowitz, I.
+ P., Krieger, J.
+ E., Pereira, A.
+ C., & Nobrega, M.
+ A.
+ (2012).
+ Regulatory variation in a TBX5 enhancer leads to isolated congenital heart
+ disease.
+ Human molecular genetics, 21(14), 3255-3263.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Soldner et al. (2016)"
+key "key-54"
+
+\end_inset
+
+ Soldner, F., Stelzer, Y., Shivalila, C.
+ S., Abraham, B.
+ J., Latourelle, J.
+ C., Barrasa, M.
+ I., ...
+ & Jaenisch, R.
+ (2016).
+ Parkinson-associated risk variant in distal enhancer of α-synuclein modulates
+ target gene expression.
+ Nature, 533(7601), 95.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Stadler et al. (2011)"
+key "key-55"
+
+\end_inset
+
+ Stadler, M.
+ B., Murr, R., Burger, L., Ivanek, R., Lienert, F., Schöler, A., ...
+ & Tiwari, V.
+ K.
+ (2011).
+ DNA-binding factors shape the mouse methylome at distal regulatory regions.
+ Nature, 480(7378), 490.
+ 
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Stormo et al. (1982)"
+key "key-7"
+
+\end_inset
+
+ Stormo, G.
+ D., Schneider, T.
+ D., Gold, L., & Ehrenfeucht, A.
+ (1982).
+ Use of the ‘Perceptron’algorithm to distinguish translational initiation
+ sites in E.
+ coli.
+ Nucleic acids research, 10(9), 2997-3011.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Staden (1984)"
+key "key-8"
+
+\end_inset
+
+ Staden, R.
+ (1984).
+ Computer methods to locate signals in nucleic acid sequences.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Taher et al. (2011)"
+key "key-56"
+
+\end_inset
+
+ Taher, L., McGaughey, D.
+ M., Maragh, S., Aneas, I., Bessling, S.
+ L., Miller, W., ...
+ & Ovcharenko, I.
+ (2011).
+ Genome-wide identification of conserved regulatory function in diverged
+ sequences.
+ Genome research, 21(7), 1139-1149.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Thurman et al. (2012)"
+key "key-58"
+
+\end_inset
+
+ Thurman, R.
+ E., Rynes, E., Humbert, R., Vierstra, J., Maurano, M.
+ T., Haugen, E., ...
+ & Garg, K.
+ (2012).
+ The accessible chromatin landscape of the human genome.
+ Nature, 489(7414), 75.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Turin and Sondhi (1993)"
+key "key-59"
+
+\end_inset
+
+ Turin, W., & Sondhi, M.
+ M.
+ (1993).
+ Modeling error sources in digital channels.
+ IEEE Journal on Selected Areas in Communications, 11(3), 340-347.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Visel et al. (2007)"
+key "key-60"
+
+\end_inset
+
+ Visel, A., Minovitsky, S., Dubchak, I., & Pennacchio, L.
+ A.
+ (2007).
+ VISTA Enhancer Browser—a database of tissue-specific human enhancers.
+ Nucleic Acids Research, 35(Database issue), D88.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Visel et al. (2009)"
+key "key-61"
+
+\end_inset
+
+ Visel, A., Blow, M.
+ J., Li, Z., Zhang, T., Akiyama, J.
+ A., Holt, A., ...
+ & Afzal, V.
+ (2009).
+ ChIP-seq accurately predicts tissue-specific activity of enhancers.
+ Nature, 457(7231), 854.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Williamson et al. (2011)"
+key "key-43"
+
+\end_inset
+
+ Williamson, I., Hill, R.
+ E., & Bickmore, W.
+ A.
+ (2011).
+ Enhancers: from developmental genetics to the genetics of common human
+ disease.
+ Developmental cell, 21(1), 17-19.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Zentner et al. (2011)"
+key "key-62"
+
+\end_inset
+
+ Zentner, G.
+ E., Tesar, P.
+ J., & Scacheri, P.
+ C.
+ (2011).
+ Epigenetic signatures distinguish multiple classes of enhancers with distinct
+ cellular functions.
+ Genome research, 21(8), 1273-1283.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Zhou and Troyanskaya (2015)"
+key "key-63"
+
+\end_inset
+
+ Zhou, J., & Troyanskaya, O.
+ G.
+ (2015).
+ Predicting effects of noncoding variants with deep learning–based sequence
+ model.
+ Nature methods, 12(10), 931.
+\end_layout
+
+\end_body
+\end_document

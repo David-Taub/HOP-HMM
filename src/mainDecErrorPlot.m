@@ -5,7 +5,7 @@
 function mainDecErrorPlot()
     conf.doESharing = false;
     conf.startWithBackground = false;
-    conf.maxIters = 30;
+    conf.maxIters = 100;
     conf.canCrossLayer = true;
     conf.patience = 10;
     conf.L = 1000;
