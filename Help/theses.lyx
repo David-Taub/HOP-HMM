@@ -75,7 +75,7 @@
 \bottommargin 2cm
 \headheight 0cm
 \headsep 0cm
-\footskip 0cm
+\footskip 1cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation skip
@@ -316,7 +316,7 @@ name "Mouse"
 
 \end_inset
 
-transgenic mouse embryo in the 11.5 day.
+Transgenic mouse embryo in the 11.5 day.
  As an fertilized egg a synthetic enhancer sequence was injected, which
  is related to the dorsal root ganglia spinal neurons.
  The enhancer became activated and caused the expression of the blue color
@@ -1716,7 +1716,7 @@ It is calculated by the dynamic algorithm:
 \begin_inset Float algorithm
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Caption Standard
@@ -2698,13 +2698,13 @@ name "TGCompact"
 
 \end_inset
 
-Instead of holding a single sparse 8 
+Instead of holding a single sparse 8
 \begin_inset Formula $\times$
 \end_inset
 
 8 transition matrix, an alternative compact form holds only the non-fixed
  transition probabilities, split into T and G matrices.
- The non-fixed transitions probabilities held in the compact form are the
+ The non-fixed transition probabilities held in the compact form are the
  ones in between background-states, and between background-states to their
  TF-states (outlined with blue).
  A concatenation of a row in T and G holds the probability of the next hidden-st
@@ -6880,9 +6880,9 @@ Choosing the maximum value over
 
 \begin_layout Standard
 \begin_inset Formula 
-\[
-\hat{y}_{t}=\underset{j\in[m],l\in[k]\cup\{0\}}{argmax}{\gamma_{j,t}}\cup{\sum_{i\in\left[|W_{l}|\right]}\eta_{t-i+1,j,l}}
-\]
+\begin{equation}
+\hat{y}_{t}=\underset{j\in[m],l\in[k]\cup\{0\}}{argmax}{\gamma_{j,t}}\cup{\sum_{i\in\left[|W_{l}|\right]}\eta_{t-i+1,j,l}}\label{PosteriorEstimation}
+\end{equation}
 
 \end_inset
 
@@ -7576,8 +7576,8 @@ For HOP-HMM the Viterbi algorithm is adapted into a HOP-Viterbi algorithm,
 \end_layout
 
 \begin_layout Itemize
-Maximization is done over two types of state transitions probabilities:
- background to background and background to TF, held in A and B vectors.
+Maximization is done over two types of state transition probabilities: backgroun
+d to background and background to TF, held in A and B vectors.
 \end_layout
 
 \begin_layout Itemize
@@ -8691,6 +8691,69 @@ We sampled
 
  using the train sequences, and measuring its accuracy over both the train
  and the test sequences.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/Workflow.jpg
+	scale 50
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Workflow of the evaluation process.
+ A 
+\begin_inset Formula $\theta$
+\end_inset
+
+ is sampled and a HOP-HMM model is created with which several fixed-length
+ sequences are generated.
+ A new model 
+\begin_inset Formula $\hat{\theta}$
+\end_inset
+
+ is then fitted to the train section of the observed sequences, via HOP-Baum-Wel
+ch algorithm.
+ With 
+\begin_inset Formula $\hat{\theta},$
+\end_inset
+
+ an hidden sequence is then estimated by the HOP-Viterbi algorithm, and
+ a posterior probability estimation is calculated by 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "PosteriorEstimation"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
