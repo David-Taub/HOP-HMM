@@ -7,7 +7,7 @@ function mainDecErrorPlot()
     conf.startWithBackground = false;
     conf.maxIters = 100;
     conf.canCrossLayer = true;
-    conf.patience = 10;
+    conf.patience = 5;
     conf.L = 1000;
     conf.withExponent = false;
 
@@ -112,7 +112,7 @@ function [likelihood, rmse] = main(conf)
         show.showTheta(thetaEsts(end))
         % perm = matUtils.repermuteMat(vectorizedOrig, vectorizedEst);
         perm = misc.munkres(pdist2(misc.thetaToMat(params, thetaOrig, false), misc.thetaToMat(params, thetaEsts(end), false)))';
-        for i = 1:conf.maxIters %length(thetaEsts)
+        for i = 1:conf.maxIters % length(thetaEsts)
             thetaEst = misc.permTheta(thetaEsts(i), perm);
             errorsTrain(i) = rateTheta(params, thetaOrig, thetaEst , trainDataset);
             errorsTest(i) = rateTheta(params, thetaOrig, thetaEst, testDataset);
@@ -122,12 +122,21 @@ function [likelihood, rmse] = main(conf)
         res(j).errorsTest = errorsTest;
         res(j).testLikelihood = testLikelihood;
 
+
+        figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+
+        % raindrop graph
+        outpath = misc.pathMaker(params, conf.N, conf.L, conf.background_g_noise, sprintf('DecError_ThetaOverIter_%d', j), '.jpg');
+        showTwoThetasOverTime(params, thetaOrig, thetaEsts, 'false', outpath);
     end
 
     origTrainError = rateTheta(params, thetaOrig, thetaOrig, trainDataset);
     origTestError = rateTheta(params, thetaOrig, thetaOrig, testDataset);
-    % show.showTheta(thetaEsts(end));
-    % show.showTheta(thetaOrig);
+
+    show.showTheta(thetaEsts(end));
+    show.showTheta(thetaOrig);
+
+    % error decreasing plot
     figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     title('Viterbi Classification Convergence');
     hold on;
@@ -160,11 +169,6 @@ function [likelihood, rmse] = main(conf)
     ylim([0,100]);
     outpath = misc.pathMaker(params, conf.N, conf.L, conf.background_g_noise, sprintf('DecError_VitErr_%d', ind), '.jpg');
     saveas(gcf, outpath);
-
-
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
-    outpath = misc.pathMaker(params, conf.N, conf.L, conf.background_g_noise, sprintf('DecError_ThetaOverIter_%d', ind), '.jpg');
-    showTwoThetasOverTime(params, thetaOrig, thetaEsts, 'false', outpath);
 
     % show.showTwoThetas(params, thetaOrig, thetaEst, 'false', subtitle, 'tmp.jpg');
 
@@ -249,8 +253,8 @@ function showTwoThetasOverTime(params, thetaOrig, thetaEsts, withExponent, outpa
     for j = 1:length(thetaEsts)
         thetaEst = misc.permThetaByAnother(params, thetaOrig, thetaEsts(j));
         % m x length(theta(:)) / m
-        thetaOrigMat = misc.thetaToMat(params, thetaOrig, true);
-        thetaEstMat = misc.thetaToMat(params, thetaEst, true);
+        thetaOrigMat = misc.thetaToMat(params, thetaOrig, false);
+        thetaEstMat = misc.thetaToMat(params, thetaEst, false);
         % if isempty(strfind(outpath, 'tmp'))
             % fig = figure('units', 'pixels', 'Position', [0 0 1000 1000]);
         % end
@@ -296,8 +300,8 @@ end
 
 
 function rmse = calcThetaError(params, thetaOrig, thetaEst)
-    thetaOrigMat = misc.thetaToMat(params, thetaOrig, true);
-    thetaEstMat = misc.thetaToMat(params, thetaEst, true);
+    thetaOrigMat = misc.thetaToMat(params, thetaOrig, false);
+    thetaEstMat = misc.thetaToMat(params, thetaEst, false);
     rmse = sqrt(mean((exp(thetaOrigMat(:)) - exp(thetaEstMat(:))) .^ 2, 1));
 end
 

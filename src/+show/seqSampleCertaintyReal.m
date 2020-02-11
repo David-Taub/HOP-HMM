@@ -54,18 +54,26 @@ function seqSampleCertaintyReal(params, theta, dataset, outpath, tissueEIDs)
         set(gca,'xtick',[]);
         title('Posterior & Viterbi Estimation');
         text(L + 1, 0.5, 'H3K27ac', 'FontSize', 10);
-        hold on;
-        ylim([0, max(H3K27acTrack(:))]);
-        plotProbMap(params, H3K27acTrack, YEst(seqInd, :, 1), cMap);
+        p = plot(1:L, H3K27acTrack', 'LineWidth', 1.5);
+        cellCMap = {};
+        for i = 1:size(H3K27acTrack, 1)
+            cellCMap{i, 1} = cMap(i, :);
+        end
+        set(p, {'Color'}, cellCMap);
+        xlim([1, L]);
         ylim([0, max(H3K27acTrack(:))]);
         ylabel('-log_{10}(p-value)');
 
         subplot(3, 1, 2);
         set(gca,'xtick',[]);
         text(L + 1, 0.5, 'DNase', 'FontSize', 10);
-        hold on;
-        ylim([0, max(DNaseTrack(:))]);
-        plotProbMap(params, DNaseTrack, YEst(seqInd, :, 1), cMap);
+        p = plot(1:L, DNaseTrack', 'LineWidth', 1.5);
+        cellCMap = {};
+        for i = 1:size(DNaseTrack, 1)
+            cellCMap{i, 1} = cMap(i, :);
+        end
+        set(p, {'Color'}, cellCMap);
+        xlim([1, L]);
         ylim([0, max(DNaseTrack(:))]);
         ylabel('-log_{10}(p-value)');
         saveas(gcf, outpath);
@@ -107,7 +115,7 @@ end
 
 % YEst - 1 x L
 % probMap - m x L
-function plotProbMap(params, probMap, YEst, cMap)
+function plotProbMap(params, probMap, YEst, cMap, fill)
     BARS_PLOT_DARKNESS_FACTOR = 0.85;
     % probMap = permute(probMap, [2, 3, 1]);
     L = size(YEst, 2);

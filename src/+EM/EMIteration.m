@@ -60,7 +60,7 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
     theta.startT = log(exp(inputTheta.startT) .* (1 - params.learningRate) + params.learningRate .* batchesTheta.startT / batchAmount);
     % theta.startT = inputTheta.startT;
     if doGTBound
-        [theta.G, theta.T, theta.startT] = EM.GTbound2(params, exp(theta.G), exp(theta.T), exp(theta.startT));
+        [theta.G, theta.T, theta.startT] = EM.GTbound3(params, exp(theta.G), exp(theta.T), exp(theta.startT));
     end
     if params.doResampling
         [theta.E, theta.G, theta.T] = EM.resampleEG(params, theta.E, theta.G, theta.T);
