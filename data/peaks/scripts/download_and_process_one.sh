@@ -1,35 +1,35 @@
 cd ../raw_bed
 
-wget -O $1-H3K27ac.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K27ac.narrowPeak.gz"
-if [ ! -f $1-H3K27ac.narrowPeak.gz ]; then
-    echo "$1-H3K27ac.narrowPeak.gz not found!"
-    exit 1
-fi
-wget -O $1-DNase.macs2.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-DNase.macs2.narrowPeak.gz"
-if [ ! -f $1-DNase.macs2.narrowPeak.gz ]; then
-    echo "$1-DNase.macs2.narrowPeak.gz not found!"
-    exit 1
-fi
-wget -O $1-H3K4me3.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K4me3.narrowPeak.gz"
-if [ ! -f $1-H3K4me3.narrowPeak.gz ]; then
-    echo "$1-H3K4me3.narrowPeak.gz not found!"
-    exit 1
-fi
-wget -O $1-H3K4me1.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K4me1.narrowPeak.gz"
-if [ ! -f $1-H3K4me1.narrowPeak.gz ]; then
-    echo "$1-H3K4me1.narrowPeak.gz not found!"
-    exit 1
-fi
-wget -O $1-H3K27me3.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K27me3.narrowPeak.gz"
-if [ ! -f $1-H3K27me3.narrowPeak.gz ]; then
-    echo "$1-H3K27me3.narrowPeak.gz not found!"
-    exit 1
-fi
+# wget -O $1-H3K27ac.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K27ac.narrowPeak.gz"
+# if [ ! -f $1-H3K27ac.narrowPeak.gz ]; then
+#     echo "$1-H3K27ac.narrowPeak.gz not found!"
+#     exit 1
+# fi
+# wget -O $1-DNase.macs2.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-DNase.macs2.narrowPeak.gz"
+# if [ ! -f $1-DNase.macs2.narrowPeak.gz ]; then
+#     echo "$1-DNase.macs2.narrowPeak.gz not found!"
+#     exit 1
+# fi
+# wget -O $1-H3K4me3.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K4me3.narrowPeak.gz"
+# if [ ! -f $1-H3K4me3.narrowPeak.gz ]; then
+#     echo "$1-H3K4me3.narrowPeak.gz not found!"
+#     exit 1
+# fi
+# wget -O $1-H3K4me1.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K4me1.narrowPeak.gz"
+# if [ ! -f $1-H3K4me1.narrowPeak.gz ]; then
+#     echo "$1-H3K4me1.narrowPeak.gz not found!"
+#     exit 1
+# fi
+# wget -O $1-H3K27me3.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K27me3.narrowPeak.gz"
+# if [ ! -f $1-H3K27me3.narrowPeak.gz ]; then
+#     echo "$1-H3K27me3.narrowPeak.gz not found!"
+#     exit 1
+# fi
 
-echo "done downloading"
-gunzip -f ./*.gz
-rm -f ./*.gz
-echo "done extracting"
+# echo "done downloading"
+# gunzip -f ./*.gz
+# rm -f ./*.gz
+# echo "done extracting"
 
 find . -empty -delete
 
@@ -53,9 +53,10 @@ if [ ! -f $1-H3K27me3.narrowPeak ]; then
     echo "$1-H3K27me3.narrowPeak not found!"
     exit 1
 fi
-echo "asserted files existing"
+echo "Asserted files existing"
 
 # refine with background
+echo "Refining background"
 
 bedtools sort -faidx hg19.chrom.sizes -i $1-H3K27ac.narrowPeak > tmp.1.narrowPeak
 bedtools complement  -i tmp.1.narrowPeak -g hg19.chrom.sizes > tmp.2.narrowPeak
@@ -89,11 +90,11 @@ if [ ! -f background.narrowPeak ]; then
 fi
 echo "bedtools run on background completed"
 
+#take only peaks with DNASE-I peaks
+bedtools intersect -a $1-DNase.macs2.narrowPeak -b $1-H3K27ac.narrowPeak -wa >$1-H3K27ac.cleaned.narrowPeak
 #take only H3k27ac peaks with H3k4me1 peaks
 bedtools intersect -a $1-H3K27ac.narrowPeak -b $1-H3K4me1.narrowPeak -wa >$1-H3K27ac.cleaned.narrowPeak
 
-#take only peaks with DNASE-I peaks
-bedtools intersect -a $1-H3K27ac.narrowPeak -b $1-DNase.macs2.narrowPeak -wa >$1-H3K27ac.cleaned.narrowPeak
 
 # sort -V -k 1,3 "total_merged.narrowPeak" | sortBed | tee total_merged.tmp.narrowPeak | sort -c -k1,1 -k2,2n || true
 # # bedtools sort -i total_merged.narrowPeak > total_merged.tmp.narrowPeak

@@ -1,4 +1,4 @@
-
+% generation of figures 20 and 21
 function  mainPosterior()
     conf.doESharing = false;
     conf.startWithBackground = true;

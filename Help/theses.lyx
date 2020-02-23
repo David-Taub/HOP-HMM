@@ -3157,20 +3157,27 @@ reference "Likelihoods"
 \begin_inset Formula $log\left(P\left(x_{1:L},y_{1:L}|\theta^{'}\right)\right)$
 \end_inset
 
+ over all possible 
+\begin_inset Formula $y_{1:L}$
+\end_inset
+
  where 
 \begin_inset Formula $\theta^{'}$
 \end_inset
 
  is the model's parameters from previous EM iteration (or guessed parameters
- in the first iteration) and while assuming a fixed observed X, as it is
- our DNA sequence.
- For this task we can formally define our target function Q:
+ in the first iteration) and while assuming a fixed observed 
+\begin_inset Formula $x_{1:L}$
+\end_inset
+
+, as it is the given DNA sequence.
+ For this task we define our target function Q:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-Q\left(\theta,\theta^{'}\right)=E_{Y}\left[log\left(P_{\theta}\left(x_{1:L},y_{1:L}\right)\right)|x_{1:L},\theta^{'}\right]=\sum_{y\in\left[m\right]^{N}}log\left(P_{\theta}\left(x_{1:L},y_{1:L}\right)\right)P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)\label{Q}
+Q\left(\theta,\theta^{'}\right)=E_{Y}\left[log\left(P_{\theta}\left(x_{1:L},y_{1:L}\right)\right)|x_{1:L},\theta^{'}\right]=\sum_{y_{1:L}\in\left[m\right]^{L}}log\left(P_{\theta}\left(x_{1:L},y_{1:L}\right)\right)\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)\label{Q}
 \end{equation}
 
 \end_inset
@@ -3222,9 +3229,9 @@ reference "Q"
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-Q\left(\theta,\theta^{'}\right)= & \sum_{y\in\left[m\right]^{N}}log\pi_{y_{1}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)\\
-+ & \sum_{y\in\left[m\right]^{N}}\left(\sum_{t\in2...L}logT_{y_{t-1},y_{t}}\right)\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)\\
-+ & \sum_{y\in\left[m\right]^{N}}\left(\sum_{t\in[L]}logE_{y_{t},x_{t}}\right)\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)
+Q\left(\theta,\theta^{'}\right)= & \sum_{y_{1:L}\in\left[m\right]^{L}}log\pi_{y_{1}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)\\
++ & \sum_{y_{1:L}\in\left[m\right]^{L}}\left(\sum_{t\in2...L}logT_{y_{t-1},y_{t}}\right)\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)\\
++ & \sum_{y_{1:L}\in\left[m\right]^{L}}\left(\sum_{t\in[L]}logE_{y_{t},x_{t}}\right)\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)
 \end{align*}
 
 \end_inset
@@ -3233,8 +3240,8 @@ Q\left(\theta,\theta^{'}\right)= & \sum_{y\in\left[m\right]^{N}}log\pi_{y_{1}}\c
 \end_layout
 
 \begin_layout Standard
-then by manipulating the summation and the state sequence cases could be
- simplified to
+then by manipulating the summation, the exponential state sequence summation
+ could be simplified to:
 \end_layout
 
 \begin_layout Standard
@@ -8757,29 +8764,31 @@ reference "PosteriorEstimation"
 \end_layout
 
 \begin_layout Standard
-During our experiments, we noticed 2 interesting points:
-\end_layout
-
-\begin_layout Itemize
-As in other EM, running the HOP Baum-Welch algorithm multiple times with
- different initialization 
-\begin_inset Formula $\theta$
+The EM updates are guaranteed to increase the likelihood in each step, but
+ not to converge to the optimal 
+\begin_inset Formula $\theta^{*}$
 \end_inset
 
- converged into different result 
-\begin_inset Formula $\theta$
+ (
+\begin_inset CommandInset citation
+LatexCommand citet
+key "key-66"
+
 \end_inset
 
-.
- In our experiments, the higher the log likelihood yielded by the 
-\begin_inset Formula $\theta$
+).
+ As in other EM, running the HOP Baum-Welch algorithm multiple times with
+ different initialization converged into different 
+\begin_inset Formula $\hat{\theta}$
 \end_inset
 
- estimation and the RMSE of the estimated 
-\begin_inset Formula $\theta$
+ result.
+ Throughout multiple runs, we observed the higher the log likelihood of
+ 
+\begin_inset Formula $\hat{\theta}$
 \end_inset
 
- compared to the true 
+ the lower its root mean square error (RMSE) compared to the true 
 \begin_inset Formula $\theta$
 \end_inset
 
@@ -8810,12 +8819,46 @@ reference "LikelihoodVsErr"
 .
 \end_layout
 
-\begin_layout Itemize
-Adding regularization on T in 
-\begin_inset Formula $\theta$
+\begin_layout Standard
+################################################################################
+###################
+\end_layout
+
+\begin_layout Standard
+Converging into a low likelihood 
+\begin_inset Formula $\hat{\theta}$
 \end_inset
 
- by limiting it so the major diagonal of T (probability of staying in the
+ is a result of the updates based on the likelihood derivative can be explained
+ by the tendency of the EM to 
+\begin_inset Quotes eld
+\end_inset
+
+get stuck
+\begin_inset Quotes erd
+\end_inset
+
+ inside local maximum.
+ Most notably are runs in which 
+\begin_inset Formula $\hat{\theta}$
+\end_inset
+
+ has high probability of transition between background states, converged
+ 
+\end_layout
+
+\begin_layout Standard
+Adding regularization on the background-states transition probabilities
+ T helps avoiding 
+\end_layout
+
+\begin_layout Standard
+.
+ 
+\end_layout
+
+\begin_layout Standard
+by limiting it so the major diagonal of T (probability of staying in the
  same hidden state) is larger than the sum of the rest of its values by
  a factor caused to convergence to better 
 \begin_inset Formula $\theta$
@@ -8826,6 +8869,11 @@ Adding regularization on T in
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Standard
+################################################################################
+###################
 \end_layout
 
 \begin_layout Standard
@@ -8999,8 +9047,9 @@ Posterior probability of sequences, estimated by a trained HOP-HMM
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
- and the true hidden The black TFBS is the sum of all the probabilities
- of being in any of the TF-states.
+ and the true hidden states of each sequence.
+ The black TFBS is the sum of all the probabilities of being in any of the
+ TF-states.
 \end_layout
 
 \end_inset
@@ -9068,26 +9117,25 @@ Confusion matrix of true and estimated states by the Viterbi algorithm of
 \end_layout
 
 \begin_layout Subsubsection*
-TODO: center sequences on peak of DNase
-\end_layout
-
-\begin_layout Subsubsection*
 TODO: scatter plot, remove stuff that are bounded, like T, add to figure
  description
 \end_layout
 
-\begin_layout Subsubsection*
-TODO: in real sequences, give the position with chr 
+\begin_layout Standard
+real sequences:
 \end_layout
 
 \begin_layout Subsubsection*
-TODO: in real sequences, don't color the section, use lines from start to
- finish of enhancer
+v TODO: center sequences on peak of DNase
 \end_layout
 
-\begin_layout Paragraph*
-TODO: explain the sampling part of synthetic data with figure.
- also, explain the two rows of real and viterbi in the sequence sample figure
+\begin_layout Subsubsection*
+v TODO: in real sequences, give the position with chr 
+\end_layout
+
+\begin_layout Subsubsection*
+v TODO: in real sequences, don't color the section, use lines from start
+ to finish of enhancer
 \end_layout
 
 \begin_layout Subsubsection*
@@ -10649,6 +10697,24 @@ key "key-43"
  Enhancers: from developmental genetics to the genetics of common human
  disease.
  Developmental cell, 21(1), 17-19.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Yang and Wainwright(2015)"
+key "key-66"
+
+\end_inset
+
+Yang, F., Balakrishnan, S., & Wainwright, M.
+ J.
+ (2015, December).
+ Statistical and computational guarantees for the Baum-Welch algorithm.
+ In 2015 53rd Annual Allerton Conference on Communication, Control, and
+ Computing (Allerton) (pp.
+ 658-665).
+ IEEE.
 \end_layout
 
 \begin_layout Bibliography

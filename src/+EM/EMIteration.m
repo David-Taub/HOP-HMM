@@ -1,19 +1,25 @@
 function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
-    N = size(dataset.X, 1);
+    [N, L] = size(dataset.X);
     if ~isfield(dataset, 'XIndicesHotMap')
         % N x L - order + 1
         dataset.XIndicesHotMap = misc.genXInidcesHotMap(params, dataset);
     end
-    batchSize = min(N, params.batchSize);
+    % the bigger this number is, the more time a batch takes
+    % EXPECTED_COMPUTATION_IN_BATCH = 50000; % ~0.23 per sequence
+    % EXPECTED_COMPUTATION_IN_BATCH = 100000; % ~0.2 per sequence
+    EXPECTED_COMPUTATION_IN_BATCH = 200000; % ~0.2 per sequence
+    % EXPECTED_COMPUTATION_IN_BATCH = 1000000; % ~0.38 per sequence
+    batchSize = min(N, ceil(EXPECTED_COMPUTATION_IN_BATCH / L));
     batchAmount = floor(N / batchSize);
     assert(batchAmount > 0)
     batchesTheta = inputTheta;
-    batchesTheta.T = batchesTheta.T * 0;
-    batchesTheta.E = batchesTheta.E * 0;
-    batchesTheta.G = batchesTheta.G * 0;
-    batchesTheta.startT = batchesTheta.startT * 0;
+    batchesTheta.T = zeros(params.m, params.m);
+    batchesTheta.E = zeros([params.m, ones(1, params.order) * params.n]);
+    batchesTheta.G = zeros(params.m, params.k);;
+    batchesTheta.startT = zeros(params.m, 1);;
     batchesLikelihood = 0;
     for u = 1:batchAmount
+        tic
         % N x m x k+m x L
         batchMask = mod(1:N, batchAmount) == u - 1;
         fprintf('Batch %d / %d [%d / %d] \n', u, batchAmount, sum(batchMask, 2), N);
@@ -28,11 +34,8 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
         % gamma - N x m x L
         % psi - N x m x k x L
         [alpha, beta, pX, xi, gamma, psi] = EM.EStep(params, inputTheta, XBatch, pcPWMpBatch);
-        % close all;
-        % show.showTheta(theta);
-        % show.seqSampleCertainty(params, dataset.Y, gamma, psi, 8, true);
         E = updateE(gamma, params, XIndicesHotMapBatch);
-        % drawStatus(theta, params, alpha, beta, gamma, pX, xi, psi);
+        assert(not(any(isnan(E(:)))));
         if params.doESharing
             % theta.E = log(repmat(mean(exp(theta.E), 1), [params.n, ones(1, params.order)]));
             E(1:end - params.backgroundAmount, :) = repmat(log(mean(exp(E(1:end - params.backgroundAmount, :)), 1)), [params.n - params.backgroundAmount, 1]);
@@ -40,17 +43,25 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
         fprintf('. ');
         startT = updateStartT(gamma);
         [G, T] = updateGT(params, xi, gamma, psi);
-        assert(not(any(isnan(startT(:)))));
-        assert(not(any(isnan(T(:)))));
-        assert(not(any(isnan(E(:)))));
-        assert(not(any(isnan(G(:)))));
-        assert(not(any(isnan(alpha(:)))));
-        assert(not(any(isnan(beta(:)))));
+        % assert(not(any(isnan(startT(:)))));
+        % assert(not(any(isnan(T(:)))));
+        % assert(not(any(isnan(E(:)))));
+        % assert(not(any(isnan(G(:)))));
+        % assert(not(any(isnan(exp(startT(:)) + batchesTheta.startT(:)))));
+        % assert(not(any(isnan(exp(T(:)) + batchesTheta.T(:)))));
+        % assert(not(any(isnan(exp(E(:)) + batchesTheta.E(:)))));
+        % assert(not(any(isnan(exp(G(:)) + batchesTheta.G(:)))));
         batchesTheta.T = batchesTheta.T + exp(T);
         batchesTheta.E = batchesTheta.E + exp(E);
         batchesTheta.G = batchesTheta.G + exp(G);
         batchesTheta.startT = batchesTheta.startT + exp(startT);
         batchesLikelihood = batchesLikelihood + sum(pX, 1);
+        assert(not(any(isnan(batchesTheta.startT(:)))));
+        assert(not(any(isnan(batchesTheta.T(:)))));
+        assert(not(any(isnan(batchesTheta.E(:)))));
+        assert(not(any(isnan(batchesTheta.G(:)))));
+        batchTime = toc();
+        fprintf('batch took %.2f seconds, %.2f seconds per sequence\n', batchTime, batchTime / batchSize);
     end
     % geometric average is more stable than regular mean for very small likelihood values
     iterLike = batchesLikelihood / N;

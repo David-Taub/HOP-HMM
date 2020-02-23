@@ -13,12 +13,23 @@ function [test, train] = crossValidationSplit(params, mergedPeaksMin, testTrainR
     train.pcPWMp = pcPWMp(trainMask, :, :);
     test.pcPWMp = pcPWMp(~trainMask, :, :);
     if isfield(mergedPeaksMin, 'starts')
+        % real data train
         train.starts = mergedPeaksMin.starts(trainMask);
         train.chrs = mergedPeaksMin.chrs(trainMask);
         train.samplesCount = mergedPeaksMin.samplesCount(trainMask);
+        train.backgroundInd = mergedPeaksMin.backgroundInd;
+        train.tissueNames = mergedPeaksMin.tissueNames;
+        train.tissueList = mergedPeaksMin.tissueList;
+        train.tissueEIDs = mergedPeaksMin.tissueEIDs;
+
+        % real data test
         test.starts = mergedPeaksMin.starts(~trainMask);
         test.chrs = mergedPeaksMin.chrs(~trainMask);
         test.samplesCount = mergedPeaksMin.samplesCount(~trainMask);
+        test.backgroundInd = mergedPeaksMin.backgroundInd;
+        test.tissueNames = mergedPeaksMin.tissueNames;
+        test.tissueList = mergedPeaksMin.tissueList;
+        test.tissueEIDs = mergedPeaksMin.tissueEIDs;
     end
     if isfield(mergedPeaksMin, 'Y')
         train.Y = mergedPeaksMin.Y(trainMask, :);

@@ -10,9 +10,6 @@ function [theta] = genTheta(params, startTUniform, totalRandom)
         M = M ./ repmat(sum(M, 2), [1, params.m + params.k]);
         theta.T = M(:, 1:params.m);
         theta.G = M(:, params.m + 1:end);
-        s = sum(theta.G, 2) + sum(theta.T, 2);
-        theta.T = theta.T ./ repmat(s, [1, params.m]);
-        theta.G = theta.G ./ repmat(s, [1, params.k]);
         theta.T = log(theta.T);
         theta.G = log(theta.G);
     else

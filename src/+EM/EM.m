@@ -7,7 +7,7 @@
 % pcPWMp - N x k x L
 % order - the HMM order of the E matrix
 % initial estimation parameters
-function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, patience, repeat, startTUniform)
+function [bestTheta, bestLikelihood, bestThetas] = EM(dataset, params, maxIter, patience, repeat, startTUniform)
 
     [N, L] = size(dataset.X);
     fprintf('Starting EM algorithm on %d x %d\n', N, L);
@@ -17,45 +17,44 @@ function [bestTheta, bestLikelihood] = EM(dataset, params, maxIter, patience, re
         % X = X(randperm(N), :);
         fprintf('Repeat %d / %d\n', rep, repeat);
         initTheta = misc.genTheta(params, startTUniform, true);
-        [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, params.doGTBound, patience);
-        if bestLikelihood < iterLike
-            bestLikelihood = iterLike;
+        [iterationLikelihood, theta, thetas] = EMRun(dataset, params, initTheta, maxIter, params.doGTBound, patience);
+        if bestLikelihood < iterationLikelihood
+            bestLikelihood = iterationLikelihood;
             bestTheta = theta;
+            bestThetas = thetas;
         end
     end
-%     if params.doGTBound
-%         [bestLikelihood, bestTheta] = EMRun(dataset, params, initTheta, maxIter, true, patience);
-%     end
 end
 
 
 
 % iterates the EM algorithm, returns the likelihood of the best iteration, and theta parameters at that iteration
-function [iterLike, theta] = EMRun(dataset, params, initTheta, maxIter, doGTBound, patience)
+function [iterationLikelihood, theta, thetas] = EMRun(dataset, params, initTheta, maxIter, doGTBound, patience)
     LIKELIHOOD_THRESHOLD = 10 ^ -6;
-    theta(1) = initTheta;
+    thetas(1) = initTheta;
     iterLikes = -inf(maxIter, 1);
 
-    for it = 1:maxIter
-        fprintf('EM iteration %d / %d\n', it, maxIter);
+    for iterationIndex = 1:maxIter
+        fprintf('EM iteration %d / %d\n', iterationIndex, maxIter);
         tic;
-        [theta(it + 1), iterLike] = EM.EMIteration(params, dataset, theta(it), doGTBound);
-        motifsPer = sum(exp(theta(it + 1).G(:)), 1).*100;
+        [thetas(iterationIndex + 1), iterationLikelihood] = EM.EMIteration(params, dataset, thetas(iterationIndex), doGTBound);
+        motifsPer = sum(exp(thetas(iterationIndex + 1).G(:)), 1) .* 100;
         timeLapse = toc();
-        fprintf('It %d: log-like: %.2f Time: %.2fs, motifs: ~%.2f%%\n', it, iterLike, timeLapse, motifsPer);
-        if it > 1 && abs((iterLike - iterLikes(it - 1)) / iterLike) < LIKELIHOOD_THRESHOLD
+        fprintf('iterationIndex %d: log-like: %.2f Time: %.2fs, motifs: ~%.2f%%\n', iterationIndex, iterationLikelihood, timeLapse, motifsPer);
+        if iterationIndex > patience && iterationIndex > 1 && ...
+            abs((iterationLikelihood - iterLikes(iterationIndex - 1)) / iterationLikelihood) < LIKELIHOOD_THRESHOLD
             fprintf('Converged\n');
             break
         end
 
-        if it > patience && iterLike < iterLikes(it - patience)
+        if iterationIndex > patience && iterationLikelihood < iterLikes(iterationIndex - patience)
             fprintf('Patience reached, Converged\n');
             break
         end
-        iterLikes(it) = iterLike;
+        iterLikes(iterationIndex) = iterationLikelihood;
     end % end EM iteration loop
-    [iterLike, ind] = max(iterLikes);
-    theta = theta(ind);
+    [iterationLikelihood, ind] = max(iterLikes);
+    theta = thetas(ind);
  end
 
 

@@ -9,18 +9,20 @@
 # On Linux
 # export PROMPT_COMMAND="echo -n \[\$(date +%H:%M:%S)\]\ "
 # cd /mnt/d/projects/HOP-HMM/data/peaks/scripts
-yes | sudo apt update
-yes | sudo apt install bedtools
+# yes | sudo apt update
+# yes | sudo apt install bedtools
 
 
 # On Windows
-# cygwin
-# cd /cygdrive/d/projects/HOP-HMM/data/peaks/scripts
+cygwin
+cd /cygdrive/d/projects/HOP-HMM/data/peaks/scripts
 
 
 # On Windows and Linux
 
-# bedtools installation
+################################
+# Bedtools2 Installation
+################################
 wget https://github.com/arq5x/bedtools2/releases/download/v2.25.0/bedtools-2.25.0.tar.gz
 tar -zxvf bedtools-2.25.0.tar.gz
 pushd bedtools2
@@ -28,8 +30,20 @@ make
 popd
 
 
-wget -O bigWigToBedGraph "http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/bigWigToBedGraph"
+################################
+# JASPAR
+################################
+mkdir ../../Jaspar
+mkdir ../../Jaspar/raw
+pushd ../../Jaspar/raw
+wget 'jaspar.genereg.net/download/CORE/JASPAR2020_CORE_vertebrates_non-redundant_pfms_jaspar.txt'
+wget 'https://egg2.wustl.edu/roadmap/data/byDataType/rna/expression/57epigenomes.N.pc.gz'
+gunzip -vf 57epigenomes.N.pc.gz
+wget 'https://egg2.wustl.edu/roadmap/data/byDataType/rna/expression/Ensembl_v65.Gencode_v10.ENSG.gene_info'
+python pwm_expression.py
+popd
 
+wget -O bigWigToBedGraph "http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/bigWigToBedGraph"
 
 
 mkdir ../raw_bed
@@ -109,6 +123,7 @@ mv ../scripts/download_and_process_one2.sh ../scripts/download_and_process_one.s
 ../scripts/download_and_process_one.sh E127
 ../scripts/download_and_process_one.sh E128
 
+# # without fill data
 # ../scripts/download_and_process_one.sh E001
 # ../scripts/download_and_process_one.sh E002
 # ../scripts/download_and_process_one.sh E003
@@ -247,125 +262,125 @@ mv -f hg19.KnownGenes.bed ../processed/genes.cleaned.narrowPeak
 mkdir ../raw_genome
 cd ../raw_genome
 
-wget -O chr1.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr1.fa.gz
-wget -O chr2.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr2.fa.gz
-wget -O chr3.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr3.fa.gz
-wget -O chr4.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr4.fa.gz
-wget -O chr5.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr5.fa.gz
-wget -O chr6.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr6.fa.gz
-wget -O chr7.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr7.fa.gz
-wget -O chr8.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr8.fa.gz
-wget -O chr9.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr9.fa.gz
-wget -O chr10.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr10.fa.gz
-wget -O chr11.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr11.fa.gz
-wget -O chr12.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr12.fa.gz
-wget -O chr13.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr13.fa.gz
-wget -O chr14.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr14.fa.gz
-wget -O chr15.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr15.fa.gz
-wget -O chr16.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr16.fa.gz
-wget -O chr17.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr17.fa.gz
-wget -O chr18.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr18.fa.gz
-wget -O chr19.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr19.fa.gz
-wget -O chr20.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr20.fa.gz
-wget -O chr21.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr21.fa.gz
-wget -O chr22.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr22.fa.gz
-wget -O chrX.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chrX.fa.gz
-wget -O chrY.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chrY.fa.gz
+# wget -O chr1.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr1.fa.gz
+# wget -O chr2.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr2.fa.gz
+# wget -O chr3.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr3.fa.gz
+# wget -O chr4.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr4.fa.gz
+# wget -O chr5.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr5.fa.gz
+# wget -O chr6.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr6.fa.gz
+# wget -O chr7.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr7.fa.gz
+# wget -O chr8.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr8.fa.gz
+# wget -O chr9.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr9.fa.gz
+# wget -O chr10.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr10.fa.gz
+# wget -O chr11.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr11.fa.gz
+# wget -O chr12.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr12.fa.gz
+# wget -O chr13.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr13.fa.gz
+# wget -O chr14.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr14.fa.gz
+# wget -O chr15.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr15.fa.gz
+# wget -O chr16.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr16.fa.gz
+# wget -O chr17.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr17.fa.gz
+# wget -O chr18.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr18.fa.gz
+# wget -O chr19.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr19.fa.gz
+# wget -O chr20.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr20.fa.gz
+# wget -O chr21.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr21.fa.gz
+# wget -O chr22.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chr22.fa.gz
+# wget -O chrX.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chrX.fa.gz
+# wget -O chrY.fa.gz http://hgdownload.cse.ucsc.edu/goldenpath/hg19/chromosomes/chrY.fa.gz
 
-gunzip -vf *.gz
-rm -f *.gz
+# gunzip -vf *.gz
+# rm -f *.gz
 
 mkdir ../raw_bigwig
-cd ../raw_bigwig
-wget -O E003-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E003-DNase.imputed.pval.signal.bigwig" &
-wget -O E004-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E004-DNase.imputed.pval.signal.bigwig" &
-wget -O E005-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E005-DNase.imputed.pval.signal.bigwig" &
-wget -O E006-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E006-DNase.imputed.pval.signal.bigwig" &
-wget -O E007-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E007-DNase.imputed.pval.signal.bigwig" &
-wget -O E008-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E008-DNase.imputed.pval.signal.bigwig" &
-wget -O E017-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E017-DNase.imputed.pval.signal.bigwig" &
-wget -O E021-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E021-DNase.imputed.pval.signal.bigwig" &
-wget -O E022-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E022-DNase.imputed.pval.signal.bigwig" &
-wget -O E029-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E029-DNase.imputed.pval.signal.bigwig" &
-wget -O E032-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E032-DNase.imputed.pval.signal.bigwig" &
-wget -O E034-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E034-DNase.imputed.pval.signal.bigwig" &
-wget -O E046-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E046-DNase.imputed.pval.signal.bigwig" &
-wget -O E050-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E050-DNase.imputed.pval.signal.bigwig" &
-wget -O E055-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E055-DNase.imputed.pval.signal.bigwig" &
-wget -O E056-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E056-DNase.imputed.pval.signal.bigwig" &
-wget -O E059-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E059-DNase.imputed.pval.signal.bigwig" &
-wget -O E080-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E080-DNase.imputed.pval.signal.bigwig" &
-wget -O E084-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E084-DNase.imputed.pval.signal.bigwig" &
-wget -O E085-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E085-DNase.imputed.pval.signal.bigwig" &
-wget -O E089-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E089-DNase.imputed.pval.signal.bigwig"
-wget -O E090-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E090-DNase.imputed.pval.signal.bigwig" &
-wget -O E091-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E091-DNase.imputed.pval.signal.bigwig" &
-wget -O E092-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E092-DNase.imputed.pval.signal.bigwig" &
-wget -O E093-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E093-DNase.imputed.pval.signal.bigwig" &
-wget -O E094-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E094-DNase.imputed.pval.signal.bigwig" &
-wget -O E097-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E097-DNase.imputed.pval.signal.bigwig" &
-wget -O E098-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E098-DNase.imputed.pval.signal.bigwig" &
-wget -O E100-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E100-DNase.imputed.pval.signal.bigwig" &
-wget -O E109-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E109-DNase.imputed.pval.signal.bigwig" &
-wget -O E114-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E114-DNase.imputed.pval.signal.bigwig" &
-wget -O E116-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E116-DNase.imputed.pval.signal.bigwig" &
-wget -O E117-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E117-DNase.imputed.pval.signal.bigwig" &
-wget -O E118-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E118-DNase.imputed.pval.signal.bigwig" &
-wget -O E119-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E119-DNase.imputed.pval.signal.bigwig" &
-wget -O E120-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E120-DNase.imputed.pval.signal.bigwig" &
-wget -O E121-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E121-DNase.imputed.pval.signal.bigwig" &
-wget -O E122-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E122-DNase.imputed.pval.signal.bigwig" &
-wget -O E123-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E123-DNase.imputed.pval.signal.bigwig" &
-wget -O E124-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E124-DNase.imputed.pval.signal.bigwig" &
-wget -O E125-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E125-DNase.imputed.pval.signal.bigwig" &
-wget -O E126-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E126-DNase.imputed.pval.signal.bigwig" &
-wget -O E127-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E127-DNase.imputed.pval.signal.bigwig" &
-wget -O E128-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E128-DNase.imputed.pval.signal.bigwig" &
+# cd ../raw_bigwig
+# wget -O E003-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E003-DNase.imputed.pval.signal.bigwig" &
+# wget -O E004-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E004-DNase.imputed.pval.signal.bigwig" &
+# wget -O E005-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E005-DNase.imputed.pval.signal.bigwig" &
+# wget -O E006-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E006-DNase.imputed.pval.signal.bigwig" &
+# wget -O E007-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E007-DNase.imputed.pval.signal.bigwig" &
+# wget -O E008-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E008-DNase.imputed.pval.signal.bigwig" &
+# wget -O E017-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E017-DNase.imputed.pval.signal.bigwig" &
+# wget -O E021-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E021-DNase.imputed.pval.signal.bigwig" &
+# wget -O E022-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E022-DNase.imputed.pval.signal.bigwig" &
+# wget -O E029-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E029-DNase.imputed.pval.signal.bigwig" &
+# wget -O E032-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E032-DNase.imputed.pval.signal.bigwig" &
+# wget -O E034-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E034-DNase.imputed.pval.signal.bigwig" &
+# wget -O E046-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E046-DNase.imputed.pval.signal.bigwig" &
+# wget -O E050-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E050-DNase.imputed.pval.signal.bigwig" &
+# wget -O E055-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E055-DNase.imputed.pval.signal.bigwig" &
+# wget -O E056-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E056-DNase.imputed.pval.signal.bigwig" &
+# wget -O E059-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E059-DNase.imputed.pval.signal.bigwig" &
+# wget -O E080-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E080-DNase.imputed.pval.signal.bigwig" &
+# wget -O E084-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E084-DNase.imputed.pval.signal.bigwig" &
+# wget -O E085-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E085-DNase.imputed.pval.signal.bigwig" &
+# wget -O E089-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E089-DNase.imputed.pval.signal.bigwig"
+# wget -O E090-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E090-DNase.imputed.pval.signal.bigwig" &
+# wget -O E091-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E091-DNase.imputed.pval.signal.bigwig" &
+# wget -O E092-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E092-DNase.imputed.pval.signal.bigwig" &
+# wget -O E093-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E093-DNase.imputed.pval.signal.bigwig" &
+# wget -O E094-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E094-DNase.imputed.pval.signal.bigwig" &
+# wget -O E097-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E097-DNase.imputed.pval.signal.bigwig" &
+# wget -O E098-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E098-DNase.imputed.pval.signal.bigwig" &
+# wget -O E100-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E100-DNase.imputed.pval.signal.bigwig" &
+# wget -O E109-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E109-DNase.imputed.pval.signal.bigwig" &
+# wget -O E114-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E114-DNase.imputed.pval.signal.bigwig" &
+# wget -O E116-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E116-DNase.imputed.pval.signal.bigwig" &
+# wget -O E117-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E117-DNase.imputed.pval.signal.bigwig" &
+# wget -O E118-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E118-DNase.imputed.pval.signal.bigwig" &
+# wget -O E119-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E119-DNase.imputed.pval.signal.bigwig" &
+# wget -O E120-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E120-DNase.imputed.pval.signal.bigwig" &
+# wget -O E121-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E121-DNase.imputed.pval.signal.bigwig" &
+# wget -O E122-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E122-DNase.imputed.pval.signal.bigwig" &
+# wget -O E123-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E123-DNase.imputed.pval.signal.bigwig" &
+# wget -O E124-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E124-DNase.imputed.pval.signal.bigwig" &
+# wget -O E125-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E125-DNase.imputed.pval.signal.bigwig" &
+# wget -O E126-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E126-DNase.imputed.pval.signal.bigwig" &
+# wget -O E127-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E127-DNase.imputed.pval.signal.bigwig" &
+# wget -O E128-DNase.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/DNase/E128-DNase.imputed.pval.signal.bigwig" &
 
-wget -O E003-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E003-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E004-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E004-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E005-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E005-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E006-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E006-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E007-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E007-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E008-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E008-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E017-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E017-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E021-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E021-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E022-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E022-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E029-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E029-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E032-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E032-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E034-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E034-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E046-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E046-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E050-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E050-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E055-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E055-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E056-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E056-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E059-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E059-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E080-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E080-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E084-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E084-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E085-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E085-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E089-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E089-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E090-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E090-H3K27ac.imputed.pval.signal.bigwig"
-wget -O E091-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E091-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E092-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E092-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E093-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E093-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E094-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E094-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E097-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E097-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E098-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E098-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E100-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E100-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E109-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E109-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E114-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E114-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E116-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E116-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E117-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E117-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E118-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E118-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E119-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E119-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E120-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E120-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E121-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E121-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E122-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E122-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E123-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E123-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E124-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E124-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E125-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E125-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E126-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E126-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E127-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E127-H3K27ac.imputed.pval.signal.bigwig" &
-wget -O E128-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E128-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E003-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E003-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E004-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E004-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E005-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E005-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E006-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E006-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E007-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E007-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E008-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E008-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E017-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E017-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E021-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E021-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E022-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E022-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E029-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E029-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E032-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E032-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E034-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E034-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E046-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E046-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E050-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E050-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E055-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E055-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E056-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E056-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E059-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E059-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E080-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E080-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E084-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E084-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E085-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E085-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E089-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E089-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E090-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E090-H3K27ac.imputed.pval.signal.bigwig"
+# wget -O E091-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E091-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E092-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E092-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E093-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E093-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E094-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E094-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E097-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E097-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E098-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E098-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E100-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E100-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E109-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E109-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E114-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E114-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E116-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E116-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E117-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E117-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E118-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E118-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E119-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E119-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E120-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E120-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E121-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E121-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E122-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E122-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E123-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E123-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E124-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E124-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E125-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E125-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E126-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E126-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E127-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E127-H3K27ac.imputed.pval.signal.bigwig" &
+# wget -O E128-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E128-H3K27ac.imputed.pval.signal.bigwig" &
 
 
 # bedgraph of ac and dnase on enhancer sequences
@@ -430,7 +445,7 @@ export PROMPT_COMMAND="echo -n \[\$(date +%H:%M:%S)\]\ "
 ../scripts/bigWigToBedGraph ../raw_bigwig/E005-H3K27ac.pval.signal.bigwig ../raw_bedgraphs/E005-H3K27ac.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E006-H3K27ac.pval.signal.bigwig ../raw_bedgraphs/E006-H3K27ac.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E007-H3K27ac.pval.signal.bigwig ../raw_bedgraphs/E007-H3K27ac.pval.bedgraph &
-../scripts/bigWigToBedGraph ../raw_bigwig/E008-H3K27ac.pval.signal.bigwig ../raw_bedgraphs/E008-H3K27ac.pval.bedgraph 
+../scripts/bigWigToBedGraph ../raw_bigwig/E008-H3K27ac.pval.signal.bigwig ../raw_bedgraphs/E008-H3K27ac.pval.bedgraph
 ../scripts/bigWigToBedGraph ../raw_bigwig/E017-H3K27ac.pval.signal.bigwig ../raw_bedgraphs/E017-H3K27ac.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E021-H3K27ac.pval.signal.bigwig ../raw_bedgraphs/E021-H3K27ac.pval.bedgraph &
 ../scripts/bigWigToBedGraph ../raw_bigwig/E022-H3K27ac.pval.signal.bigwig ../raw_bedgraphs/E022-H3K27ac.pval.bedgraph &

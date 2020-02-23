@@ -12,4 +12,5 @@ function Ep = getEp(theta, params, X, t, kronMN, matSize)
     end
     % N x m
     Ep = reshape(E(indices).', [size(X, 1), params.m]);
+    assert(not(any(isnan(Ep(:)))));
 end

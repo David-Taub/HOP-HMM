@@ -18,7 +18,7 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
     params.PWMs = params.PWMs(selectedPWMs, :, :);
     params.lengths = params.lengths(selectedPWMs);
     params.names = {params.names{selectedPWMs}};
-    params.learningRate = 0.8;
+    params.learningRate = 1;
 
     params.doGTBound = doGTBound;
     params.doResampling = doResampling;

@@ -151,10 +151,10 @@ function showConfusionMatrix(params, YEst, Y)
     % plot a confusion matrix
     enhancerStateY = Y(:, :, 1);
     enhancerStateYEst = YEst(:, :, 1);
-    confusion = confusionmat(enhancerStateY(:), enhancerStateYEst(:));
-    confusion = confusion ./ repmat(sum(confusion, 2), [1, size(confusion, 2)]);
+    confusionRaw = confusionmat(enhancerStateY(:), enhancerStateYEst(:));
+    confusion = confusionRaw ./ repmat(sum(confusionRaw, 2), [1, size(confusionRaw, 2)]);
     figure('units', 'pixels', 'Position', [0 0 1000 1000]);
-    imagesc(confusion); colorbar; title('Viterbi Confusion Matrix');
+    imagesc(confusion); colorbar; title('Viterbi Confusion Matrix (floors only)');
     caxis([0 1]);
     ax = gca;
     ax.XTick = [1 : size(confusion, 1)];
@@ -165,10 +165,10 @@ function showConfusionMatrix(params, YEst, Y)
 
     enhancerStateY = 100 * Y(:, :, 1) + Y(:, :, 2);
     enhancerStateYEst = 100 * YEst(:, :, 1) + YEst(:, :, 2);
-    confusion = confusionmat(enhancerStateY(:), enhancerStateYEst(:));
-    confusion = confusion ./ repmat(sum(confusion, 2), [1, size(confusion, 2)]);
+    confusionRaw = confusionmat(enhancerStateY(:), enhancerStateYEst(:));
+    confusion = confusionRaw ./ repmat(sum(confusionRaw, 2), [1, size(confusionRaw, 2)]);
     figure('units', 'pixels', 'Position', [0 0 1000 1000]);
-    imagesc(confusion); colorbar; title('Viterbi Confusion Matrix');
+    imagesc(confusion); colorbar; title('Viterbi Confusion Matrix (including TF states)');
     caxis([0 1]);
     ax = gca;
     ax.XTick = [1 : size(confusion, 1)];
@@ -176,12 +176,9 @@ function showConfusionMatrix(params, YEst, Y)
     xlabel('Estimated Enhancer States');
     ylabel('True Enhancer States');
 
-    enhancerStateY = 100 * Y(:, :, 1) + Y(:, :, 2);
-    enhancerStateYEst = 100 * YEst(:, :, 1) + YEst(:, :, 2);
-    confusion = confusionmat(enhancerStateY(:), enhancerStateYEst(:));
-    confusion = log(confusion);
+    confusion = logRaw(confusionRaw);
     figure('units', 'pixels', 'Position', [0 0 1000 1000]);
-    imagesc(confusion); colorbar; title('Viterbi Confusion Matrix');
+    imagesc(confusion); colorbar; title('Viterbi Confusion Matrix (log)');
     ax = gca;
     ax.XTick = [1 : size(confusion, 1)];
     ax.YTick = [1 : size(confusion, 1)];

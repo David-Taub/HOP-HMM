@@ -4,7 +4,7 @@ function mainRealData()
     conf.startWithBackground = false;
     conf.doEnhSpecific = true;
     conf.seqsPerTissue = 1000;
-    conf.maxIters = 25;
+    conf.maxIters = 40;
     conf.repeat = 1;
     conf.canCrossLayer = true;
     conf.patience = 4;
@@ -23,7 +23,7 @@ function mainRealData()
     conf.backgroundAmount = 1;
     conf.doESharing = false;
     conf.doGTBound = true;
-    conf.doResampling = false;
+    conf.doResampling = true;
     conf.topPercent = 0.5;
     % conf.tissueList = [2, 37];
     % conf.tissueList = [3, 23];
@@ -45,12 +45,14 @@ function main(conf)
     params = misc.genParams(conf.m, selectedPWMs, conf.backgroundAmount, conf.L, conf.order, ...
                             conf.doESharing, conf.doGTBound, conf.doResampling);
     [test, train] = misc.crossValidationSplit(params, mergedPeaksMin, testTrainRatio);
+
     [theta, ~] = EM.EM(train, params, conf.maxIters, conf.patience, conf.repeat, conf.startTUniform);
+
     show.showTheta(theta);
+
     outpath = sprintf('real_posterior_m%da%dk%do%db%dN%dL%d.jpg', conf.m, conf.backgroundAmount, ...
                       conf.k, conf.order, conf.doGTBound, N, conf.L);
     show.seqSampleCertaintyReal(params, theta, train, outpath, mergedPeaksMin.tissueEIDs);
-    % seqSampleCertaintyReal(params, theta, test, conf.sequencesToShow, outpath);
 
     % YEst = misc.viterbi(params, theta, train.X, train.pcPWMp);
     % theta = permuteTheta(theta, params, train.Y(:, :), YEst(:, :, 1));
