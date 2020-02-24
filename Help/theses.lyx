@@ -136,10 +136,6 @@ Proteins are macromolecoles, which carry various roles and functions within
  that constitute a protein.
 \end_layout
 
-\begin_layout Subsubsection*
-Genes
-\end_layout
-
 \begin_layout Standard
 Gene sequences are built out fragmented introns and exons, where only the
  exons becomes the RNA molecules that translates into proteins while the
@@ -182,10 +178,6 @@ key "key-45"
 \end_inset
 
 ).
-\end_layout
-
-\begin_layout Subsubsection*
-Enhancers
 \end_layout
 
 \begin_layout Standard
@@ -334,10 +326,6 @@ Transgenic mouse embryo in the 11.5 day.
 
 \end_layout
 
-\begin_layout Subsubsection*
-Transcription Factor Binding
-\end_layout
-
 \begin_layout Standard
 Transcription factors (TF) are proteins that bind to the DNA, and together
  with other co-factor proteins initiate the gene transcription process.
@@ -443,10 +431,6 @@ The enrichment of TFBS is a good predictor for the location of promoter
  (RNA pol II) has the role of transcribing the adjacent gene.
  it opens the double stranded DNA, so that one strand of nucleotides is
  exposed and becomes a template for RNA synthesis.
-\end_layout
-
-\begin_layout Subsubsection*
-Positional Weight Matrices (PWMs)
 \end_layout
 
 \begin_layout Standard
@@ -569,10 +553,6 @@ Sub-sequences out of the DNA is represented in a one-hot encoding, then
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subsubsection*
-Inter TFBS Sequences and Conservation
 \end_layout
 
 \begin_layout Standard
@@ -8754,9 +8734,94 @@ reference "PosteriorEstimation"
 
 \end_layout
 
-\begin_layout Plain Layout
+\end_inset
+
 
 \end_layout
+
+\begin_layout Standard
+The Baum-Welch algorithm is guaranteed to increase the likelihood in each
+ step, however it is not guaranteed to converge to the optimal 
+\begin_inset Formula $\theta^{*}$
+\end_inset
+
+ (
+\begin_inset CommandInset citation
+LatexCommand citet
+key "key-50"
+
+\end_inset
+
+) as there is no known analytical way for reaching it.
+ In other words, Baum-Welch algorithm converges into a local maximum 
+\begin_inset Formula $\hat{\theta}$
+\end_inset
+
+ which could be a relatively low likelihood estimation, depending on the
+ initialization point of the first 
+\begin_inset Formula $\theta$
+\end_inset
+
+.
+ This issue is addressed in two ways:
+\end_layout
+
+\begin_layout Standard
+1.
+ We use regularization for faster and to a better 
+\begin_inset Formula $\hat{\theta}$
+\end_inset
+
+ convergence (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Regularization"
+
+\end_inset
+
+).
+ Following each M-step update we guide the background-states transition
+ probabilities (
+\begin_inset Formula $T$
+\end_inset
+
+) to be diagonal dominant by:
+\end_layout
+
+\begin_layout Itemize
+If 
+\begin_inset Formula $T_{i,j}<MIN\_T_{i,j}$
+\end_inset
+
+ then we set 
+\begin_inset Formula $T_{i,j}=MIN\_T_{i,j}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+If 
+\begin_inset Formula $T_{i,j}>MAX\_T_{i,j}$
+\end_inset
+
+ then we set 
+\begin_inset Formula $T_{i,j}=MAX\_T_{i,j}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+T and G are divided element-wise by their rows sum so they remain probability
+ vectors:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+T_{i,j}=\frac{T_{i,j}}{\sum_{j'\in[m]}T_{i,j'}+\sum_{j'\in[k]}G_{i,j'}} &  & G_{i,j}=\frac{G_{i,j}}{\sum_{j'\in[m]}T_{i,j'}+\sum_{j'\in[k]}G_{i,j'}}
+\end{align*}
 
 \end_inset
 
@@ -8764,27 +8829,15 @@ reference "PosteriorEstimation"
 \end_layout
 
 \begin_layout Standard
-The EM updates are guaranteed to increase the likelihood in each step, but
- not to converge to the optimal 
-\begin_inset Formula $\theta^{*}$
-\end_inset
-
- (
-\begin_inset CommandInset citation
-LatexCommand citet
-key "key-66"
-
-\end_inset
-
-).
- As in other EM, running the HOP Baum-Welch algorithm multiple times with
- different initialization converged into different 
+2.
+ Since Baum-Welch seek local maximum, running it multiple times with different
+ initializations will cause convergence into different 
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
- result.
- Throughout multiple runs, we observed the higher the log likelihood of
- 
+ results.
+ As could be expected, we observed throughout multiple initializations that
+ the higher the log likelihood of final 
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
@@ -8802,7 +8855,7 @@ reference "LikelihoodVsErr"
 ).
  This is important since on real observed sequences, only the estimated
  
-\begin_inset Formula $\theta$
+\begin_inset Formula $\hat{\theta}$
 \end_inset
 
  likelihood is known while the true 
@@ -8810,70 +8863,19 @@ reference "LikelihoodVsErr"
 \end_inset
 
  is unknown.
- This correlation suggests a strategy of redoing several EM runs, and choosing
- the one with the highest likelihood will result in an estimation closer
- to the true 
-\begin_inset Formula $\theta$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-################################################################################
-###################
-\end_layout
-
-\begin_layout Standard
-Converging into a low likelihood 
+ This correlation implies that for an estimation 
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
- is a result of the updates based on the likelihood derivative can be explained
- by the tendency of the EM to 
-\begin_inset Quotes eld
+ that closer to the true 
+\begin_inset Formula $\theta$
 \end_inset
 
-get stuck
-\begin_inset Quotes erd
-\end_inset
-
- inside local maximum.
- Most notably are runs in which 
+, one should redo several EM runs and choose the 
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
- has high probability of transition between background states, converged
- 
-\end_layout
-
-\begin_layout Standard
-Adding regularization on the background-states transition probabilities
- T helps avoiding 
-\end_layout
-
-\begin_layout Standard
-.
- 
-\end_layout
-
-\begin_layout Standard
-by limiting it so the major diagonal of T (probability of staying in the
- same hidden state) is larger than the sum of the rest of its values by
- a factor caused to convergence to better 
-\begin_inset Formula $\theta$
-\end_inset
-
- estimations, which are closer to the true 
-\begin_inset Formula $\theta$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-################################################################################
-###################
+ with the highest likelihood.
 \end_layout
 
 \begin_layout Standard
@@ -8973,6 +8975,12 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "Regularization"
+
+\end_inset
+
 (A) The EM iterations draws the estimated 
 \begin_inset Formula $\theta$
 \end_inset
@@ -9117,12 +9125,8 @@ Confusion matrix of true and estimated states by the Viterbi algorithm of
 \end_layout
 
 \begin_layout Subsubsection*
-TODO: scatter plot, remove stuff that are bounded, like T, add to figure
+v TODO: scatter plot, remove stuff that are bounded, like T, add to figure
  description
-\end_layout
-
-\begin_layout Standard
-real sequences:
 \end_layout
 
 \begin_layout Subsubsection*
@@ -9139,15 +9143,6 @@ v TODO: in real sequences, don't color the section, use lines from start
 \end_layout
 
 \begin_layout Subsubsection*
-TODO: describe the regularization (in methods?) aka bound
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: in postirior of sequences figure, add plot sum of all TFs postirior
- that should rise in the TFs
-\end_layout
-
-\begin_layout Subsubsection*
 TODO: recall + precision for each state
 \end_layout
 
@@ -9156,7 +9151,7 @@ TODO: add sections about the params in great detail
 \end_layout
 
 \begin_layout Subsubsection*
-TODO: remove sub titles of the background section,
+TODO: remove sub titles of the background section
 \end_layout
 
 \begin_layout Subsubsection*
@@ -10675,7 +10670,7 @@ key "key-65"
 
 \end_inset
 
-Viterbi, A.
+ Viterbi, A.
  (1967).
  Error bounds for convolutional codes and an asymptotically optimum decoding
  algorithm.

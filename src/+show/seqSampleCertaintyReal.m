@@ -10,8 +10,7 @@ function seqSampleCertaintyReal(params, theta, dataset, outpath, tissueEIDs)
     posterior = calcPosterior(params, gamma, psi);
     cMap = lines(params.m);
 
-    PWM_COLOR = [0, 0, 0];
-    cMapWithError = [cMap;  PWM_COLOR];
+
     seqInd = 1;
     trackNames = {'H3K27ac', 'DNase'};
     % tissues x 2
@@ -27,31 +26,20 @@ function seqSampleCertaintyReal(params, theta, dataset, outpath, tissueEIDs)
         outpathI = sprintf('%s.%s.jpg', outpath, i);
         figure('units', 'pixels', 'Position', [0 0 1000 1000]);
         % N x L x 2
-        pwm_val = params.m + 1;
-        LOW_BAR_HIEGHT = 0.1;
+        PwmVal = params.m + 1;
 
         % LOW PLOT
         subplot(3, 1, 3);
         hold on;
-        plotProbabilityMap(params, permute(posterior(seqInd, :, :), [2, 3, 1]), YEst(seqInd, :, 1), cMap, ...
-                           dataset.starts(seqInd));
-        YEstColored = YEst;
-        YEstColored(seqInd, YEst(seqInd, :, 2) > 0, 1) = pwm_val;
-        imagesc([.5, L-.5], [-3 * LOW_BAR_HIEGHT / 4, -LOW_BAR_HIEGHT / 4], ...
-                [YEstColored(seqInd, :, 1); YEstColored(seqInd,:,1)], [1, pwm_val]);
-        ylim([-LOW_BAR_HIEGHT, 1]);
-        colormap(cMapWithError);
-        text(L + 1, 0.5, 'Posterior Prob.', 'FontSize', 10);
-        text(L + 1, -LOW_BAR_HIEGHT / 2, 'Viterbi Est.', 'FontSize', 10);
-        xlabel(sprintf('Position in %s', dataset.chrs{seqInd}));
-        ylabel('P(y_{t}|X)');
+        plotProbabilityMap(params, permute(posterior(seqInd, :, :), [2, 3, 1]), YEst(seqInd, :, :), cMap, ...
+                           dataset.starts(seqInd), PwmVal, dataset.chrs{seqInd});
         % LEGEND
         ax = gca;
         ax.YDir = 'normal';
         legendStrings1 = strcat({'Enhancer Type '}, num2str([1:params.m - params.backgroundAmount]'));
         legendStrings2 = strcat({'Background '}, num2str([1:params.backgroundAmount]'));
         legendStrings = {legendStrings1{:}, legendStrings2{:}};
-        legendStrings{pwm_val} = 'TFBS';
+        legendStrings{PwmVal} = 'TFBS';
         legend(legendStrings);
 
         % HIGH PLOT
@@ -121,16 +109,20 @@ function tracks = getTracks(dataset, bedGraphs, seqInd)
 end
 
 
-% YEst - 1 x L
+% YEst - 1 x L x 2
 % probMap - m x L
-function plotProbabilityMap(params, probMap, YEst, cMap, start)
+function plotProbabilityMap(params, probMap, YEst, cMap, start, PwmVal, chr)
     BARS_PLOT_DARKNESS_FACTOR = 0.85;
+    LOW_BAR_HIEGHT = 0.1;
+    PWM_COLOR = [0, 0, 0];
+
+    cMapWithError = [cMap;  PWM_COLOR];
     % probMap = permute(probMap, [2, 3, 1]);
     L = size(YEst, 2);
     hold on;
     % if params.m >= size(probMap, 1) >= params.m - params.backgroundAmount
     % m x L
-    YEstOneHot = matUtils.vec2mat(YEst, params.m);
+    YEstOneHot = matUtils.vec2mat(YEst(:, :, 1), params.m);
     selectedProb = probMap .* YEstOneHot(1:size(probMap, 1), :);
     % m + 1 x L
     barHandle = bar(start: start + L - 1, selectedProb', 1, 'stacked', 'FaceColor', 'flat');
@@ -152,7 +144,18 @@ function plotProbabilityMap(params, probMap, YEst, cMap, start)
     xlim([start, start + L - 1]);
     ax = gca;
     ax.XAxis.Exponent = 0;
-    xtickformat('%,d')
+    xtickformat('%,d');
+
+    YEstColored = YEst;
+    YEstColored(:, YEst(:, :, 2) > 0, 1) = PwmVal;
+    imagesc([start - .5, start + L - 1.5], [-3 * LOW_BAR_HIEGHT / 4, -LOW_BAR_HIEGHT / 4], ...
+            [YEstColored(:, :, 1); YEstColored(:, :, 1)], [1, PwmVal]);
+    ylim([-LOW_BAR_HIEGHT, 1]);
+    colormap(cMapWithError);
+    text(L + 1, 0.5, 'Posterior Prob.', 'FontSize', 10);
+    text(L + 1, -LOW_BAR_HIEGHT / 2, 'Viterbi Est.', 'FontSize', 10);
+    xlabel(sprintf('Position in %s', chr));
+    ylabel('P(y_{t}|X)');
 end
 
 
@@ -194,6 +197,8 @@ function ret = getTrack(bedGraph, trackChr, trackFrom, trackTo)
     end
     knownPoints = double([(bedGraph.tos(mask) + bedGraph.froms(mask)) / 2]');
     knownVals = bedGraph.vals(mask)';
+    [knownPoints, inds] = unique(knownPoints);
+    knownVals = knownVals(inds);
     wantedPoints = double([trackFrom : trackTo - 1]);
     ret = interp1(knownPoints, knownVals, wantedPoints);
 end
