@@ -110,7 +110,7 @@ function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
         yticks([0: 0.2: 1]);
         hold off;
     end
-    legendStrings1 = strcat({'Enhancer Type '}, num2str([1:params.m - params.backgroundAmount]'));
+    legendStrings1 = strcat({'Enhancer Type '}, num2str([1:params.enhancerAmount]'));
     legendStrings2 = strcat({'Background '}, num2str([1:params.backgroundAmount]'));
     legendStrings = {legendStrings1{:}, legendStrings2{:}};
     legendStrings{errorVal} = 'Error';

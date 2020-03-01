@@ -14,6 +14,7 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
     params.k = k;
     params.order = order;
     params.backgroundAmount = backgroundAmount;
+    params.enhancerAmount = m - backgroundAmount;
     [params.PWMs, params.lengths, params.names] = misc.PWMs();
     params.PWMs = params.PWMs(selectedPWMs, :, :);
     params.lengths = params.lengths(selectedPWMs);
@@ -31,11 +32,11 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
     maxEnhMotifRatio = 1 / 20; % maximal ratio of a single motif letters in enhancer section
     % minEnhMotifRatio = 1 / 15; % minimal ratio of a single motif letters in enhancer section
     maxCrossEnhRatio = 1 / 100; % maximal ratio of transition to any another enhancer
-    maxCrossBgRatio = 1 / 20; % maximal ratio of transition to any another enhancer
+    maxCrossBgRatio = 1 / 30; % maximal ratio of transition to any another enhancer
     maxEnhLen = 1000;
-    minEnhLen = 300;
-    maxBgLen = 1500;
-    minBgLen = 500;
+    minEnhLen = 30;
+    maxBgLen = 800;
+    minBgLen = 300;
 
     params.maxEnhMotif = maxEnhMotifRatio / mean(params.lengths);
     % params.minEnhMotifTotal = minEnhMotifRatio / mean(params.lengths);
@@ -51,7 +52,7 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
     params.maxCrossBg = 1 / minBgLen;
     params.minCrossBg = params.EPS;
     params.maxBgToEnh = 1 / minBgLen;
-    params.minBgToEnh = 1 / (maxBgLen * (params.m - params.backgroundAmount));
+    params.minBgToEnh = 1 / maxBgLen
     params.maxEnhToBg = 1 / minEnhLen;
     params.minEnhToBg = 1 / (maxEnhLen * params.backgroundAmount);
 
@@ -67,12 +68,12 @@ function [minT, minG] = genMinGT(params)
     minT(eye(params.m) == 1) = params.minStayEnh;
     minT(:, end - params.backgroundAmount + 1: end) = params.minEnhToBg;
     minT(end - params.backgroundAmount + 1:end, :) = params.minBgToEnh;
-    for t = params.m - params.backgroundAmount + 1:params.m
+    for t = params.enhancerAmount + 1:params.m
         minT(t, t) = params.minStayBg;
     end
     minG = ones(params.m, params.k) .* params.minEnhMotif;
     minG(end - params.backgroundAmount + 1:end, :) = params.minBgMotif;
-    assert(all(sum(minG, 2) + sum(minT, 2) < 1))
+    % assert(all(sum(minG, 2) + sum(minT, 2) < 1))
 end
 
 
@@ -82,7 +83,7 @@ function [maxT, maxG] = genMaxGT(params)
     maxT(eye(params.m) == 1) = params.maxStayEnh;
     maxT(:, end - params.backgroundAmount + 1: end) = params.maxEnhToBg;
     maxT(end - params.backgroundAmount + 1:end, :) = params.maxBgToEnh;
-    for t = params.m - params.backgroundAmount + 1:params.m
+    for t = params.enhancerAmount + 1:params.m
         maxT(t, t) = params.maxStayBg;
     end
     maxG = ones(params.m, params.k) .* params.maxEnhMotif;

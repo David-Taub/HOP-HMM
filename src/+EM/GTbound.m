@@ -15,9 +15,9 @@ function [G, T] = GTbound(params, G, T)
     T(T < params.minT) = params.minT(T < params.minT);
     G(G > params.maxG) = params.maxG(G > params.maxG);
     G(G < params.minG) = params.minG(G < params.minG);
-    overG = sum(G, 2) > params.maxEnhMotif & [1:params.m]' <= params.m - params.backgroundAmount;
+    overG = sum(G, 2) > params.maxEnhMotif & [1:params.m]' <= params.enhancerAmount;
     G(overG, :) = params.maxEnhMotif * G(overG, :) ./ repmat(sum(G(overG, :), 2), [1, params.k]);
-    underG = (sum(G, 2) < params.minEnhMotifTotal) & [1:params.m]' <= params.m - params.backgroundAmount;
+    underG = (sum(G, 2) < params.minEnhMotifTotal) & [1:params.m]' <= params.enhancerAmount;
     G(underG, :) = params.minEnhMotifTotal * G(underG, :) ./ repmat(sum(G(underG, :), 2), [1, params.k]);
     % bind sum of motif prob
     % T = T ./ repmat(sum(T, 2) + sum(G, 2), [1, params.m]);
@@ -53,8 +53,8 @@ end
 % T - m x m
 % transfers from T(i,j) to T(i,i)
 function T = limitCrossEnhancers(params, T, threshold)
-    for i = 1:params.m - params.backgroundAmount
-        for j = 1:params.m - params.backgroundAmount
+    for i = 1:params.enhancerAmount
+        for j = 1:params.enhancerAmount
             if j == i
                 continue;
             end

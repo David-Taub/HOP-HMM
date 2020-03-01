@@ -36,7 +36,7 @@ function seqSampleCertaintyReal(params, theta, dataset, outpath, tissueEIDs)
         % LEGEND
         ax = gca;
         ax.YDir = 'normal';
-        legendStrings1 = strcat({'Enhancer Type '}, num2str([1:params.m - params.backgroundAmount]'));
+        legendStrings1 = strcat({'Enhancer Type '}, num2str([1:params.enhancerAmount]'));
         legendStrings2 = strcat({'Background '}, num2str([1:params.backgroundAmount]'));
         legendStrings = {legendStrings1{:}, legendStrings2{:}};
         legendStrings{PwmVal} = 'TFBS';
@@ -120,7 +120,7 @@ function plotProbabilityMap(params, probMap, YEst, cMap, start, PwmVal, chr)
     % probMap = permute(probMap, [2, 3, 1]);
     L = size(YEst, 2);
     hold on;
-    % if params.m >= size(probMap, 1) >= params.m - params.backgroundAmount
+    % if params.m >= size(probMap, 1) >= params.enhancerAmount
     % m x L
     YEstOneHot = matUtils.vec2mat(YEst(:, :, 1), params.m);
     selectedProb = probMap .* YEstOneHot(1:size(probMap, 1), :);

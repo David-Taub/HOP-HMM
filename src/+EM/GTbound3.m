@@ -13,21 +13,10 @@ function [G, T, startT] = GTbound3(params, G, T, startT)
     originT = T;
     originStartT = startT;
 
-    MAX_ENH_LENGTH = 700;
-    MIN_ENH_LENGTH = 100;
-    % diag
-    maxT = ones(params.m) * (1 / MIN_ENH_LENGTH);
-    maxT(eye(params.m) == 1) = 1 - 1 / MAX_ENH_LENGTH;
-
-    minT = ones(params.m) * (1 / MAX_ENH_LENGTH);
-    minT(eye(params.m) == 1) = 1 - 1 / MIN_ENH_LENGTH;
-    startT(1) = 1;
-    startT(2:params.m) = 0;
-    minT
-    T
-    maxT
-    T(T > maxT) = maxT(T > maxT);
-    T(T < minT) = minT(T < minT);
+    startT(:) = 0;
+    startT(end) = 1;
+    T(T > params.maxT) = params.maxT(T > params.maxT);
+    T(T < params.minT) = params.minT(T < params.minT);
 
     s = sum(G, 2) + sum(T, 2);
     T = T ./ repmat(s, [1, params.m]);

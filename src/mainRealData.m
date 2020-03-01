@@ -4,11 +4,11 @@ function mainRealData()
     conf.startWithBackground = false;
     conf.doEnhSpecific = true;
     conf.seqsPerTissue = 1000;
-    conf.maxIters = 50;
-    conf.repeat = 10;
+    conf.maxIters = 25;
+    conf.repeat = 5;
     conf.canCrossLayer = true;
-    conf.patience = 4;
-    conf.L = 2000;
+    conf.patience = 3;
+    conf.L = 3000;
     conf.peakMaxLength = 1000;
     conf.peakMinL = 200;
     conf.peakMaxL = 1500;

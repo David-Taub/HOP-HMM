@@ -1,5 +1,9 @@
 cd ../raw_bed
 
+###############################
+# Downloads
+###############################
+
 # wget -O $1-H3K27ac.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K27ac.narrowPeak.gz"
 # if [ ! -f $1-H3K27ac.narrowPeak.gz ]; then
 #     echo "$1-H3K27ac.narrowPeak.gz not found!"
@@ -55,7 +59,9 @@ if [ ! -f $1-H3K27me3.narrowPeak ]; then
 fi
 echo "Asserted files existing"
 
-# refine with background
+###############################
+# Background
+###############################
 echo "Refining background"
 
 bedtools sort -faidx hg19.chrom.sizes -i $1-H3K27ac.narrowPeak > tmp.1.narrowPeak
@@ -90,36 +96,34 @@ if [ ! -f background.narrowPeak ]; then
 fi
 echo "bedtools run on background completed"
 
+
+###############################
+# Enhancers
+###############################
 #take only peaks with DNASE-I peaks
-bedtools intersect -a $1-DNase.macs2.narrowPeak -b $1-H3K27ac.narrowPeak -wa >$1-H3K27ac.cleaned.narrowPeak
+bedtools intersect -a $1-DNase.macs2.narrowPeak -b $1-H3K27ac.narrowPeak -wa > tmp.1.$1-H3K27ac.cleaned.narrowPeak
 #take only H3k27ac peaks with H3k4me1 peaks
-bedtools intersect -a $1-H3K27ac.narrowPeak -b $1-H3K4me1.narrowPeak -wa >$1-H3K27ac.cleaned.narrowPeak
-
-
-# sort -V -k 1,3 "total_merged.narrowPeak" | sortBed | tee total_merged.tmp.narrowPeak | sort -c -k1,1 -k2,2n || true
-# # bedtools sort -i total_merged.narrowPeak > total_merged.tmp.narrowPeak
-# bedtools merge -i total_merged.tmp.narrowPeak -d 10000 > total_merged.narrowPeak
-# rm -f total_merged.tmp.narrowPeak
+bedtools intersect -a tmp.1.$1-H3K27ac.cleaned.narrowPeak -b $1-H3K4me1.narrowPeak -wa > tmp.2.$1-H3K27ac.cleaned.narrowPeak
 
 #remove duplicates
-awk '!x[$0]++' $1-H3K27ac.cleaned.narrowPeak > $1-H3K27ac.tmp.narrowPeak
-mv -f $1-H3K27ac.tmp.narrowPeak $1-H3K27ac.cleaned.narrowPeak
-
-echo "duplicates removed"
+awk '!x[$0]++' tmp.2.$1-H3K27ac.cleaned.narrowPeak > tmp.3.$1-H3K27ac.cleaned.narrowPeak
 
 #remove H3k27me3 peaks
-bedtools subtract -a $1-H3K27ac.cleaned.narrowPeak -b $1-H3K27me3.narrowPeak -A > $1-H3K27ac.tmp.narrowPeak
-mv -f $1-H3K27ac.tmp.narrowPeak $1-H3K27ac.cleaned.narrowPeak
+bedtools subtract -a tmp.3.$1-H3K27ac.cleaned.narrowPeak -b $1-H3K27me3.narrowPeak -A > tmp.4.$1-H3K27ac.cleaned.narrowPeak
 
 #remove H3k4me3 peaks
-bedtools subtract -a $1-H3K27ac.cleaned.narrowPeak -b $1-H3K4me3.narrowPeak -A > $1-H3K27ac.tmp.narrowPeak
-mv -f $1-H3K27ac.tmp.narrowPeak $1-H3K27ac.cleaned.narrowPeak
+bedtools subtract -a tmp.4.$1-H3K27ac.cleaned.narrowPeak -b $1-H3K4me3.narrowPeak -A > tmp.5.$1-H3K27ac.cleaned.narrowPeak
 
 #remove padded known genes
-bedtools subtract -a $1-H3K27ac.cleaned.narrowPeak -b ./hg19.KnownGenes.slopped.bed -A > $1-H3K27ac.tmp.narrowPeak
-mv -f $1-H3K27ac.tmp.narrowPeak $1-H3K27ac.cleaned.narrowPeak
-mv -f $1-H3K27ac.cleaned.narrowPeak ../processed/$1-H3K27ac.cleaned.narrowPeak
+bedtools subtract -a tmp.5.$1-H3K27ac.cleaned.narrowPeak -b ./hg19.KnownGenes.slopped.bed -A > tmp.6.$1-H3K27ac.cleaned.narrowPeak
+ls -al tmp.*
+mv -f tmp.6.$1-H3K27ac.cleaned.narrowPeak ../processed/$1-H3K27ac.cleaned.narrowPeak
+rm -f tmp.*
 
+#############################
+# Verify Output
+#############################
+ls -al ../processed/$1-H3K27ac.cleaned.narrowPeak
 echo "bedtools run completed"
 
 if [ ! -f ../processed/$1-H3K27ac.cleaned.narrowPeak ]; then

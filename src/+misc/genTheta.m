@@ -3,7 +3,9 @@ function [theta] = genTheta(params, startTUniform, totalRandom)
     if startTUniform || params.backgroundAmount == 0
         theta.startT = log(ones(params.m, 1) ./ params.m);
     else
-        theta.startT = log([ones(params.m - params.backgroundAmount, 1) * params.EPS; ones(params.backgroundAmount, 1) * (1 - params.EPS * (params.m - params.backgroundAmount)) / params.backgroundAmount]);
+        theta.startT = log([ones(params.enhancerAmount, 1) * params.EPS; ...
+         ones(params.backgroundAmount, 1) * ...
+         (1 - params.EPS * (params.enhancerAmount)) / params.backgroundAmount]);
     end
     if totalRandom
         M = rand(params.m, params.m + params.k);
@@ -25,7 +27,7 @@ function [theta] = genTheta(params, startTUniform, totalRandom)
 
     % m x n
     theta.E = rand([params.m, ones(1, params.order) .* params.n]);
-    theta.E = log(bsxfun(@times, theta.E, 1 ./ sum(theta.E, params.order+1)));
+    theta.E = log(bsxfun(@times, theta.E, 1 ./ sum(theta.E, params.order + 1)));
 
     PRETRAINED_THETA_PATH = '../data/precomputation/pretrainedTheta.mat';
     if exist(PRETRAINED_THETA_PATH, 'file') == 2
@@ -33,7 +35,7 @@ function [theta] = genTheta(params, startTUniform, totalRandom)
         load(PRETRAINED_THETA_PATH);
         [foundM, foundK] = size(G);
         foundOrder = ndims(E) - 1;
-        if params.m == foundM + 1 & params.k == foundK  & foundOrder == params.order
+        if params.m == foundM + 1 & params.k == foundK & foundOrder == params.order
             fprintf('Loading pretrained theta...\n');
             theta.E(1:foundM, :) = E(1:foundM, :);
             theta.G(1:foundM, 1:foundK) = G;

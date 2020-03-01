@@ -2924,10 +2924,16 @@ s (green).
 \end_layout
 
 \begin_layout Standard
-While most background-states represent an enhancer type, we also would like
- to have background regions in between the enhancer.
+While most background-states 
+\begin_inset Formula $(j,0)$
+\end_inset
+
+ represent an enhancer type, we also would like to model true background
+ regions in between the enhancer that carry no regulatory role and have
+ no TFBSs.
  For that end we predefine one or more background-states as non-enhancers
- by restricting their transfer probability into their TF-states.
+ by restricting their transfer probability into their TF-states, as seen
+ in the results section.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -7920,7 +7926,7 @@ Algorithm:
 
 
 \emph on
-# background-state to background-state
+ # background-state to background-state
 \end_layout
 
 \begin_layout Plain Layout
@@ -8640,24 +8646,66 @@ y_{class}=mode_{t\in[L]}y_{t}
 Results
 \end_layout
 
-\begin_layout Subsubsection*
-Synthetic Sequences
+\begin_layout Standard
+For evaluating HOP-HMM, we measure its capabilities on synthetic DNA data.
+ The evaluation process is done in several steps (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Workflow"
+
+\end_inset
+
+):
 \end_layout
 
-\begin_layout Standard
-Before applying the algorithm to a real DNA data, we checked its capabilities
- on synthetic data.
-\end_layout
-
-\begin_layout Standard
-We sampled 
+\begin_layout Enumerate
+We generate parameters for a HOP-HMM 
 \begin_inset Formula $\theta$
 \end_inset
 
- parameters, while making sure some background-states had chance to transition
- into TF-states to mimic enhancers, and some background-states had almost
- no chance of such transitions, to mimic the PWM lacking background around
- the shoulders of enhancers in the DNA.
+, and since it is meant to mimic enhancers, sampled in the following way:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Each cell 
+\begin_inset Formula $T_{i,j}$
+\end_inset
+
+ is sampled from the uniform distribution 
+\begin_inset Formula $U(minT_{i,j},maxT_{i,j})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Each cell 
+\begin_inset Formula $G_{i,j}$
+\end_inset
+
+ is sampled from 
+\begin_inset Formula $U(minG,noiseG)+\boldsymbol{1}_{i}\cdot Bern(\frac{k}{m})\cdot maxG$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+where 
+\begin_inset Formula $\boldsymbol{1}_{i}$
+\end_inset
+
+ equals 0 for states i which are predefine as non-enhancers states, 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+make sure some background-states had chance to transition into TF-states
+ to , and some background-states had almost no chance of such transitions,
+ to mimic the PWM lacking background around the shoulders of enhancers in
+ the DNA.
  We marked the sampled 
 \begin_inset Formula $\theta$
 \end_inset
@@ -8667,17 +8715,67 @@ We sampled
 \end_inset
 
  which we would like to estimate in the HOP Baum-Welch algorithm.
- We then generated several sequences using a HOP-HMMs with the true 
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+We generated several sequences using a HOP-HMMs with the true 
 \begin_inset Formula $\theta$
 \end_inset
 
-, keeping both the observed and the hidden sequences.
- Finally, we split the sequences into train and test and estimated a 
-\begin_inset Formula $\theta$
+, keeping both the observed and the hidden sequences, denoted 
+\begin_inset Formula $X$
 \end_inset
 
- using the train sequences, and measuring its accuracy over both the train
- and the test sequences.
+ and 
+\begin_inset Formula $Y$
+\end_inset
+
+.
+ We split the 
+\begin_inset Formula $X$
+\end_inset
+
+ and 
+\begin_inset Formula $Y$
+\end_inset
+
+ sequences into train and test for cross validation.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Training of a 
+\begin_inset Formula $\hat{\theta}$
+\end_inset
+
+ with the HOP Baum-Welch algorithm using the train X DNA sequences.
+\end_layout
+
+\begin_layout Enumerate
+Estimation with the HOP-Viterbi algorithm 
+\begin_inset Formula $\hat{Y}$
+\end_inset
+
+ test using the 
+\begin_inset Formula $X$
+\end_inset
+
+ test and 
+\begin_inset Formula $\hat{\theta}$
+\end_inset
+
+ .
+ We also calculate the posterior probability of 
+\begin_inset Formula $P_{\hat{\theta}}\left(y_{t}|x_{1:L}\right)$
+\end_inset
+
+and measuring accuracy over both the train and the test sequences.
+\end_layout
+
+\begin_layout Standard
+############################################################################
 \end_layout
 
 \begin_layout Standard
@@ -8701,6 +8799,12 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "Workflow"
+
+\end_inset
+
 Workflow of the evaluation process.
  A 
 \begin_inset Formula $\theta$
@@ -9151,7 +9255,7 @@ TODO: add sections about the params in great detail
 \end_layout
 
 \begin_layout Subsubsection*
-TODO: remove sub titles of the background section
+v TODO: remove sub titles of the background section
 \end_layout
 
 \begin_layout Subsubsection*

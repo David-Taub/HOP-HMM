@@ -24,32 +24,32 @@ function [G, T, startT] = GTbound2(params, G, T, startT)
     T(T < minT) = minT(T < minT);
 
     % G bg motifs max
-    G_background = G(params.m - params.backgroundAmount + 1: end, :) ;
+    G_background = G(params.enhancerAmount + 1: end, :) ;
     G_background_over = G_background(sum(G_background, 2) > BACKGROUND_MAX_MOTIFS, :);
     G_background_over = G_background_over .* BACKGROUND_MAX_MOTIFS ./ sum(G_background_over, 2);
     G_background(sum(G_background, 2) > BACKGROUND_MAX_MOTIFS, :) = G_background_over;
-    G(params.m - params.backgroundAmount + 1: end, :) = G_background;
+    G(params.enhancerAmount + 1: end, :) = G_background;
 
     % G TF motifs min
-    G_tf = G(1:params.m - params.backgroundAmount, :) ;
+    G_tf = G(1:params.enhancerAmount, :) ;
     G_tf_under = G_tf(sum(G_tf, 2) < TF_MIN_MOTIFS, :);
     G_tf_under = G_tf_under .* TF_MIN_MOTIFS ./ sum(G_tf_under, 2);
     G_tf(sum(G_tf, 2) < TF_MIN_MOTIFS, :) = G_tf_under;
-    G(1:params.m - params.backgroundAmount, :) = G_tf;
+    G(1:params.enhancerAmount, :) = G_tf;
 
     % T TF -> BG
-    T_enh_bg = T(1:params.m - params.backgroundAmount, params.m - params.backgroundAmount + 1: end);
+    T_enh_bg = T(1:params.enhancerAmount, params.enhancerAmount + 1: end);
     T_enh_bg(T_enh_bg > ENH_MAX_BG) = ENH_MAX_BG;
-    T(1:params.m - params.backgroundAmount, params.m - params.backgroundAmount + 1: end) = T_enh_bg;
+    T(1:params.enhancerAmount, params.enhancerAmount + 1: end) = T_enh_bg;
 
     % T BG -> ENH
-    T_bg_enh = T(params.m - params.backgroundAmount + 1:end, 1: params.m - params.backgroundAmount);
+    T_bg_enh = T(params.enhancerAmount + 1:end, 1: params.enhancerAmount);
     T_bg_enh(T_bg_enh < BG_MIN_ENH) = BG_MIN_ENH;
-    T(params.m - params.backgroundAmount + 1:end, 1: params.m - params.backgroundAmount) = T_bg_enh;
+    T(params.enhancerAmount + 1:end, 1: params.enhancerAmount) = T_bg_enh;
 
     % startT
-    if sum(startT(params.m - params.backgroundAmount + 1 : end), 1) < BG_START_T
-        startT(params.m - params.backgroundAmount + 1 : end) = BG_START_T /  params.backgroundAmount;
+    if sum(startT(params.enhancerAmount + 1 : end), 1) < BG_START_T
+        startT(params.enhancerAmount + 1 : end) = BG_START_T /  params.backgroundAmount;
     end
 
     s = sum(G, 2) + sum(T, 2);

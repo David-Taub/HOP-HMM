@@ -1,7 +1,7 @@
 
 % mainGenSequences(300, 10000, 5, 25, true);
 % mainGenSequences(10000, 500, 5, 25, false);
-function mergedPeaksMin = mainGenSequences(N, L, params, startWithBackground, background_g_noise)
+function mergedPeaksMin = mainGenSequences(N, L, params, startWithBackground, backgroundGNoise)
     dbstop if error
     clear pcPWMp
     close all;
@@ -20,7 +20,7 @@ function mergedPeaksMin = mainGenSequences(N, L, params, startWithBackground, ba
     % params = misc.genParams(m, k);
     theta = misc.genTheta(params, false, false);
     T = exp(theta.T);
-    G = exp(genHumanG(params, background_g_noise));
+    G = exp(genHumanG(params, backgroundGNoise));
     theta.T = log(T ./ repmat(sum(T, 2) + sum(G, 2), [1, params.m]));
     theta.G = log(G ./ repmat(sum(T, 2) + sum(G, 2), [1, params.k]));
 
@@ -53,11 +53,14 @@ function T = genHumanT(params)
 end
 
 
-function G = genHumanG(params, background_g_noise)
+function G = genHumanG(params, backgroundGNoise)
     G = params.minG;
-    G = G + (rand(params.m, params.k) .* background_g_noise ./ params.k);
-    for i = 1:params.m - params.backgroundAmount
-        G(i, datasample(1:params.k, ceil(params.k / params.m))) = params.maxEnhMotif;
+    G = G + (rand(params.m, params.k) .* backgroundGNoise ./ params.k);
+    enhCount =
+    intensifiedGMask = rand(params.enhancerAmount, params.k) < (params.k / params.m);
+    G(1:params.enhancerAmount, :) = G(params.enhancerAmount, :) +  intensifiedGMask * params.maxEnhMotif
+    for i = 1:params.enhancerAmount
+        G(i, datasample(1: params.k, ceil(params.k / params.m))) = params.maxEnhMotif;
     end
     G = log(G);
 end
@@ -66,7 +69,7 @@ end
 function startT = genHumanStartT(params, startWithBackground)
 
     if startWithBackground & params.backgroundAmount > 0
-        startT = log([ones(params.m - params.backgroundAmount, 1) * eps; ones(params.backgroundAmount, 1) * (1 - (eps * (params.m - params.backgroundAmount))) / params.backgroundAmount]);
+        startT = log([ones(params.enhancerAmount, 1) * eps; ones(params.backgroundAmount, 1) * (1 - (eps * (params.enhancerAmount))) / params.backgroundAmount]);
     else
         startT = log(ones(params.m, 1) ./ params.m);
     end
@@ -89,10 +92,10 @@ function E = genHumanE(params)
 end
 
 
-function theta = genHumanTheta(params, startWithBackground, canCrossLayer, background_g_noise)
+function theta = genHumanTheta(params, startWithBackground, canCrossLayer, backgroundGNoise)
     theta.E = genHumanE(params);
     theta.T = genHumanT(params, canCrossLayer);
-    theta.G = genHumanG(params, background_g_noise);
+    theta.G = genHumanG(params, backgroundGNoise);
     T = exp(theta.T);
     G = exp(theta.G) * 3;
 
