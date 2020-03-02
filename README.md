@@ -3,7 +3,7 @@ Structured HMM implementation, which has k-order emission model and also states 
 
 https://github.com/David-Taub/HOP-HMM/raw/master/Help/theses.pdf
 
-##Figures:
+## Figures:
 ![HOP-HMM Model](Help/Figures/HOP_HMM_multi_states.jpg)
 ![HOP-HMM Parameters Convergence](Help/Figures/dec_theta_error_scatter.jpg)
 ![Workflow](Help/Figures/Workflow.jpg)
