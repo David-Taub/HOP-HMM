@@ -8663,17 +8663,26 @@ We generate parameters for a HOP-HMM
 \begin_inset Formula $\theta$
 \end_inset
 
-, and since it is meant to mimic enhancers, sampled in the following way:
+, which are treated as the true 
+\begin_inset Formula $\theta$
+\end_inset
+
+.
+ 
+\begin_inset Formula $\theta$
+\end_inset
+
+ is sampled in the following way:
 \end_layout
 
 \begin_deeper
 \begin_layout Enumerate
-Each cell 
-\begin_inset Formula $T_{i,j}$
-\end_inset
+Each cell T is sampled from the uniform distribution 
+\begin_inset Formula 
+\begin{equation}
+T_{i,j}\sim U\left(minT_{i,j},maxT_{i,j}\right)\label{minTmaxT}
+\end{equation}
 
- is sampled from the uniform distribution 
-\begin_inset Formula $U(minT_{i,j},maxT_{i,j})$
 \end_inset
 
 
@@ -8684,8 +8693,12 @@ Each cell
 \begin_inset Formula $G_{i,j}$
 \end_inset
 
- is sampled from 
-\begin_inset Formula $U(minG,noiseG)+\boldsymbol{1}_{i}\cdot Bern(\frac{k}{m})\cdot maxG$
+ is sampled from a uniform and a Bernoulli distribution 
+\begin_inset Formula 
+\[
+G_{i,j}\sim U\left(minG,noiseG\right)+\boldsymbol{1}_{\left(i,0\right)\in Reg}\cdot Bern\left(\frac{k}{m}\right)\cdot maxG
+\]
+
 \end_inset
 
 
@@ -8694,37 +8707,108 @@ Each cell
 \begin_deeper
 \begin_layout Standard
 where 
-\begin_inset Formula $\boldsymbol{1}_{i}$
+\begin_inset Formula 
+\[
+\boldsymbol{1}_{\left(i,0\right)\in ENH}=\begin{cases}
+1 & \left(i,0\right)\in ENH\\
+0 & otherwise
+\end{cases}
+\]
+
 \end_inset
 
- equals 0 for states i which are predefine as non-enhancers states, 
+
+\begin_inset Formula $ENH$
+\end_inset
+
+ is the set of 
+\begin_inset Quotes eld
+\end_inset
+
+enhancer-mimicking
+\begin_inset Quotes erd
+\end_inset
+
+ background-states, which are predefined background-states that have high
+ probability of transitioning into TF-state.
+ The rest of the background states will have low probability to create TFBS,
+ aiming to model the non-regulatory regions of the DNA with sparse TFBSs.
+ In our experiments 
+\begin_inset Formula $ENH$
+\end_inset
+
+ contained all but one state: 
+\begin_inset Formula $\left(m,0\right)$
+\end_inset
+
+ meaning only one background-state had almost no TFBS and the rest 
+\begin_inset Formula $m-1$
+\end_inset
+
+ background-states did have TFBSs.
 \end_layout
 
 \end_deeper
 \begin_layout Enumerate
-make sure some background-states had chance to transition into TF-states
- to , and some background-states had almost no chance of such transitions,
- to mimic the PWM lacking background around the shoulders of enhancers in
- the DNA.
- We marked the sampled 
-\begin_inset Formula $\theta$
+After being sampled, T and G are divided element-wise by their rows sum
+ so their rows together become distributions:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+T_{i,j}=\frac{T_{i,j}}{\sum_{j'\in[m]}T_{i,j'}+\sum_{j'\in[k]}G_{i,j'}} &  & G_{i,j}=\frac{G_{i,j}}{\sum_{j'\in[m]}T_{i,j'}+\sum_{j'\in[k]}G_{i,j'}}\label{GT_normalization}
+\end{align}
+
 \end_inset
 
- as the true 
-\begin_inset Formula $\theta$
-\end_inset
 
- which we would like to estimate in the HOP Baum-Welch algorithm.
- 
 \end_layout
 
 \end_deeper
 \begin_layout Enumerate
-We generated several sequences using a HOP-HMMs with the true 
+E is sampled from a uniform distribution 
+\begin_inset Formula $E_{j,b_{1},...,b_{o}}\sim U\left(0,1\right)$
+\end_inset
+
+ and divided by the sum of its last index to become a distribution array,
+ similar to (c):
+\begin_inset Formula 
+\[
+E_{j,b_{1},...,b_{o}}=\frac{E_{j,b_{1},...,b_{o}}}{\sum_{b'=[4]}E_{j,b_{1},...,b_{o-1},b'}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+The start state distribution 
+\begin_inset Formula $\pi$
+\end_inset
+
+ is non-random, and set so the first states are always one of the non-enhancer
+ background states: 
+\begin_inset Formula 
+\[
+\pi_{i}=\frac{\boldsymbol{1}_{\left(i,0\right)\notin ENH}}{m-|ENH|}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Sequences are generated using the HOP-HMMs with the true 
 \begin_inset Formula $\theta$
 \end_inset
 
-, keeping both the observed and the hidden sequences, denoted 
+.
+ Both the observed and the hidden sequences are used, denoted 
 \begin_inset Formula $X$
 \end_inset
 
@@ -8746,36 +8830,61 @@ We generated several sequences using a HOP-HMMs with the true
 \end_layout
 
 \begin_layout Enumerate
-Training of a 
+From the DNA sequences of 
+\begin_inset Formula $X$
+\end_inset
+
+ train, we train a 
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
- with the HOP Baum-Welch algorithm using the train X DNA sequences.
+ with the HOP Baum-Welch algorithm.
 \end_layout
 
 \begin_layout Enumerate
-Estimation with the HOP-Viterbi algorithm 
+Using the trained parameters 
+\begin_inset Formula $\hat{\theta}$
+\end_inset
+
+, we estimate 
 \begin_inset Formula $\hat{Y}$
 \end_inset
 
- test using the 
+ test from 
 \begin_inset Formula $X$
 \end_inset
 
  test and 
-\begin_inset Formula $\hat{\theta}$
+\begin_inset Formula $\hat{Y}$
 \end_inset
 
- .
+ train from 
+\begin_inset Formula $X$
+\end_inset
+
+ train by the HOP-Viterbi algorithm.
  We also calculate the posterior probability of 
 \begin_inset Formula $P_{\hat{\theta}}\left(y_{t}|x_{1:L}\right)$
 \end_inset
 
-and measuring accuracy over both the train and the test sequences.
-\end_layout
+ from 
+\begin_inset Formula $X$
+\end_inset
 
-\begin_layout Standard
-############################################################################
+ test and 
+\begin_inset Formula $X$
+\end_inset
+
+ train.
+ These results are then compared to the real 
+\begin_inset Formula $Y$
+\end_inset
+
+ test and 
+\begin_inset Formula $Y$
+\end_inset
+
+ train for accuracy measuring.
 \end_layout
 
 \begin_layout Standard
@@ -8867,7 +8976,7 @@ key "key-50"
 \end_inset
 
 .
- This issue is addressed in two ways:
+ The local maximum convergence issue is addressed in two ways:
 \end_layout
 
 \begin_layout Standard
@@ -8884,21 +8993,36 @@ reference "Regularization"
 \end_inset
 
 ).
- Following each M-step update we guide the background-states transition
- probabilities (
+ Following each M-step update we draw the background-states transition probabili
+ties 
 \begin_inset Formula $T$
 \end_inset
 
-) to be diagonal dominant by:
+ to remain between 
+\begin_inset Formula $maxT$
+\end_inset
+
+ and 
+\begin_inset Formula $minT$
+\end_inset
+
+ matrices from 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "minTmaxT"
+
+\end_inset
+
+:
 \end_layout
 
 \begin_layout Itemize
 If 
-\begin_inset Formula $T_{i,j}<MIN\_T_{i,j}$
+\begin_inset Formula $T_{i,j}<minT_{i,j}$
 \end_inset
 
  then we set 
-\begin_inset Formula $T_{i,j}=MIN\_T_{i,j}$
+\begin_inset Formula $T_{i,j}=minT_{i,j}$
 \end_inset
 
 
@@ -8906,26 +9030,22 @@ If
 
 \begin_layout Itemize
 If 
-\begin_inset Formula $T_{i,j}>MAX\_T_{i,j}$
+\begin_inset Formula $T_{i,j}>maxT_{i,j}$
 \end_inset
 
  then we set 
-\begin_inset Formula $T_{i,j}=MAX\_T_{i,j}$
+\begin_inset Formula $T_{i,j}=maxT_{i,j}$
 \end_inset
 
 
 \end_layout
 
 \begin_layout Itemize
-T and G are divided element-wise by their rows sum so they remain probability
- vectors:
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{align*}
-T_{i,j}=\frac{T_{i,j}}{\sum_{j'\in[m]}T_{i,j'}+\sum_{j'\in[k]}G_{i,j'}} &  & G_{i,j}=\frac{G_{i,j}}{\sum_{j'\in[m]}T_{i,j'}+\sum_{j'\in[k]}G_{i,j'}}
-\end{align*}
+T and G are divided by their row sum so their rows together remain a distributio
+n as in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "GT_normalization"
 
 \end_inset
 
@@ -9145,6 +9265,12 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "PostiriorProbability"
+
+\end_inset
+
 Posterior probability of sequences, estimated by a trained HOP-HMM 
 \begin_inset Formula $\hat{\theta}$
 \end_inset
@@ -9191,6 +9317,12 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "ConfutionMatrix"
+
+\end_inset
+
 Confusion matrix of true and estimated states by the Viterbi algorithm of
  HOP-HMM synthetic sequences.
  Rows are normalized so their sum is equal to 1.
@@ -9228,63 +9360,12 @@ Confusion matrix of true and estimated states by the Viterbi algorithm of
 
 \end_layout
 
-\begin_layout Subsubsection*
-v TODO: scatter plot, remove stuff that are bounded, like T, add to figure
- description
-\end_layout
-
-\begin_layout Subsubsection*
-v TODO: center sequences on peak of DNase
-\end_layout
-
-\begin_layout Subsubsection*
-v TODO: in real sequences, give the position with chr 
-\end_layout
-
-\begin_layout Subsubsection*
-v TODO: in real sequences, don't color the section, use lines from start
- to finish of enhancer
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: recall + precision for each state
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: add sections about the params in great detail
-\end_layout
-
-\begin_layout Subsubsection*
-v TODO: remove sub titles of the background section
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: Add code usage section
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: Remove research question part, insert into the results head paragraph
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: in results, open with intor paragraph: what can we do now? we will
- use this to check the data on synthetics and real DNA
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: take new data from Ido, methilated regions as ground truth
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: choose PWM by their expression in tissues, take data sent by TOMMY
-\end_layout
-
 \begin_layout Subsection*
 Roadmap Dataset
 \end_layout
 
 \begin_layout Paragraph*
-Perprocessing
+Pre-processing
 \end_layout
 
 \begin_layout Standard
@@ -9347,6 +9428,183 @@ For the set of PWMs used by the TF-states of the HOP-HMM, we used JASPAR
 
 \end_layout
 
+\begin_layout Subsection*
+Appendix: Source Code
+\end_layout
+
+\begin_layout Standard
+The code for this research was written in Matlab, and can be found in 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://github.com/David-Taub/HOP-HMM
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Main files in the code base:
+\end_layout
+
+\begin_layout Itemize
+HOP-HMM/data/peaks/scripts/download_and_process_all.sh
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Linux bash script which downloads data files of epigenetic from Roadmap
+ website, JASPAR PWMs and hg19 genome.
+ After downloading, the data is per-processed with Bedtools and bigWigToBedGraph.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+HOP-HMM/src/+peaks/minimizeMergePeak.m
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Reads downloaded bed files, process them and saves them into MAT-file v7.3.
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+HOP-HMM/src/mainRealData.m
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Entry point of the code, reads data from human genome, trains HOP-HMMs model
+ and compares posterior probability to real epigenetic data.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+HOP-HMM/src/mainPosterior.m
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Entry point of the code, follows the workflow of 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Workflow"
+
+\end_inset
+
+, and plot a figure similar to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "PostiriorProbability"
+
+\end_inset
+
+ containing a random set of sequences with their Viterbi sequence and posterior
+ probabilities and a confusion matrix similar to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "ConfutionMatrix"
+
+\end_inset
+
+.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+HOP-HMM/src/mainDecErrorPlot.m
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Entry point of the code, follows the workflow of 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Workflow"
+
+\end_inset
+
+, and at each iteration of the EM, likelihood and errors are collected to
+ form plots similar to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Regularization"
+
+\end_inset
+
+.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+HOP-HMM/src/+EM/EM.m
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+The function which trains HOP-HMM model from a given DNA sequence.
+ The rest of the code files in the +EM directory contain the implementation
+ of the E and M steps described in the introduction part of this work.
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+TODOS:
+\end_layout
+
+\begin_layout Subsubsection*
+v TODO: scatter plot, remove stuff that are bounded, like T, add to figure
+ description
+\end_layout
+
+\begin_layout Subsubsection*
+v TODO: center sequences on peak of DNase
+\end_layout
+
+\begin_layout Subsubsection*
+v TODO: in real sequences, give the position with chr 
+\end_layout
+
+\begin_layout Subsubsection*
+v TODO: in real sequences, don't color the section, use lines from start
+ to finish of enhancer
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: recall + precision for each state
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: add sections about the params in great detail
+\end_layout
+
+\begin_layout Subsubsection*
+v TODO: remove sub titles of the background section
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: Add code usage section
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: in results, open with intor paragraph: what can we do now? we will
+ use this to check the data on synthetics and real DNA
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: take new data from Ido, methilated regions as ground truth
+\end_layout
+
+\begin_layout Subsubsection*
+TODO: choose PWM by their expression in tissues, take data sent by TOMMY
+\end_layout
+
 \begin_layout Subsubsection*
 TODO: Violine graph of the posterior of places Viterbi marked as PWMs and
  didnt mark as PWMs.
@@ -9354,10 +9612,6 @@ TODO: Violine graph of the posterior of places Viterbi marked as PWMs and
  of the places marked by the Viterbi on real DNA.
  also, deep tool of the acc.
  and ME3 of these sequences.
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: confusion graph of the states classification of the Viterbi algo.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -9473,10 +9727,6 @@ The body of the work (section 5 above) will include:
  Discussion and summary.
 \end_layout
 
-\begin_layout Part*
-Misc
-\end_layout
-
 \begin_layout Paragraph*
 Pretraining
 \end_layout
@@ -9510,7 +9760,7 @@ The TF inside the nucleus of specific tissues are thought to be a key factor
  cell specific enhancer sequences.
  show heat map of AUC-ROC results.
  Between these TFBS, kmer frequencies varies between enhancers and non regulator
-y
+y 
 \begin_inset Quotes eld
 \end_inset
 

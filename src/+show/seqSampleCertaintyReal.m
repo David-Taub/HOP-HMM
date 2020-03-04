@@ -3,27 +3,29 @@
 function seqSampleCertaintyReal(params, theta, dataset, outpath, tissueEIDs)
     fprintf('Showing real sequences and their epigenomics')
     [N, L] = size(dataset.X);
-    % gamma - N x m x L
-    % psi - N x m x k x L
-    [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
-    % N x m x L
-    posterior = calcPosterior(params, gamma, psi);
-    cMap = lines(params.m);
 
+    cMap = lines(params.m);
 
     seqInd = 1;
     trackNames = {'H3K27ac', 'DNase'};
     % tissues x 2
     bedGraphs = misc.readAllBedGraphs(tissueEIDs, trackNames);
-    YEst = misc.viterbi(params, theta, dataset.X, dataset.pcPWMp);
     for i = 1:20
         [tracks, seqInd] = getSeqWithTracks(dataset, bedGraphs, seqInd + 1);
         if seqInd == -1
             break
         end
+
+        % gamma - 1 x m x L
+        % psi - 1 x m x k x L
+        [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X(seqInd, :), dataset.pcPWMp(seqInd, :, :));
+        % 1 x m x L
+        posterior = calcPosterior(params, gamma, psi);
+        YEst = misc.viterbi(params, theta, dataset.X(seqInd, :), dataset.pcPWMp(seqInd, :, :));
+
         H3K27acTrack = tracks(:, :, 1);
         DNaseTrack = tracks(:, :, 2);
-        outpathI = sprintf('%s.%s.jpg', outpath, i);
+        outpathI = sprintf('%s.%d.jpg', outpath, i);
         figure('units', 'pixels', 'Position', [0 0 1000 1000]);
         % N x L x 2
         PwmVal = params.m + 1;
@@ -31,12 +33,12 @@ function seqSampleCertaintyReal(params, theta, dataset, outpath, tissueEIDs)
         % LOW PLOT
         subplot(3, 1, 3);
         hold on;
-        plotProbabilityMap(params, permute(posterior(seqInd, :, :), [2, 3, 1]), YEst(seqInd, :, :), cMap, ...
+        plotProbabilityMap(params, permute(posterior(1, :, :), [2, 3, 1]), YEst(1, :, :), cMap, ...
                            dataset.starts(seqInd), PwmVal, dataset.chrs{seqInd});
         % LEGEND
         ax = gca;
         ax.YDir = 'normal';
-        legendStrings1 = strcat({'Enhancer Type '}, num2str([1:params.enhancerAmount]'));
+        legendStrings1 = strcat({'Enhancer Type '}, num2str([1:params.m - params.backgroundAmount]'));
         legendStrings2 = strcat({'Background '}, num2str([1:params.backgroundAmount]'));
         legendStrings = {legendStrings1{:}, legendStrings2{:}};
         legendStrings{PwmVal} = 'TFBS';
@@ -70,7 +72,8 @@ function seqSampleCertaintyReal(params, theta, dataset, outpath, tissueEIDs)
         xlim([1, L]);
         ylim([0, max(DNaseTrack(:))]);
         ylabel('-log_{10}(p-value)');
-        saveas(gcf, outpath);
+        saveas(gcf, outpathI);
+        keyboard;
     end
 end
 
@@ -120,7 +123,7 @@ function plotProbabilityMap(params, probMap, YEst, cMap, start, PwmVal, chr)
     % probMap = permute(probMap, [2, 3, 1]);
     L = size(YEst, 2);
     hold on;
-    % if params.m >= size(probMap, 1) >= params.enhancerAmount
+    % if params.m >= size(probMap, 1) >= params.m - params.backgroundAmount
     % m x L
     YEstOneHot = matUtils.vec2mat(YEst(:, :, 1), params.m);
     selectedProb = probMap .* YEstOneHot(1:size(probMap, 1), :);
@@ -144,7 +147,7 @@ function plotProbabilityMap(params, probMap, YEst, cMap, start, PwmVal, chr)
     xlim([start, start + L - 1]);
     ax = gca;
     ax.XAxis.Exponent = 0;
-    xtickformat('%,d');
+    xtickformat('%,d')
 
     YEstColored = YEst;
     YEstColored(:, YEst(:, :, 2) > 0, 1) = PwmVal;

@@ -26,7 +26,7 @@ function main(conf)
     close all;
     params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, ...
                             conf.doESharing, conf.doGTBound, conf.doResampling);
-    mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.startWithBackground, conf.background_g_noise);
+    mergedPeaksMin = misc.genSyntheticMergedPeaksMin(conf.N, conf.L, params, conf.startWithBackground, conf.background_g_noise);
     thetaOrig = mergedPeaksMin.theta;
     [trainDataset, testDataset] = misc.crossValidationSplit(params, mergedPeaksMin, 0.15);
     [thetaEst, ~] = EM.EM(trainDataset, params, conf.maxIters, conf.patience, conf.repeat, false);

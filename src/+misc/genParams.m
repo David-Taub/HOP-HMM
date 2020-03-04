@@ -34,9 +34,9 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
     maxCrossEnhRatio = 1 / 100; % maximal ratio of transition to any another enhancer
     maxCrossBgRatio = 1 / 30; % maximal ratio of transition to any another enhancer
     maxEnhLen = 1000;
-    minEnhLen = 30;
-    maxBgLen = 800;
-    minBgLen = 300;
+    minEnhLen = 400;
+    maxBgLen = 4000;
+    minBgLen = 500;
 
     params.maxEnhMotif = maxEnhMotifRatio / mean(params.lengths);
     % params.minEnhMotifTotal = minEnhMotifRatio / mean(params.lengths);

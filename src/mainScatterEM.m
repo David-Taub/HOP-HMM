@@ -45,12 +45,12 @@ function main(conf)
     dbstop if error
     close all;
     params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, conf.doESharing);
-    mergedPeaksMin = mainGenSequences(conf.N, conf.L, params, conf.startWithBackground);
+    mergedPeaksMin = misc.genSyntheticMergedPeaksMin(conf.N, conf.L, params, conf.startWithBackground);
     thetaOrig = mergedPeaksMin.theta;
     pcPWMp = misc.preComputePWMp(mergedPeaksMin.seqs, params);
     for Xpercent = conf.Xpercents
         subN = floor(conf.N * Xpercent);
-        outpath = sprintf('scatter_m%dk%dp%do%db%dN%dL%d.jpg', conf.m, conf.k, floor(100 * Xpercent), conf.order, conf.doGTBound, subN, conf.L);
+        outpath = sprintf('output/scatter_m%dk%dp%do%db%dN%dL%d.jpg', conf.m, conf.k, floor(100 * Xpercent), conf.order, conf.doGTBound, subN, conf.L);
         subtitle = sprintf('m=%d, k=%d, %d%% of data', conf.m, conf.k, floor(100 * Xpercent));
         dataset.title = subtitle;
         dataset.X = mergedPeaksMin.seqs(1:subN, :);

@@ -1,12 +1,17 @@
-% X - N x L emission variables
-% m - amount of possible states (y)
-% n - amount of possible emissions (x)
-% maxIter - maximal iterations allowed
-% tEpsilon - probability to switch states will not exceed this number (if tEpsilon = 0.01,
-%            and m = 3 then the probability to stay in a state will not be less than 0.98)
-% pcPWMp - N x k x L
-% order - the HMM order of the E matrix
-% initial estimation parameters
+% maxIter - maximal EM iterations allowed without convergence before quitting
+% patience - maximal EM iterations allowed without likelihood improvement before quitting
+% repeat - the amount of repeats with different theta initializations should be done before
+%           returning the best performing theta
+% startTUniform - boolean holding whether the initialization of startT should be randomly uniform over all
+%                 states or randomly uniform over non-enhancer states
+% In dataset:
+%   X - N x L emission variables
+%   pcPWMp - N x k x L
+% In params:
+%   m - amount of possible states (y)
+%   n - amount of possible emissions (x)
+%   order - the HMM order of the E matrix
+%
 function [bestTheta, bestLikelihood, bestThetas] = EM(dataset, params, maxIter, patience, repeat, startTUniform)
 
     [N, L] = size(dataset.X);
@@ -16,7 +21,7 @@ function [bestTheta, bestLikelihood, bestThetas] = EM(dataset, params, maxIter, 
     for rep = 1:repeat
         % X = X(randperm(N), :);
         fprintf('Repeat %d / %d\n', rep, repeat);
-        initTheta = misc.genTheta(params, startTUniform, true);
+        initTheta = misc.genTheta(params, startTUniform, false);
         [iterationLikelihood, theta, thetas] = EMRun(dataset, params, initTheta, maxIter, params.doGTBound, patience);
         if bestLikelihood < iterationLikelihood
             bestLikelihood = iterationLikelihood;

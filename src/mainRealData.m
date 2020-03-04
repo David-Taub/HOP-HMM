@@ -8,7 +8,7 @@ function mainRealData()
     conf.repeat = 5;
     conf.canCrossLayer = true;
     conf.patience = 3;
-    conf.L = 3000;
+    conf.L = 4000;
     conf.peakMaxLength = 1000;
     conf.peakMinL = 200;
     conf.peakMaxL = 1500;
@@ -50,7 +50,7 @@ function main(conf)
 
     show.showTheta(theta);
 
-    outpath = sprintf('real_posterior_m%da%dk%do%db%dN%dL%d.jpg', conf.m, conf.backgroundAmount, ...
+    outpath = sprintf('output/real_posterior_m%da%dk%do%db%dN%dL%d.jpg', conf.m, conf.backgroundAmount, ...
                       conf.k, conf.order, conf.doGTBound, N, conf.L);
     show.seqSampleCertaintyReal(params, theta, train, outpath, mergedPeaksMin.tissueEIDs);
 

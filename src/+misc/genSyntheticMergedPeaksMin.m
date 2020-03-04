@@ -1,7 +1,5 @@
 
-% mainGenSequences(300, 10000, 5, 25, true);
-% mainGenSequences(10000, 500, 5, 25, false);
-function mergedPeaksMin = mainGenSequences(N, L, params, startWithBackground, backgroundGNoise)
+function mergedPeaksMin = genSyntheticMergedPeaksMin(N, L, params, startWithBackground, backgroundGNoise)
     dbstop if error
     clear pcPWMp
     close all;
