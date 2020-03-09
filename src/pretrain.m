@@ -14,7 +14,7 @@ function pretrain(mergedPeaksMin, k, tissueList, backgroundIndex)
     for i = 1:length(tissueList)
         fprintf('Pre training tissue %d vs background\n', tissueList(i))
         dataset = preprocess(params, mergedPeaksMin, tissueList(i), backgroundIndex);
-        [theta, ~] = EM.EM(dataset, params, maxIters, doESharing, true);
+        [theta, ~] = EM.EM(dataset, params, maxIters, doESharing);
         show.showTheta(theta);
         totalTheta.E(i, :) = theta.E(1, :);
         totalTheta.G(i, :) = theta.G(1, :);

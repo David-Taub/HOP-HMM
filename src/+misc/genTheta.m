@@ -1,4 +1,4 @@
-function [theta] = genTheta(params, startTUniform, totalRandom)
+function theta = genTheta(params, startTUniform, totalRandom)
     % normalized random probabilities
     if startTUniform || params.backgroundAmount == 0
         theta.startT = log(ones(params.m, 1) ./ params.m);
@@ -15,19 +15,16 @@ function [theta] = genTheta(params, startTUniform, totalRandom)
         theta.T = log(theta.T);
         theta.G = log(theta.G);
     else
-        s = sum(params.minT, 2) + sum(params.minG, 2);
-        Ta = (params.maxT - params.minT) .* rand(params.m, params.m);
-        Ga = (params.maxG - params.minG) .* rand(params.m, params.k);
-        Ga = (params.maxEnhMotif .* (Ga + params.minG) ./ repmat(sum(Ga + params.minG, 2), [1, params.k])) - params.minG;
-        Ta = (1 - s) .* Ta ./ repmat((sum(Ta, 2) + sum(Ga, 2)), [1, params.m]);
-        Ga = (1 - s) .* Ga ./ repmat((sum(Ta, 2) + sum(Ga, 2)), [1, params.k]);
-        theta.T = log(params.minT + Ta);
-        theta.G = log(params.minG + Ga);
+        theta.T = (params.maxT - params.minT) .* rand(params.m, params.m) + params.minT;
+        theta.G = (params.maxG - params.minG) .* rand(params.m, params.k) + params.minG;
+
     end
 
     % m x n
     theta.E = rand([params.m, ones(1, params.order) .* params.n]);
     theta.E = log(bsxfun(@times, theta.E, 1 ./ sum(theta.E, params.order + 1)));
+
+    theta = EM.GTbound3(params, theta);
 
     PRETRAINED_THETA_PATH = '../data/precomputation/pretrainedTheta.mat';
     if exist(PRETRAINED_THETA_PATH, 'file') == 2

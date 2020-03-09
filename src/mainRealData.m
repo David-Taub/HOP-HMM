@@ -4,27 +4,27 @@ function mainRealData()
     conf.startWithBackground = false;
     conf.doEnhSpecific = true;
     conf.seqsPerTissue = 1000;
-    conf.maxIters = 25;
-    conf.repeat = 5;
+    conf.maxIters = 40;
+    conf.repeat = 6;
     conf.canCrossLayer = true;
-    conf.patience = 3;
-    conf.L = 4000;
+    conf.patience = 5;
+    conf.L = 2000;
     conf.peakMaxLength = 1000;
     conf.peakMinL = 200;
     conf.peakMaxL = 1500;
     conf.withExponent = false;
     conf.order = 3;
     conf.m = 3;
-    conf.k = 100;
+    conf.k = 60;
     conf.withBackground = true;
     conf.withGenes = false;
-    conf.minSamplesCount = 10;
+    conf.minSamplesCount = 5;
     conf.sequencesToShow = 5;
     conf.backgroundAmount = 1;
     conf.doESharing = false;
     conf.doGTBound = true;
-    conf.doResampling = true;
-    conf.topPercent = 0.5;
+    conf.doResampling = false;
+    conf.topPercent = 0.8;
     % conf.tissueList = [2, 37];
     % conf.tissueList = [3, 23];
     conf.tissueList = [2, 18];
@@ -43,10 +43,10 @@ function main(conf)
     testTrainRatio = 0.01;
     selectedPWMs = misc.PWMsFeatureSelect(mergedPeaksMin, conf.k);
     params = misc.genParams(conf.m, selectedPWMs, conf.backgroundAmount, conf.L, conf.order, ...
-                            conf.doESharing, conf.doGTBound, conf.doResampling);
+                            conf.doESharing, conf.doGTBound);
     [test, train] = misc.crossValidationSplit(params, mergedPeaksMin, testTrainRatio);
 
-    [theta, ~] = EM.EM(train, params, conf.maxIters, conf.patience, conf.repeat, conf.startTUniform);
+    [theta, ~] = EM.EM(train, params, conf.maxIters, conf.patience, conf.repeat);
 
     show.showTheta(theta);
 

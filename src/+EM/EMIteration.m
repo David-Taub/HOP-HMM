@@ -5,12 +5,12 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
         dataset.XIndicesHotMap = misc.genXInidcesHotMap(params, dataset);
     end
     % the bigger this number is, the more time a batch takes
-    % EXPECTED_COMPUTATION_IN_BATCH = 50000; % 3k variables a second
-    % EXPECTED_COMPUTATION_IN_BATCH = 100000; % 5k variables a second
-    EXPECTED_COMPUTATION_IN_BATCH = 150000; % 6.5k variables a second
-    % EXPECTED_COMPUTATION_IN_BATCH = 200000; % 6k variables a second
-    % EXPECTED_COMPUTATION_IN_BATCH = 500000; % 5k variables a second
-    % EXPECTED_COMPUTATION_IN_BATCH = 1000000; % 5k variables a second
+    % EXPECTED_COMPUTATION_IN_BATCH = 50000;
+    % EXPECTED_COMPUTATION_IN_BATCH = 100000;
+    EXPECTED_COMPUTATION_IN_BATCH = 150000; % 40k vars a second
+    % EXPECTED_COMPUTATION_IN_BATCH = 200000;
+    % EXPECTED_COMPUTATION_IN_BATCH = 500000;
+    % EXPECTED_COMPUTATION_IN_BATCH = 1000000;
     batchSize = min(N, ceil(EXPECTED_COMPUTATION_IN_BATCH / L));
     batchAmount = floor(N / batchSize);
     assert(batchAmount > 0)
@@ -55,8 +55,8 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
         assert(not(any(isnan(batchesTheta.E(:)))));
         assert(not(any(isnan(batchesTheta.G(:)))));
         batchTime = toc();
-        fprintf('batch took %.2f seconds, %.2f variables a second. ETA: %s\n', batchTime, L * batchSize / batchTime, ...
-                datestr(seconds(batchTime * currentBatchIndex),'HH:MM:SS'));
+        eta = datestr(seconds(batchTime * (batchAmount - currentBatchIndex)),'HH:MM:SS');
+        fprintf('batch took %.2f seconds, %.2f variables a second. ETA: %s\n', batchTime, L * batchSize / batchTime, eta);
     end
     % geometric average is more stable than regular mean for very small likelihood values
     iterLike = batchesLikelihood / N;
@@ -66,7 +66,7 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
     theta.startT = log(exp(inputTheta.startT) .* (1 - params.learningRate) + params.learningRate .* batchesTheta.startT / batchAmount);
     % theta.startT = inputTheta.startT;
     if doGTBound
-        [theta.G, theta.T, theta.startT] = EM.GTbound3(params, exp(theta.G), exp(theta.T), exp(theta.startT));
+        theta = EM.GTbound3(params, theta);
     end
     if params.doResampling
         [theta.E, theta.G, theta.T] = EM.resampleEG(params, theta.E, theta.G, theta.T);

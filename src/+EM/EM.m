@@ -2,8 +2,6 @@
 % patience - maximal EM iterations allowed without likelihood improvement before quitting
 % repeat - the amount of repeats with different theta initializations should be done before
 %           returning the best performing theta
-% startTUniform - boolean holding whether the initialization of startT should be randomly uniform over all
-%                 states or randomly uniform over non-enhancer states
 % In dataset:
 %   X - N x L emission variables
 %   pcPWMp - N x k x L
@@ -12,7 +10,7 @@
 %   n - amount of possible emissions (x)
 %   order - the HMM order of the E matrix
 %
-function [bestTheta, bestLikelihood, bestThetas] = EM(dataset, params, maxIter, patience, repeat, startTUniform)
+function [bestTheta, bestLikelihood, bestThetas] = EM(dataset, params, maxIter, patience, repeat)
 
     [N, L] = size(dataset.X);
     fprintf('Starting EM algorithm on %d x %d\n', N, L);
@@ -21,7 +19,7 @@ function [bestTheta, bestLikelihood, bestThetas] = EM(dataset, params, maxIter, 
     for rep = 1:repeat
         % X = X(randperm(N), :);
         fprintf('Repeat %d / %d\n', rep, repeat);
-        initTheta = misc.genTheta(params, startTUniform, false);
+        initTheta = misc.genTheta(params, false, false);
         [iterationLikelihood, theta, thetas] = EMRun(dataset, params, initTheta, maxIter, params.doGTBound, patience);
         if bestLikelihood < iterationLikelihood
             bestLikelihood = iterationLikelihood;
@@ -54,6 +52,7 @@ function [iterationLikelihood, theta, thetas] = EMRun(dataset, params, initTheta
 
         if iterationIndex > patience && iterationLikelihood < iterLikes(iterationIndex - patience)
             fprintf('Patience reached, Converged\n');
+            keyboard
             break
         end
         iterLikes(iterationIndex) = iterationLikelihood;

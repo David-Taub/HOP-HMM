@@ -1,16 +1,20 @@
+% Xs1H - N x L x n
+% Y - N x L
+% PWM - k x n x J
+% PWM - 1 x J
 % aucRocs  - m x k
-function aucRocs = oneVsAllAucRoc(X, Y, PWMs, lengths)
-    EXPECTED_NUM_OF_PEAKS_IN_SEQ = 2;
-    n = 4;
+function aucRocs = oneVsAllAucRoc(Xs1H, Y, PWMs, lengths)
+    EXPECTED_NUM_OF_PEAKS_IN_SEQ = 3;
+    [k, n, J] = size(PWMs);
     m = max(Y(:));
-    k = size(PWMs, 1);
     aucRocs = zeros(m, k);
-    Xs1H = matUtils.mat23Dmat(X, n);
+    % N x L x n
     for pwmId = 1:k
+        % N x L
         PWMLogLike = misc.PWMLogLikelihood(PWMs, lengths, Xs1H, pwmId);
         for tissueID = 1:m
             tissueMask = Y(:, 1) == tissueID;
-            % N x L
+            % mask x EXPECTED_NUM_OF_PEAKS_IN_SEQ
             pos = misc.maxN(PWMLogLike(tissueMask, :), 2, EXPECTED_NUM_OF_PEAKS_IN_SEQ);
             neg = misc.maxN(PWMLogLike(~tissueMask, :), 2, EXPECTED_NUM_OF_PEAKS_IN_SEQ);
             aucRocs(tissueID, pwmId) = matUtils.getAucRoc(pos(:), neg(:), false, true);

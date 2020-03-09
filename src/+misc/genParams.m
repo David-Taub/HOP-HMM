@@ -1,8 +1,7 @@
 % m - number of base states in the model
 % k - number of sub states each base state has in the model
 % backgroundAmount - number of background states
-function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBound,...
-                            doResampling)
+function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBound)
     params.doESharing = doESharing;
     params.m = m;
     if length(k) > 1
@@ -22,7 +21,20 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
     params.learningRate = 1;
 
     params.doGTBound = doGTBound;
-    params.doResampling = doResampling;
+    params.doResampling = false;
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % real sequences
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    params.topPercent = 0.8;
+    params.doEnhSpecific = true;
+    params.withBackground = true;
+    params.withGenes = false;
+    params.seqsPerTissue = 1000;
+    params.peakMinL = 100;
+    params.peakMaxL = 1500;
+    params.tissueList = [2, 18];
+    params.minSamplesCount = 5;
 
     params.batchSize = 100;
     [kMax, params.n, params.J] = size(params.PWMs);
@@ -33,10 +45,10 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
     % minEnhMotifRatio = 1 / 15; % minimal ratio of a single motif letters in enhancer section
     maxCrossEnhRatio = 1 / 100; % maximal ratio of transition to any another enhancer
     maxCrossBgRatio = 1 / 30; % maximal ratio of transition to any another enhancer
-    maxEnhLen = 1000;
-    minEnhLen = 400;
-    maxBgLen = 4000;
-    minBgLen = 500;
+    maxEnhLen = 700;
+    minEnhLen = 150;
+    maxBgLen = 1500;
+    minBgLen = 800;
 
     params.maxEnhMotif = maxEnhMotifRatio / mean(params.lengths);
     % params.minEnhMotifTotal = minEnhMotifRatio / mean(params.lengths);

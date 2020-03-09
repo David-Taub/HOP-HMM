@@ -2,20 +2,14 @@
 % G - m x k
 % T - m x m
 
-function [G, T, startT] = GTbound3(params, G, T, startT)
-
-    params.minT
-    T
+function theta = GTbound3(params, theta)
 
     for i = 1:10
-        [G, T, startT] = GTbound4(params, G, T, startT);
+        [G, T, startT] = GTbound4(params, exp(theta.G), exp(theta.T), exp(theta.startT));
     end
-    T
-    params.maxT
-    G = log(G);
-    T = log(T);
-    startT = log(startT);
-
+    theta.T = log(T);
+    theta.G = log(G);
+    theta.startT = log(startT);
 end
 
 function [G, T, startT] = GTbound4(params, G, T, startT)
@@ -23,7 +17,6 @@ function [G, T, startT] = GTbound4(params, G, T, startT)
     if params.m == 1
         return;
     end
-    assert(all(abs(sum(G, 2) + sum(T, 2) - 1) < EPS, 1))
     originG = G;
     originT = T;
     originStartT = startT;

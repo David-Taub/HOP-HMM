@@ -10,17 +10,24 @@ function seqSampleCertaintyReal(params, theta, dataset, outpath, tissueEIDs)
     trackNames = {'H3K27ac', 'DNase'};
     % tissues x 2
     bedGraphs = misc.readAllBedGraphs(tissueEIDs, trackNames);
-    for i = 1:20
-        [tracks, seqInd] = getSeqWithTracks(dataset, bedGraphs, seqInd + 1);
-        if seqInd == -1
-            break
+    for i = 1:40
+        if mod(i,2) == 1
+            [tracks, seqInd] = getSeqWithTracks(dataset, bedGraphs, seqInd + 1);
+            if seqInd == -1
+                break
+            end
+
+            % gamma - 1 x m x L
+            % psi - 1 x m x k x L
+            [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X(seqInd, :), dataset.pcPWMp(seqInd, :, :));
+            % 1 x m x L
+            posterior = calcPosterior(params, gamma, psi);
+        else
+            tmp = posterior(1, 1, :);
+            posterior(1, 2, :) = tmp;
+            posterior(1, 1, :) = posterior(1, 2, :);
         end
 
-        % gamma - 1 x m x L
-        % psi - 1 x m x k x L
-        [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X(seqInd, :), dataset.pcPWMp(seqInd, :, :));
-        % 1 x m x L
-        posterior = calcPosterior(params, gamma, psi);
         YEst = misc.viterbi(params, theta, dataset.X(seqInd, :), dataset.pcPWMp(seqInd, :, :));
 
         H3K27acTrack = tracks(:, :, 1);
@@ -73,8 +80,16 @@ function seqSampleCertaintyReal(params, theta, dataset, outpath, tissueEIDs)
         ylim([0, max(DNaseTrack(:))]);
         ylabel('-log_{10}(p-value)');
         saveas(gcf, outpathI);
-        keyboard;
     end
+
+    % deeptools
+    [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, dataset.X, dataset.pcPWMp);
+    % N x m x L
+    posterior = calcPosterior(params, gamma, psi);
+    isEnhancer = max(posterior(:, 1:2, :), 2);
+    figure
+    imagesc(isEnhancer);
+    keyboard;
 end
 
 % tracks - tissues x L x tracks
@@ -206,3 +221,4 @@ function ret = getTrack(bedGraph, trackChr, trackFrom, trackTo)
     ret = interp1(knownPoints, knownVals, wantedPoints);
 end
 
+    

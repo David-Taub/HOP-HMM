@@ -34,13 +34,13 @@ function [likelihood, rmse] = main(conf)
     j = 1;
     dbstop if error
     close all;
-    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, conf.doESharing, conf.doGTBound, conf.doResampling);
+    params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, conf.doESharing, conf.doGTBound);
     mergedPeaksMin = misc.genSyntheticMergedPeaksMin(conf.N, conf.L, params, conf.startWithBackground, conf.background_g_noise);
     thetaOrig = mergedPeaksMin.theta;
     [trainDataset, testDataset] = misc.crossValidationSplit(params, mergedPeaksMin, 0.15);
 
     for j = 1:conf.repeat
-        [~, ~, thetaEsts] = EM.EM(trainDataset, params, conf.maxIters, conf.patience, 1, conf.startTUniform)
+        [~, ~, thetaEsts] = EM.EM(trainDataset, params, conf.maxIters, conf.patience, 1)
         distMat = pdist2(exp(misc.thetaToMat(params, thetaOrig, false)), ...
                          exp(misc.thetaToMat(params, thetaEsts(end), false)))
         perm = misc.munkres(distMat)';

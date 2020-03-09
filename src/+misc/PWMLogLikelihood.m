@@ -1,3 +1,4 @@
+% res - N x L
 function res = PWMLogLikelihood(PWMs, lengths, Xs1H, pwmId)
     res = PWMLogLikelihoodFor(PWMs, lengths, Xs1H, pwmId);
     % res = PWMLogLikelihoodConv(PWMs, lengths, Xs1H, pwmId)

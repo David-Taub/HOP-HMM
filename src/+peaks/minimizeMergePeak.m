@@ -23,10 +23,13 @@ function mergedPeaksMin = minimizeMergePeak(topPercent, doEnhSpecific, withBackg
     % the merging of the peaks result in longer peaks (unless they are in the exact same location)
     mergedPeaksMin.seqs = extractSeqs(mergedPeaks, L);
     mergedPeaksMin.samplesCount = zeros(size(mergedPeaksMin.seqs, 1), 1);
+
     mergedPeaksMin = removeLowHeight(mergedPeaksMin, topPercent);
     fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
+
     mergedPeaksMin = removeNonLetters(mergedPeaksMin);
     fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
+
     if (peakMaxL > 0) & (peakMinL > 0)
         mergedPeaksMin = removeByLength(mergedPeaksMin, peakMinL, peakMaxL)
         fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));

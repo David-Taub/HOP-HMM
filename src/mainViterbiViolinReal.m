@@ -41,9 +41,9 @@ function main(conf)
     testTrainRatio = 0.01;
     selectedPWMs = misc.PWMsFeatureSelect(mergedPeaksMin, conf.k);
     params = misc.genParams(conf.m, selectedPWMs, conf.backgroundAmount, conf.L, conf.order, ...
-                            conf.doESharing, conf.doGTBound, conf.doResampling);
+                            conf.doESharing, conf.doGTBound);
     [test, train] = misc.crossValidationSplit(params, mergedPeaksMin, testTrainRatio);
-    [thetaEst, ~] = EM.EM(train, params, conf.maxIters, conf.patience, conf.repeat, conf.startTUniform);
+    [thetaEst, ~] = EM.EM(train, params, conf.maxIters, conf.patience, conf.repeat);
     % N x L x 2
     plotViolins(params, thetaEst, train, mergedPeaksMin.tissueEIDs)
 end

@@ -25,11 +25,11 @@ function main(conf)
     dbstop if error
     close all;
     params = misc.genParams(conf.m, conf.k, conf.backgroundAmount, conf.L, conf.order, ...
-                            conf.doESharing, conf.doGTBound, conf.doResampling);
+                            conf.doESharing, conf.doGTBound);
     mergedPeaksMin = misc.genSyntheticMergedPeaksMin(conf.N, conf.L, params, conf.startWithBackground, conf.background_g_noise);
     thetaOrig = mergedPeaksMin.theta;
     [trainDataset, testDataset] = misc.crossValidationSplit(params, mergedPeaksMin, 0.15);
-    [thetaEst, ~] = EM.EM(trainDataset, params, conf.maxIters, conf.patience, conf.repeat, false);
+    [thetaEst, ~] = EM.EM(trainDataset, params, conf.maxIters, conf.patience, conf.repeat);
 
     thetaEst = misc.permThetaByAnother(params, thetaOrig, thetaEst);
     outpath = sprintf('seqSample_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doGTBound, conf.N, conf.L);
