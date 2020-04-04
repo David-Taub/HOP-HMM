@@ -18,6 +18,7 @@ function [mergedPeaks, tissueEIDs, backgroundInd, genesInd] = mergePeakFiles(wit
     fprintf('Does not exist, calculating...\n');
 
     matFiles = peaks.beds2mats(L);
+    % matFiles = peaks.beds2matsChromHMM(L);
     fprintf('Reading mat files...\n');
     [unmergedPeaks, tissueEIDs, backgroundInd, genesInd] = readMatFiles(withBackground, withGenes, matFiles);
     fprintf('Merging...\n');

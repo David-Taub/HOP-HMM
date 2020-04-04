@@ -94,15 +94,10 @@ end
 function errors = rateTheta(params, thetaOrig, thetaEst, dataset)
     YEst = misc.viterbi(params, thetaEst, dataset.X, dataset.pcPWMp);
     [errors.totalError, errors.PWMError, errors.layerError] = calcYEstError(params, dataset, YEst);
-    errors.rmse = calcThetaError(params, thetaOrig, thetaEst);
+    errors.rmse = misc.calcThetaError(params, thetaOrig, thetaEst);
 end
 
 
-function rmse = calcThetaError(params, thetaOrig, thetaEst)
-    thetaOrigMat = misc.thetaToMat(params, thetaOrig, false);
-    thetaEstMat = misc.thetaToMat(params, thetaEst, false);
-    rmse = sqrt(mean((exp(thetaOrigMat(:)) - exp(thetaEstMat(:))) .^ 2, 1));
-end
 
 
 function [totalError, PWMError, layerError] = calcYEstError(params, dataset, YEst)

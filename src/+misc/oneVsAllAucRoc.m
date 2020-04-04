@@ -1,7 +1,7 @@
 % Xs1H - N x L x n
-% Y - N x L
-% PWM - k x n x J
-% PWM - 1 x J
+% Y - N x 1
+% PWMs - k x n x J
+% lengths - 1 x J
 % aucRocs  - m x k
 function aucRocs = oneVsAllAucRoc(Xs1H, Y, PWMs, lengths)
     EXPECTED_NUM_OF_PEAKS_IN_SEQ = 3;

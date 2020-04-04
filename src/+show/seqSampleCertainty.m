@@ -117,9 +117,8 @@ function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
     legendStrings{pwmVal} = 'TFBS';
     legend(legendStrings);
     saveas(gcf, outpath);
-    keyboard
-
 end
+
 
 function rotateYLabel()
     ylh = get(gca,'ylabel');

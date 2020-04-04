@@ -32,9 +32,6 @@ function Y = viterbi(params, theta, X, pcPWMp)
             [maxBaseStep, maxBaseStepInds] = max(baseSteps, [], 1);
             baseMask = O1(:, t+params.J) <= maxBaseStep';
 
-            % if baseMask(1) == 0
-            %     keyboard
-            % end
             O2(baseMask, t, 2) = 0;
             O2(baseMask, t, 1) = maxBaseStepInds(baseMask);
             O1(baseMask, t + params.J) = maxBaseStep(baseMask);

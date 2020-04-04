@@ -6,7 +6,6 @@ function [auc, wasSwitched, thresh] = getAucRoc(pos, neg, shouldPlot, shouldSwit
         fprintf('Warning empty input. pos size %d, neg size %d', length(pos), length(neg))
         auc = 0;
         wasSwitched = false;
-        keyboard
         return;
     end
     scores = [pos;neg];

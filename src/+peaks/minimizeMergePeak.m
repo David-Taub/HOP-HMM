@@ -24,30 +24,37 @@ function mergedPeaksMin = minimizeMergePeak(topPercent, doEnhSpecific, withBackg
     mergedPeaksMin.seqs = extractSeqs(mergedPeaks, L);
     mergedPeaksMin.samplesCount = zeros(size(mergedPeaksMin.seqs, 1), 1);
 
-    mergedPeaksMin = removeLowHeight(mergedPeaksMin, topPercent);
-    fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
-
-    mergedPeaksMin = removeNonLetters(mergedPeaksMin);
-    fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
-
-    if (peakMaxL > 0) & (peakMinL > 0)
-        mergedPeaksMin = removeByLength(mergedPeaksMin, peakMinL, peakMaxL)
-        fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
-    end
     if doEnhSpecific
         mergedPeaksMin = removeNonSpecific(mergedPeaksMin);
         fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
     end
+
     if length(tissueList) > 1 | withBackground | withGenes
+        fprintf('tissue list\n');
         mergedPeaksMin = removeByTissueList(mergedPeaksMin, tissueList);
         fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
     end
-    mergedPeaksMin = removeBySampleCount(mergedPeaksMin, minSamplesCount);
+
+    fprintf('non letters\n');
+    mergedPeaksMin = removeNonLetters(mergedPeaksMin);
     fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
-    if seqsPerTissue > 0
-        mergedPeaksMin = balanceOverlaps(mergedPeaksMin, seqsPerTissue);
+
+    if (peakMaxL > 0) & (peakMinL > 0)
+        fprintf('peak length\n');
+        mergedPeaksMin = removeByLength(mergedPeaksMin, peakMinL, peakMaxL);
         fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
     end
+
+    fprintf('height\n');
+    mergedPeaksMin = removeLowHeight(mergedPeaksMin, topPercent);
+    fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
+
+    % mergedPeaksMin = removeBySampleCount(mergedPeaksMin, minSamplesCount);
+    % fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
+    % if seqsPerTissue > 0
+    %     mergedPeaksMin = balanceOverlaps(mergedPeaksMin, seqsPerTissue);
+    %     fprintf('Seqs %d tissues [%s]\n', size(mergedPeaksMin.overlaps, 1), sprintf('%d ', sum(mergedPeaksMin.overlaps > 0, 1)));
+    % end
     % outFilepath = '../data/peaks/mergedPeaksMinimized.mat';
     save(minimizedMergedFilePath, '-v7.3', 'mergedPeaksMin');
     fprintf('Saved peaks in %s\n', minimizedMergedFilePath);
@@ -56,7 +63,6 @@ end
 
 
 function mergedPeaksMin = removeByTissueList(mergedPeaksMin, tissueList);
-    fprintf('tissue list\n');
     if mergedPeaksMin.backgroundInd > 0
         tissueList = [tissueList, mergedPeaksMin.backgroundInd];
     end
@@ -74,7 +80,8 @@ end
 
 function mergedPeaksMin = removeNonSpecific(mergedPeaksMin)
     fprintf('enhancer specific\n');
-    mask = sum(mergedPeaksMin.overlaps > 0, 2) == 1;
+    % mask = sum(mergedPeaksMin.overlaps > 0, 2) == 1;
+    mask = sum(mergedPeaksMin.overlaps > 0, 2) <= 2;
     mergedPeaksMin = reduceData(mask, mergedPeaksMin);
 end
 
@@ -94,7 +101,6 @@ end
 
 
 function mergedPeaksMin = removeByLength(mergedPeaksMin, peakMinL, peakMaxL)
-    fprintf('peak length\n');
     mask = peakMinL < mergedPeaksMin.peakLengths < peakMaxL;
     mergedPeaksMin = reduceData(mask, mergedPeaksMin);
 end
@@ -115,7 +121,6 @@ end
 
 
 function mergedPeaksMin = removeNonLetters(mergedPeaksMin)
-    fprintf('non letters\n');
     mask = max(mergedPeaksMin.seqs, [], 2) <= 4;
     mergedPeaksMin = reduceData(mask, mergedPeaksMin);
 end
@@ -123,16 +128,15 @@ end
 
 % remove sequences with peaks values that are not inside the top percentage in any tissue
 function mergedPeaksMin = removeLowHeight(mergedPeaksMin, topPercent)
-    fprintf('height\n');
     numerOfTissues = size(mergedPeaksMin.overlaps, 2);
     % remove low peaks
     mask = false(length(mergedPeaksMin.seqs), 1);
     for i = 1:numerOfTissues
         [vals, ind] = sort(mergedPeaksMin.overlaps(:, i), 'descend');
-        amountToKeep = round(sum(mergedPeaksMin.overlaps(:, i) > 0) * topPercent);
+        amountToKeep = round(sum(mergedPeaksMin.overlaps(:, i) > 0, 1) * topPercent);
         if vals(1) == vals(end)
             % not an enhancer height peak, either background or gene peak
-            amountToKeep = sum(mergedPeaksMin.overlaps(:, i) > 0);
+            amountToKeep = sum(mergedPeaksMin.overlaps(:, i) > 0, 1);
         end
         mask(ind(1:amountToKeep)) = true;
     end

@@ -10,49 +10,60 @@
 %   n - amount of possible emissions (x)
 %   order - the HMM order of the E matrix
 %
-function [bestTheta, bestLikelihood, bestThetas] = EM(dataset, params, maxIter, patience, repeat)
+function [bestTheta, bestLikelihood, bestThetas] = EM(dataset, params, maxIter, patience, repeats, initE, initG)
 
     [N, L] = size(dataset.X);
     fprintf('Starting EM algorithm on %d x %d\n', N, L);
     bestLikelihood = -Inf;
-    % figure
-    for rep = 1:repeat
-        % X = X(randperm(N), :);
-        fprintf('Repeat %d / %d\n', rep, repeat);
+    thetasToPlot = [];
+    for repeatIndex = 1:repeats
+        fprintf('Repeats: %d / %d\n', repeatIndex, repeats);
         initTheta = misc.genTheta(params, false, false);
-        [iterationLikelihood, theta, thetas] = EMRun(dataset, params, initTheta, maxIter, params.doGTBound, patience);
+        if nargin == 6
+            initTheta.E(:, :) = initE(:, :);
+            initTheta.G(:, :) = initG(:, :);
+        end
+        [iterationLikelihood, theta, thetas] = EMRun(dataset, params, initTheta, ...
+            maxIter, params.doGTBound, patience, repeats - repeatIndex);
         if bestLikelihood < iterationLikelihood
             bestLikelihood = iterationLikelihood;
             bestTheta = theta;
             bestThetas = thetas;
         end
+        for i = 1:length(thetas)
+            thetasToPlot = cat(1, thetasToPlot, misc.thetaToMat(params, thetas(i), true));
+        end
     end
+    % mapcaplot(thetasToPlot);
 end
 
 
 
 % iterates the EM algorithm, returns the likelihood of the best iteration, and theta parameters at that iteration
-function [iterationLikelihood, theta, thetas] = EMRun(dataset, params, initTheta, maxIter, doGTBound, patience)
-    LIKELIHOOD_THRESHOLD = 10 ^ -6;
+function [iterationLikelihood, theta, thetas] = EMRun(dataset, params, initTheta, maxIter, ...
+    doGTBound, patience, repeatsLeft)
+    LIKELIHOOD_CONVERGE_THRESHOLD = 10 ^ -4;
     thetas(1) = initTheta;
     iterLikes = -inf(maxIter, 1);
 
     for iterationIndex = 1:maxIter
-        fprintf('EM iteration %d / %d\n', iterationIndex, maxIter);
-        tic;
-        [thetas(iterationIndex + 1), iterationLikelihood] = EM.EMIteration(params, dataset, thetas(iterationIndex), doGTBound);
+        t = tic();
+        [thetas(iterationIndex + 1), iterationLikelihood] = EM.EMIteration(params, dataset, ...
+            thetas(iterationIndex), doGTBound - iterationIndex);
         motifsPer = sum(exp(thetas(iterationIndex + 1).G(:)), 1) .* 100;
-        timeLapse = toc();
-        fprintf('iterationIndex %d: log-like: %.2f Time: %.2fs, motifs: ~%.2f%%\n', iterationIndex, iterationLikelihood, timeLapse, motifsPer);
+        timeLapse = toc(t);
+        thetaDiff = misc.calcThetaError(params, thetas(iterationIndex + 1), thetas(iterationIndex));
+        eta = datestr(seconds(timeLapse * (maxIter * (repeatsLeft + 1) - iterationIndex)),'HH:MM:SS');
+        fprintf('Iteration %d / %d, distance: %.2f, log-like: %.2f, motifs: %.2f%%, ETA: %s\n', ...
+            iterationIndex, maxIter, thetaDiff, iterationLikelihood, motifsPer, eta);
         if iterationIndex > patience && iterationIndex > 1 && ...
-            abs((iterationLikelihood - iterLikes(iterationIndex - 1)) / iterationLikelihood) < LIKELIHOOD_THRESHOLD
+            abs((iterationLikelihood - iterLikes(iterationIndex - 1)) / iterationLikelihood) < LIKELIHOOD_CONVERGE_THRESHOLD
             fprintf('Converged\n');
             break
         end
 
         if iterationIndex > patience && iterationLikelihood < iterLikes(iterationIndex - patience)
             fprintf('Patience reached, Converged\n');
-            keyboard
             break
         end
         iterLikes(iterationIndex) = iterationLikelihood;

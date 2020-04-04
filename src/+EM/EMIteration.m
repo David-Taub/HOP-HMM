@@ -1,15 +1,11 @@
 function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
     [N, L] = size(dataset.X);
-    if ~isfield(dataset, 'XIndicesHotMap')
-        % N x L - order + 1
-        dataset.XIndicesHotMap = misc.genXInidcesHotMap(params, dataset);
-    end
     % the bigger this number is, the more time a batch takes
     % EXPECTED_COMPUTATION_IN_BATCH = 50000;
     % EXPECTED_COMPUTATION_IN_BATCH = 100000;
-    EXPECTED_COMPUTATION_IN_BATCH = 150000; % 40k vars a second
+    % EXPECTED_COMPUTATION_IN_BATCH = 150000; % 20-40k vars a second
     % EXPECTED_COMPUTATION_IN_BATCH = 200000;
-    % EXPECTED_COMPUTATION_IN_BATCH = 500000;
+    EXPECTED_COMPUTATION_IN_BATCH = 500000; % 23k vars a second
     % EXPECTED_COMPUTATION_IN_BATCH = 1000000;
     batchSize = min(N, ceil(EXPECTED_COMPUTATION_IN_BATCH / L));
     batchAmount = floor(N / batchSize);
@@ -21,13 +17,14 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
     batchesTheta.startT = zeros(params.m, 1);;
     batchesLikelihood = 0;
     for currentBatchIndex = 1:batchAmount
-        tic
+        t = tic();
         % N x m x k+m x L
         batchMask = mod(1:N, batchAmount) == currentBatchIndex - 1;
-        fprintf('Batch %d / %d [%d / %d] \n', currentBatchIndex, batchAmount, sum(batchMask, 2), N);
+        fprintf('Batch %d / %d [%d / %d] ', currentBatchIndex, batchAmount, sum(batchMask, 2), N);
         XBatch = dataset.X(batchMask, :);
         pcPWMpBatch = dataset.pcPWMp(batchMask, :, :);
-        XIndicesHotMapBatch = dataset.XIndicesHotMap(batchMask, :, :);
+                % N x L - order + 1
+        XIndicesHotMapBatch = misc.genXInidcesHotMap(params, dataset.X(batchMask, :));
 
         % alpha - N x m x L
         % beta - N x m x L
@@ -40,7 +37,7 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
         assert(not(any(isnan(E(:)))));
         if params.doESharing
             % theta.E = log(repmat(mean(exp(theta.E), 1), [params.n, ones(1, params.order)]));
-            E(1:end - params.backgroundAmount, :) = repmat(log(mean(exp(E(1:end - params.backgroundAmount, :)), 1)), [params.n - params.backgroundAmount, 1]);
+            E(:, :) = repmat(log(mean(exp(E(:, :)), 1)), [params.m, 1]);
         end
         fprintf('. ');
         startT = updateStartT(gamma);
@@ -54,9 +51,8 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
         assert(not(any(isnan(batchesTheta.T(:)))));
         assert(not(any(isnan(batchesTheta.E(:)))));
         assert(not(any(isnan(batchesTheta.G(:)))));
-        batchTime = toc();
-        eta = datestr(seconds(batchTime * (batchAmount - currentBatchIndex)),'HH:MM:SS');
-        fprintf('batch took %.2f seconds, %.2f variables a second. ETA: %s\n', batchTime, L * batchSize / batchTime, eta);
+        batchTime = toc(t);
+        fprintf('[%.2f secs, %.2f vars/sec]\n', batchTime, L * batchSize / batchTime);
     end
     % geometric average is more stable than regular mean for very small likelihood values
     iterLike = batchesLikelihood / N;
@@ -65,7 +61,7 @@ function [theta, iterLike] = EMIteration(params, dataset, inputTheta, doGTBound)
     theta.G = log(exp(inputTheta.G) .* (1 - params.learningRate) + params.learningRate .* batchesTheta.G / batchAmount);
     theta.startT = log(exp(inputTheta.startT) .* (1 - params.learningRate) + params.learningRate .* batchesTheta.startT / batchAmount);
     % theta.startT = inputTheta.startT;
-    if doGTBound
+    if doGTBound > 0
         theta = EM.GTbound3(params, theta);
     end
     if params.doResampling

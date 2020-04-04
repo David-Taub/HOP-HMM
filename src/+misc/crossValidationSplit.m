@@ -1,3 +1,5 @@
+
+% testTrainRatio - bigger means more more test
 function [test, train] = crossValidationSplit(params, mergedPeaksMin, testTrainRatio)
     L = size(mergedPeaksMin.seqs, 2);
     X = mergedPeaksMin.seqs; % N x L x [1|3]
@@ -5,7 +7,7 @@ function [test, train] = crossValidationSplit(params, mergedPeaksMin, testTrainR
     pcPWMp = misc.preComputePWMp(X, params);
     N = size(X, 1);
     trainMask = true(N, 1);
-    trainMask(randperm(N, floor(N * testTrainRatio))) = false;
+    trainMask(1: floor(N * testTrainRatio)) = false;
     train.title = 'Train';
     train.X = X(trainMask, :);
     test.title = 'Test';
@@ -17,6 +19,11 @@ function [test, train] = crossValidationSplit(params, mergedPeaksMin, testTrainR
         train.starts = mergedPeaksMin.starts(trainMask);
         train.chrs = mergedPeaksMin.chrs(trainMask);
         train.samplesCount = mergedPeaksMin.samplesCount(trainMask);
+        % N x 1
+        [~, train.Y] = max(mergedPeaksMin.overlaps(trainMask, :), [], 2);
+
+        % train.Y = (train.Y == mergedPeaksMin.backgroundInd) + 1;
+
         train.backgroundInd = mergedPeaksMin.backgroundInd;
         train.tissueNames = mergedPeaksMin.tissueNames;
         train.tissueList = mergedPeaksMin.tissueList;
@@ -26,6 +33,10 @@ function [test, train] = crossValidationSplit(params, mergedPeaksMin, testTrainR
         test.starts = mergedPeaksMin.starts(~trainMask);
         test.chrs = mergedPeaksMin.chrs(~trainMask);
         test.samplesCount = mergedPeaksMin.samplesCount(~trainMask);
+        [~, test.Y] = max(mergedPeaksMin.overlaps(~trainMask, :), [], 2);
+
+        % test.Y = (test.Y == mergedPeaksMin.backgroundInd) + 1;
+
         test.backgroundInd = mergedPeaksMin.backgroundInd;
         test.tissueNames = mergedPeaksMin.tissueNames;
         test.tissueList = mergedPeaksMin.tissueList;

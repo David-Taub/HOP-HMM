@@ -22,40 +22,43 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
 
     params.doGTBound = doGTBound;
     params.doResampling = false;
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % real sequences
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    params.topPercent = 0.8;
-    params.doEnhSpecific = true;
-    params.withBackground = true;
-    params.withGenes = false;
-    params.seqsPerTissue = 1000;
-    params.peakMinL = 100;
-    params.peakMaxL = 1500;
-    params.tissueList = [2, 18];
-    params.minSamplesCount = 5;
-
-    params.batchSize = 100;
     [kMax, params.n, params.J] = size(params.PWMs);
     params.k = min(k, kMax);
+    params.batchSize = 100;
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Real Sequences Params
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % params.topPercent = 0.8;
+    % params.doEnhSpecific = true;
+    % params.withBackground = true;
+    % params.withGenes = false;
+    % params.seqsPerTissue = 1000;
+    % params.peakMinL = 100;
+    % params.peakMaxL = 1500;
+    % params.tissueList = [2, 18];
+    params.minSamplesCount = 5;
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Regularization Params
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     params.EPS = 10 ^ -7;
     maxBbMotifRatio = 1 / 90; % maximal ratio of all motif letters in BG section
     maxEnhMotifRatio = 1 / 20; % maximal ratio of a single motif letters in enhancer section
     % minEnhMotifRatio = 1 / 15; % minimal ratio of a single motif letters in enhancer section
     maxCrossEnhRatio = 1 / 100; % maximal ratio of transition to any another enhancer
     maxCrossBgRatio = 1 / 30; % maximal ratio of transition to any another enhancer
-    maxEnhLen = 700;
-    minEnhLen = 150;
-    maxBgLen = 1500;
-    minBgLen = 800;
+    maxEnhLen = 1500;
+    minEnhLen = 300;
+    maxBgLen = 10000;
+    minBgLen = 7000;
 
     params.maxEnhMotif = maxEnhMotifRatio / mean(params.lengths);
     % params.minEnhMotifTotal = minEnhMotifRatio / mean(params.lengths);
     params.minEnhMotif = params.EPS;
     params.maxCrossEnh = maxCrossEnhRatio / minEnhLen;
     params.minCrossEnh = params.EPS;
-    params.maxBgMotif = maxBbMotifRatio / ( mean(params.lengths) * params.k);
+    params.maxBgMotif = maxBbMotifRatio / (mean(params.lengths) * params.k);
     params.minBgMotif = params.EPS;
     params.maxStayEnh = 1;
     params.minStayEnh = 1 - (1 / minEnhLen);
@@ -63,8 +66,8 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
     params.minStayBg = 1 - (1 / minBgLen);
     params.maxCrossBg = 1 / minBgLen;
     params.minCrossBg = params.EPS;
-    params.maxBgToEnh = 1 / minBgLen;
-    params.minBgToEnh = 1 / maxBgLen
+    params.maxBgToEnh = 1 / (minBgLen * params.enhancerAmount);
+    params.minBgToEnh = 1 / (maxBgLen * params.enhancerAmount);
     params.maxEnhToBg = 1 / minEnhLen;
     params.minEnhToBg = 1 / (maxEnhLen * params.backgroundAmount);
 

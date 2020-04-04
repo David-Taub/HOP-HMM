@@ -4,32 +4,47 @@ function mainRealData()
     conf.startWithBackground = false;
     conf.doEnhSpecific = true;
     conf.seqsPerTissue = 1000;
-    conf.maxIters = 40;
-    conf.repeat = 6;
+    conf.maxIters = 30;
+    conf.repeat = 15;
+    % conf.doGTBound = conf.maxIters + 1;
+    conf.doGTBound = 10;
     conf.canCrossLayer = true;
     conf.patience = 5;
-    conf.L = 2000;
+    conf.L = 7000;
     conf.peakMaxLength = 1000;
-    conf.peakMinL = 200;
+    conf.peakMinL = 100;
     conf.peakMaxL = 1500;
     conf.withExponent = false;
-    conf.order = 3;
+    conf.order = 2;
     conf.m = 3;
-    conf.k = 60;
-    conf.withBackground = true;
+    conf.backgroundAmount = 1;
+    conf.k = 50;
+    conf.withBackground = false;
     conf.withGenes = false;
     conf.minSamplesCount = 5;
-    conf.sequencesToShow = 5;
-    conf.backgroundAmount = 1;
     conf.doESharing = false;
-    conf.doGTBound = true;
-    conf.doResampling = false;
-    conf.topPercent = 0.8;
-    % conf.tissueList = [2, 37];
-    % conf.tissueList = [3, 23];
-    conf.tissueList = [2, 18];
+    conf.doResampling = true;
     conf.startTUniform = false;
-    main(conf);
+    conf.topPercent = 0.4;
+    % conf.tissueList = [2, 18];
+    conf.tissueList = [24, 27]; % placenta, ovary
+    % main(conf);
+    for i = randperm(44)
+        v = randperm(44);
+        v = v(v > i);
+        for j = v
+            % try
+                conf.tissueList = [i,j];
+                conf.topPercent = 0.4;
+                main(conf);
+            % catch exception
+            %     fprintf(':(\n');
+            % end
+
+        end
+    end
+    % conf.tissueList = [2, 30];
+    % conf.tissueList = [24, 25];
 end
 
 
@@ -40,31 +55,33 @@ function main(conf)
                                              conf.seqsPerTissue, conf.L, conf.peakMinL, conf.peakMaxL, conf.tissueList,...
                                              conf.minSamplesCount);
     N = size(mergedPeaksMin.seqs, 1);
-    testTrainRatio = 0.01;
+    testTrainRatio = 0.999;
+    % testTrainRatio = 0.50;
     selectedPWMs = misc.PWMsFeatureSelect(mergedPeaksMin, conf.k);
     params = misc.genParams(conf.m, selectedPWMs, conf.backgroundAmount, conf.L, conf.order, ...
                             conf.doESharing, conf.doGTBound);
     [test, train] = misc.crossValidationSplit(params, mergedPeaksMin, testTrainRatio);
 
-    [theta, ~] = EM.EM(train, params, conf.maxIters, conf.patience, conf.repeat);
+    % [E, G] = pretrain(params, train);
+    % [theta, ~, ~] = EM.EM(test, params, conf.maxIters, conf.patience, conf.repeat, E, G);
+    % theta.E(:, :) = E(:, :);
+    % theta.G(:, :) = G(:, :);
+    [theta, a, b] = EM.EM(test, params, conf.maxIters, conf.patience, conf.repeat);
+    % for tb = b
+    %     show.showTheta(tb);
+    % end
 
-    show.showTheta(theta);
 
-    outpath = sprintf('output/real_posterior_m%da%dk%do%db%dN%dL%d.jpg', conf.m, conf.backgroundAmount, ...
+    % show.showTheta(theta);
+
+    outpathBase = sprintf('output/real_posterior_m%da%dk%do%db%dN%dL%d', conf.m, conf.backgroundAmount, ...
                       conf.k, conf.order, conf.doGTBound, N, conf.L);
-    show.seqSampleCertaintyReal(params, theta, train, outpath, mergedPeaksMin.tissueEIDs);
+    % show.seqSampleCertaintyReal(params, theta, test, outpathBase);
+    show.seqSampleCertainty5Real(params, theta, test, outpathBase);
 
-    % YEst = misc.viterbi(params, theta, train.X, train.pcPWMp);
-    % theta = permuteTheta(theta, params, train.Y(:, :), YEst(:, :, 1));
-
-    % classify(theta, params, train);
-    % [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, train.X, train.pcPWMp);
-    % show.seqSampleCertainty(params, train.Y, gamma, psi, 8, false);
-
-    % classify(theta, params, test);
-    % [~, ~, ~, ~, gamma, psi] = EM.EStep(params, theta, test.X, test.pcPWMp);
-    % show.seqSampleCertainty(params, test.Y, gamma, psi, 8, false);
-    keyboard
+    % notify when done
+    sound(sin(1:0.1:300) * 0.06);
+    % keyboard
 end
 
 

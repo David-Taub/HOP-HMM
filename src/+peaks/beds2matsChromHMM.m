@@ -1,6 +1,6 @@
 % fields of peaks.mat - ['chr', 'peakFrom', 'peakTo', 'seqFrom',
 %                        'seqTo', 'peakLength', 'height', 'peakPos', 'overlap']
-function matFiles = beds2mats(L)
+function matFiles = beds2matsChromHMM(L)
     dbstop if error
     BEDS_DIR = '../data/peaks/processed';
     MAX_SEQS_IN_MAT = 30000;
@@ -36,7 +36,6 @@ function matFiles = beds2mats(L)
 end
 
 
-% cd /cs/stud/boogalla/projects/CompGenetics/BaumWelch/src
 function bed2mat(index, EID, bedFilePath, matPath, tissuesCount, dict, L, maxSeqsInMat)
     fprintf('Loading bed\n');
     fid = fopen(bedFilePath);
@@ -45,17 +44,35 @@ function bed2mat(index, EID, bedFilePath, matPath, tissuesCount, dict, L, maxSeq
         chrs = bedData{1};
         peakFroms = bedData{2};
         peakTos = bedData{3};
-        heights = bedData{4};
-        maxPos = bedData{7};
-    else
-        bedData = textscan(fid,' %s%d%d%*s%d%*s%f%f%f%d', 'delimiter','\t');
+        heights = ones(size(peakTos));
+        maxPos = round((peakTos + peakFroms) ./ 2);
+
+    elseif strcmp(EID, 'background')
+        bedData = textscan(fid,' %s%d%d', 'delimiter','\t');
         chrs = bedData{1};
         peakFroms = bedData{2};
         peakTos = bedData{3};
-        heights = bedData{4};
-        maxPos = bedData{8};
+        heights = ones(size(peakTos));
+        maxPos = round((peakTos + peakFroms) ./ 2);
+    else
+        fclose(fid);
+        bedFilePath = sprintf('../data/ChromHMM/%s_15_coreMarks_mnemonics.bed', EID);
+        fid = fopen(bedFilePath);
+        bedData = textscan(fid, '%s%d%d%d_%s', 'delimiter','\t');
+        chrs = bedData{1};
+        froms = bedData{2};
+        tos = bedData{3};
+        marks = bedData{4};
+        marksStrs = bedData{5};
+        fclose(fid);
+
+        mask = (marks == 7) | (marks == 6);
+        chrs = chrs(mask);
+        peakFroms = froms(mask);
+        peakTos = tos(mask);
+        maxPos = round((peakTos + peakFroms) ./ 2);
+        heights = ones(size(peakTos));
     end
-    fclose(fid);
 
     % H3K27acBedGraphFilePath = sprintf("../data/peaks/processed_bedgraphs/%s-H3K27ac.enh.bedgraph", EID);
     % DNaseBedGraphFilePath = sprintf("../data/peaks/processed_bedgraphs/%s-DNase.enh.bedgraph", EID);
@@ -84,7 +101,7 @@ function bed2mat(index, EID, bedFilePath, matPath, tissuesCount, dict, L, maxSeq
         S{newSeqId}.seqTo = peakTos(i);
         S{newSeqId}.peakLength = S{newSeqId}.peakTo - S{newSeqId}.peakFrom;
         S{newSeqId}.height = heights(i);
-        S{newSeqId}.peakPos = peakFroms(i) + maxPos(i);
+        S{newSeqId}.peakPos = maxPos(i);
         S{newSeqId}.overlap = zeros(1, tissuesCount);
         S{newSeqId}.overlap(index) = max(heights(i), 1);
         chrLength = length(dict(S{newSeqId}.chr).Data);

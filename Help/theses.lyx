@@ -118,16 +118,60 @@ The Hebrew University of Jerusalem – the Faculty of Computer Science and
 \end_layout
 
 \begin_layout Title
-High-Order Generalized Hidden Markov Model to Classify Regulatory Sequences
- in the Human Genome
+Classifiers of Regulatory Sequences in the Human Genome Using High-Order
+ Generalized Hidden Markov Model 
+\end_layout
+
+\begin_layout Part*
+Abstract
+\end_layout
+
+\begin_layout Standard
+Enhancers are regulatory DNA sequences that, when bound to proteins called
+ transcription factors, enhance the likelihood that a transcription of a
+ target gene will occur.
+ Regulation of transcription is an important form of gene expression control,
+ and the activity of enhancers allows specific regulation of genes in a
+ stage-specific and tissue-specific manner.
+ It has been shown over the years that genetic variation within enhancer's
+ sequence might cause cells behavior modification and diseases.
+ Transcription factors tend to attach to the DNA at transcription factor
+ binding sites, which are motifs inside the DNA, which are over represented
+ in enhancer sequences.
+ Except for these binding sites, the rules and structure nuances of the
+ enhancer sequence is not fully clear.
+ Enhancers activity can be detected mainly by adjacent histone marks, the
+ presence of transcription factors and accessibility.
+ All of these epigenetic data is often noisy, and the extraction process
+ is costly, and requires a sample of cells from the tested tissue, which
+ is not always practical for all tissue types of all stages.
+ We offer here a computational approach to detect enhancers based on their
+ sequence in an unsupervised manner.
+ We created a generalized hidden Markov model with states that emit transcriptio
+n factor binding sites using a positional weight matrix model, and states
+ that emit single nucleotides with high order dependency on previously emitted
+ nucleotides.
+ This model learns a more complex underlying structure of DNA sequences,
+ containing both motifs and high-order distributions of nucleotides in between
+ them.
+ We first review the background of Markov and hidden Markov models and the
+ demonstrate how to calculate the likelihood of this model from a sequence.
+ Then, we describe our generalized model in detail and develop the expectation
+ maximization and Viterbi algorithms for regular hidden Markov model, followed
+ by the adjustments needed for our generalized version of the model.
+ We then create a synthetic enhancer-like dataset using the generative property
+ of the model, and simulate the model in a controlled way to evaluate its
+ performance.
+ Next, we experiment on the Roadmap project dataset, containing human DNA
+ sequences of known active enhancers.
+\end_layout
+
+\begin_layout Standard
+TODO: FINISH
 \end_layout
 
 \begin_layout Part*
 Introduction
-\end_layout
-
-\begin_layout Subsection*
-The Genome
 \end_layout
 
 \begin_layout Standard
@@ -346,6 +390,10 @@ Transgenic mouse embryo in the 11.5 day.
 \end_layout
 
 \begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
 Transcription factors (TF) are proteins that bind to the DNA, and together
  with other co-factor proteins initiate the gene transcription process.
  TFs tend to bind to certain transcription factor binding sites (TFBS),
@@ -365,9 +413,11 @@ key "key-12"
 \end_inset
 
 ).
- On genome-wide association studies (GWAS) done with ChIP-seq method, different
- TFs have different distributions of TFBS they are observed attached to
- (
+ ChIP-seq method can measure the amount of TFs which are bounded to the
+ DNA strand, by applying antibodies which attach to the TFs and reading
+ a short DNA sequence around the TF and antibody.
+ Genome-wide association studies (GWAS) of ChIP-seq found that different
+ TFs have different and distinct distributions of TFBS (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-32"
@@ -461,16 +511,24 @@ For generating a simplistic yet accurate model for representing the TF binding
 
 , we are usually required to assume independence between positions and a
  small span of influence by the sequence around the binding site.
- The peaks of the ChIP-seq data are used as the ground truth of TF binding
- locations, from which different models can be built.
- Position weight matrix (PWM) as introduced in 
+ The peaks of the ChIP-seq mark the TF binding locations, from which a binding
+ site 
+\begin_inset Quotes eld
+\end_inset
+
+grammar
+\begin_inset Quotes erd
+\end_inset
+
+ can be modeled.
+ Position weight matrix (PWM), as introduced in 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "key-7"
 
 \end_inset
 
- is the most widely used probabilistic model for addressing this task.
+, is the most commonly used probabilistic model for addressing this task.
  The underlying assumption of the PWM model is that every position in the
  DNA sequence has an independent probability to attach to the TF, and therefore
  the total binding probability is a multiplication of all the per-position
@@ -496,40 +554,79 @@ Where n is the size of relevant sequence.
 
  is estimated by counting the nucleotides frequency in every position of
  the observed binding sites, which are the ChIP-seq peaks.
- For a motif of length J, this probability estimation is stored in a PWM
- matrix W as followed: 
-\begin_inset Formula $W_{i,j}=\frac{1}{N}\sum_{k\in N}\boldsymbol{1}(X_{i,k}=j)$
-\end_inset
-
- where 
-\begin_inset Formula $i\in[J]$
-\end_inset
-
- the position in the motif and 
-\begin_inset Formula $j\in[4]$
-\end_inset
-
- the nucleotide index of A,C,G and T.
+ For a motif of length J, this probability estimation is stored in a position
+ probability matrix (PPM) W as followed: 
 \end_layout
 
 \begin_layout Standard
-From a generative model point of view, the sequence is generated by a TFBS
- motifs emission system.
- For this needs, the log of the matrix often comes handy for calculation
- of 
-\begin_inset Formula $log\left(L(W;x_{1:n})\right)$
+\begin_inset Formula 
+\[
+W_{i,j}=\frac{1}{N}\sum_{n\in[N]}\boldsymbol{1}(x_{j}^{(n)}=i)
+\]
+
 \end_inset
 
-, the log of the probability that a motif was generated by a PWM 
-\begin_inset Formula $W$
+where 
+\begin_inset Formula $x^{(n)}$
 \end_inset
 
-.
- This calculation is done be a convolution of 
+ is the n'th sequence out of the found binding sites, 
+\begin_inset Formula $j\in[J]$
+\end_inset
+
+ the position in the motif and 
+\begin_inset Formula $i\in[4]$
+\end_inset
+
+ the nucleotide index of A,C,G and T.
+ The PPM is normalized 
+\begin_inset Formula 
+\begin{equation}
+{\displaystyle M_{i,j}=\mathrm{log}\left(\frac{W_{i,j}}{b_{i}}\right)}\label{PPM}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $b_{i}$
+\end_inset
+
+ is prior background model, which is 
+\begin_inset Formula $0.25$
+\end_inset
+
+ in case of nucleotides.
+ From a generative model point of view, the TFBS sequence is generated by
+ an emission model of the PWM.
+ The division in 
+\begin_inset Formula $M$
+\end_inset
+
+ by 
+\begin_inset Formula $b_{i}$
+\end_inset
+
+ allows comparison between the binding likelihood of different TFs with
+ different lengths.
+ The practical length-normalized log likelihood of a PWM 
+\begin_inset Formula $log\left(\mathscr{\mathcal{L}}(W;x_{1:n})\right)$
+\end_inset
+
+ is easily is done be a convolution of 
 \begin_inset Formula $log(W)$
 \end_inset
 
- on a one-hot encoding of the sequence.
+ on a one-hot encoding of the sequence (see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "PWM"
+
+\end_inset
+
+), and actually holds the log likelihood of a TF binding to a sequence relative
+ to a random sequence.
+ In this work, we use the more familiar term PWMs, but will actually use
+ PPMs for the TFBS emission model which are essentially simmilar.
 \end_layout
 
 \begin_layout Standard
@@ -764,7 +861,7 @@ key "key-18"
 \end_inset
 
 ).
- The histone marks are considered to contain a certain
+ The histone marks are considered to contain a certain 
 \begin_inset Quotes eld
 \end_inset
 
@@ -793,8 +890,11 @@ key "key-25"
 \end_layout
 
 \begin_layout Standard
-H3K4me1 and H3K27ac are among the predominant histone marks of active enhancers,
- where H3K4me1 are enriched on transcribed genes and enhancers prior to
+Histone marks can be detected with ChIP-seq procedure, similarly to TF binding
+ detection described above, by using antibodies which attach to the chromatin
+ modification instead of the TF protein.
+ H3K4me1 and H3K27ac are among the predominant histone marks of active enhancers
+, where H3K4me1 is enriched on transcribed genes and enhancers prior to
  activation (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -966,10 +1066,10 @@ Epigenetics Limitation
 \end_layout
 
 \begin_layout Standard
-The currently most accurate method for predicting the location of tissue
- specific enhancers in a genome wide scale, is analyzing the histone marks
- and TF and cofactors presence using ChIP-seq from a cell line or from a
- tissue, combined with DNase I hypersensative (DHS).
+The currently most accurate method for predicting the location of enhancers
+ sequences in a genome wide scale, is analyzing the histone marks, TF and
+ cofactors presence using ChIP-seq from a cell line or from a tissue, combined
+ with DNase I hypersensative (DHS).
 \end_layout
 
 \begin_layout Standard
@@ -2607,10 +2707,9 @@ HOP-HMM
 \end_layout
 
 \begin_layout Standard
-Here we present HOP-HMM, a variant model of HMM, that is well fitted to
- utilize the structure of enhancers containing TFBSs inside them, due to
- the TFBS emitting TF-states that take part in the generation process of
- the sequence.
+Here we present HOP-HMM, a GHMM, that is well fitted to utilize the structure
+ of enhancers containing TFBSs inside them, due to the TFBS emitting TF-states
+ that take part in the generation process of the sequence.
  Due to the assumed local physical nature of the TF binding of the DNA sequence
  and success of HMM in gene prediction, we think the memorylessness of HMMs
  fit well to the task of enhancer prediction.
@@ -6773,9 +6872,9 @@ Sequence States Inference
 \begin_layout Subsubsection*
 TODO: After description of HOP HMM, add inference section about: 1.
  viterbi 2.
- postirior 3: postirior sum hirizontal 4.
- postirior sum vertical 5.
- transition postirior (with figures all over)
+ posterior 3: posterior sum hirizontal 4.
+ posterior sum vertical 5.
+ transition posterior (with figures all over)
 \end_layout
 
 \begin_layout Standard
@@ -8700,8 +8799,11 @@ Results
 \end_layout
 
 \begin_layout Standard
-For evaluating HOP-HMM, we measure its capabilities on synthetic DNA data.
- The evaluation process is done in several steps (see 
+For evaluating HOP-HMM, we first measure its capabilities on synthetic DNA
+ data that was created in a controlled way.
+ Afterwards, we see how does a HOP-HMM classify real human DNA sequences.
+ The evaluation process on synthetic data is done by the following steps
+ (see figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "Workflow"
@@ -9019,7 +9121,7 @@ key "key-50"
 \end_inset
 
 ) as there is no known analytical way for reaching it.
- In other words, Baum-Welch algorithm converges into a local maximum 
+ As a consequence, Baum-Welch algorithm converges into a local maximum 
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
@@ -9417,10 +9519,6 @@ Confusion matrix of true and estimated states by the Viterbi algorithm of
 Roadmap Dataset
 \end_layout
 
-\begin_layout Paragraph*
-Pre-processing
-\end_layout
-
 \begin_layout Standard
 For testing of HOP-HMM performance on human genetic data, we used the Roadmap
  project tracks.
@@ -9438,27 +9536,86 @@ key "key-68"
  peaks.
 \end_layout
 
-\begin_layout Paragraph*
-Choosing the PWMs
+\begin_layout Standard
+We wanted to evaluate if HOP-HMM can distinguish and detect enhancers active
+ in two human tissues.
+ For this we've built a set of 4000 bp fixed length sequences from the HG19
+ in positions which were labeled as enhancers based on epigenetic data collected
+ by Roadmap project from 57 tissues.
+ Out of these enhancers, we chose only sequences of tissue-specific enhancers
+ in one of two types of tissues, and not in the rest of the 57 tissues.
+ We've added sequences with no known role, from random locations in the
+ genome distal from genes or enhancers as background sequences.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+A HOP-HMM is trained by the HOP-Baum-Welch algorithm on the collected sequences.
+ The trained model is then used to produce a Viterbi estimated hidden-states
+ sequence and posterior probability, which can then be compared to the epigeneti
+c tracks.
 \end_layout
 
 \begin_layout Standard
 For the set of PWMs used by the TF-states of the HOP-HMM, we used JASPAR
- dataset of 719 vertebrates PWMs, out of which we selected 30 PWMs for a
+ dataset of 519 vertebrates PWMs, out of which we selected 60 PWMs for a
  reasonable runtime.
- The selected PWMs should be the most indicative for the tissue specific
- enhancers.
- In the process of choosing the PWMs, we aim to choose the PWMs that appear
- in one of the tested enhancers and not the others.
- we used the correlation (marked as 
-\begin_inset Formula $L_{W}\left(x_{t-|W|},...,x_{t-1}\right)$
+ The selected PWMs are chosen as followed:
+\end_layout
+
+\begin_layout Itemize
+PWMs of TFs which are over or under expressed in the evaluated tissues,
+ according to the Roadmap RNA-seq data.
+ TFs were chosen if 20% or more of their expression is in one of the evaluated
+ tissues, out of 57 tissue types available in Roadmap dataset.
+\end_layout
+
+\begin_layout Itemize
+PWMs which are abundant in the sequences, i.e.
+ PWMs with the highest mean likelihood to attach to the sequences.
+ The likelihood of PWM 
+\begin_inset Formula $W$
 \end_inset
 
- in above sections) to measure the appearance of a PWM in a sequence in
- a position in a sequence.
- We calculated the 3 best matching positions of every PWM in every sequence,
- and calculated how successful, in terms of AUC-ROC, this sum can separate
- one sequence type from the other using a threshold.
+ to bind to a sequence 
+\begin_inset Formula $x$
+\end_inset
+
+ is calculated as described mean is the average of 3 highest likelihood
+ TFBS as described in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "PWM"
+
+\end_inset
+
+.
+ Note that here we use the PWM form as in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "PPM"
+
+\end_inset
+
+ and not the PPM form for comparison between PWM likelihoods.
+\end_layout
+
+\begin_layout Itemize
+PWMs that had stronger presence in sequences from one tissue compared to
+ the other.
+ This is defined as the PWMs with sequence binding likelihood (as defined
+ in the previous point) can be best distinguish between sequences from one
+ tissue and the rest in terms of AUC-ROC.
+\end_layout
+
+\begin_layout Standard
+In our experiments some sequences had good resemblance to the DNaseI track
+ and ChromeHMM classifications, though no clear correlation was found.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -9468,13 +9625,9 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
 \begin_inset Graphics
-	filename Figures/sequence_roadmap.jpg
-	scale 40
+	filename Figures/realSeq1.jpg
+	scale 50
 
 \end_inset
 
@@ -9483,8 +9636,18 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Figures/sequence_roadmap2.jpg
-	scale 40
+	filename Figures/realSeq2.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/realSeq3.jpg
+	scale 50
 
 \end_inset
 
@@ -9501,6 +9664,50 @@ name "RealData"
 
 \end_inset
 
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/realSeq4.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/realSeqLegend.jpg
+	scale 50
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -10197,357 +10404,6 @@ repeat
 \end_layout
 
 \end_deeper
-\begin_layout Part*
-TODOS:
-\end_layout
-
-\begin_layout Subsubsection*
-v TODO: scatter plot, remove stuff that are bounded, like T, add to figure
- description
-\end_layout
-
-\begin_layout Subsubsection*
-v TODO: in real sequences, don't color the section, use lines from start
- to finish of enhancer
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: recall + precision for each state
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: in results, open with intor paragraph: what can we do now? we will
- use this to check the data on synthetics and real DNA
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: take new data from Ido, methilated regions as ground truth
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: choose PWM by their expression in tissues, take data sent by TOMMY
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: Violine graph of the posterior of places Viterbi marked as PWMs and
- didnt mark as PWMs.
- violine of the acc.
- of the places marked by the Viterbi on real DNA.
- also, deep tool of the acc.
- and ME3 of these sequences.
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: deeptools: aligned heatmap sequences with the peak of the H3K27ac
- and post.
- prob., are they similar?]
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Figure: HOP-Viterbi classification of a region classified as an enhancer,
- ChromHMM classification and the H3K27ac features
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: Use HUJI theses format, 12 point font size, with 1.5 line spacing
-\end_layout
-
-\begin_layout Standard
-1.
- Opening page including:
-\end_layout
-
-\begin_layout Standard
-a.
- Heading – “The Hebrew University of Jerusalem – the Faculty of Mathematics
- and Natural Science – the Institute of (Chemistry, Life Sciences, Physics,
- Mathematics, Earth Sciences, Computer Science)
-\end_layout
-
-\begin_layout Standard
-b.
- Title of the thesis in Hebrew and English
-\end_layout
-
-\begin_layout Standard
-c.
- Author’s name (+ student number)
-\end_layout
-
-\begin_layout Standard
-d.
- Supervisor’s name
-\end_layout
-
-\begin_layout Standard
-e.
- “Thesis for Master’s degree in Natural Science”
-\end_layout
-
-\begin_layout Standard
-f.
- Date of submission in English and Hebrew
-\end_layout
-
-\begin_layout Standard
-2.
- Personal page (dedication etc.)
-\end_layout
-
-\begin_layout Standard
-3.
- Abstract
-\end_layout
-
-\begin_layout Standard
-4.
- Table of contents
-\end_layout
-
-\begin_layout Standard
-5.
- Body of the work
-\end_layout
-
-\begin_layout Standard
-6.
- Bibliography
-\end_layout
-
-\begin_layout Standard
-7.
- Appendices
-\end_layout
-
-\begin_layout Standard
-The body of the work (section 5 above) will include:
-\end_layout
-
-\begin_layout Standard
-1.
- Scientific introduction
-\end_layout
-
-\begin_layout Standard
-2.
- Thesis aims
-\end_layout
-
-\begin_layout Standard
-3.
- Methods (theoretical or experimental part)
-\end_layout
-
-\begin_layout Standard
-4.
- Results
-\end_layout
-
-\begin_layout Standard
-5.
- Discussion and summary.
-\end_layout
-
-\begin_layout Paragraph*
-Pretraining
-\end_layout
-
-\begin_layout Standard
-When sequences are labeled as tissue-specific enhancers are available, it
- is possible to pretrain a multi-background-state HOP-HMM with them.
- The E and G parts of such a model could be initialized with parameters
- taken from a smaller HOP-HMM, trained on 2 class datasets built out of
- tissue-specific enhancers and background DNA sequences.
- For each tissue, we build a dataset and trained a 2 background-state HOP-HMM
- model (one background-state for the enhancer and one for the background)
- and used the learned parameters of the enhancer background-state to initialize
- the bigger multi-background-state HOP-HMM.
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: number the chapters
-\end_layout
-
-\begin_layout Subsubsection*
-TODO: abstract
-\end_layout
-
-\begin_layout Standard
-The TF inside the nucleus of specific tissues are thought to be a key factor
- in the activation of specific enhancer.
- The TFs form a transcription complex and are connected to the enhancer
- and promoter sequences on top of the TF binding sites (TFBS).
- Studies using TFBS of TF present in specific cell types are used to classify
- cell specific enhancer sequences.
- show heat map of AUC-ROC results.
- Between these TFBS, kmer frequencies varies between enhancers and non regulator
-y 
-\begin_inset Quotes eld
-\end_inset
-
-background
-\begin_inset Quotes erd
-\end_inset
-
- DNA, and was used to classify enhancers from background using only the
- kmer distribution (Inbar and tommy, gkm-SVM), and is thought to play a
- role in spacial properties, nucleosome location and cleavage that cause
- accessibility of near-by TFBS.
- Using 44 out of 127 epigenetic data of Roadmap Project to select tissue
- specific enhancer sequences dataset.
- In our method, we look for different TFBS and kmer presence in sequences
- to classify cell-specific sequences, inside regulatory modules.
-\end_layout
-
-\begin_layout Subsubsection*
-
-\series bold
-\bar under
-TODO: Semi-Supervised Learning Scheme:
-\end_layout
-
-\begin_layout Enumerate
-
-\series bold
-Pre-training:
-\series default
- Calculate maximal likelihood initialization parameters 
-\begin_inset Formula $\theta_{0}$
-\end_inset
-
- with from observed labeled dataset of sequences 
-\begin_inset Formula $Y_{0}$
-\end_inset
-
- and 
-\begin_inset Formula $X_{0}$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Enumerate
-
-\series bold
-Unsupervised learning:
-\series default
- Learn the 
-\begin_inset Formula $\theta$
-\end_inset
-
- given X unlabeled sequences by approximating 
-\begin_inset Formula $\theta_{best}=$
-\end_inset
-
- 
-\begin_inset Formula $argmax_{\theta}\mathcal{L}\left(\theta|X\right)$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Enumerate
-
-\series bold
-Predicting labels:
-\series default
-Given learned 
-\begin_inset Formula $\theta$
-\end_inset
-
-, infer hidden states Y for unlabeled X
-\end_layout
-
-\begin_layout Enumerate
-
-\series bold
-Tuning:
-\series default
- Preform hyperparameters optimization
-\end_layout
-
-\begin_layout Standard
-experiment graphs:
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-per nucleotide binary classification (background vs enhancer)
-\series default
- - heatmap (x-location relative to peak, y-sequence index, color-post.
- probability) use the 
-\begin_inset Formula $\gamma_{i,*}$
-\end_inset
-
- of enhancers where i is the state of the enhancer, pick only the 2000+-
- around the enhancer's peak, where the center is the max of the H3K27ac
- signal, showing the sequences are most likely enhancers surrounded by non
- enhancers .
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-per sequence mutli-class classification (background vs enhancer)
-\series default
- - heatmap (state number, y-sequence index, color-maximal post.
- probability for the sequence of that state) of 
-\begin_inset Formula $\gamma$
-\end_inset
-
- of enhancers, where the center is the max of the H3K27ac, showing the sequences
- are most likely enhancers surrounded by non enhancers
-\end_layout
-
-\begin_layout Standard
-per sequence classification
-\end_layout
-
-\begin_layout Standard
-[per sequence binary classification - background vs enhancer]
-\end_layout
-
-\begin_layout Standard
-[per nucleotide binary classification - background vs enhancer]
-\end_layout
-
-\begin_layout Standard
-[per sequence binary classification - background vs enhancer]
-\end_layout
-
-\begin_layout Subsubsection*
-
-\series bold
-\bar under
-TODO: Possible Applications
-\end_layout
-
-\begin_layout Standard
-labeled enhancer seqs from multiple motifs-> EM to learn E M F per floor
- + setting 
-\begin_inset Formula $T=\mathbb{I}_{m\times m}$
-\end_inset
-
- -> posterior of whole genome with sliding window -> classify whole genome
-\end_layout
-
-\begin_layout Standard
-learn E M F -> check correlation with TF expression
-\end_layout
-
-\begin_layout Standard
-run EM on whole genome -> posterior of whole genome -> check correlation
- of posterior to ChIP-Seq of histone modifications
-\end_layout
-
-\begin_layout Standard
-E M F T-> posterior of whole genome -> see if known critical SNPs are critical
- in classification
-\end_layout
-
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem

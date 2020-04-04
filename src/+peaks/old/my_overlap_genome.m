@@ -62,7 +62,6 @@ function my_overlap_genome(genome, genesChr, genesStart, genesEnd, uniqueMapped)
                     mean(NEnhancerMask),...
                     mean(EnhancerMask));
     end
-    % keyboard
     Enhancers = annotate_peaks(Enhancers);10
     NEnhancers = annotate_peaks(NEnhancers);11
 

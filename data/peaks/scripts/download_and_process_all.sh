@@ -39,6 +39,15 @@ python pwm_expression.py
 popd
 
 ################################
+# ChromHMM
+################################
+mkdir ../../ChromHMM
+pushd ../../ChromHMM
+wget 'https://egg2.wustl.edu/roadmap/data/byFileType/chromhmmSegmentations/ChmmModels/coreMarks/jointModel/final/all.mnemonics.bedFiles.tgz'
+tar zxvf all.mnemonics.bedFiles.tgz
+gunzip -vf E*
+popd
+################################
 # BigWigToBedGraph
 ################################
 wget -O bigWigToBedGraph "http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/bigWigToBedGraph"
@@ -83,49 +92,93 @@ mv ../scripts/download_and_process_one2.sh ../scripts/download_and_process_one.s
 
 
 # 44 tissue data with all needed tracks
+# 1: E003 - H1 Cells [1596]
 ../scripts/download_and_process_one.sh E003
+# 2: E004 - H1 BMP4 Derived Mesendoderm Cultured Cells [2228]
 ../scripts/download_and_process_one.sh E004
+# 3: E005 - H1 BMP4 Derived Trophoblast Cultured Cells [1640]
 ../scripts/download_and_process_one.sh E005
+# 4: E006 - H1 Derived Mesenchymal Stem Cells [217]
 ../scripts/download_and_process_one.sh E006
+# 5: E007 - H1 Derived Neuronal Progenitor Cultured Cells [1005]
 ../scripts/download_and_process_one.sh E007
+# 6: E008 - H9 Cells [917]
 ../scripts/download_and_process_one.sh E008
+# 7: E017 - IMR90 fetal lung fibroblasts Cell Line [710]
 ../scripts/download_and_process_one.sh E017
+# 8: E021 - iPS DF 6.9 Cells [400]
 ../scripts/download_and_process_one.sh E021
+# 9: E022 - iPS DF 19.11 Cells [797]
 ../scripts/download_and_process_one.sh E022
+# 10: E029 - Primary monocytes from peripheral blood [705]
 ../scripts/download_and_process_one.sh E029
+# 11: E032 - Primary B cells from peripheral blood [635]
 ../scripts/download_and_process_one.sh E032
+# 12: E034 - Primary T cells from peripheral blood [383]
 ../scripts/download_and_process_one.sh E034
+# 13: E046 - Primary Natural Killer cells from peripheral blood [388]
 ../scripts/download_and_process_one.sh E046
+# 14: E050 - Primary hematopoietic stem cells G-CSF-mobilized Female [826]
 ../scripts/download_and_process_one.sh E050
+# 15: E055 - Foreskin Fibroblast Primary Cells skin01 [883]
 ../scripts/download_and_process_one.sh E055
+# 16: E056 - Foreskin Fibroblast Primary Cells skin02 [347]
 ../scripts/download_and_process_one.sh E056
+# 17: E059 - Foreskin Melanocyte Primary Cells skin01 [398]
 ../scripts/download_and_process_one.sh E059
+# 18: E080 - Fetal Adrenal Gland [3182]
 ../scripts/download_and_process_one.sh E080
+# 19: E084 - Fetal Intestine Large [2186]
 ../scripts/download_and_process_one.sh E084
+# 20: E085 - Fetal Intestine Small [1556]
 ../scripts/download_and_process_one.sh E085
+# 21: E089 - Fetal Muscle Trunk [526]
 ../scripts/download_and_process_one.sh E089
+# 22: E090 - Fetal Muscle Leg [1901]
 ../scripts/download_and_process_one.sh E090
+# 23: E091 - Placenta [1594]
 ../scripts/download_and_process_one.sh E091
+# 24: E092 - Fetal Stomach [874]
 ../scripts/download_and_process_one.sh E092
+# 25: E093 - Fetal Thymus [1076]
 ../scripts/download_and_process_one.sh E093
+# 26: E094 - Gastric [189]
 ../scripts/download_and_process_one.sh E094
+# 27: E097 - Ovary [855]
 ../scripts/download_and_process_one.sh E097
+# 28: E098 - Pancreas [384]
 ../scripts/download_and_process_one.sh E098
+# 29: E100 - Psoas Muscle [181]
 ../scripts/download_and_process_one.sh E100
+# 30: E109 - Small Intestine [218]
 ../scripts/download_and_process_one.sh E109
+# 31: E114 - A549 EtOH 0.02pct Lung Carcinoma Cell Line [481]
 ../scripts/download_and_process_one.sh E114
+# 32: E116 - GM12878 Lymphoblastoid Cells [638]
 ../scripts/download_and_process_one.sh E116
+# 33: E117 - HeLa-S3 Cervical Carcinoma Cell Line [703]
 ../scripts/download_and_process_one.sh E117
+# 34: E118 - HepG2 Hepatocellular Carcinoma Cell Line [478]
 ../scripts/download_and_process_one.sh E118
+# 35: E119 - HMEC Mammary Epithelial Primary Cells [1626]
 ../scripts/download_and_process_one.sh E119
+# 36: E120 - HSMM Skeletal Muscle Myoblasts Cells [875]
 ../scripts/download_and_process_one.sh E120
+# 37: E121 - HSMM cell derived Skeletal Muscle Myotubes Cells [2035]
 ../scripts/download_and_process_one.sh E121
+# 38: E122 - HUVEC Umbilical Vein Endothelial Primary Cells [1420]
 ../scripts/download_and_process_one.sh E122
+# 39: E123 - K562 Leukemia Cells [643]
 ../scripts/download_and_process_one.sh E123
+# 40: E124 - Monocytes-CD14+ RO01746 Primary Cells [871]
 ../scripts/download_and_process_one.sh E124
+# 41: E125 - NH-A Astrocytes Primary Cells [1325]
 ../scripts/download_and_process_one.sh E125
+# 42: E126 - NHDF-Ad Adult Dermal Fibroblast Primary Cells [309]
 ../scripts/download_and_process_one.sh E126
+# 43: E127 - NHEK-Epidermal Keratinocyte Primary Cells [1207]
 ../scripts/download_and_process_one.sh E127
+# 44: E128 - NHLF Lung Fibroblast Primary Cells [92]
 ../scripts/download_and_process_one.sh E128
 
 # without full data
@@ -371,7 +424,7 @@ wget -O E080-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byF
 wget -O E084-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E084-H3K27ac.imputed.pval.signal.bigwig"
 wget -O E085-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E085-H3K27ac.imputed.pval.signal.bigwig"
 wget -O E089-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E089-H3K27ac.imputed.pval.signal.bigwig"
-wget -O E090-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E090-H3K27ac.imputed.pval.signal.bigwig"
+wget -O E090-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFilfeType/signal/consolidatedImputed/H3K27ac/E090-H3K27ac.imputed.pval.signal.bigwig"
 wget -O E091-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E091-H3K27ac.imputed.pval.signal.bigwig"
 wget -O E092-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E092-H3K27ac.imputed.pval.signal.bigwig"
 wget -O E093-H3K27ac.pval.signal.bigwig "https://egg2.wustl.edu/roadmap/data/byFileType/signal/consolidatedImputed/H3K27ac/E093-H3K27ac.imputed.pval.signal.bigwig"
@@ -448,7 +501,7 @@ cat ../processed/E127-H3K27ac.cleaned.narrowPeak >> ../tmp/enhancers.bed
 cat ../processed/E128-H3K27ac.cleaned.narrowPeak >> ../tmp/enhancers.bed
 bedtools sort -i ../tmp/enhancers.bed > ../tmp/enhancers.sorted.bed
 bedtools merge -i ../tmp/enhancers.sorted.bed > ../tmp/enhancers.merged.bed
-bedtools slop -i ../tmp/enhancers.merged.bed -g ../raw_bed/hg19.chrom.sizes -b 1500 > ../tmp/enhancers.slopped.bed
+bedtools slop -i ../tmp/enhancers.merged.bed -g ../raw_bed/hg19.chrom.sizes -b 3000 > ../tmp/enhancers.slopped.bed
 
 
 ################################
@@ -548,7 +601,6 @@ export PROMPT_COMMAND="echo -n \[\$(date +%H:%M:%S)\]\ "
 ../scripts/bigWigToBedGraph ../raw_bigwig/E127-DNase.pval.signal.bigwig ../raw_bedgraphs/E127-DNase.pval.bedgraph
 ../scripts/bigWigToBedGraph ../raw_bigwig/E128-DNase.pval.signal.bigwig ../raw_bedgraphs/E128-DNase.pval.bedgraph
 
-
 bedtools intersect -a ../raw_bedgraphs/E003-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E003-H3K27ac.enh.bedgraph
 bedtools intersect -a ../raw_bedgraphs/E004-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E004-H3K27ac.enh.bedgraph
 bedtools intersect -a ../raw_bedgraphs/E005-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E005-H3K27ac.enh.bedgraph
@@ -593,7 +645,7 @@ bedtools intersect -a ../raw_bedgraphs/E125-H3K27ac.pval.bedgraph -b ../tmp/enha
 bedtools intersect -a ../raw_bedgraphs/E126-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E126-H3K27ac.enh.bedgraph
 bedtools intersect -a ../raw_bedgraphs/E127-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E127-H3K27ac.enh.bedgraph
 bedtools intersect -a ../raw_bedgraphs/E128-H3K27ac.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E128-H3K27ac.enh.bedgraph
-
+rm ../raw_bedgraphs/*H3K27ac.pval.bedgraph
 
 
 bedtools intersect -a ../raw_bedgraphs/E003-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E003-DNase.enh.bedgraph
@@ -641,99 +693,99 @@ bedtools intersect -a ../raw_bedgraphs/E126-DNase.pval.bedgraph -b ../tmp/enhanc
 bedtools intersect -a ../raw_bedgraphs/E127-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E127-DNase.enh.bedgraph
 bedtools intersect -a ../raw_bedgraphs/E128-DNase.pval.bedgraph -b ../tmp/enhancers.slopped.bed > ../processed_bedgraphs/E128-DNase.enh.bedgraph
 
-~~~
+rm ../raw_bedgraphs/*DNase.pval.bedgraph
 
 
-cat ../processed_bedgraphs/E003-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E003-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E004-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E004-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E005-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E005-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E006-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E006-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E007-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E007-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E008-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E008-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E017-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E017-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E021-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E021-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E022-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E022-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E029-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E029-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E032-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E032-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E034-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E034-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E046-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E046-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E050-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E050-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E055-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E055-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E056-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E056-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E059-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E059-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E080-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E080-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E084-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E084-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E085-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E085-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E089-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E089-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E090-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E090-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E091-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E091-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E092-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E092-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E093-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E093-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E094-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E094-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E097-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E097-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E098-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E098-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E100-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E100-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E109-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E109-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E114-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E114-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E116-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E116-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E117-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E117-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E118-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E118-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E119-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E119-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E120-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E120-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E121-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E121-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E122-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E122-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E123-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E123-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E124-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E124-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E125-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E125-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E126-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E126-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E127-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E127-H3K27ac.enh.u.bedgraph
-cat ../processed_bedgraphs/E128-H3K27ac.enh.bedgraph | uniq -d > ../processed_bedgraphs/E128-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E003-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E003-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E004-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E004-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E005-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E005-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E006-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E006-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E007-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E007-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E008-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E008-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E017-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E017-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E021-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E021-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E022-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E022-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E029-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E029-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E032-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E032-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E034-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E034-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E046-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E046-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E050-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E050-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E055-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E055-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E056-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E056-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E059-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E059-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E080-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E080-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E084-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E084-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E085-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E085-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E089-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E089-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E090-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E090-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E091-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E091-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E092-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E092-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E093-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E093-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E094-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E094-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E097-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E097-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E098-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E098-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E100-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E100-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E109-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E109-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E114-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E114-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E116-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E116-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E117-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E117-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E118-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E118-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E119-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E119-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E120-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E120-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E121-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E121-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E122-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E122-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E123-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E123-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E124-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E124-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E125-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E125-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E126-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E126-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E127-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E127-H3K27ac.enh.u.bedgraph
+cat ../processed_bedgraphs/E128-H3K27ac.enh.bedgraph | uniq > ../processed_bedgraphs/E128-H3K27ac.enh.u.bedgraph
 
+rm ../processed_bedgraphs/*-H3K27ac.enh.bedgraph
 
+cat ../processed_bedgraphs/E003-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E003-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E004-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E004-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E005-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E005-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E006-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E006-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E007-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E007-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E008-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E008-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E017-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E017-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E021-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E021-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E022-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E022-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E029-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E029-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E032-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E032-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E034-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E034-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E046-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E046-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E050-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E050-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E055-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E055-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E056-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E056-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E059-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E059-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E080-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E080-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E084-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E084-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E085-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E085-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E089-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E089-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E090-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E090-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E091-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E091-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E092-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E092-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E093-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E093-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E094-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E094-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E097-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E097-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E098-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E098-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E100-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E100-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E109-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E109-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E114-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E114-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E116-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E116-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E117-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E117-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E118-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E118-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E119-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E119-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E120-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E120-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E121-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E121-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E122-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E122-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E123-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E123-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E124-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E124-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E125-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E125-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E126-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E126-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E127-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E127-DNase.enh.u.bedgraph
+cat ../processed_bedgraphs/E128-DNase.enh.bedgraph | uniq > ../processed_bedgraphs/E128-DNase.enh.u.bedgraph
 
-cat ../processed_bedgraphs/E003-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E003-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E004-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E004-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E005-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E005-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E006-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E006-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E007-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E007-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E008-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E008-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E017-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E017-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E021-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E021-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E022-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E022-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E029-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E029-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E032-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E032-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E034-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E034-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E046-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E046-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E050-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E050-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E055-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E055-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E056-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E056-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E059-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E059-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E080-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E080-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E084-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E084-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E085-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E085-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E089-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E089-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E090-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E090-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E091-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E091-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E092-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E092-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E093-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E093-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E094-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E094-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E097-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E097-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E098-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E098-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E100-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E100-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E109-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E109-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E114-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E114-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E116-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E116-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E117-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E117-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E118-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E118-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E119-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E119-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E120-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E120-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E121-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E121-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E122-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E122-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E123-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E123-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E124-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E124-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E125-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E125-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E126-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E126-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E127-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E127-DNase.enh.u.bedgraph
-cat ../processed_bedgraphs/E128-DNase.enh.bedgraph | uniq -d > ../processed_bedgraphs/E128-DNase.enh.u.bedgraph
-
-rm ../processed_bedgraphs/*.enh.bedgraph
+rm ../processed_bedgraphs/*-DNase.enh.bedgraph
