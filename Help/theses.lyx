@@ -46,7 +46,7 @@ End
 \font_tt_scale 100 100
 \graphics default
 \default_output_format default
-\output_sync 1
+\output_sync 0
 \output_sync_macro "\synctex=1"
 \bibtex_command default
 \index_command default
@@ -128,46 +128,60 @@ Abstract
 
 \begin_layout Standard
 Enhancers are regulatory DNA sequences that, when bound to proteins called
- transcription factors, enhance the likelihood that a transcription of a
- target gene will occur.
- Regulation of transcription is an important form of gene expression control,
- and the activity of enhancers allows specific regulation of genes in a
- stage-specific and tissue-specific manner.
+ transcription factors, enhance the likelihood of transcription of the enhancer'
+s target genes.
+ Regulation of transcription is an important form of control of the gene
+ expression and the activity of enhancers plays a significant role in the
+ stage-specific and tissue-specific regulation of genes.
  It has been shown over the years that genetic variation within enhancer's
  sequence might cause cells behavior modification and diseases.
- Transcription factors tend to attach to the DNA at transcription factor
- binding sites, which are motifs inside the DNA, which are over represented
- in enhancer sequences.
- Except for these binding sites, the rules and structure nuances of the
- enhancer sequence is not fully clear.
- Enhancers activity can be detected mainly by adjacent histone marks, the
- presence of transcription factors and accessibility.
- All of these epigenetic data is often noisy, and the extraction process
- is costly, and requires a sample of cells from the tested tissue, which
- is not always practical for all tissue types of all stages.
- We offer here a computational approach to detect enhancers based on their
- sequence in an unsupervised manner.
- We created a generalized hidden Markov model with states that emit transcriptio
-n factor binding sites using a positional weight matrix model, and states
- that emit single nucleotides with high order dependency on previously emitted
- nucleotides.
- This model learns a more complex underlying structure of DNA sequences,
- containing both motifs and high-order distributions of nucleotides in between
- them.
- We first review the background of Markov and hidden Markov models and the
- demonstrate how to calculate the likelihood of this model from a sequence.
+ The rules and nuances of the enhancer structure is not fully understood,
+ though it has been shown that transcription factors tend to attach to them
+ at unique motifs called transcription factor binding sites, which are over-repr
+esented in enhancer sequences.
+ Enhancers activity can be detected by the epigenetic data from the local
+ environment around its position.
+ The main indicators for an enhancer lays in the adjacent histone modifications,
+ on which the flanks of the enhancer are wrapped around.
+ In between the flanks, the enhancer itself tends to be spacial accessible
+ for biochemical interactions between the DNA and the proteins around it.
+ Though useful, the epigenetic data is often noisy and involves a costly
+ extraction process of specific cells out of a tissue sample, which is not
+ necessarily practical for all cell types and their different stages.
+ An alternative approach for detecting enhancers is to observe the genetic
+ content of its sequence, since it contains all the essential information
+ for the DNA to act as an enhancer.
+ Over the years, it was demonstrated in vivo that the cell requires no other
+ mechanism but the sequence to regulate its gene expression.
+ With that idea in mind, we offer a computational approach for detecting
+ enhancers based on their sequence alone, in an unsupervised manner.
+ We created a high-order generalized hidden Markov model (HOP-HMM), with
+ two kinds of states: one which emits transcription factor binding sites
+ by using a positional weight matrix model, and one which emits single nucleotid
+es with high order dependency on previously emitted nucleotides.
+ Compared to a regular the hidden Markov model, this model learns a more
+ complex underlying structure of DNA sequences, containing both binding
+ site motifs and high-order distributions of nucleotides in between them.
+ We first review the biological background of enhancers, specifically in
+ humans.
+ We then review in depth the background of Markov and hidden Markov models,
+ and discuss how to calculate the likelihood of a sequence given this model.
  Then, we describe our generalized model in detail and develop the expectation
- maximization and Viterbi algorithms for regular hidden Markov model, followed
- by the adjustments needed for our generalized version of the model.
- We then create a synthetic enhancer-like dataset using the generative property
- of the model, and simulate the model in a controlled way to evaluate its
- performance.
- Next, we experiment on the Roadmap project dataset, containing human DNA
- sequences of known active enhancers.
-\end_layout
-
-\begin_layout Standard
-TODO: FINISH
+ maximization and Viterbi algorithms for hidden Markov model, followed by
+ the adjustments needed for our generalized model.
+ These algorithms implementation are demonstrated by applying them on synthetic
+ dataset of enhancer-like sequences, created by using the generative property
+ of the generalized model.
+ We simulate the model in a controlled way to evaluate its performance by
+ inferring estimated parameters of the model and comparing them to the real
+ parameters used to create the dataset.
+ Finally, we apply the expectation maximization algorithm for training a
+ HOP-HMM from human DNA enhancer sequences, selected by the epigenetic data
+ of the Roadmap project.
+ We demonstrate the capabilities of the model by comparing its estimation
+ to the epigenetic tracks, showing it can predict the loci of enhancers
+ and the tissue in which they will be active, without being exposed to the
+ epigenetic data.
 \end_layout
 
 \begin_layout Part*
@@ -175,8 +189,8 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-The genome of every organism contains the inherited information that defines
- its complex structure and function.
+The genome of every living organism contains the inherited information that
+ defines its complex structure and function.
  The genome is built out of Deoxyribonucleic acid (DNA) molecule, that is
  a built out of two chains of nucleotides units that form a double helix
  shape.
@@ -189,44 +203,48 @@ The genome of every organism contains the inherited information that defines
 \begin_layout Standard
 Proteins are macromolecoles, which carry various roles and functions within
  organisms.
- They are built out of 20 different amino acids, which order and structure
- is encoded inside genetic segments in the genome called genes.
- Through the transcription and translation processes, the genes are expressed
- and result in the formation of proteins.
+ They are built as a polymer out of 20 different amino acids, which order
+ and structure is encoded in genetic segments within the genome called genes.
+ Through the transcription process, followed by the translation processes,
+ the genes are expressed and result in the formation of proteins.
  In the transcription process the gene is read and transcribed into a single
  strand sequence of RNA.
- Later, the RNA molecules are translated into a sequence of amino acids
- that constitute a protein.
+ Later, the formed RNA molecule, which at this stage is called messenger
+ RNA (mRNA), is translated by a complex molecule called the ribosome.
+ The mRNA sequence is built out of tirplets of neucleotides called codons,
+ which the ribosome reads and fabricates into a sequence of amino acids
+ that constitute the protein.
 \end_layout
 
 \begin_layout Standard
 Gene sequences are built out fragmented introns and exons, where only the
- exons becomes the RNA molecules that translates into proteins while the
- introns are spliced away beforehand.
- Although the exons alone hold the recipe for the construction of the organism's
- proteins, the complexity of the organism is not a product of their number
- or their length.
+ exons mature into mRNA molecules that are translated into proteins, while
+ the introns are spliced away beforehand.
+ Counter intuitively, even though the exons hold the recipe for the construction
+ of the organism's proteins, the complexity of the organism is not a product
+ of their number or their length.
  For example, the humans and Caenorhabditis elegans roundworms both have
- about 19,000 genes (
-\begin_inset CommandInset citation
-LatexCommand citealp
-key "key-16"
-
-\end_inset
-
-; 
+ about 19,000 genes with roughly the same total exon length and number (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-57"
 
 \end_inset
 
-), with roughly the same total exon length and number, although the human
- body is vastly more diverse and complex.
- The source for the organisms complexity differences is attributed to the
- gene regulation mechanism.
- The human genome is 3.23 Gb long, and it is estimated that gene regulation
- regions involve 10-20% of it (
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-16"
+
+\end_inset
+
+), even though the human body is vastly more diverse and complex.
+ Although the genes are responsible for the variety of proteins a cell can
+ produce, the source of the organisms complexity, with different cells performin
+g different tasks while carrying the same genome, is stems from the gene
+ regulation mechanism.
+ In the case of humans, the genome is 3.23 Gb long and it is estimated that
+ the total length of gene regulation regions involve 10-20% of it (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-46"
@@ -244,14 +262,14 @@ key "key-45"
 \end_layout
 
 \begin_layout Standard
-Enhancers are are non-coding regulatory DNA sequences that play a key role
- in the regulation transcription of genes.
- In humans there are hundreds of thousands of enhancers, scattered over
- the non-coding regions of the genome, and their length are usually between
- 100-1000 bp.
+Enhancers are non-coding regulatory DNA sequences that play a key role in
+ the regulation transcription of genes.
+ In humans, there are hundreds of thousands of enhancers scattered over
+ the non-coding regions of the genome, usually with length between 100-1000
+ base pairs (bp).
  When activated, the DNA folding draws the enhancer spatially closer to
  another type of regulatory element called promoter, resulting in the translatio
-n of a gene adjacent to the promoter (see figure 
+n of the gene adjacent to the promoter (see figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "Transcription"
@@ -259,18 +277,19 @@ reference "Transcription"
 \end_inset
 
 ).
- The enhancer's target gene is the expressed gene from this activation process.
- It can be located up to a megabase upstream or downstream from their activating
- enhancer (
+ The expressed gene of this activation process is the enhancer's target
+ gene, and it can reside up to a mega base pairs (Mb) upstream or downstream
+ from their activating enhancer (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-43"
 
 \end_inset
 
-), and are orientation independent to it.
- Moreover, the gene-enhancer connection is not exclusive, and the common
- case is that each enhancer has several target genes and vice versa (
+), with an independent orientation to it.
+ Moreover, the gene-enhancer connection is not exclusive, as it was shown
+ that the common case is that each enhancer has several target genes and
+ vice versa (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-20"
@@ -322,19 +341,28 @@ A) An enhancer and its distal target gene.
 \end_layout
 
 \begin_layout Standard
-In VISTA Project (
+An enhancer is described as being in an active status, when it is causing
+ the expression of its target gene, which does not occur evenly across different
+ types of cells.
+ The the enhancer's sequence plays a critical role in the type of cells
+ it will be active in.
+ In the VISTA Project (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-60"
 
 \end_inset
 
-), mouse fertilized eggs where injected enhancers sequences, adjacent to
- LacZ reporter gene, encoding enzyme with blue color.
- The injected DNA sequences bared no epigenetic information and integrated
- in an arbitrary position in the mouse genome.
- The transgenic embryos where photographed after 11.5 days and, for some
- of the DNA sequences, a similar pattern was present over several instances.
+), mouse fertilized eggs where injected with enhancers sequences, adjacent
+ to LacZ reporter gene, encoding an enzyme protein with a blue color.
+ As it was synthetically fabricated, the injected DNA sequences containing
+ the enhancer and reporter gene bared no epigenetic information and were
+ integrated in an arbitrary position in the mouse genome.
+ The enhancers in the injected DNA sequences originated from the human genome,
+ where each enhancer was injected to a different embryo.
+ When the transgenic embryos were photographed after 11.5 days, for some
+ of the injected DNA sequences a pattern was present consistently over several
+ samples.
  These results imply that for many DNA sequences, the DNA code alone possess
  the potential to become a tissue specific enhancer, even without epigenetic
  information.
@@ -372,8 +400,8 @@ name "Mouse"
 \end_inset
 
 Transgenic mouse embryo in the 11.5 day.
- As an fertilized egg a synthetic enhancer sequence was injected, which
- is related to the dorsal root ganglia spinal neurons.
+ As an fertilized egg was injected with a synthetic enhancer sequence related
+ to the dorsal root ganglia spinal neurons.
  The enhancer became activated and caused the expression of the blue color
  marker gene that was coupled to it.
  Taken from Vista Enhancer Browser, experiment hs-51 embryo 2.
@@ -390,22 +418,19 @@ Transgenic mouse embryo in the 11.5 day.
 \end_layout
 
 \begin_layout Standard
-
-\end_layout
-
-\begin_layout Standard
 Transcription factors (TF) are proteins that bind to the DNA, and together
- with other co-factor proteins initiate the gene transcription process.
- TFs tend to bind to certain transcription factor binding sites (TFBS),
- which are motifs of nucleotides on the DNA with average length of 12 bp
- in humans (
+ with other co-factor proteins initiate the gene transcription process of
+ the DNA sequence.
+ TFs tend to bind to their transcription factor binding sites (TFBS), which
+ are motifs of nucleotides in the DNA sequence.
+ The average length of TFBS in humans is 12 bp (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-36"
 
 \end_inset
 
-) that are conserved between species (
+), and they are highly conserved between various species (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-12"
@@ -413,9 +438,13 @@ key "key-12"
 \end_inset
 
 ).
- ChIP-seq method can measure the amount of TFs which are bounded to the
- DNA strand, by applying antibodies which attach to the TFs and reading
- a short DNA sequence around the TF and antibody.
+ When analyzing a tissue sample TF interaction density, a chromatin immunoprecip
+itation sequencing (ChIP-seq) method is used for probing the amount of TFs
+ in affinity to the DNA strands.
+ Briefly, this method involved applying antibodies on cross-linked DNA,
+ which attach to the TFs linked to the DNA.
+ This antibodies attachment is followed by massively parallel sequencing
+ of the short DNA sequences around the TF and the antibody.
  Genome-wide association studies (GWAS) of ChIP-seq found that different
  TFs have different and distinct distributions of TFBS (
 \begin_inset CommandInset citation
@@ -428,11 +457,11 @@ key "key-32"
 \end_layout
 
 \begin_layout Standard
-Both enhancers and promoters contain TFBSs that are critical for the their
- correct regulatory operation.
- Multiple studies have shown that genetic alternations in TFBS can affect
- the expression of the regulated gene and are a major cause of different
- human diseases (
+The TFBSs in both enhancers and promoters are critical for their correct
+ regulatory activity.
+ Multiple studies have shown that genetic alternations in enhancer's TFBSs
+ can affect the expression of teir target gene and are a major cause of
+ various human diseases (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-35"
@@ -482,37 +511,51 @@ key "key-39"
 \end_inset
 
 ).
- From the sequence aspect, enhancers and promoters have a similar structure
- of a background nucleotide sequence with distribution different from other
- part of the genome, with TFBS motifs tiled inside this background sequence.
+ From the sequence aspect, enhancers and promoters have a similar structure:
+ both have a difference in nucleotide frequencies compared to other part
+ of the genome, and both contain TFBSs tiled inside a background sequence.
 \end_layout
 
 \begin_layout Standard
-The enrichment of TFBS is a good predictor for the location of promoter
- and enhancer regulatory regions and the type of cells they will be active
- in.
- Folding of DNA allows the enhancer-promoter interactions, in which the
- TFs take major part.
+Folding of DNA allows the enhancer-promoter interactions, in which the TFs
+ take major part.
  Once bounded to the DNA, the TFs recruit other cofactor proteins to them,
  and together they form a transcription preinitiation complex (PIC), a very
  large assembly of proteins.
  Out of the tens of proteins constructing the PIC, the sub-unit RNA Polymerase
- (RNA pol II) has the role of transcribing the adjacent gene.
- it opens the double stranded DNA, so that one strand of nucleotides is
- exposed and becomes a template for RNA synthesis.
+ (RNA pol II) has the important role of transcribing the adjacent gene.
+ It slides along the double stranded DNA and open it until one strand of
+ nucleotides is exposed and becomes a template for RNA synthesis.
 \end_layout
 
 \begin_layout Standard
-For generating a simplistic yet accurate model for representing the TF binding
- potential of a DNA sequence, i.e.
- 
-\begin_inset Formula $P(x_{1:n}|binding)$
+Though one might be tempted to imagine a TFBS as a 
+\begin_inset Quotes eld
 \end_inset
 
-, we are usually required to assume independence between positions and a
- small span of influence by the sequence around the binding site.
- The peaks of the ChIP-seq mark the TF binding locations, from which a binding
- site 
+word
+\begin_inset Quotes erd
+\end_inset
+
+ of nucleotides, modeling the kinetics and thermodynamics considerations
+ of the DNA-protein interaction involves are far from simple (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-67"
+
+\end_inset
+
+).
+ For generating a simplistic yet statistically accurate model for representing
+ the TF binding potential of a DNA sequence, i.e.
+ 
+\begin_inset Formula $P\left(x_{1:n}|binding\right)$
+\end_inset
+
+, we are required to assume independence between positions and a small span
+ of influence by the sequence around the binding site.
+ For samples of such distribution, the peaks of the ChIP-seq readings mark
+ the TF binding are often used, from which a binding site 
 \begin_inset Quotes eld
 \end_inset
 
@@ -538,22 +581,21 @@ key "key-7"
 \begin_layout Standard
 \begin_inset Formula 
 \[
-P(x_{1:n}|binding)=\prod_{i\in[n]}P(x_{i}|binding)
+P\left(x_{1:J}|binding\right)=\prod_{j\in[n]}P\left(x_{j}|binding\right)
 \]
 
 \end_inset
 
-Where n is the size of relevant sequence.
- The size of the sequence that is affected by the binding event is derived
- from the physical characteristics of the TF.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $P(x_{i}|binding)$
+Where J is the size of relevant sequence that is affected by the binding
+ event, and is derived from the physical characteristics of the TF.
+ Practically, this size is often estimated from the observed motifs in the
+ TF's ChIP-seq peaks.
+ For each j, 
+\begin_inset Formula $P\left(x_{j}|binding\right)$
 \end_inset
 
- is estimated by counting the nucleotides frequency in every position of
- the observed binding sites, which are the ChIP-seq peaks.
+ is estimated by counting the nucleotides frequency in the j'th position
+ of the observed binding sites, which reside in the ChIP-seq peaks.
  For a motif of length J, this probability estimation is stored in a position
  probability matrix (PPM) W as followed: 
 \end_layout
@@ -561,7 +603,7 @@ Where n is the size of relevant sequence.
 \begin_layout Standard
 \begin_inset Formula 
 \[
-W_{i,j}=\frac{1}{N}\sum_{n\in[N]}\boldsymbol{1}(x_{j}^{(n)}=i)
+W_{i,j}=\frac{1}{N}\sum_{n\in[N]}\boldsymbol{1}\left(x_{j}^{(n)}=i\right)
 \]
 
 \end_inset
@@ -579,7 +621,13 @@ where
 \end_inset
 
  the nucleotide index of A,C,G and T.
- The PPM is normalized 
+ 
+\end_layout
+
+\begin_layout Standard
+For allowing comparison between the binding likelihood of different TFBS
+ with different lengths, the normalized form of PPM, the PWM, is more convenient
+ for use:
 \begin_inset Formula 
 \begin{equation}
 {\displaystyle M_{i,j}=\mathrm{log}\left(\frac{W_{i,j}}{b_{i}}\right)}\label{PPM}
@@ -598,35 +646,20 @@ where
  in case of nucleotides.
  From a generative model point of view, the TFBS sequence is generated by
  an emission model of the PWM.
- The division in 
-\begin_inset Formula $M$
-\end_inset
-
- by 
-\begin_inset Formula $b_{i}$
-\end_inset
-
- allows comparison between the binding likelihood of different TFs with
- different lengths.
- The practical length-normalized log likelihood of a PWM 
-\begin_inset Formula $log\left(\mathscr{\mathcal{L}}(W;x_{1:n})\right)$
-\end_inset
-
- is easily is done be a convolution of 
-\begin_inset Formula $log(W)$
-\end_inset
-
- on a one-hot encoding of the sequence (see figure 
+ When a convolution of M is applied on the one-hot encoding of the sequence
+ (see figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "PWM"
 
 \end_inset
 
-), and actually holds the log likelihood of a TF binding to a sequence relative
+), the result is the log likelihood of a TF binding to a sequence relative
  to a random sequence.
- In this work, we use the more familiar term PWMs, but will actually use
- PPMs for the TFBS emission model which are essentially simmilar.
+ In this work, we use the more familiar term PWMs, though we actually use
+ the unnormalized PPMs for the TFBS emission model, since we require the
+ likelihood of the a TF binding and not a length-independent comparison
+ between TFs.
 \end_layout
 
 \begin_layout Standard
@@ -672,10 +705,45 @@ Sub-sequences out of the DNA is represented in a one-hot encoding, then
 \end_layout
 
 \begin_layout Standard
-Conserved non-coding elements (CNE) reside in clusters, usually with low
- gene density but with vicinity to genes.
- Typically, CNE are structured in arrays known as genomic regulatory block
- (GRB), with a mean length of 1.4 Mb (
+Detection of enhancers and the tissue they are active in is the subject
+ of much research in the last few decades.
+ Specifically, enhancer detection methods that rely on their sequence alone
+ without a biological experiment is especially much sought-after goal.
+ Such a biological experiments, some of which are mentioned in this work,
+ involve cells with their enhancer activating their target gene in proximity
+ to the experiment, which is usually an expensive and non-trivial requirement.
+ All methods for detecting active enhancers 
+\begin_inset Quotes eld
+\end_inset
+
+in the act
+\begin_inset Quotes erd
+\end_inset
+
+, are inherently limited to the specific tissues we can extract and isolate
+ in a lab.
+ Furthermore, many enhancers are active only in specific cell types in specific
+ stages, and the requirement to achieving every type of cell in every possible
+ stage in complex organisms is not a practical one for the foreseen future.
+ On the other hand, the genome of organisms can be easily and inexpensively
+ sequenced for later analysis in-silico.
+ The ultimate goal of an efficient computational method for predicting and
+ explaining the functional nature of enhancer sequence has produced positive,
+ yet far from sufficient results in the last years, as reviewed in (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-33"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+An alternative potential way of detecting enhancers from their sequence
+ alone, is by finding non-coding regions that are conserved across species.
+ Conserved non-coding elements (CNE) have a tendency to reside in clusters,
+ usually with low gene density but with vicinity to genes (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-11"
@@ -683,8 +751,7 @@ key "key-11"
 \end_inset
 
 ).
- The correlation between conservation of non-coding region and enhancer
- functionality is not strong.
+ Evidently, the overlap between CNEs and enhancers is far from exact.
  Some verified enhancers are weakly or not conserved between species (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -714,7 +781,7 @@ key "key-40"
 \end_inset
 
 ) and some highly conserved areas in the mouse genome are not associated
- to regulatory activity and their deletion and yielded viable mice (
+ to regulatory activity and their deletion yields viable mice (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-1"
@@ -732,25 +799,9 @@ key "key-60"
 \end_inset
 
 ).
- The reason for such ultra-conservation of 200 bp sequences when the TFBS
- is only 4-8 bp long is unclear.
- It is possible that these conserved sequences have spacial role when binding
- to multiple TFs of the PIC or that these enhancers has other functions
- which are not yet understood such as eRNA (
-\begin_inset CommandInset citation
-LatexCommand citealp
-key "key-23"
-
-\end_inset
-
-; 
-\begin_inset CommandInset citation
-LatexCommand citealp
-key "key-3"
-
-\end_inset
-
-).
+ The ultra-conservation of 200 bp enhancer sequences while the TFBSs in
+ them are usually shorter than 15 bp raises the possibility that these conserved
+ iter-TFBS parts have some kind of role which it is not fully clear.
 \end_layout
 
 \begin_layout Subsection*
@@ -758,20 +809,20 @@ Epigenetics
 \end_layout
 
 \begin_layout Standard
-Almost all cells in every organism contain its genome, but only part of
- genome is active in any specific cell.
- Cells of different types and in different operation modes differ by gene
- expression patterns.
- The reason for that lies in regulation components that are outside of the
- genomic sequence.
+Almost all cells in every organism contain their entire genomic payload,
+ but only part of genome is active in any specific cell.
+ Essentially, cells of different type and state differ by gene expression
+ patterns.
+ The reason for this difference between cells lays in regulation components
+ that are outside of the Watson and Crick model of the DNA sequence.
  The location and presence of TFBS, background nucleotides distribution
  and other sequence related properties are not enough to explain regulatory
  role of regions in the genome.
 \end_layout
 
 \begin_layout Standard
-Several epigenetic features (which do not involve the nucleotides sequence
- directly) correlate with enhancer regions in the genome:
+Several epigenetic features, which do not involve the nucleotides sequence
+ itself, correlate with enhancer regions in the genome:
 \end_layout
 
 \begin_layout Itemize
@@ -791,28 +842,28 @@ DNA methylation
 \end_layout
 
 \begin_layout Standard
-These properties and mechanisms have measurable features that lie on top
- of the genome.
- Their combination is the main source of identification for enhancer regions
- in the genome.
- Each cell has its own epigenetic features, in a binaric form, e.g.
- a specific part of the genome can be either accessible, or not.
- When several similar cells from the same tissue sample are measured, a
- frequency or count of the feature is measured per DNA loci, and generates
- epigenetic data.
- The epigenetic data is commonly used as the ground truth indication for
- enhancer sequences, as done for the human genome in the ENCODE project.
-\end_layout
-
-\begin_layout Subsubsection*
-Accessibility
+These mechanisms have measurable features that can be added as a data layer,
+ on top of the genome.
+ Their combination is the main source of identification and prediction for
+ enhancer regions in the genome.
+ A single cell has its own epigenetic features, often in binary form, e.g.
+ a specific element of the genome can be either accessible or not.
+ Whenever several similar cells from the same tissue sample are measured,
+ a frequency or count of the feature is measured per DNA locus, which can
+ then stored as a sequence of numbers with the length of the reference genome.
+ The epigenetic data is commonly further processed by calculating its p-value
+ compared to a local environment, and peak called using algorithms such
+ as MACS2 an used as indication for the function of the different parts
+ of the genome in the tested cell type, as done for the human genome in
+ the ENCODE project.
 \end_layout
 
 \begin_layout Standard
-In eukaryotes, the DNA is packed around a structure of 8 histone proteins,
- together forming a nucleosome core.
- The location of the nucleosome binding is not random over the DNA sequence,
- but has a tendency for specific DNA binding sites (
+In eukaryotes, the DNA is packed around a structure of 8 histone proteins
+ called a nucleosome,  together forming a chromatin complex.
+ Similarly to the TFs, the nucleosome binding location in the DNA sequence
+ is not random, as the it has a tendency for specific DNA binding sites
+ as well (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-9"
@@ -820,26 +871,47 @@ key "key-9"
 \end_inset
 
 ).
- DNA that is wrapped around a nucleosome has a lesser probability to interact
- with proteins, as it is physically inaccessible.
- Both the enhancer, the promoter and the gene need to be accessible for
- a successful transcription.
+ DNA that is wrapped around a nucleosome has a lesser likelihood for interaction
+ with proteins, because it is physically inaccessible.
+ Accessibility is important for the TFs and other protein to bind to the
+ DNA molecule, hence both the enhancer, the promoter and the gene need to
+ be accessible for a successful transcription to occur.
+ DNase-I hypersensative (DHS) sites are regions of the DNA which are sensitive
+ to the cleavage by the DNase-I enzyme.
+ At these regions the DNA loses the nucleosome, and become accessible and
+ potentially active.
+ Measurement of DHS cleavages is available through DNase-seq (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-71"
+
+\end_inset
+
+), a high-throughput method for measuring the accessibility epigenetic data
+ of the DNA, usually with a better resolution than histone modifications
+ measurements.
+ A faster and more sensitive technique for accessibility measurement was
+ is called ATAC-seq (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-70"
+
+\end_inset
+
+), and currently more commonly used.
 \end_layout
 
 \begin_layout Standard
-Since the scenario of TF binding on an enhancer requires an accessible DNA
- region, I hypersensative sites are used for detecting a potential DNA cleavages
- that have the potential of being regulatory elements, in usually a better
- resolution than histone marks.
-\end_layout
-
-\begin_layout Subsubsection*
-Histone Marks
-\end_layout
-
-\begin_layout Standard
-Chromatin modifications signatures, also called histone marks, are predictive
- of enhancer position and activity status (
+Histone modifications, also called histone marks and chromatin modification,
+ are chemical alteration which happen to the long tail-like section of the
+ histone protein.
+ Histone are numbered from 1 to 8, and for example, the acetylation of the
+ 3rd histone at the Lysine amino-acid at the 14th position in the protein
+ is abbreviated as H3K14ac.
+ Along many roles in the cell, such as DNA repair and mitosis, histone modificat
+ions has a function in the gene regulation process.
+ In the past 20 years, a substantial body of research has shown that histone
+ modifications are predictive of enhancer position and activity status (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-60"
@@ -861,7 +933,7 @@ key "key-18"
 \end_inset
 
 ).
- The histone marks are considered to contain a certain 
+ The histone modifications are considered to form a certain 
 \begin_inset Quotes eld
 \end_inset
 
@@ -869,33 +941,28 @@ histone code
 \begin_inset Quotes erd
 \end_inset
 
- which encode complex information, additionally to the DNA, regarding the
- transcription regulation and other aspects.
- Comparing to other epigenetic information, and especially DNA methylation
- (
-\begin_inset CommandInset citation
-LatexCommand citealp
-key "key-48"
-
-\end_inset
-
-), chromatin modifications have a short time-scale of seconds or hours (
+ along the genome, which encode complex information underlying the genomic
+ code and has a connection the transcription regulation and other aspects.
+ Comparing to other epigenetic information, chromatin modifications have
+ a shorter time-scale of seconds or hours (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-25"
 
 \end_inset
 
-), hence they are considered part of the dynamic changes of the cell's modes.
+), hence they are thought to be relasubstantial body of ted to the dynamic
+ changes of the cell's states.
 \end_layout
 
 \begin_layout Standard
-Histone marks can be detected with ChIP-seq procedure, similarly to TF binding
- detection described above, by using antibodies which attach to the chromatin
- modification instead of the TF protein.
- H3K4me1 and H3K27ac are among the predominant histone marks of active enhancers
-, where H3K4me1 is enriched on transcribed genes and enhancers prior to
- activation (
+Measurement of histone modifications is done with the ChIP-seq method as
+ well, similarly to TF binding detection described above.
+ In histone ChIP-seq, the used antibodies attach to the modification in
+ the histone tails instead of the TF protein.
+ H3K4me1 and H3K27ac are among the predominant histone modifications of
+ active enhancers, where H3K4me1 is enriched on transcribed genes and enhancers
+ prior to activation (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-7"
@@ -924,8 +991,8 @@ key "key-62"
 \end_inset
 
 ) which is known to occur during the activation.
- Other histone marks that are present on active enhancers and are used for
- their detection are H3K9ac (
+ Other histone modifications that are present on active enhancers and are
+ used for their detection are H3K9ac (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-15"
@@ -1009,8 +1076,8 @@ name "Enhancer"
 
 \end_inset
 
-The accessibility of the enhancer's sequence and its surrounding histone
- marks are connected to its regulatory activity state.
+The accessibility of an enhancer's sequence and its surrounding histone
+ modifications are connected to its regulatory activity state.
  On the upper part an active enhancer sequence that is accessible for protein
  interaction needed for transcription, where as on the lower part an inactive
  enhancer is inaccessible since it is wrapped around a nucleosome.
@@ -1026,24 +1093,36 @@ The accessibility of the enhancer's sequence and its surrounding histone
 
 \end_layout
 
-\begin_layout Subsubsection*
-DNA Methylation
-\end_layout
-
 \begin_layout Standard
-DNA methylation at cytosine and CpG sites has been involved in genome silencing
- in multiple processes (
+DNA methylation at cytosine nucleotides and cytosine proceeded by guanine
+ nucleotide (CpG) is been involved in long-rage genome silencing in multiple
+ processes (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-29"
 
 \end_inset
 
-), and has been documented as largely correlated with gene expression inhibition
- when present in promoters.
+) and cell aging (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-48"
+
+\end_inset
+
+).
+ It has been documented as largely correlated with gene expression inhibition
+ when present in promoters (
+\begin_inset CommandInset citation
+LatexCommand citet
+key "key-3"
+
+\end_inset
+
+).
  In enhancer elements, anti-correlation was found between DNA methylation
- density and enrichment of active enhancer histone marks and TF binding
- (
+ density and enrichment of active enhancer histone modifications and TF
+ binding (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-55"
@@ -1059,46 +1138,10 @@ key "key-58"
 
 ), although the cause and consequence relationship underlying these correlations
  is not yet clear.
-\end_layout
-
-\begin_layout Subsubsection*
-Epigenetics Limitation
-\end_layout
-
-\begin_layout Standard
-The currently most accurate method for predicting the location of enhancers
- sequences in a genome wide scale, is analyzing the histone marks, TF and
- cofactors presence using ChIP-seq from a cell line or from a tissue, combined
- with DNase I hypersensative (DHS).
-\end_layout
-
-\begin_layout Standard
-Several approaches have faced the problem of locating enhancers by modeling
- gene expression based on epigenetic marks.
- However, these models rely on experimental data, and are inherently limited
- to the specific tissues we can extract and isolate for epigenetic examination.
- Furthermore, such models do no supply  a classification of enhancers for
- new variation found in the population.
- Another disadvantage is the need for live cells for the verification of
- the regulatory activity of a sequence.
- The ultimate goal of an efficient computational method for predicting and
- explaining the reason for the functional nature of sequences
-\begin_inset Quotes eld
-\end_inset
-
-in-silico
-\begin_inset Quotes erd
-\end_inset
-
- has produced positive, yet far from sufficient results in the last years,
- as reviewed in (
-\begin_inset CommandInset citation
-LatexCommand citealp
-key "key-33"
-
-\end_inset
-
-).
+ Currently, the most accurate method for predicting the loci of enhancer
+ sequences in a genome wide scale, is analyzing the histone modifications,
+ TF and cofactors presence using ChIP-seq from a cell line or from a tissue,
+ combined with DNase I hypersensative (DHS).
 \end_layout
 
 \begin_layout Standard
@@ -1124,16 +1167,28 @@ name "GenomeBrowser"
 
 \end_inset
 
-Epigenetic feature tracks measured by ENCODE, taken from the tenth chromosome
- of a H1-hESC cell line.
- Highlighted in light blue, the peaks of the H3K27ac (1st green plot) and
- H3K4me1 (2nd green plot) histone marks and the DNaseI hyper sensitivity
+UCSC Genome Browser showing epigenetic feature tracks, staken from the 10th
+ chromosome of a H1-hESC cell line.
+ Highlighted in light blue, the peaks of H3K27ac (1st green plot) and H3K4me1
+ (2nd green plot) histone modifications and the DNaseI hyper sensitivity
  feature (4th green plot) together with the lack of H3K27me3 (3rd green
- plot) signal are indication of an active enhancer, as indicated by the
- ChromHMM classification (bottom).
+ plot) signal are indicating an active enhancer, as also marked by the ChromHMM
+ classification (bottom).
  Note the decrease between the two peaks of H3K27ac and H3K4me1 is located
  on top of the increase of the DNaseI hyper sensitivity, which implies a
  cleavage in between two nucleosomes with modifications.
+ Taken from 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://genome-euro.ucsc.edu/cgi-bin/hgTracks
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -1151,9 +1206,9 @@ Previous Work
 \end_layout
 
 \begin_layout Standard
-There are several achievements in the task of predicting epigenetic and
- regulatory properties of DNA elements given only their sequence using machine
- learning algorithms.
+Several significant computational efforts were made in the last few years
+ for predicting the epigenetic and regulatory properties of DNA elements
+ based on the genetic sequence alone.
  DeepSEA (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -1161,24 +1216,22 @@ key "key-63"
 
 \end_inset
 
-) deep convolutional neural network (DCNN) is fed with 1000 bp DNA sequence
- and predicts an output vector of 919 binary features which represents the
- chromatin modifications of 200 bp bin in the center of the input sequence.
+) uses a deep convolutional neural network (DCNN) which receives an input
+ of 1000 bp sequence and outputs a prediction vector of 919 binary features
+ that represents the chromatin modifications of 200 bp bin in the center
+ of the input sequence.
  The training labels used are the chromatin modification are extracted from
- ENCODE and Roadmap Epigenomics data releases.
-\end_layout
-
-\begin_layout Standard
-Basset (
+ ENCODE and Roadmap epigenetic data releases.
+ Basset (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-32"
 
 \end_inset
 
-) also used DCNN with known PWM as weights initialization on ENCODE and
- Roadmap Epigenomics data to predict a binary vector that represents accessibili
-ty in 164 cell types based on 600 bp DNA sequence.
+) also used DCNN on the same data with known PWMs as weights initialization
+ to predict a binary vector that represents accessibility in 164 cell types
+ based on 600 bp DNA sequence.
  In DeepBind (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -1197,10 +1250,7 @@ key "key-5"
 
 ), gapped kmers presence indicator vector were used as features for an SVM
  classifier to predict the role of DNA sequences with varying lengths.
-\end_layout
-
-\begin_layout Standard
-ChromHMM (
+ ChromHMM (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-14"
@@ -1208,7 +1258,7 @@ key "key-14"
 \end_inset
 
 ) is a widely used software that tackles the problem of analyzing the epigenetic
- data for concluding roles in the genomic sequence.
+ data for role predicting of fragments of the genomic sequence.
  The algorithm uses chromatin mark reads, threshold to binary values, as
  input to HMM which then allows classifying the genome state in each position
  in the genome.
@@ -1216,9 +1266,9 @@ key "key-14"
 
 \begin_layout Standard
 A disadvantage of these method is their need for a training data of known
- regulatory elements or with epigenetic data, which is commonly obtained
- from GWAS surveys done on 127 obtained human cell types in the Roadmap
- and ENCODE projects (
+ regulatory elements or epigenetic data, which is commonly obtained from
+ GWAS surveys, such as those that were done on 127 obtained human cell types
+ in the Roadmap and ENCODE projects (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-37"
@@ -1233,16 +1283,7 @@ key "key-15"
 \end_inset
 
 ).
- The number of different cell types in the human body is estimated to be
- higher than 2200 (
-\begin_inset CommandInset citation
-LatexCommand citealp
-key "key-10"
-
-\end_inset
-
-), and so we cannot know in certainty the number and location of tissue
- specific enhancers active in most of these cell types.
+ 
 \end_layout
 
 \begin_layout Subsubsection*
@@ -1256,8 +1297,8 @@ When a DNA sequence is read from a tissue sample, it is often stored as
  a sequence of letters A,C,G and T in FASTA format.
  For an algorithm to process it, these characters are mapped into a data
  structure of integers 1,2,3 and 4 respectively.
- For many algorithms, such as in DeepSEA, Basset, and our HOP-Baum-Welch,
- it is preferable to encode these sequences of integers as a sequence one-hot
+ For many algorithms, such as in DeepSEA, Basset, and our HOP-HMM, it is
+ preferable to encode these sequences of integers as a sequence one-hot
  vectors (also called indicator vectors), as described in figure 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1266,15 +1307,11 @@ reference "PWM"
 \end_inset
 
 .
-\end_layout
-
-\begin_layout Standard
-A common feature extraction technique often used is representing the DNA
- sequence as a vector of the in-sequence frequencies of all the possible
- kmer as used in gkm-SVM.
+ A commonly used feature extraction technique of DNA sequences is representing
+ them as vectors of their in-sequence kmer frequencies as used in gkm-SVM.
  In this technique, similarly to the bag of words technique in text analysis
- and natural language processing, the order of the kmer locations is sacrificed
- for a more meaning-oriented, structured and fixed-length data encoding.
+ and natural language processing, the order of the kmer is sacrificed for
+ a more meaning-oriented, structured and fixed-length data encoding.
 \end_layout
 
 \begin_layout Section*
@@ -2707,9 +2744,9 @@ HOP-HMM
 \end_layout
 
 \begin_layout Standard
-Here we present HOP-HMM, a GHMM, that is well fitted to utilize the structure
- of enhancers containing TFBSs inside them, due to the TFBS emitting TF-states
- that take part in the generation process of the sequence.
+HOP-HMM is a GHMM that is well fitted to utilize the structure of enhancers
+ containing TFBSs inside them, due to the TFBS emitting TF-states that take
+ part in the generation process of the sequence.
  Due to the assumed local physical nature of the TF binding of the DNA sequence
  and success of HMM in gene prediction, we think the memorylessness of HMMs
  fit well to the task of enhancer prediction.
@@ -6869,20 +6906,16 @@ s update.
 Sequence States Inference
 \end_layout
 
-\begin_layout Subsubsection*
-TODO: After description of HOP HMM, add inference section about: 1.
- viterbi 2.
- posterior 3: posterior sum hirizontal 4.
- posterior sum vertical 5.
- transition posterior (with figures all over)
-\end_layout
-
 \begin_layout Standard
 Acquiring the maximal likelihood 
 \begin_inset Formula $\theta$
 \end_inset
 
- opens the door to several wanted inferences given a sequence:
+ opens the door to several wanted inferences given a sequence 
+\begin_inset Formula $x_{1:L}$
+\end_inset
+
+ :
 \end_layout
 
 \begin_layout Enumerate
@@ -6925,9 +6958,9 @@ reference "HOP-eta"
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align*}
+\[
 y_{t}^{*}=\underset{j\in[m],l\in[k]\cup\{0\}}{argmax}P\left(y_{t}=(j,l)|x_{1:L}\right)
-\end{align*}
+\]
 
 \end_inset
 
@@ -9284,17 +9317,17 @@ name "LikelihoodVsErr"
 
 \end_inset
 
-Over multiple runs of HOP-Baum-Welch, a correlation exists between the estimated
- 
+Over multiple runs of HOP-Baum-Welch, higher the estimated 
 \begin_inset Formula $\theta$
 \end_inset
 
- likelihood over the learned sequences and the error comparing the true
- 
+ likelihood over the learned sequences result in lower error comparing the
+ true 
 \begin_inset Formula $\theta$
 \end_inset
 
-
+.
+ 
 \end_layout
 
 \end_inset
@@ -9520,19 +9553,19 @@ Roadmap Dataset
 \end_layout
 
 \begin_layout Standard
-For testing of HOP-HMM performance on human genetic data, we used the Roadmap
- project tracks.
- We defined the dataset of known enhancers as sequences around intersection
- of DNAse, H3K27ac and H3K4me1 peaks, while removing peaks of H3K27me3 and
- H3K4me3 and sequences within 5000bp from known genes.
- Bed files manipulation was done with BEDTools (
+For testing of HOP-HMM on human genetic data, we manipulated the used the
+ Roadmap project Bed files with BEDTools (
 \begin_inset CommandInset citation
 LatexCommand citet
 key "key-68"
 
 \end_inset
 
-), which resulted in 1000bp long sequences centered around their H3K27ac
+).
+ We created a dataset of enhancer sequences around the intersection of DNase-I,
+ H3K27ac and H3K4me1 peaks, while avoiding peaks of H3K27me3 and H3K4me3
+ and sequences within 5000bp from known genes.
+ Sequences were chosen 5000bp long sequences centered around their DNase-I
  peaks.
 \end_layout
 
@@ -9562,16 +9595,17 @@ c tracks.
 
 \begin_layout Standard
 For the set of PWMs used by the TF-states of the HOP-HMM, we used JASPAR
- dataset of 519 vertebrates PWMs, out of which we selected 60 PWMs for a
- reasonable runtime.
- The selected PWMs are chosen as followed:
+ dataset of 519 vertebrates PWMs, out of which we selected 50 PWMs for a
+ practical run-time.
+ The selected PWMs are chosen by 3 methods, each method responsible for
+ a third of the 50:
 \end_layout
 
 \begin_layout Itemize
-PWMs of TFs which are over or under expressed in the evaluated tissues,
- according to the Roadmap RNA-seq data.
- TFs were chosen if 20% or more of their expression is in one of the evaluated
- tissues, out of 57 tissue types available in Roadmap dataset.
+PWMs of TFs which were relatively expressed in one tissue compared to the
+ other, according to the Roadmap RNA-seq data.
+ This method does not depend on the sequences themselves, but on epigenetic
+ properties of the tissues.
 \end_layout
 
 \begin_layout Itemize
@@ -9605,26 +9639,28 @@ reference "PPM"
 \end_layout
 
 \begin_layout Itemize
-PWMs that had stronger presence in sequences from one tissue compared to
- the other.
- This is defined as the PWMs with sequence binding likelihood (as defined
- in the previous point) can be best distinguish between sequences from one
- tissue and the rest in terms of AUC-ROC.
+PWMs that had strong presence in sequences from one tissue compared to the
+ other.
+ Specifically, the PWMs with sequence binding likelihood (as defined in
+ the previous method) that can best distinguish between sequences from one
+ tissue and the rest of the sequences in terms of AUC-ROC.
 \end_layout
 
 \begin_layout Standard
-In our experiments some sequences had good resemblance to the DNaseI track
- and ChromeHMM classifications, though no clear correlation was found.
+In our experiment, many sequences resulted posterior probability had good
+ resemblance to the DNase-seq track, causing a good overlap between the
+ Viterbi-path and the ChromeHMM classifications (see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:RealSequences"
+
+\end_inset
+
+), though this similarity was not always occurring.
  
 \end_layout
 
 \begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/realSeq1.jpg
 	scale 50
@@ -9634,43 +9670,10 @@ status open
 
 \end_layout
 
-\begin_layout Plain Layout
+\begin_layout Standard
 \begin_inset Graphics
 	filename Figures/realSeq2.jpg
 	scale 50
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Figures/realSeq3.jpg
-	scale 50
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "RealData"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
 
 \end_inset
 
@@ -9684,12 +9687,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
 \begin_inset Graphics
-	filename Figures/realSeq4.jpg
+	filename Figures/realSeq3.jpg
 	scale 50
 
 \end_inset
@@ -9708,6 +9707,26 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:RealSequences"
+
+\end_inset
+
+Examples of HOP-HMM classification of 5000pb long tissue specific enhancer
+ sequences from the human genome.
+ Each of the 3 graphs is the output of a different HOP-HMM with three background
+-states (two enhancer states and one non-enhancer state) and 50 TF-states,
+ each was trained on enhancers from the two tissues.
+ The H3K27ac and DNase-I measurements are in 
+\begin_inset Formula $-log_{10}(p-value)$
+\end_inset
+
+ units.
+\end_layout
+
+\end_inset
+
 
 \end_layout
 
@@ -9716,13 +9735,87 @@ status open
 
 \end_layout
 
-\begin_layout Plain Layout
-
+\begin_layout Part*
+Discussion and Conclusion
 \end_layout
+
+\begin_layout Standard
+In this work I have aimed to develop a generalized HMM, HOP-HMM, tailored
+ for the enhancer structure.
+ I developed the mathematical adjustments to the different parts of the
+ EM algorithm and provided and reasoning for the correctness of the inferring
+ of the altered model from data.
+ For evaluation on real and synthetic data as described in the results,
+ I implemented the model and the algorithm in Matlab code.
+ During the algorithm implementation, I overcame a few difficulties that
+ origin from the scale of the data, such as caching the costly response
+ of the PWMs to the sequences during the Forward Backward algorithms, and
+ splitting to sequences into batches for holding and manipulating the large
+ 
+\begin_inset Formula $\eta$
+\end_inset
+
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "HOP-eta"
 
 \end_inset
 
+ matrix in memory.
+ The implementation also includes the generation code for DNA sequences
+ from a randomly selected HOP-HMM to which a different model can be fitted
+ and compared.
+ Naturally, in the synthetic data experiment, the more generated data is
+ used to fit the model, the better the fitting performs.
+ During the evaluation of the inference EM algorithm, many runs tend to
+ overshoot the inter-states transition probability, resulting in a tendency
+ for irregular Viterbi paths with frequent state changes.
+ This resembles the known issue of HMM parameter overfitting on small training
+ data.
+ I therefore introduced a regularization technique that had a significant
+ positive impact on the convergence rate and solution quality.
+ Overall, the generated DNA sequences experiment results were positive and
+ are evidence for the ability of the algorithm to train successfully on
+ DNA sequences created under the HOP-HMM assumptions.
+\end_layout
 
+\begin_layout Standard
+For applying the EM algorithm on real data, I designed a simplistic challenge
+ of correctly recognizing enhancers where their true locations are known
+ from epigenetic experiments.
+ This challenge first required building a dataset of sequences containing
+ tissue-specific enhancers from two tissues together with wide margins,
+ and non-regulatory 
+\begin_inset Quotes eld
+\end_inset
+
+background
+\begin_inset Quotes erd
+\end_inset
+
+ sequences.
+ When choosing the tissue-specific enhancers from the epigenetic data provided
+ by the Roadmap project, the noisiness of the data should be considered.
+ After some trail and error, I chose the somewhat arbitrary cutoff of the
+ top 40% strongest DNase-seq peaks, which yielded enough sequences (around
+ 500 sequences per tissue on average) with distinguishable distributions
+ between the tissues.
+\end_layout
+
+\begin_layout Standard
+Though many real DNA sequences were correctly classified, some tissues caused
+ the EM algorithm to consistently converge to parameters which gave wrong
+ Viterbi path classifications.
+ This could stem from several reasons: wrong PWMs selection as hyperparameters,
+ too small or noisy dataset building from the Roadmap data and a more complex
+ structure than assumed by the HOP-HMM hypothesis.
+ In further research, usage of updated data with cleaner more tissue-diverse
+ experiments would likely provide better results.
+ As a computational approach to improve the generalized HMM used in this
+ work is to introduce learning of the PWMs preceding or during the EM iterations
+, or to replace the PWMs emission entirely by a different TFBS modeling
+ method.
 \end_layout
 
 \begin_layout Subsection*
@@ -9749,7 +9842,7 @@ https://github.com/David-Taub/HOP-HMM
 <lyxtabular version="3" rows="7" columns="2">
 <features tabularvalignment="middle">
 <column alignment="left" valignment="top">
-<column alignment="left" valignment="top">
+<column alignment="left" valignment="top" width="10cm">
 <row>
 <cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
@@ -9954,8 +10047,8 @@ backgroundAmount
 \begin_inset Text
 
 \begin_layout Plain Layout
-Number of background-states that are non-enhancers, i.e.
- with very low transition probability into TF-states
+Number of background-states which are non-enhancers by having low transition
+ probability into TF-states
 \end_layout
 
 \end_inset
@@ -10439,22 +10532,6 @@ key "key-57"
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Akalin et al.(2009)"
-key "key-11"
-
-\end_inset
-
- Akalin, A., Fredman, D., Arner, E., Dong, X., Bryne, J.
- C., Suzuki, H., ...
- & Lenhard, B.
- (2009).
- Transcriptional features of genomic regulatory blocks.
- Genome biology, 10(4), R38.
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
 label "Alipanahi et al.(2015)"
 key "key-2"
 
@@ -10467,22 +10544,6 @@ key "key-2"
  Predicting the sequence specificities of DNA-and RNA-binding proteins by
  deep learning.
  Nature biotechnology, 33(8), 831.
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Andersson et al.(2014)"
-key "key-3"
-
-\end_inset
-
- Andersson, R., Gebhard, C., Miguel-Escalada, I., Hoof, I., Bornholdt, J., Boyd,
- M., ...
- & Ntini, E.
- (2014).
- An atlas of active enhancers across human cell types and tissues.
- Nature, 507(7493), 455.
 \end_layout
 
 \begin_layout Bibliography
@@ -10520,15 +10581,55 @@ key "key-6"
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
+label "Boyle et al.(2008)"
+key "key-71"
+
+\end_inset
+
+ Boyle, A.
+ P., Davis, S., Shulha, H.
+ P., Meltzer, P., Margulies, E.
+ H., Weng, Z., ...
+ & Crawford, G.
+ E.
+ (2008).
+ High-resolution mapping and characterization of open chromatin across the
+ genome.
+ Cell, 132(2), 311-322.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
 label "Burge and Karlin(1997)"
 key "key-22"
 
 \end_inset
 
-Burge, C., & Karlin, S.
+ Burge, C., & Karlin, S.
  (1997).
  Prediction of complete gene structures in human genomic DNA.
  Journal of molecular biology, 268(1), 78-94.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Buenrostro et al.(2013)"
+key "key-70"
+
+\end_inset
+
+ Buenrostro, J.
+ D., Giresi, P.
+ G., Zaba, L.
+ C., Chang, H.
+ Y., & Greenleaf, W.
+ J.
+ (2013).
+ Transposition of native chromatin for fast and sensitive epigenomic profiling
+ of open chromatin, DNA-binding proteins and nucleosome position.
+ Nature methods, 10(12), 1213.
 \end_layout
 
 \begin_layout Bibliography
@@ -10985,25 +11086,6 @@ key "key-32"
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Kim et al.(2010)"
-key "key-23"
-
-\end_inset
-
- Kim, T.
- K., Hemberg, M., Gray, J.
- M., Costa, A.
- M., Bear, D.
- M., Wu, J., ...
- & Markenscoff-Papadimitriou, E.
- (2010).
- Widespread transcription at neuronal activity-regulated enhancers.
- Nature, 465(7295), 182.
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
 label "Kleftogiannis et al.(2016)"
 key "key-33"
 
@@ -11196,6 +11278,24 @@ key "key-45"
  (2009).
  Targeted capture and massively parallel sequencing of 12 human exomes.
  Nature, 461(7261), 272.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Pennacchio et al.(2006)"
+key "key-11"
+
+\end_inset
+
+ Pennacchio, L.
+ A., Ahituv, N., Moses, A.
+ M., Prabhakar, S., Nobrega, M.
+ A., Shoukry, M., ...
+ & Plajzer-Frick, I.
+ (2006).
+ In vivo enhancer analysis of human conserved non-coding sequences.
+ Nature, 444(7118), 499-502.
 \end_layout
 
 \begin_layout Bibliography
@@ -11416,6 +11516,22 @@ key "key-8"
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
+label "Tate and Bird(1993)"
+key "key-3"
+
+\end_inset
+
+ Tate, P.
+ H., & Bird, A.
+ P.
+ (1993).
+ Effects of DNA methylation on DNA-binding proteins and gene expression.
+ Current opinion in genetics & development, 3(2), 226-231.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
 label "Taher et al.(2011)"
 key "key-56"
 
@@ -11525,6 +11641,26 @@ key "key-43"
  Enhancers: from developmental genetics to the genetics of common human
  disease.
  Developmental cell, 21(1), 17-19.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Winter et al.(1981)"
+key "key-67"
+
+\end_inset
+
+ Winter, R.
+ B., Berg, O.
+ G., & Von Hippel, P.
+ H.
+ (1981).
+ Diffusion-driven mechanisms of protein translocation on nucleic acids.
+ 3.
+ The Escherichia coli lac repressor-operator interaction: kinetic measurements
+ and conclusions.
+ Biochemistry, 20(24), 6961-6977.
 \end_layout
 
 \begin_layout Bibliography

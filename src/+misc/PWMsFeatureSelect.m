@@ -42,7 +42,6 @@ function selectedPWMs = PWMsFeatureSelect(mergedPeaksMin, wantedK)
 end
 
 function selectedPWMs = getExpressedPWMs(mergedPeaksMin, PWMs, names, selectedPWMs, wantedK)
-    THREHSOLD_EXPRESSION_RATIO = 0.2;
     PICK_EXPRESSED_RATIO = 0.3;
     MAX_REVERSE_MAP = 4;
     expressionTable = readtable('..\data\Jaspar\raw\TF_expressions.txt');
