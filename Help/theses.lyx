@@ -8,6 +8,7 @@
 \begin_preamble
 \usepackage{babel}
 \usepackage{float}
+\usepackage{fancyhdr}
 \end_preamble
 \use_default_options false
 \begin_modules
@@ -51,7 +52,7 @@ End
 \bibtex_command default
 \index_command default
 \float_placement H
-\paperfontsize default
+\paperfontsize 11
 \spacing single
 \use_hyperref true
 \pdf_bookmarks true
@@ -91,7 +92,7 @@ End
 \leftmargin 2cm
 \topmargin 2cm
 \rightmargin 2cm
-\bottommargin 2cm
+\bottommargin 1.5cm
 \headheight 0cm
 \headsep 0cm
 \footskip 1cm
@@ -112,66 +113,343 @@ End
 
 \begin_body
 
-\begin_layout Title
-The Hebrew University of Jerusalem – the Faculty of Computer Science and
- Engineering
+\begin_layout Standard
+\paragraph_spacing double
+\noindent
+\align center
+
+\size larger
+\begin_inset space ~
+\end_inset
+
+
+\size huge
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+
+\begin_inset space ~
+\end_inset
+
+
+\size huge
+
+\begin_inset Newline newline
+\end_inset
+
+Classification of Regulatory Sequences 
+\begin_inset Newline newline
+\end_inset
+
+in the Human Genome Using High-Order 
+\begin_inset Newline newline
+\end_inset
+
+Generalized Hidden Markov Model 
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+
+\begin_inset space ~
+\end_inset
+
+
+\size huge
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+
+\begin_inset space ~
+\end_inset
+
+
+\size huge
+
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
-\begin_layout Title
-Classifiers of Regulatory Sequences in the Human Genome Using High-Order
- Generalized Hidden Markov Model 
+\begin_layout Standard
+\paragraph_spacing double
+\noindent
+\align center
+by
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+David Taub
 \end_layout
 
-\begin_layout Part*
+\begin_layout Standard
+\paragraph_spacing double
+\noindent
+\align center
+
+\size larger
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\paragraph_spacing double
+\noindent
+\align center
+Supervised by
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+Prof.
+ Tommy Kaplan
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\size huge
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+
+\begin_inset space ~
+\end_inset
+
+
+\size huge
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\paragraph_spacing double
+\noindent
+\align center
+A thesis submitted in partial fulfillment of the requirements for the
+\begin_inset Newline newline
+\end_inset
+
+degree of Master of Science in Computer Science
+\end_layout
+
+\begin_layout Standard
+\paragraph_spacing double
+\noindent
+\align center
+
+\size large
+April 2020
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+
+\begin_inset space ~
+\end_inset
+
+
+\size large
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+
+\begin_inset space ~
+\end_inset
+
+
+\size large
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+
+\begin_inset space ~
+\end_inset
+
+
+\size large
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+
+\begin_inset space ~
+\end_inset
+
+
+\size large
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+
+\begin_inset space ~
+\end_inset
+
+
+\size large
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+
+\begin_inset space ~
+\end_inset
+
+
+\size large
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+
+\begin_inset space ~
+\end_inset
+
+
+\size large
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+
+\begin_inset space ~
+\end_inset
+
+
+\size large
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+
+\begin_inset space ~
+\end_inset
+
+
+\size large
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\paragraph_spacing double
+\noindent
+\align center
+
+\size larger
+The Faculty of Computer Science and Engineering
+\begin_inset Newline newline
+\end_inset
+
+The Hebrew University of Jerusalem, Israel
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
 Abstract
 \end_layout
 
 \begin_layout Standard
 Enhancers are regulatory DNA sequences that, when bound to proteins called
- transcription factors, enhance the likelihood of transcription of the enhancer'
-s target genes.
- Regulation of transcription is an important form of control of the gene
- expression and the activity of enhancers plays a significant role in the
- stage-specific and tissue-specific regulation of genes.
- It has been shown over the years that genetic variation within enhancer's
- sequence might cause cells behavior modification and diseases.
- The rules and nuances of the enhancer structure is not fully understood,
+ transcription factors, increase the likelihood of transcription of the
+ enhancer target genes.
+ Regulation of transcription is an important form of control of gene expression,
+ and the activity of enhancers plays a significant role in the stage-specific
+ and tissue-specific regulation of genes.
+ It has been shown over the years that genetic variations within enhancer
+ sequences might cause cell behavior modifications and diseases.
+ The rules and nuances of enhancer structure is not fully understood yet,
  though it has been shown that transcription factors tend to attach to them
  at unique motifs called transcription factor binding sites, which are over-repr
 esented in enhancer sequences.
- Enhancers activity can be detected by the epigenetic data from the local
+ Enhancer activity can be detected by the epigenetic data from the local
  environment around its position.
- The main indicators for an enhancer lays in the adjacent histone modifications,
- on which the flanks of the enhancer are wrapped around.
- In between the flanks, the enhancer itself tends to be spacial accessible
- for biochemical interactions between the DNA and the proteins around it.
- Though useful, the epigenetic data is often noisy and involves a costly
+ The main indicators for an enhancer lay in the adjacent histone modifications,
+ around which the flanks of the enhancer are wrapped.
+ The enhancer itself tends to be spatial accessible for biochemical interactions
+ between the DNA and the proteins around it.
+ Though useful, the epigenetic data are often noisy and require a costly
  extraction process of specific cells out of a tissue sample, which is not
  necessarily practical for all cell types and their different stages.
- An alternative approach for detecting enhancers is to observe the genetic
+ An alternative approach to enhancer detection is to observe the genetic
  content of its sequence, since it contains all the essential information
  for the DNA to act as an enhancer.
  Over the years, it was demonstrated in vivo that the cell requires no other
- mechanism but the sequence to regulate its gene expression.
- With that idea in mind, we offer a computational approach for detecting
- enhancers based on their sequence alone, in an unsupervised manner.
+ mechanism than the sequence in order to regulate its gene expression.
+ With that idea in mind, we offer a computational approach for the detection
+ of enhancers based on their sequences alone, and in an unsupervised manner.
  We created a high-order generalized hidden Markov model (HOP-HMM), with
  two kinds of states: one which emits transcription factor binding sites
  by using a positional weight matrix model, and one which emits single nucleotid
 es with high order dependency on previously emitted nucleotides.
- Compared to a regular the hidden Markov model, this model learns a more
- complex underlying structure of DNA sequences, containing both binding
- site motifs and high-order distributions of nucleotides in between them.
- We first review the biological background of enhancers, specifically in
- humans.
- We then review in depth the background of Markov and hidden Markov models,
+ Compared to a regular hidden Markov model, this model learns a more complex
+ underlying structure of DNA sequences, containing both binding site motifs
+ and high-order distribution of nucleotides in between them.
+ We'll first review the biological background of enhancers, specifically
+ in humans.
+ Then we'll review in depth the background of Markov and hidden Markov models,
  and discuss how to calculate the likelihood of a sequence given this model.
- Then, we describe our generalized model in detail and develop the expectation
- maximization and Viterbi algorithms for hidden Markov model, followed by
- the adjustments needed for our generalized model.
- These algorithms implementation are demonstrated by applying them on synthetic
- dataset of enhancer-like sequences, created by using the generative property
- of the generalized model.
+ We'll describe our generalized model in detail and develop the expectation
+ maximization and Viterbi algorithms for hidden Markov models, followed
+ by the adjustments needed for our generalized model.
+ These algorithms implementations are demonstrated by applying them to a
+ synthetic dataset of enhancer-like sequences created by using the generative
+ property of the generalized model.
  We simulate the model in a controlled way to evaluate its performance by
  inferring estimated parameters of the model and comparing them to the real
  parameters used to create the dataset.
@@ -180,51 +458,55 @@ es with high order dependency on previously emitted nucleotides.
  of the Roadmap project.
  We demonstrate the capabilities of the model by comparing its estimation
  to the epigenetic tracks, showing it can predict the loci of enhancers
- and the tissue in which they will be active, without being exposed to the
- epigenetic data.
+ and in which tissues they will be active, without exposure to epigenetic
+ data.
+ 
 \end_layout
 
-\begin_layout Part*
+\begin_layout Section*
 Introduction
 \end_layout
 
 \begin_layout Standard
-The genome of every living organism contains the inherited information that
+The genome of every living organism contains the inherited information which
  defines its complex structure and function.
- The genome is built out of Deoxyribonucleic acid (DNA) molecule, that is
- a built out of two chains of nucleotides units that form a double helix
- shape.
- Each nucleotide is built our of 4 different types bases: cytosine, guanine,
+ The genome is built out of deoxyribonucleic acid (DNA) molecules, a structure
+ of two chains of nucleotides units forming a double helix shape.
+ Nucleotides are built out of 4 different basic elements: cytosine, guanine,
  adenine or thymine or in short A,C,G and T.
- The nucleotides are organized in pairs called base pairs where each of
- the paired nucleotides are complimentary to each other and provide redundancy.
+ The nucleotides are organized in pairs called base pairs, with each of
+ the paired nucleotides being complementary to the other and providing redundanc
+y.
+ 
 \end_layout
 
 \begin_layout Standard
-Proteins are macromolecoles, which carry various roles and functions within
+Proteins are macromolecules, which ensure various roles and functions within
  organisms.
- They are built as a polymer out of 20 different amino acids, which order
- and structure is encoded in genetic segments within the genome called genes.
- Through the transcription process, followed by the translation processes,
- the genes are expressed and result in the formation of proteins.
+ They have the structure of a polymer built out of 20 different amino acids,
+ whose order and structure are encoded in genes (genetic segments within
+ the genome).
+ Through transcription followed by translation processes, the genes are
+ expressed and result in the formation of proteins.
  In the transcription process the gene is read and transcribed into a single
  strand sequence of RNA.
  Later, the formed RNA molecule, which at this stage is called messenger
  RNA (mRNA), is translated by a complex molecule called the ribosome.
- The mRNA sequence is built out of tirplets of neucleotides called codons,
- which the ribosome reads and fabricates into a sequence of amino acids
- that constitute the protein.
+ The mRNA sequence is built out of triplets of nucleotides called codons,
+ which are read by the ribosome and instruct it how to generate a sequence
+ of amino acids constituting the protein.
+ 
 \end_layout
 
 \begin_layout Standard
-Gene sequences are built out fragmented introns and exons, where only the
- exons mature into mRNA molecules that are translated into proteins, while
- the introns are spliced away beforehand.
+Gene sequences are built out of fragmented introns and exons, where only
+ the exons mature into mRNA molecules which are translated into proteins,
+ while the introns are spliced away beforehand.
  Counter intuitively, even though the exons hold the recipe for the construction
- of the organism's proteins, the complexity of the organism is not a product
- of their number or their length.
- For example, the humans and Caenorhabditis elegans roundworms both have
- about 19,000 genes with roughly the same total exon length and number (
+ of the proteins of the organism, its complexity is not a product of their
+ number or their length.
+ For example, both humans and Caenorhabditis elegans roundworms have about
+ 19,000 genes with roughly the same total exon length and number (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-57"
@@ -238,20 +520,20 @@ key "key-16"
 
 \end_inset
 
-), even though the human body is vastly more diverse and complex.
+), even though the human body is much more diverse and complex.
  Although the genes are responsible for the variety of proteins a cell can
- produce, the source of the organisms complexity, with different cells performin
-g different tasks while carrying the same genome, is stems from the gene
- regulation mechanism.
+ produce, the source of organism complexity, with different cells performing
+ different tasks while carrying the same genome, stems from the gene regulation
+ mechanism.
  In the case of humans, the genome is 3.23 Gb long and it is estimated that
- the total length of gene regulation regions involve 10-20% of it (
+ the total length of gene regulation regions involves 10-20% of it (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-46"
 
 \end_inset
 
-), compared to exon regions that involve only 1% (
+), compared to exon regions which involve only 1% (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-45"
@@ -262,10 +544,10 @@ key "key-45"
 \end_layout
 
 \begin_layout Standard
-Enhancers are non-coding regulatory DNA sequences that play a key role in
- the regulation transcription of genes.
+Enhancers are non-coding regulatory DNA sequences which play a key role
+ in the regulation transcription of genes.
  In humans, there are hundreds of thousands of enhancers scattered over
- the non-coding regions of the genome, usually with length between 100-1000
+ the non-coding regions of the genome, usually of a length between 100-1000
  base pairs (bp).
  When activated, the DNA folding draws the enhancer spatially closer to
  another type of regulatory element called promoter, resulting in the translatio
@@ -277,19 +559,20 @@ reference "Transcription"
 \end_inset
 
 ).
- The expressed gene of this activation process is the enhancer's target
- gene, and it can reside up to a mega base pairs (Mb) upstream or downstream
- from their activating enhancer (
+ The gene expressed by this activation process is the enhancer’s target
+ gene, and it can be located up to one megabase pair (Mb) upstream or downstream
+ from its activating enhancer as enhancers generally function independently
+ of orientation (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-43"
 
 \end_inset
 
-), with an independent orientation to it.
- Moreover, the gene-enhancer connection is not exclusive, as it was shown
- that the common case is that each enhancer has several target genes and
- vice versa (
+).
+ Moreover, the gene-enhancer connection is not exclusive, and it has been
+ shown that the most common case is that each enhancer has several target
+ genes and vice-versa (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-20"
@@ -323,11 +606,24 @@ name "Transcription"
 
 \end_inset
 
-A) An enhancer and its distal target gene.
- B) The DNA folds and the attached with transcription factors draw other
- co-factor proteins that together form the transcription complex.
- C) The RNA Polymerase II is recruited and while moving along the gene it
- generates a new RNA molecule that is transcribed off the gene sequence.
+
+\series bold
+A)
+\series default
+ An enhancer and its distal target gene.
+ 
+\series bold
+B)
+\series default
+ The DNA folds and the attaches to transcription factors, which then draw
+ other co-factor proteins that together form the transcription complex.
+ 
+\series bold
+C)
+\series default
+ The RNA Polymerase II is recruited and while moving along the gene, it
+ generates a new RNA molecule which is transcribed off the gene.
+ 
 \end_layout
 
 \end_inset
@@ -341,11 +637,11 @@ A) An enhancer and its distal target gene.
 \end_layout
 
 \begin_layout Standard
-An enhancer is described as being in an active status, when it is causing
+An enhancer is described as being in an active status when it is causing
  the expression of its target gene, which does not occur evenly across different
  types of cells.
- The the enhancer's sequence plays a critical role in the type of cells
- it will be active in.
+ The activity of the enhancer sequence plays a critical role in the resulting
+ type of cells.
  In the VISTA Project (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -353,22 +649,20 @@ key "key-60"
 
 \end_inset
 
-), mouse fertilized eggs where injected with enhancers sequences, adjacent
- to LacZ reporter gene, encoding an enzyme protein with a blue color.
- As it was synthetically fabricated, the injected DNA sequences containing
- the enhancer and reporter gene bared no epigenetic information and were
- integrated in an arbitrary position in the mouse genome.
+), fertilized mouse eggs were injected with enhancer sequences adjacent
+ to a LacZ reporter gene, encoding an enzyme protein with a blue color.
+ Since they were synthesized, the injected DNA sequences containing the
+ enhancer and reporter genes bore no epigenetic information, and they were
+ integrated into the mouse genome in an arbitral position.
  The enhancers in the injected DNA sequences originated from the human genome,
- where each enhancer was injected to a different embryo.
- When the transgenic embryos were photographed after 11.5 days, for some
- of the injected DNA sequences a pattern was present consistently over several
- samples.
- These results imply that for many DNA sequences, the DNA code alone possess
- the potential to become a tissue specific enhancer, even without epigenetic
- information.
-\end_layout
-
-\begin_layout Standard
+ and each enhancer was injected into a different embryo.
+ When the transgenic embryos were photographed after 11.5 days some had a
+ distinctive anatomical pattern, such as blue limbs or blue spine, depending
+ on the injected DNA sequence.
+ These results imply that for many DNA sequences, the DNA code possesses
+ by itself the potential to become a specific tissue enhancer, despite the
+ absence of epigenetic information.
+ 
 \begin_inset Float figure
 placement H
 wide false
@@ -399,12 +693,13 @@ name "Mouse"
 
 \end_inset
 
-Transgenic mouse embryo in the 11.5 day.
- As an fertilized egg was injected with a synthetic enhancer sequence related
- to the dorsal root ganglia spinal neurons.
+Transgenic mouse embryo on the 11.5 day.
+ A fertilized egg was injected with a synthetic enhancer sequence known
+ to be related to the dorsal root ganglia of spinal neurons.
  The enhancer became activated and caused the expression of the blue color
  marker gene that was coupled to it.
- Taken from Vista Enhancer Browser, experiment hs-51 embryo 2.
+ Both images are taken from Vista Enhancer Browser, on the left is experiment
+ hs-51 embryo 2.
 \end_layout
 
 \end_inset
@@ -419,7 +714,7 @@ Transgenic mouse embryo in the 11.5 day.
 
 \begin_layout Standard
 Transcription factors (TF) are proteins that bind to the DNA, and together
- with other co-factor proteins initiate the gene transcription process of
+ with other cofactor proteins initiate the gene transcription process of
  the DNA sequence.
  TFs tend to bind to their transcription factor binding sites (TFBS), which
  are motifs of nucleotides in the DNA sequence.
@@ -438,13 +733,13 @@ key "key-12"
 \end_inset
 
 ).
- When analyzing a tissue sample TF interaction density, a chromatin immunoprecip
-itation sequencing (ChIP-seq) method is used for probing the amount of TFs
- in affinity to the DNA strands.
+ When analyzing a tissue sample for TF interaction density, a chromatin
+ immunoprecipitation sequencing (ChIP-seq) method is used to probe the amount
+ of TFs in affinity to the DNA strands.
  Briefly, this method involved applying antibodies on cross-linked DNA,
  which attach to the TFs linked to the DNA.
- This antibodies attachment is followed by massively parallel sequencing
- of the short DNA sequences around the TF and the antibody.
+ This antibody attachment is followed by massive parallel sequencing of
+ the short DNA sequences around the TF and the antibody.
  Genome-wide association studies (GWAS) of ChIP-seq found that different
  TFs have different and distinct distributions of TFBS (
 \begin_inset CommandInset citation
@@ -459,8 +754,8 @@ key "key-32"
 \begin_layout Standard
 The TFBSs in both enhancers and promoters are critical for their correct
  regulatory activity.
- Multiple studies have shown that genetic alternations in enhancer's TFBSs
- can affect the expression of teir target gene and are a major cause of
+ Multiple studies have shown that genetic alterations in enhancer’s TFBSs
+ can affect the expression of their target genes and are a major cause of
  various human diseases (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -512,58 +807,46 @@ key "key-39"
 
 ).
  From the sequence aspect, enhancers and promoters have a similar structure:
- both have a difference in nucleotide frequencies compared to other part
- of the genome, and both contain TFBSs tiled inside a background sequence.
+ both have different nucleotide frequencies compared to other parts of the
+ genome, and both contain TFBSs tiled inside background sequences.
 \end_layout
 
 \begin_layout Standard
-Folding of DNA allows the enhancer-promoter interactions, in which the TFs
- take major part.
- Once bounded to the DNA, the TFs recruit other cofactor proteins to them,
- and together they form a transcription preinitiation complex (PIC), a very
- large assembly of proteins.
- Out of the tens of proteins constructing the PIC, the sub-unit RNA Polymerase
+Folding of the DNA allows enhancer-promoter interactions, in which the TFs
+ play a major part.
+ Once bounded to the DNA, the TFs recruit other protein cofactors, and together
+ they form a transcription preinitiation complex (PIC), consisting of a
+ very large assembly of proteins.
+ Out of the tens of proteins constructing the PIC, the sub-unit RNA polymerase
  (RNA pol II) has the important role of transcribing the adjacent gene.
- It slides along the double stranded DNA and open it until one strand of
+ It slides along the double-stranded DNA and opens it until one strand of
  nucleotides is exposed and becomes a template for RNA synthesis.
 \end_layout
 
 \begin_layout Standard
-Though one might be tempted to imagine a TFBS as a 
-\begin_inset Quotes eld
-\end_inset
-
-word
-\begin_inset Quotes erd
-\end_inset
-
- of nucleotides, modeling the kinetics and thermodynamics considerations
- of the DNA-protein interaction involves are far from simple (
+Though it is tempting to imagine each TF as having a corresponding TFBS
+ with a single motif of nucleotides that fits it, modeling the kinetic and
+ thermodynamic aspects involved in the DNA-protein interaction is far from
+ simple (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-67"
 
 \end_inset
 
-).
- For generating a simplistic yet statistically accurate model for representing
+), and each sequence of nucleotides has the likelihood to form a bond, which
+ is not simple to calculate analytically.
+ In order to generate a simplistic yet statistically accurate model representing
  the TF binding potential of a DNA sequence, i.e.
  
 \begin_inset Formula $P\left(x_{1:n}|binding\right)$
 \end_inset
 
-, we are required to assume independence between positions and a small span
- of influence by the sequence around the binding site.
- For samples of such distribution, the peaks of the ChIP-seq readings mark
- the TF binding are often used, from which a binding site 
-\begin_inset Quotes eld
-\end_inset
-
-grammar
-\begin_inset Quotes erd
-\end_inset
-
- can be modeled.
+, we need to assume an independence between positions as well as a small
+ range of influence of the sequence around the binding site.
+ For samples of such distribution, the peaks of the ChIP-seq readings marking
+ the TF binding are often used, from which a binding site “grammar” can
+ be modeled.
  Position weight matrix (PWM), as introduced in 
 \begin_inset CommandInset citation
 LatexCommand citet
@@ -571,7 +854,7 @@ key "key-7"
 
 \end_inset
 
-, is the most commonly used probabilistic model for addressing this task.
+, is the most commonly used probabilistic model to address this task.
  The underlying assumption of the PWM model is that every position in the
  DNA sequence has an independent probability to attach to the TF, and therefore
  the total binding probability is a multiplication of all the per-position
@@ -586,18 +869,18 @@ P\left(x_{1:J}|binding\right)=\prod_{j\in[n]}P\left(x_{j}|binding\right)
 
 \end_inset
 
-Where J is the size of relevant sequence that is affected by the binding
+Where J is the length of the relevant sequences affected by the binding
  event, and is derived from the physical characteristics of the TF.
  Practically, this size is often estimated from the observed motifs in the
- TF's ChIP-seq peaks.
+ TF’s ChIP-seq peaks.
  For each j, 
 \begin_inset Formula $P\left(x_{j}|binding\right)$
 \end_inset
 
- is estimated by counting the nucleotides frequency in the j'th position
- of the observed binding sites, which reside in the ChIP-seq peaks.
- For a motif of length J, this probability estimation is stored in a position
- probability matrix (PPM) W as followed: 
+ is estimated by counting the frequency of the nucleotides in the j’th position
+ of the observed binding sites which are situated in the ChIP-seq peaks.
+ For a motif of length J, the estimation of this probability is stored in
+ a position probability matrix (PPM) W as followed: 
 \end_layout
 
 \begin_layout Standard
@@ -612,7 +895,7 @@ where
 \begin_inset Formula $x^{(n)}$
 \end_inset
 
- is the n'th sequence out of the found binding sites, 
+ is the n’th sequence of the found binding sites, 
 \begin_inset Formula $j\in[J]$
 \end_inset
 
@@ -621,13 +904,8 @@ where
 \end_inset
 
  the nucleotide index of A,C,G and T.
- 
-\end_layout
-
-\begin_layout Standard
-For allowing comparison between the binding likelihood of different TFBS
- with different lengths, the normalized form of PPM, the PWM, is more convenient
- for use:
+ To enable comparison between the binding likelihood of TFBS of different
+ lengths, the use of the normalized form of PPM, the PWM, is more convenient:
 \begin_inset Formula 
 \begin{equation}
 {\displaystyle M_{i,j}=\mathrm{log}\left(\frac{W_{i,j}}{b_{i}}\right)}\label{PPM}
@@ -639,11 +917,7 @@ where
 \begin_inset Formula $b_{i}$
 \end_inset
 
- is prior background model, which is 
-\begin_inset Formula $0.25$
-\end_inset
-
- in case of nucleotides.
+ is the prior background model, which is 0.25 in case of nucleotides.
  From a generative model point of view, the TFBS sequence is generated by
  an emission model of the PWM.
  When a convolution of M is applied on the one-hot encoding of the sequence
@@ -656,10 +930,11 @@ reference "PWM"
 
 ), the result is the log likelihood of a TF binding to a sequence relative
  to a random sequence.
- In this work, we use the more familiar term PWMs, though we actually use
- the unnormalized PPMs for the TFBS emission model, since we require the
- likelihood of the a TF binding and not a length-independent comparison
- between TFs.
+ In this work we'll use the more familiar term PWMs though we actually used
+ the unnormalized PPMs for the TFBS emission model, since we required the
+ likelihood of a TF binding and not a length-independent comparison between
+ TFs.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -685,13 +960,13 @@ name "PWM"
 
 \end_inset
 
-Sub-sequences out of the DNA is represented in a one-hot encoding, then
- multiplied entry-wise with a PWM.
- Then, the sum of the logs of the maximal values of each column in the result
- matrix is calculated, which is the log likelihood of the TF binding to
- the sub-sequence.
- This log likelihood is calculated for each location in the sequence, where
- location with high values indicate high likelihood of TF binding.
+Sub-sequences out of the DNA are represented in a one-hot encoding, and
+ multiplied entry-wise by a PWM.
+ Then, the sum of the logs of the maximal values in each column of the resulting
+ matrix is calculated, which represents the log likelihood of the TF binding
+ to the sub-sequence.
+ This log likelihood is calculated for each location in the sequence, in
+ which locations with high values indicate a high likelihood of TF binding.
 \end_layout
 
 \end_inset
@@ -705,31 +980,26 @@ Sub-sequences out of the DNA is represented in a one-hot encoding, then
 \end_layout
 
 \begin_layout Standard
-Detection of enhancers and the tissue they are active in is the subject
- of much research in the last few decades.
- Specifically, enhancer detection methods that rely on their sequence alone
- without a biological experiment is especially much sought-after goal.
- Such a biological experiments, some of which are mentioned in this work,
- involve cells with their enhancer activating their target gene in proximity
- to the experiment, which is usually an expensive and non-trivial requirement.
- All methods for detecting active enhancers 
-\begin_inset Quotes eld
-\end_inset
-
-in the act
-\begin_inset Quotes erd
-\end_inset
-
-, are inherently limited to the specific tissues we can extract and isolate
- in a lab.
- Furthermore, many enhancers are active only in specific cell types in specific
- stages, and the requirement to achieving every type of cell in every possible
- stage in complex organisms is not a practical one for the foreseen future.
+Detection of enhancers and of the tissues in which they are active has been
+ the subject of much research in the last few decades.
+ Specifically, an enhancer detection method relying only on their sequences
+ and without need for biological experimentation is an especially sought-after
+ goal.
+ Such biological experiments, some of which are mentioned in this work,
+ involve cells whose enhancers activate their target genes during the experiment
+, which is usually an expensive and non-trivial requirement.
+ All methods for detecting active enhancers “in the act” are inherently
+ limited to the specific tissues we can extract and isolate in a lab.
+ Furthermore, many enhancers are only active in specific cell types and
+ at specific stages, and achieving a study of every cell type at every possible
+ stage in complex organisms is not a practical requirement for the foreseeable
+ future.
  On the other hand, the genome of organisms can be easily and inexpensively
  sequenced for later analysis in-silico.
- The ultimate goal of an efficient computational method for predicting and
- explaining the functional nature of enhancer sequence has produced positive,
- yet far from sufficient results in the last years, as reviewed in (
+ The ultimate goal of an efficient computational method which would predict
+ and explain the functional nature of an enhancer sequence has produced
+ positive, yet far from sufficient results over the last years, as reviewed
+ in (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-33"
@@ -740,10 +1010,12 @@ key "key-33"
 \end_layout
 
 \begin_layout Standard
-An alternative potential way of detecting enhancers from their sequence
- alone, is by finding non-coding regions that are conserved across species.
+As an alternative, a potential way of detecting enhancers only by addressing
+ their sequences, would consist in finding non-coding regions which are
+ conserved across species.
  Conserved non-coding elements (CNE) have a tendency to reside in clusters,
- usually with low gene density but with vicinity to genes (
+ which usually have low gene density but are located in vicinity to genes
+ (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-11"
@@ -751,8 +1023,8 @@ key "key-11"
 \end_inset
 
 ).
- Evidently, the overlap between CNEs and enhancers is far from exact.
- Some verified enhancers are weakly or not conserved between species (
+ Evidently, the overlap between CNEs and enhancers is imprecise.
+ Some verified enhancers are weakly (or not) conserved between species (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-21"
@@ -781,7 +1053,7 @@ key "key-40"
 \end_inset
 
 ) and some highly conserved areas in the mouse genome are not associated
- to regulatory activity and their deletion yields viable mice (
+ to regulatory activity, but their deletion still yields viable mice (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-1"
@@ -790,7 +1062,7 @@ key "key-1"
 
 ).
  Nevertheless, an assay of elements with 100% sequence identity of over
- 200 bp between human and mouse found that 50% showed enhancers activity
+ 200 bp between human and mouse found that 50% showed enhancer activity
  in mice (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -799,30 +1071,27 @@ key "key-60"
 \end_inset
 
 ).
- The ultra-conservation of 200 bp enhancer sequences while the TFBSs in
- them are usually shorter than 15 bp raises the possibility that these conserved
- iter-TFBS parts have some kind of role which it is not fully clear.
-\end_layout
-
-\begin_layout Subsection*
-Epigenetics
+ The ultra-conservation of 200 bp enhancer sequences containing TFBSs that
+ are usually shorter than 15 bp raises the possibility that these conserved
+ iter-TFBS parts play a role which it is not yet fully clear.
 \end_layout
 
 \begin_layout Standard
 Almost all cells in every organism contain their entire genomic payload,
- but only part of genome is active in any specific cell.
+ but only part of this genome is active in any specific cell.
  Essentially, cells of different type and state differ by gene expression
  patterns.
  The reason for this difference between cells lays in regulation components
- that are outside of the Watson and Crick model of the DNA sequence.
+ not included in the Watson and Crick model of the DNA sequence.
  The location and presence of TFBS, background nucleotides distribution
- and other sequence related properties are not enough to explain regulatory
- role of regions in the genome.
+ and other sequence-related properties are not sufficient to explain the
+ regulatory role of certain regions in the genome.
+ 
 \end_layout
 
 \begin_layout Standard
-Several epigenetic features, which do not involve the nucleotides sequence
- itself, correlate with enhancer regions in the genome:
+Several epigenetic features, which do not involve the nucleotide sequences
+ themselves, correlate with enhancer regions in the genome: 
 \end_layout
 
 \begin_layout Itemize
@@ -848,22 +1117,27 @@ These mechanisms have measurable features that can be added as a data layer,
  enhancer regions in the genome.
  A single cell has its own epigenetic features, often in binary form, e.g.
  a specific element of the genome can be either accessible or not.
- Whenever several similar cells from the same tissue sample are measured,
- a frequency or count of the feature is measured per DNA locus, which can
- then stored as a sequence of numbers with the length of the reference genome.
+ When several cells epigenetic properties are measured, usually a frequency
+ or count of the measured feature per DNA locus is calculated along the
+ reference genome.
  The epigenetic data is commonly further processed by calculating its p-value
- compared to a local environment, and peak called using algorithms such
- as MACS2 an used as indication for the function of the different parts
- of the genome in the tested cell type, as done for the human genome in
- the ENCODE project.
+ compared to a local environment, to which peak boundaries are determined
+ (peak calling) using algorithms such as MACS2 (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-73"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
 In eukaryotes, the DNA is packed around a structure of 8 histone proteins
- called a nucleosome,  together forming a chromatin complex.
+ called a nucleosome, and they form together a chromatin complex.
  Similarly to the TFs, the nucleosome binding location in the DNA sequence
- is not random, as the it has a tendency for specific DNA binding sites
- as well (
+ is not arbitrary.
+ Like them, it has a tendency for specific DNA binding sites (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-9"
@@ -871,15 +1145,15 @@ key "key-9"
 \end_inset
 
 ).
- DNA that is wrapped around a nucleosome has a lesser likelihood for interaction
+ The DNA wrapped around a nucleosome has a lesser likelihood for interaction
  with proteins, because it is physically inaccessible.
- Accessibility is important for the TFs and other protein to bind to the
- DNA molecule, hence both the enhancer, the promoter and the gene need to
- be accessible for a successful transcription to occur.
- DNase-I hypersensative (DHS) sites are regions of the DNA which are sensitive
- to the cleavage by the DNase-I enzyme.
- At these regions the DNA loses the nucleosome, and become accessible and
- potentially active.
+ Accessibility enables the TFs and other proteins to bind to the DNA molecule,
+ hence the enhancer, the promoter and the gene all need to be accessible
+ for a successful transcription to occur.
+ DNase-I hypersensitive (DHS) sites are regions of the DNA which are sensitive
+ to cleavage by the DNase-I enzyme.
+ In these regions the DNA loses the nucleosome, and becomes accessible and
+ therefore potentially active.
  Measurement of DHS cleavages is available through DNase-seq (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -890,26 +1164,27 @@ key "key-71"
 ), a high-throughput method for measuring the accessibility epigenetic data
  of the DNA, usually with a better resolution than histone modifications
  measurements.
- A faster and more sensitive technique for accessibility measurement was
- is called ATAC-seq (
+ A faster and more sensitive technique for accessibility measurement is
+ called ATAC-seq (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-70"
 
 \end_inset
 
-), and currently more commonly used.
+), and is currently more commonly used.
+ 
 \end_layout
 
 \begin_layout Standard
-Histone modifications, also called histone marks and chromatin modification,
- are chemical alteration which happen to the long tail-like section of the
- histone protein.
- Histone are numbered from 1 to 8, and for example, the acetylation of the
- 3rd histone at the Lysine amino-acid at the 14th position in the protein
- is abbreviated as H3K14ac.
+Histone modifications, also called histone marks and chromatin modifications,
+ are chemical alterations which happen to the long tail-like section of
+ the histone protein.
+ Histones are numbered from 1 to 8, and for example, the acetylation of
+ the lysine amino-acid situated in 14th position in the protein of the 3rd
+ histone will be abbreviated as H3K14ac.
  Along many roles in the cell, such as DNA repair and mitosis, histone modificat
-ions has a function in the gene regulation process.
+ions have a function in the gene regulation processes.
  In the past 20 years, a substantial body of research has shown that histone
  modifications are predictive of enhancer position and activity status (
 \begin_inset CommandInset citation
@@ -933,35 +1208,27 @@ key "key-18"
 \end_inset
 
 ).
- The histone modifications are considered to form a certain 
-\begin_inset Quotes eld
-\end_inset
-
-histone code
-\begin_inset Quotes erd
-\end_inset
-
- along the genome, which encode complex information underlying the genomic
- code and has a connection the transcription regulation and other aspects.
- Comparing to other epigenetic information, chromatin modifications have
- a shorter time-scale of seconds or hours (
+ The histone modifications are considered to form a certain “histone code”
+ along the genome, which encodes complex information underlying the genomic
+ code and is connected to transcription regulation and other aspects.
+ Compared to other epigenetic information, chromatin modifications have
+ a shorter time scale ranging from seconds to hours (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-25"
 
 \end_inset
 
-), hence they are thought to be relasubstantial body of ted to the dynamic
- changes of the cell's states.
+), and are therefore considered related to the dynamic changes of the cell.
 \end_layout
 
 \begin_layout Standard
-Measurement of histone modifications is done with the ChIP-seq method as
- well, similarly to TF binding detection described above.
- In histone ChIP-seq, the used antibodies attach to the modification in
- the histone tails instead of the TF protein.
+Measurement of histone modifications is also performed using the ChIP-seq
+ method, similarly to the TF binding detection described above.
+ In histone ChIP-seq, antibodies attach to the modifications in the histone
+ tails (and not to the TF proteins).
  H3K4me1 and H3K27ac are among the predominant histone modifications of
- active enhancers, where H3K4me1 is enriched on transcribed genes and enhancers
+ active enhancers; H3K4me1 is enriched on transcribed genes and enhancers
  prior to activation (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -990,9 +1257,9 @@ key "key-62"
 
 \end_inset
 
-) which is known to occur during the activation.
- Other histone modifications that are present on active enhancers and are
- used for their detection are H3K9ac (
+) which is known to occur during activation.
+ Other histone modifications present on active enhancers and used for their
+ detection are H3K9ac (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-15"
@@ -1021,16 +1288,16 @@ key "key-28"
 \end_inset
 
 ).
- Even though H3K27ac have been identified as an important mark for distinguishin
-g active enhancers from poised enhancers (
+ Even though H3K27ac has been identified as an important mark for the differenti
+ation of active enhancers from poised enhancers (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-8"
 
 \end_inset
 
-), it is not enough as its own since when present alongside H3K4me3 it is
- an indication for active promoters (
+), it is not sufficient by itself since when present alongside H3K4me3 it
+ is also an indication for active promoters (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-26"
@@ -1038,8 +1305,8 @@ key "key-26"
 \end_inset
 
 ).
- In contrast, H3K27ac absence and H3K4me1and H3K27me3 enrichment are typical
- for poised enhancers (
+ In contrast, absence of H3K27ac and enrichment of H3K4me1and H3K27me3 are
+ typical of poised enhancers (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-8"
@@ -1076,11 +1343,11 @@ name "Enhancer"
 
 \end_inset
 
-The accessibility of an enhancer's sequence and its surrounding histone
+The accessibility of an enhancer’s sequence and its surrounding histone
  modifications are connected to its regulatory activity state.
- On the upper part an active enhancer sequence that is accessible for protein
- interaction needed for transcription, where as on the lower part an inactive
- enhancer is inaccessible since it is wrapped around a nucleosome.
+ The upper diagram shows an active enhancer sequence accessible to the protein
+ interaction needed for transcription, whereas the lower one shows an inactive
+ enhancer wrapped around a nucleosome and therefore inaccessible.
 \end_layout
 
 \end_inset
@@ -1094,8 +1361,8 @@ The accessibility of an enhancer's sequence and its surrounding histone
 \end_layout
 
 \begin_layout Standard
-DNA methylation at cytosine nucleotides and cytosine proceeded by guanine
- nucleotide (CpG) is been involved in long-rage genome silencing in multiple
+DNA methylation of cytosine nucleotides and cytosine guanine nucleotides
+ pairs (CpG) has been involved in long-term genome silencing in multiple
  processes (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -1111,7 +1378,7 @@ key "key-48"
 \end_inset
 
 ).
- It has been documented as largely correlated with gene expression inhibition
+ It has been documented as widely correlated with inhibition of gene expression
  when present in promoters (
 \begin_inset CommandInset citation
 LatexCommand citet
@@ -1120,8 +1387,8 @@ key "key-3"
 \end_inset
 
 ).
- In enhancer elements, anti-correlation was found between DNA methylation
- density and enrichment of active enhancer histone modifications and TF
+ In enhancer elements, an anti-correlation was found between DNA methylation
+ density and enrichment of active enhancer histone modifications, and TF
  binding (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -1136,12 +1403,13 @@ key "key-58"
 
 \end_inset
 
-), although the cause and consequence relationship underlying these correlations
- is not yet clear.
- Currently, the most accurate method for predicting the loci of enhancer
- sequences in a genome wide scale, is analyzing the histone modifications,
- TF and cofactors presence using ChIP-seq from a cell line or from a tissue,
- combined with DNase I hypersensative (DHS).
+), although the cause and consequence relationships underlying these correlation
+s is not yet clear.
+ Currently, the most accurate method for the wide-scale prediction of the
+ loci of enhancer sequences in a genome is the analysis of histone modifications
+, and TF and cofactors presence using ChIP-seq from a cell line or from
+ a tissue, combined with DNase-I hypersensitivity (DHS).
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1167,16 +1435,16 @@ name "GenomeBrowser"
 
 \end_inset
 
-UCSC Genome Browser showing epigenetic feature tracks, staken from the 10th
+UCSC Genome Browser showing epigenetic features tracks, taken from the 10th
  chromosome of a H1-hESC cell line.
  Highlighted in light blue, the peaks of H3K27ac (1st green plot) and H3K4me1
- (2nd green plot) histone modifications and the DNaseI hyper sensitivity
- feature (4th green plot) together with the lack of H3K27me3 (3rd green
- plot) signal are indicating an active enhancer, as also marked by the ChromHMM
+ (2nd green plot) histone modifications and the DNase-I hypersensitivity
+ features (4th green plot), together with the absence of H3K27me3 (3rd green
+ plot) signal indicate an active enhancer, as also marked by the ChromHMM
  classification (bottom).
- Note the decrease between the two peaks of H3K27ac and H3K4me1 is located
- on top of the increase of the DNaseI hyper sensitivity, which implies a
- cleavage in between two nucleosomes with modifications.
+ Note that the decrease between the two peaks of H3K27ac and H3K4me1 is
+ located on top of the increase of the DNase-I hypersensitivity, which implies
+ a cleavage in between two nucleosomes with modifications.
  Taken from 
 \begin_inset Flex URL
 status open
@@ -1202,7 +1470,7 @@ https://genome-euro.ucsc.edu/cgi-bin/hgTracks
 \end_layout
 
 \begin_layout Subsubsection*
-Previous Work
+Related Work
 \end_layout
 
 \begin_layout Standard
@@ -1217,10 +1485,10 @@ key "key-63"
 \end_inset
 
 ) uses a deep convolutional neural network (DCNN) which receives an input
- of 1000 bp sequence and outputs a prediction vector of 919 binary features
- that represents the chromatin modifications of 200 bp bin in the center
- of the input sequence.
- The training labels used are the chromatin modification are extracted from
+ of 1000 bp sequence, and outputs a prediction vector of 919 binary features
+ representing the chromatin modifications of 200 bp in the center of the
+ input sequence.
+ The training labels used are the chromatin modifications extracted from
  ENCODE and Roadmap epigenetic data releases.
  Basset (
 \begin_inset CommandInset citation
@@ -1229,9 +1497,9 @@ key "key-32"
 
 \end_inset
 
-) also used DCNN on the same data with known PWMs as weights initialization
- to predict a binary vector that represents accessibility in 164 cell types
- based on 600 bp DNA sequence.
+) also used DCNN on the same data, with known PWMs as weight initialization,
+ to predict a binary vector representing accessibility in 164 cell types,
+ based on 600 bp DNA sequences.
  In DeepBind (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -1248,8 +1516,12 @@ key "key-5"
 
 \end_inset
 
-), gapped kmers presence indicator vector were used as features for an SVM
- classifier to predict the role of DNA sequences with varying lengths.
+), gapped 
+\emph on
+k
+\emph default
+-mers presence indicator vectors were used as features for a SVM classifier
+ in order to predict the role of DNA sequences of varying lengths.
  ChromHMM (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -1258,15 +1530,12 @@ key "key-14"
 \end_inset
 
 ) is a widely used software that tackles the problem of analyzing the epigenetic
- data for role predicting of fragments of the genomic sequence.
- The algorithm uses chromatin mark reads, threshold to binary values, as
- input to HMM which then allows classifying the genome state in each position
- in the genome.
-\end_layout
-
-\begin_layout Standard
-A disadvantage of these method is their need for a training data of known
- regulatory elements or epigenetic data, which is commonly obtained from
+ data to predict the role of fragments of genomic sequence.
+ The algorithm converts to binary the chromatin modification values by whether
+ or not it exceeded a threshold, which is then inserted as input to HMM
+ that classifies the genome states.
+ A disadvantage of these methods is their need for training data of known
+ regulatory elements or epigenetic data which are commonly obtained from
  GWAS surveys, such as those that were done on 127 obtained human cell types
  in the Roadmap and ENCODE projects (
 \begin_inset CommandInset citation
@@ -1286,12 +1555,6 @@ key "key-15"
  
 \end_layout
 
-\begin_layout Subsubsection*
-
-\series bold
-Data Representation
-\end_layout
-
 \begin_layout Standard
 When a DNA sequence is read from a tissue sample, it is often stored as
  a sequence of letters A,C,G and T in FASTA format.
@@ -1307,49 +1570,55 @@ reference "PWM"
 \end_inset
 
 .
- A commonly used feature extraction technique of DNA sequences is representing
- them as vectors of their in-sequence kmer frequencies as used in gkm-SVM.
- In this technique, similarly to the bag of words technique in text analysis
- and natural language processing, the order of the kmer is sacrificed for
- a more meaning-oriented, structured and fixed-length data encoding.
+ A commonly used feature extraction technique of DNA sequences is to represent
+ them as vectors of their in-sequence k-mer frequencies as used in gkm-SVM.
+ In this technique, the order of the k-mer is sacrificed for a more meaning-orie
+nted, structured and fixed-length data encoding, similarly to the bag of
+ words technique in text analysis and natural language processing.
+ 
 \end_layout
 
-\begin_layout Section*
-Stochastic Models
-\end_layout
-
-\begin_layout Subsection*
-Generative & Discriminative Models
+\begin_layout Subsubsection*
+Machine Learning Models
 \end_layout
 
 \begin_layout Standard
-In machine learning classification models, there are a two main approaches
- called generative models and discriminative models.
- Both assumes an observed variables X and target variables Y, also commonly
- referred to as data samples and labels.
+The goal of machine learning classification models is to arrive from the
+ observed X to its label Y.
+ In the DNA classification case discussed in this work, the goal is deciding
+ its role label Y for a given a DNA sequence X.
+ There are two main approaches to this goal: generative models and discriminativ
+e models.
+ Both approaches assume observed variables X and target variables Y, also
+ commonly referred to as data samples and labels.
+ 
 \end_layout
 
 \begin_layout Itemize
-The generative models assume a joint probability 
+Generative models assume a joint probability 
 \begin_inset Formula $P\left(X,Y\right)$
 \end_inset
 
 .
- Using the data one can estimate the distribution 
+ Using dataset of 
+\begin_inset Formula $\left(x,y\right)$
+\end_inset
+
+ pairs, one can estimate the distribution 
 \begin_inset Formula $P\left(X,Y\right)$
 \end_inset
 
-, then from it estimate 
+, then estimate from it 
 \begin_inset Formula $P\left(Y|X\right)$
 \end_inset
 
 .
- It is assumed that such a model can generate the random instances of the
- data either as pairs of 
+ The distinctive feature of these models is their ability to generate random
+ instances of the data, either as pairs of 
 \begin_inset Formula $\left(x,y\right)$
 \end_inset
 
- or generate instances of x given y.
+ or as instances of x given y.
 \end_layout
 
 \begin_layout Itemize
@@ -1357,44 +1626,43 @@ Discriminative models assume conditional probability
 \begin_inset Formula $P\left(Y|X\right)$
 \end_inset
 
-, which is estimated directly from the data.
+, which is estimated directly from the dataset.
 \end_layout
 
 \begin_layout Standard
-In classification problems, the task at hand is to arrive from the observed
- X to its label Y, e.g.
- given a DNA sequence X, deciding its role label Y.
- Both models eventually use the 
+Both models eventually base their classification upon the 
 \begin_inset Formula $P\left(Y|X\right)$
 \end_inset
 
- estimation to base their classification.
- Namely, classifying a data sample 
-\begin_inset Formula $x$
-\end_inset
-
- by 
-\begin_inset Formula $y_{est}=argmax_{y}P\left(Y=y|X=x\right)$
-\end_inset
-
-.
+ estimation.
+ Namely, classifying a data sample x by the most likely label: 
 \end_layout
 
 \begin_layout Standard
-Discriminative models are more widely used than generative models.
- They are often easier to use and build since they require less assumptions
- on the origin or generation of the data.
- For example, a discriminative model such as a DNN classifying the role
- of DNA sequence assumes very little on the way the DNA sequence is related
- to it's role and generated based on it, but instead it finds features in
- the sequence that indicate its role.
- Such a model often gives very little for later understanding of the nature
- of the data generation process, and can generate no new data later for
- other uses.
+\begin_inset Formula 
+\[
+y_{est}=argmax_{y}P\left(Y=y|X=x\right)
+\]
+
+\end_inset
+
+
 \end_layout
 
-\begin_layout Subsection*
-Markov Model
+\begin_layout Standard
+Discriminative models are more widely used than generative models, they
+ are often easier to use and build since they require fewer assumptions
+ on the origin and generation of the data.
+ For instance, the deep neural network (DNN) is a model that has gained
+ much interest lately in the machine learning field, and was also used for
+ the task of classifying the role of DNA sequences.
+ As a discriminative model it assumes very little regarding the way the
+ DNA sequence is generated based on its role, but finds instead features
+ in the sequence that imply its role.
+ Hence it is often difficult to use such a model for a later understanding
+ of the nature of the data generation process, or to generate new data from
+ it.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1405,34 +1673,32 @@ key "key-42"
 
 \end_inset
 
-), named after a Russian mathematician Andrey Markov, is a stochastic model
- which models a system that changes randomly such as the weather or car
- traffic.
- In a Markov model, at any time the model is at one of m states 
+), named after the Russian mathematician Andrey Markov, is a stochastic
+ model which is applied to a system that changes randomly, such as the weather
+ or car traffic.
+ This model is at one of m states 
 \begin_inset Formula $\left\{ S_{1},...,S_{m}\right\} $
 \end_inset
 
-, where the first state is sampled from a distribution 
+ at any time, with the first state being sampled from a distribution 
 \begin_inset Formula $\pi_{i}=P\left(y_{1}=S_{i}\right)$
 \end_inset
 
- and the probability of transitions between the states is denoted by 
+ and the probability of transitions between the states being denoted by
+ 
 \begin_inset Formula $T_{i,j}=P\left(y_{t}=S_{i}|y_{t-1}=S_{j}\right)$
 \end_inset
 
 .
- The model's travel over the states is called a Markov process, and the
- sequence of states visited in the process is called a Markov chain.
-\end_layout
-
-\begin_layout Standard
-The likelihood of a Markov chain X generated by a Markov Model 
+ The travel of the model over the states is named a Markov process, and
+ the sequence of the states visited in the process is called a Markov chain.
+ The likelihood of a Markov chain X generated by a Markov Model 
 \begin_inset Formula $\theta=\{\pi,T\}$
 \end_inset
 
- is a joint probability of the first state and all following transition,
- which due to the independence between transition events can be written
- as :
+ is a joint probability of the first state and of all following transitions
+ which, due to the independence between transition events, can be written
+ as:
 \end_layout
 
 \begin_layout Standard
@@ -1469,19 +1735,25 @@ name "Markov"
 
 \end_inset
 
-A) Markov model with 3 states (yellow green and blue).
- B,C) The model starts with a state sampled from 
-\begin_inset Formula $\pi$
-\end_inset
 
-, and travels between the states with a transition distribution 
-\begin_inset Formula $T$
-\end_inset
-
-.
- D) The model can generate Markov chains of states, where the transition
- between the states is conditioned on the previous state alone, causing
- the Markov process to be memoryless.
+\series bold
+A)
+\series default
+ Markov model with 3 states (a,b and c).
+ 
+\series bold
+B,C)
+\series default
+ The model starts with a state sampled from π, and travels between the states
+ with a transition distribution T.
+ 
+\series bold
+D)
+\series default
+ The model can generate Markov chains of states, where the transition between
+ the states is only conditioned by the previous state, causing the Markov
+ process to be memoryless.
+ 
 \end_layout
 
 \end_inset
@@ -1492,22 +1764,18 @@ A) Markov model with 3 states (yellow green and blue).
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subsection*
-Hidden Markov Model
 \end_layout
 
 \begin_layout Standard
-Hidden Markov model (HMM) is a Markov model variation that models a system
- that travels over hidden states in a Markov process, and while doing so
- it emits variables called observed variables.
- As the Markov model, HMM is an generative model, and therefore it assumes
+The hidden Markov model (HMM) is a Markov model extension which models a
+ system that travels over hidden states as a Markov process, and while doing
+ so emits variables called observed variables.
+ Like the Markov model, HMM is a generative model, and therefore assumes
  the existence of a joint probability 
 \begin_inset Formula $P\left(x_{1:L},y_{1:L}\right)$
 \end_inset
 
- that is derived from the compact parameters 
+ derived from the compact parameters 
 \begin_inset Formula $\theta$
 \end_inset
 
@@ -1520,23 +1788,32 @@ Hidden Markov model (HMM) is a Markov model variation that models a system
 \begin_inset Formula $\theta$
 \end_inset
 
-, and has an hidden state sequence 
+, and has a hidden sequence 
 \begin_inset Formula $Y=y_{1},...,y_{L}$
 \end_inset
 
- that are generated alongside it.
- In this generation process, a single observed variable is emitted per step
- of the model, and so the observed sequence is generated with the same length
- as the hidden Markov chain.
- The observed variables 
-\begin_inset Formula $V_{1},...,V_{n}$
+ that was generated alongside it.
+ In this generation process, a single observed variable is emitted for every
+ step of the model, and thus the observed sequence is generated with the
+ same length as the hidden Markov chain.
+ For an alphabet of variables 
+\begin_inset Formula $\left\{ V_{1},...,V_{n}\right\} ,$
 \end_inset
 
- are sampled from an emission distribution 
+ and hidden state space 
+\begin_inset Formula $\left\{ S_{1},...,S_{m}\right\} $
+\end_inset
+
+, the observed variable 
+\begin_inset Formula $x_{t}$
+\end_inset
+
+ is sampled from an emission distribution conditioned on the hidden state
+ of the model 
 \begin_inset Formula $E_{i,j}=P\left(x_{t}=V_{j}|y_{t}=S_{i}\right)$
 \end_inset
 
-, that is conditioned on the hidden state of the model.
+.
  Similarly to the Markov model, the distribution to the first hidden state
  is marked as 
 \begin_inset Formula $\pi$
@@ -1572,11 +1849,23 @@ name "HMM"
 
 \end_inset
 
-A) HMM with 2 hidden states.
- B) The observed variables (dark blue) are emitted by the hidden state at
- their location, sampled from the discrete conditional distribution E.
- C,D) The hidden states (yellow and green) behave as Markov model states
- with starting and transition probabilities, 
+
+\series bold
+A)
+\series default
+ HMM with 2 hidden states.
+ 
+\series bold
+B)
+\series default
+ The observed variables (dark blue) are emitted by the hidden state at their
+ location, sampled from the discrete conditional distribution E.
+ 
+\series bold
+C,D)
+\series default
+ The hidden states (yellow and green) behave as Markov model states with
+ starting and transition probabilities 
 \begin_inset Formula $\pi$
 \end_inset
 
@@ -1585,8 +1874,12 @@ A) HMM with 2 hidden states.
 \end_inset
 
 .
- E) The output of the model is a observable sequence with an underlying
- hidden sequence.
+ 
+\series bold
+E)
+\series default
+ The output of the model is an observable sequence with an underlying hidden
+ sequence.
  The hidden sequence is a Markov chain, where on each step the hidden state
  emits a single observed variable.
 \end_layout
@@ -1602,20 +1895,19 @@ A) HMM with 2 hidden states.
 \end_layout
 
 \begin_layout Standard
-Multiple signal processing algorithms have been used in computational biology,
- and HMM is especially popular among them.
- Hidden Markov model (HMM) is a statistical model proposed by Leonard Baum
- (
+HMM is a very popular signal processing algorithm that has been adopted
+ in the various fields of computational biology since the 1980’s.
+ HMM was proposed by Leonard Baum (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-4"
 
 \end_inset
 
-) and is based on the Markov model for modeling regions with alternating
- frequencies of patterns and symbols.
- It was used extensively in various engineering fields since the 1980s,
- especially in speech recognition (
+) and is used for modeling regions with alternating frequencies of patterns
+ and symbols.
+ In a non-biological context, it was used extensively in various engineering
+ fields, especially in speech recognition (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-49"
@@ -1636,76 +1928,73 @@ key "key-59"
 
 \end_inset
 
-) and was adopted in the computational biology field.
+).
 \end_layout
 
 \begin_layout Standard
 For example, in the case where the observable sequence is made out of DNA,
- a simplistic model can assume the DNA sequence is composed out of 4 states:
- genes, promoter enhancers and background regions.
- Each of these types will have different nucleotide frequency, and we assume
- the DNA sequence was generated by a HMM with underlying sequence of 4 hidden
- states, one for each region type.
- The emitted observed DNA sequence x is determined by the underlying hidden
- sequence y that describes the
-\begin_inset Quotes eld
+ a simplistic model can assume that the DNA sequence is composed out of
+ 4 states: genes, promoter enhancers and background regions.
+ Each of these states will have a different nucleotide frequency, and we
+ assume that the DNA sequence was generated by a HMM with underlying sequences
+ of 4 hidden states, one for each region type.
+ The emitted DNA sequence 
+\begin_inset Formula $x_{1:L}$
 \end_inset
 
-mode
-\begin_inset Quotes erd
-\end_inset
-
- of the sequence in each position.
+ is determined by the underlying hidden sequence y1:L that describes the
+ “mode” of the sequence for each location.
 \begin_inset Newline newline
 \end_inset
 
 
 \end_layout
 
-\begin_layout Subsubsection*
-HMM Likelihood and Posterior Probability
-\end_layout
-
 \begin_layout Standard
 Having a HMM with 
-\begin_inset Formula $\theta$
+\begin_inset Formula $θ$
 \end_inset
 
- on hand, two questions arise given an observed sequence 
+ on hand and given an observed sequence 
 \begin_inset Formula $x_{1:L}$
 \end_inset
 
-:
+, two questions arise: :
 \end_layout
 
 \begin_layout Itemize
-What is the likelihood that x was generated by the HMM? 
+What is the likelihood that 
+\begin_inset Formula $x_{1:L}$
+\end_inset
+
+ was generated by the HMM with parameters 
+\begin_inset Formula $\theta$
+\end_inset
+
+ or 
 \begin_inset Formula $P_{\theta}\left(x_{1:L}\right)$
 \end_inset
 
-
+?
 \end_layout
 
 \begin_layout Itemize
-What is the probability of a hidden state at every location? 
+What is the probability of a hidden state at every location or 
 \begin_inset Formula $P_{\theta}\left(y_{t}=j|x_{1:L}\right)$
 \end_inset
 
-
+?
 \end_layout
 
 \begin_layout Standard
-The two probabilities in the questions above are the likelihood and the
- posterior probabilities of HMM.
-\end_layout
-
-\begin_layout Standard
-As in many generative models, HMM's likelihood function 
+The two above-mentioned probabilities are named the likelihood function
+ and the posterior probabilities of HMM.
+ As in many generative models, HMM’s likelihood function 
 \begin_inset Formula $\mathcal{L}\left(\theta|x_{1:L}\right)$
 \end_inset
 
- from the first question, can be split by the total probability law to the
- sum of all possible hidden sequences:
+ relating to the first question can be split by the total probability law
+ to the sum of all possible hidden sequences: 
 \end_layout
 
 \begin_layout Standard
@@ -1769,24 +2058,21 @@ reference "Likelihoods"
 
  involves the summation of all possible hidden sequences, an impracticable
  exponential-by-L operation.
- A dynamic approach had overcame this gap, to utilizing the Markovian memoryless
-ness of HMM, and answers both the likelihood and the posterior questions
- we raised above.
- This approach is called Forward-Backward algorithm, and it was suggested
- as a step in the Baum-Welch algorithm (
+ A dynamic approach to overcome this gap uses the Markovian memorylessness
+ of HMM, and answers both the likelihood and the posterior questions we
+ raised above.
+ This approach is called Forward-Backward algorithm: it was suggested as
+ a step in the Baum-Welch algorithm (
 \begin_inset CommandInset citation
 LatexCommand citet
 key "key-4"
 
 \end_inset
 
-), which is a EM algorithm for finding the unknown 
-\begin_inset Formula $\theta$
-\end_inset
-
- given a observed sequence, further described in a later section.
+), which is an EM algorithm for finding the unknown θ given an observed
+ sequence, and will be described further in a later section.
  In the Forward-Backward algorithm, two matrices of size 
-\begin_inset Formula $m\times L$
+\begin_inset Formula $m × L$
 \end_inset
 
  are dynamically calculated, holding the probabilities:
@@ -1815,9 +2101,6 @@ key "key-4"
 \end_layout
 
 \begin_layout Subsubsection*
-\begin_inset Newpage newpage
-\end_inset
-
 Forward Algorithm
 \end_layout
 
@@ -2111,7 +2394,7 @@ The building of the table is based on the HMM basic assumptions that each
 \begin_inset Formula $x_{t}$
 \end_inset
 
- is dependent only on its hidden state that emitted it 
+ is dependent only on the hidden state that emitted it, 
 \begin_inset Formula $y_{t}$
 \end_inset
 
@@ -2190,13 +2473,6 @@ Forward algorithm dynamically calculates the probability stored in
 
 \end_layout
 
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Newpage newpage
 \end_inset
 
 
@@ -2556,10 +2832,6 @@ P_{\theta}\left(y_{t}=j|x_{1:L}\right)=\frac{P_{\theta}\left(y_{t}=j,x_{1:L}\rig
 
 \end_layout
 
-\begin_layout Subsubsection*
-HMM Limitations
-\end_layout
-
 \begin_layout Standard
 Although HMM is simple and efficient, applying it on DNA sequences has a
  major disadvantage: the inherit Markovian lack-of-memory property.
@@ -2656,14 +2928,24 @@ name "GHMM"
 
 \end_inset
 
-GHMM with a TF state which emits using a PWM.
- A) the model has one background hidden state (yellow) and one TF hidden
- state.
- Although the TF state emits 5 bases motifs, the rest of the emissions,
- transitions and start probabilities remain the same as in a regular HMM
- (B,C,D).
- An example output generated from such model in (E) shows the TFBS motif
- sampled in an arbitrary location inside a sequence.
+
+\series bold
+A)
+\series default
+ GHMM with a TF-state which emits using a PWM.
+ The model has one background hidden state (yellow) and one TF hidden state.
+ 
+\series bold
+B,C,D)
+\series default
+ Although the TF-state emits motifs with 5 bp, the rest of the emissions,
+ transitions and start probabilities remain the same as in a regular HMM.
+ 
+\series bold
+E)
+\series default
+ An example output generated from the model, showing the TFBS motif sampled
+ in an arbitrary location inside a sequence.
 \end_layout
 
 \end_inset
@@ -2709,9 +2991,13 @@ key "key-38"
 
 ).
  Although these HMM variants are capable of expressing a more complex structure
- of DNA sequence (different kmers frequencies in the genomic regions), the
- number of parameters required for DNA analysis tends to rise with the increase
- of the assumed complexity of the DNA structure.
+ of DNA sequence (different 
+\emph on
+k
+\emph default
+-mers frequencies in the genomic regions), the number of parameters required
+ for DNA analysis tends to rise with the increase of the assumed complexity
+ of the DNA structure.
  The increase of hidden states needed may introduce overfitting in the learning
  process, when the data size is limited.
 \end_layout
@@ -2721,7 +3007,11 @@ Instead of higher-order emission which depends on the previous hidden states
  was previous used, high-order emission which depends on previous emitted
  observable variables is a less researched field.
  Such a HMM variant fits better to the locality nature for the task of emission
- kmer structures, but it only requires 
+ 
+\emph on
+k
+\emph default
+-mer structures, but it only requires 
 \begin_inset Formula $O\left(m^{2}+4^{K}\right)$
 \end_inset
 
@@ -2733,13 +3023,16 @@ Instead of higher-order emission which depends on the previous hidden states
 \begin_inset Formula $\left(m^{K}\right)$
 \end_inset
 
- parameters that would have been required for holding a kmer distribution
- in a regular HMM, where m is the number of hidden states of the HOP-HMM,
- and K is the number of previous states in the dependency.
+ parameters that would have been required for holding a 
+\emph on
+k
+\emph default
+-mer distribution in a regular HMM, where m is the number of hidden states
+ of the HOP-HMM, and K is the number of previous states in the dependency.
  
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Subsubsection*
 HOP-HMM
 \end_layout
 
@@ -2751,7 +3044,11 @@ HOP-HMM is a GHMM that is well fitted to utilize the structure of enhancers
  and success of HMM in gene prediction, we think the memorylessness of HMMs
  fit well to the task of enhancer prediction.
  HOP-HMM balances between the Markovian memorylessness and the observed
- kmer of the TFBS present in regulatory regions in the DNA.
+ 
+\emph on
+k
+\emph default
+-mer of the TFBS present in regulatory regions in the DNA.
 \end_layout
 
 \begin_layout Standard
@@ -2792,12 +3089,29 @@ name "HOPHMM1"
 
 \end_inset
 
-Small HOP-HMM that has one background-state which emits a single observable
- variable, and one TF-state which emits multiple observable variable that
- represent a TFBS sampled from a PWM.
- Unlike GHMM, in HOP-HMM TF-state can not be the starting hidden state and
- the background-state is has 2-order emission, meaning it is conditioned
- on the previous observable variable.
+
+\series bold
+A)
+\series default
+ Small HOP-HMM that has one background-state and one TF-state.
+ 
+\series bold
+B) 
+\series default
+The background-state emits a single observable variable, and is has 2-order
+ emission, meaning it is conditioned on the previous observable variable.
+ 
+\series bold
+C,D)
+\series default
+ Unlike GHMM, in HOP-HMM TF-state can transition into itself and cannot
+ be the starting hidden state and the background-state.
+ 
+\series bold
+E)
+\series default
+ The TF-state emits multiple observable variable that represent a TFBS sampled
+ from a PWM.
 \end_layout
 
 \end_inset
@@ -2873,13 +3187,17 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
+
+\series bold
 \begin_inset CommandInset label
 LatexCommand label
 name "HOPHMM2"
 
 \end_inset
 
-A) A more complex HOP-HMM with two background-state 
+A)
+\series default
+ A more complex HOP-HMM with two background-state 
 \begin_inset Formula $BG_{1}$
 \end_inset
 
@@ -2888,15 +3206,31 @@ A) A more complex HOP-HMM with two background-state
 \end_inset
 
 , where each has 3 TF-states.
- B) each of the background-states has its own 2-order emission distribution
+ 
+\series bold
+B)
+\series default
+ each of the background-states has its own 2-order emission distribution
  in a 4x4 matrix.
- C) The start hidden state distribution 
+ 
+\series bold
+C)
+\series default
+ The start hidden state distribution 
 \begin_inset Formula $\pi$
 \end_inset
 
  allows only background-states to start the hidden sequence.
- D) The transition probability is held by matrices T and G.
- E) The example generated sequence is built out of two types of sequences,
+ 
+\series bold
+D)
+\series default
+ The transition probability is held by matrices T and G.
+ 
+\series bold
+E)
+\series default
+ The example generated sequence is built out of two types of sequences,
  each has its own TFBS frequency and background nucleotide bigram frequency,
  representing two alternating types of enhancers.
 \end_layout
@@ -2909,10 +3243,6 @@ A) A more complex HOP-HMM with two background-state
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subsubsection*
-Hidden States Indexing
 \end_layout
 
 \begin_layout Standard
@@ -3091,10 +3421,6 @@ While most background-states
  in the results section.
 \end_layout
 
-\begin_layout Subsubsection*
-Emission
-\end_layout
-
 \begin_layout Standard
 HOP-HMM is defined with k PWMs 
 \begin_inset Formula $W_{1},W_{2},...,W_{k}$
@@ -3186,10 +3512,6 @@ For the first variables emitted in the sequence, the missing dimensions
 
 \end_layout
 
-\begin_layout Subsubsection*
-Transition
-\end_layout
-
 \begin_layout Standard
 In HOP-HMM, the first hidden state in a sequence can only be a background-state.
  The first background-state, as in HMM, is chosen by sampling from 
@@ -3248,12 +3570,8 @@ When in a background-state, after the observable variable emission, the
  variable and so on.
 \end_layout
 
-\begin_layout Part*
+\begin_layout Section*
 Methods
-\end_layout
-
-\begin_layout Subsection*
-Baum-Welch Algorithm
 \end_layout
 
 \begin_layout Standard
@@ -3800,7 +4118,7 @@ The calculation of
  and finish the EM iteration.
 \end_layout
 
-\begin_layout Section*
+\begin_layout Subsubsection*
 Baum-Welch Algorithm for HOP-HMM
 \end_layout
 
@@ -3921,7 +4239,7 @@ The
 
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection*
 M-step
 \end_layout
 
@@ -4220,12 +4538,10 @@ ward algorithm.
 
 \end_layout
 
-\begin_layout Subsubsection*
-HOP-Forward Algorithm
-\end_layout
-
 \begin_layout Standard
-We calculate 
+The adjustments for the forward and backward algorithm are straight forward,
+ as the summation is composed of two parts.
+ We calculate 
 \begin_inset Formula $\alpha$
 \end_inset
 
@@ -4569,11 +4885,11 @@ Algorithm:
 \end_layout
 
 \begin_layout Standard
-Calculation notes: In the beginning of the sequence, when 
+In the beginning of the sequence, when 
 \begin_inset Formula $1\leq t<o$
 \end_inset
 
- , part of the preceding observable variables are missing.
+, part of the preceding observable variables are missing.
  Since E has 
 \begin_inset Formula $o+1$
 \end_inset
@@ -4612,10 +4928,6 @@ We used the fact that
 \end_inset
 
  include out-of-sequence TFBS and are not part of the summation.
-\end_layout
-
-\begin_layout Subsubsection*
-HOP-Backward Algorithm
 \end_layout
 
 \begin_layout Standard
@@ -4975,10 +5287,6 @@ In HOP-HMM, the Forward-Backward algorithm dynamic tables
 
 \end_layout
 
-\begin_layout Subsubsection*
-Forward Algorithm Explanation
-\end_layout
-
 \begin_layout Standard
 We will now explain why the described dynamic calculation result with 
 \begin_inset Formula $\alpha_{j,t}=P\left(y_{t}=(j,0),x_{1:t}\right)$
@@ -5030,12 +5338,31 @@ right-side term of a TF-state transition can be split with the chain rule
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align*}
-P\left(y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)= & \,P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot\\
- & \cdot P\left(y_{t-|W_{l}|:t-1}=(j,l)|y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\\
- & \cdot P\left(x_{t-|W_{l}|:t-1}|y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\\
- & \cdot P\left(x_{t}|y_{t}=(j,0),x_{1:t-1},y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0)\right)
-\end{align*}
+\[
+P\left(y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\,P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot P\left(y_{t-|W_{l}|:t-1}=(j,l)|y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\cdot P\left(x_{t-|W_{l}|:t-1}|y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot P\left(x_{t}|y_{t}=(j,0),x_{1:t-1},y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0)\right)
+\]
 
 \end_inset
 
@@ -5069,7 +5396,18 @@ Since
 \begin_layout Standard
 \begin_inset Formula 
 \[
-P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot P\left(y_{t-|W_{l}|:t-1}=(j,l)|y_{t-|W_{l}|-1}=(j,0)\right)\cdot P\left(x_{t-|W_{l}|:t-1}|y_{t-|W_{l}|:t-1}=(j,l)\right)\cdot P\left(x_{t}|y_{t}=(j,0),x_{t-o:t-1}\right)=
+P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot P\left(y_{t-|W_{l}|:t-1}=(j,l)|y_{t-|W_{l}|-1}=(j,0)\right)\cdot
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\cdot P\left(x_{t-|W_{l}|:t-1}|y_{t-|W_{l}|:t-1}=(j,l)\right)\cdot P\left(x_{t}|y_{t}=(j,0),x_{t-o:t-1}\right)=
 \]
 
 \end_inset
@@ -5135,10 +5473,6 @@ P\left(y_{t-1}=(j',0),y_{t}=(j,0),x_{1:t}\right)=
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subsubsection*
-Backward Algorithm Explanation
 \end_layout
 
 \begin_layout Standard
@@ -6874,10 +7208,6 @@ return
 
 \end_layout
 
-\begin_layout Subsubsection*
-Learning Multiple Sequences at Once
-\end_layout
-
 \begin_layout Standard
 The algorithm is described with the input of a single sequence of observable
  variables 
@@ -6902,7 +7232,7 @@ key "key-50"
 s update.
 \end_layout
 
-\begin_layout Section*
+\begin_layout Subsubsection*
 Sequence States Inference
 \end_layout
 
@@ -7032,7 +7362,18 @@ reference "PWM Posterior"
 \begin_layout Standard
 \begin_inset Formula 
 \[
-P_{\theta}\left(y_{t}=(j,l)|x_{1:L}\right)=\sum_{i\in\left[|W_{l}|\right]}P_{\theta}\left(y_{t-i+1:t-i+|W_{l}|}=(j,l)|x_{1:L}\right)=\sum_{i\in\left[|W_{l}|\right]}P_{\theta}\left(y_{t-i}=(j,0),y_{t-i+1}=(j,l)|x_{1:L}\right)=\sum_{i\in\left[|W_{l}|\right]}\eta_{t-i+1,j,l}
+P_{\theta}\left(y_{t}=(j,l)|x_{1:L}\right)=\sum_{i\in\left[|W_{l}|\right]}P_{\theta}\left(y_{t-i+1:t-i+|W_{l}|}=(j,l)|x_{1:L}\right)=
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=\sum_{i\in\left[|W_{l}|\right]}P_{\theta}\left(y_{t-i}=(j,0),y_{t-i+1}=(j,l)|x_{1:L}\right)=\sum_{i\in\left[|W_{l}|\right]}\eta_{t-i+1,j,l}
 \]
 
 \end_inset
@@ -7059,7 +7400,7 @@ Choosing the maximum value over
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-\hat{y}_{t}=\underset{j\in[m],l\in[k]\cup\{0\}}{argmax}{\gamma_{j,t}}\cup{\sum_{i\in\left[|W_{l}|\right]}\eta_{t-i+1,j,l}}\label{PosteriorEstimation}
+\hat{y}_{t}=\underset{j\in[m],l\in[k]\cup\{0\}}{argmax}\gamma_{j,t}\cup\sum_{i\in\left[|W_{l}|\right]}\eta_{t-i+1,j,l}\label{PosteriorEstimation}
 \end{equation}
 
 \end_inset
@@ -8827,7 +9168,7 @@ y_{class}=mode_{t\in[L]}y_{t}
 
 \end_layout
 
-\begin_layout Part*
+\begin_layout Section*
 Results
 \end_layout
 
@@ -9119,8 +9460,8 @@ ch algorithm.
 \begin_inset Formula $\hat{\theta},$
 \end_inset
 
- an hidden sequence is then estimated by the HOP-Viterbi algorithm, and
- a posterior probability estimation is calculated by 
+ a hidden sequence is then estimated by the HOP-Viterbi algorithm, and a
+ posterior probability estimation is calculated by 
 \begin_inset CommandInset ref
 LatexCommand eqref
 reference "PosteriorEstimation"
@@ -9302,8 +9643,8 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Figures/DecError_rmse_vs_likelihood_m5bg1k25o3b1s0r0N3000L1000.jpg
-	scale 25
+	filename Figures/rmse_vs_likelihood_m5bg1k25o3b1s0r0N3000L1000.jpg
+	scale 50
 
 \end_inset
 
@@ -9317,12 +9658,12 @@ name "LikelihoodVsErr"
 
 \end_inset
 
-Over multiple runs of HOP-Baum-Welch, higher the estimated 
+Over multiple runs of HOP-Baum-Welch, higher the sequences likelihood for
+ the estimated 
 \begin_inset Formula $\theta$
 \end_inset
 
- likelihood over the learned sequences result in lower error comparing the
- true 
+ resulted in lower errors compared to the true 
 \begin_inset Formula $\theta$
 \end_inset
 
@@ -9341,6 +9682,10 @@ Over multiple runs of HOP-Baum-Welch, higher the estimated
 \end_layout
 
 \begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
 \begin_inset Float figure
 wide false
 sideways false
@@ -9349,7 +9694,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/dec_likelihood.jpg
-	scale 50
+	scale 32
 
 \end_inset
 
@@ -9359,7 +9704,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/dec_theta_error.jpg
-	scale 50
+	scale 32
 
 \end_inset
 
@@ -9369,7 +9714,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/dec_theta_error_scatter.jpg
-	scale 50
+	scale 32
 
 \end_inset
 
@@ -9379,7 +9724,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/dec_viterbi.jpg
-	scale 50
+	scale 32
 
 \end_inset
 
@@ -9393,7 +9738,11 @@ name "Regularization"
 
 \end_inset
 
-(A) The EM iterations draws the estimated 
+
+\series bold
+A)
+\series default
+ The EM iterations draws the estimated 
 \begin_inset Formula $\theta$
 \end_inset
 
@@ -9402,13 +9751,21 @@ name "Regularization"
 \end_inset
 
 .
- (B) The error between the true and estimated 
+ 
+\series bold
+B)
+\series default
+ The error between the true and estimated 
 \begin_inset Formula $\theta$
 \end_inset
 
  decrease, and after a few iterations converge to the same path regardless
  of the initialization.
- (C) During the EM iterations, the learned 
+ 
+\series bold
+C)
+\series default
+ During the EM iterations, the learned 
 \begin_inset Formula $\theta$
 \end_inset
 
@@ -9419,7 +9776,11 @@ name "Regularization"
 
  could produce Viterbi paths that is a perfect match to the true hidden
  sequences.
- (D) The mean log likelihood of the sequences increases during the EM iterations.
+ 
+\series bold
+D)
+\series default
+ The mean log likelihood of the sequences increases during the EM iterations.
  The experiment was done on 500 synthetic sequences (85% train, 15% test),
  1000 long.
  The trained model had 6 hidden background-states with emission order of
@@ -9548,10 +9909,6 @@ Confusion matrix of true and estimated states by the Viterbi algorithm of
 
 \end_layout
 
-\begin_layout Subsection*
-Roadmap Dataset
-\end_layout
-
 \begin_layout Standard
 For testing of HOP-HMM on human genetic data, we manipulated the used the
  Roadmap project Bed files with BEDTools (
@@ -9647,7 +10004,7 @@ PWMs that had strong presence in sequences from one tissue compared to the
 \end_layout
 
 \begin_layout Standard
-In our experiment, many sequences resulted posterior probability had good
+In our experiment, some sequences resulted posterior probability had good
  resemblance to the DNase-seq track, causing a good overlap between the
  Viterbi-path and the ChromeHMM classifications (see figure 
 \begin_inset CommandInset ref
@@ -9661,20 +10018,7 @@ reference "fig:RealSequences"
 \end_layout
 
 \begin_layout Standard
-\begin_inset Graphics
-	filename Figures/realSeq1.jpg
-	scale 50
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Graphics
-	filename Figures/realSeq2.jpg
-	scale 50
-
+\begin_inset Newpage newpage
 \end_inset
 
 
@@ -9688,8 +10032,28 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
+	filename Figures/realSeq1.jpg
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/realSeq2.jpg
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
 	filename Figures/realSeq3.jpg
-	scale 50
+	scale 35
 
 \end_inset
 
@@ -9699,7 +10063,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/realSeqLegend.jpg
-	scale 50
+	scale 30
 
 \end_inset
 
@@ -9735,8 +10099,8 @@ Examples of HOP-HMM classification of 5000pb long tissue specific enhancer
 
 \end_layout
 
-\begin_layout Part*
-Discussion and Conclusion
+\begin_layout Section*
+Discussion and Conclusions
 \end_layout
 
 \begin_layout Standard
@@ -9805,8 +10169,8 @@ background
 
 \begin_layout Standard
 Though many real DNA sequences were correctly classified, some tissues caused
- the EM algorithm to consistently converge to parameters which gave wrong
- Viterbi path classifications.
+ the EM algorithm to consistently converge to parameters which gave mostly
+ wrong Viterbi path classifications.
  This could stem from several reasons: wrong PWMs selection as hyperparameters,
  too small or noisy dataset building from the Roadmap data and a more complex
  structure than assumed by the HOP-HMM hypothesis.
@@ -9818,7 +10182,14 @@ Though many real DNA sequences were correctly classified, some tissues caused
  method.
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
 Appendix: Source Code
 \end_layout
 
@@ -10687,7 +11058,7 @@ key "key-9"
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Beer et al.(2014)"
+label "De Beer et al.(2014)"
 key "key-5"
 
 \end_inset
@@ -10740,6 +11111,22 @@ key "key-12"
  Identification of functional transcription factor binding sites using closely
  related Saccharomyces species.
  Genome research, 15(5), 701-709.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Du Preez(1998)"
+key "key-47"
+
+\end_inset
+
+ Du Preez, J.
+ A.
+ (1998).
+ Efficient training of high-order hidden Markov models using first-order
+ representations.
+ Computer speech & language, 12(1), 23-39.
 \end_layout
 
 \begin_layout Bibliography
@@ -10834,23 +11221,6 @@ key "key-17"
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Fernandez and Galperin(2012)"
-key "key-18"
-
-\end_inset
-
- Galperin, M.
- Y., & Fernández-Suarez, X.
- M.
- (2011).
- The 2012 nucleic acids research database issue and the online molecular
- biology database collection.
- Nucleic acids research, 40(D1), D1-D8.
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
 label "Fishilevich et al.(2017)"
 key "key-20"
 
@@ -10880,6 +11250,23 @@ key "key-21"
  locus.
  PLoS One, 5(12), e15741.
  
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Galperin and Fernandez(2012)"
+key "key-18"
+
+\end_inset
+
+ Galperin, M.
+ Y., & Fernández-Suarez, X.
+ M.
+ (2011).
+ The 2012 nucleic acids research database issue and the online molecular
+ biology database collection.
+ Nucleic acids research, 40(D1), D1-D8.
 \end_layout
 
 \begin_layout Bibliography
@@ -11317,22 +11704,6 @@ key "key-46"
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Preez(1998)"
-key "key-47"
-
-\end_inset
-
- du Preez, J.
- A.
- (1998).
- Efficient training of high-order hidden Markov models using first-order
- representations.
- Computer speech & language, 12(1), 23-39.
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
 label "Przybilla et al.(2012)"
 key "key-48"
 
@@ -11516,22 +11887,6 @@ key "key-8"
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Tate and Bird(1993)"
-key "key-3"
-
-\end_inset
-
- Tate, P.
- H., & Bird, A.
- P.
- (1993).
- Effects of DNA methylation on DNA-binding proteins and gene expression.
- Current opinion in genetics & development, 3(2), 226-231.
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
 label "Taher et al.(2011)"
 key "key-56"
 
@@ -11545,6 +11900,22 @@ key "key-56"
  Genome-wide identification of conserved regulatory function in diverged
  sequences.
  Genome research, 21(7), 1139-1149.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Tate and Bird(1993)"
+key "key-3"
+
+\end_inset
+
+ Tate, P.
+ H., & Bird, A.
+ P.
+ (1993).
+ Effects of DNA methylation on DNA-binding proteins and gene expression.
+ Current opinion in genetics & development, 3(2), 226-231.
 \end_layout
 
 \begin_layout Bibliography
@@ -11697,6 +12068,25 @@ key "key-62"
  Epigenetic signatures distinguish multiple classes of enhancers with distinct
  cellular functions.
  Genome research, 21(8), 1273-1283.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Zhang et al.(2008)"
+key "key-73"
+
+\end_inset
+
+ Zhang, Y., Liu, T., Meyer, C.
+ A., Eeckhoute, J., Johnson, D.
+ S., Bernstein, B.
+ E., ...
+ & Liu, X.
+ S.
+ (2008).
+ Model-based analysis of ChIP-Seq (MACS).
+ Genome biology, 9(9), R137.
 \end_layout
 
 \begin_layout Bibliography
