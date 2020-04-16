@@ -144,11 +144,11 @@ Classification of Regulatory Sequences
 \begin_inset Newline newline
 \end_inset
 
-in the Human Genome Using High-Order 
+in the Human Genome Using Higher-Order 
 \begin_inset Newline newline
 \end_inset
 
-Generalized Hidden Markov Model 
+PWM Based Hidden Markov Model 
 \begin_inset Newline newline
 \end_inset
 
@@ -429,17 +429,22 @@ esented in enhancer sequences.
  An alternative approach to enhancer detection is to observe the genetic
  content of its sequence, since it contains all the essential information
  for the DNA to act as an enhancer.
- Over the years, it was demonstrated in vivo that the cell requires no other
- mechanism than the sequence in order to regulate its gene expression.
+ Over the years, it was demonstrated 
+\emph on
+in vivo
+\emph default
+ that the cell requires no other mechanism than the sequence in order to
+ regulate its gene expression.
  With that idea in mind, we offer a computational approach for the detection
  of enhancers based on their sequences alone, and in an unsupervised manner.
- We created a high-order generalized hidden Markov model (HOP-HMM), with
- two kinds of states: one which emits transcription factor binding sites
- by using a positional weight matrix model, and one which emits single nucleotid
-es with high order dependency on previously emitted nucleotides.
+ We created a higher-order positional weight matrix based hidden Markov
+ model (HOP-HMM), with two kinds of states: one which emits transcription
+ factor binding sites by using a positional weight matrix model, and one
+ which emits single nucleotides with higher-order dependency on previously
+ emitted nucleotides.
  Compared to a regular hidden Markov model, this model learns a more complex
  underlying structure of DNA sequences, containing both binding site motifs
- and high-order distribution of nucleotides in between them.
+ and higher-order distribution of nucleotides in between them.
  We'll first review the biological background of enhancers, specifically
  in humans.
  Then we'll review in depth the background of Markov and hidden Markov models,
@@ -590,6 +595,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/Enhancer_gene_transcription.jpg
 	scale 50
@@ -670,6 +677,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/f735.jpg
 	scale 15
@@ -944,6 +953,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/pwm_mult.jpg
 	scale 50
@@ -1327,6 +1338,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/Enhancers_status.jpg
 	scale 50
@@ -1419,6 +1432,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/genome_browser.png
 	scale 40
@@ -1557,7 +1572,7 @@ key "key-15"
 
 \begin_layout Standard
 When a DNA sequence is read from a tissue sample, it is often stored as
- a sequence of letters A,C,G and T in FASTA format.
+ a sequence of the characters A,C,G and T in FASTA format.
  For an algorithm to process it, these characters are mapped into a data
  structure of integers 1,2,3 and 4 respectively.
  For many algorithms, such as in DeepSEA, Basset, and our HOP-HMM, it is
@@ -1584,13 +1599,32 @@ Machine Learning Models
 
 \begin_layout Standard
 The goal of machine learning classification models is to arrive from the
- observed X to its label Y.
+ observed 
+\begin_inset Formula $X$
+\end_inset
+
+ to its label 
+\begin_inset Formula $Y$
+\end_inset
+
+.
  In the DNA classification case discussed in this work, the goal is deciding
- its role label Y for a given a DNA sequence X.
+ its role label 
+\begin_inset Formula $Y$
+\end_inset
+
+ for a given a DNA sequence X.
  There are two main approaches to this goal: generative models and discriminativ
 e models.
- Both approaches assume observed variables X and target variables Y, also
- commonly referred to as data samples and labels.
+ Both approaches assume observed variables 
+\begin_inset Formula $X$
+\end_inset
+
+ and target variables 
+\begin_inset Formula $Y$
+\end_inset
+
+, also commonly referred to as data samples and labels.
  
 \end_layout
 
@@ -1618,7 +1652,15 @@ Generative models assume a joint probability
 \begin_inset Formula $\left(x,y\right)$
 \end_inset
 
- or as instances of x given y.
+ or as instances of 
+\begin_inset Formula $x$
+\end_inset
+
+ given 
+\begin_inset Formula $y$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Itemize
@@ -1635,7 +1677,11 @@ Both models eventually base their classification upon the
 \end_inset
 
  estimation.
- Namely, classifying a data sample x by the most likely label: 
+ Namely, classifying a data sample 
+\begin_inset Formula $x$
+\end_inset
+
+ by the most likely label: 
 \end_layout
 
 \begin_layout Standard
@@ -1692,7 +1738,11 @@ key "key-42"
 .
  The travel of the model over the states is named a Markov process, and
  the sequence of the states visited in the process is called a Markov chain.
- The likelihood of a Markov chain X generated by a Markov Model 
+ The likelihood of a Markov chain 
+\begin_inset Formula $X$
+\end_inset
+
+ generated by a Markov Model 
 \begin_inset Formula $\theta=\{\pi,T\}$
 \end_inset
 
@@ -1719,6 +1769,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/Markov_model.jpg
 	scale 50
@@ -1833,6 +1885,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/HMM_two_states.jpg
 	scale 50
@@ -2069,8 +2123,9 @@ key "key-4"
 
 \end_inset
 
-), which is an EM algorithm for finding the unknown θ given an observed
- sequence, and will be described further in a later section.
+), which is an expectation maximization (EM) algorithm for finding the unknown
+ θ given an observed sequence, and will be described further in a later
+ section.
  In the Forward-Backward algorithm, two matrices of size 
 \begin_inset Formula $m × L$
 \end_inset
@@ -2441,6 +2496,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/HMM forward Algorithm.jpg
 	scale 50
@@ -2483,15 +2540,15 @@ Backward Algorithm
 \end_layout
 
 \begin_layout Standard
-The backwards probabilities matrix 
-\begin_inset Formula $\beta$
+The backward probabilities matrix 
+\begin_inset Formula $β$
 \end_inset
 
- holds the probability that a sequence 
+ hold the probability that a sequence 
 \begin_inset Formula $x_{t+1:L}$
 \end_inset
 
- was emitted given the hidden state at position t had value j:
+ was emitted given the hidden state at position t had value j: 
 \end_layout
 
 \begin_layout Standard
@@ -2756,6 +2813,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/HMM backward Algorithm.jpg
 	scale 50
@@ -2802,8 +2861,7 @@ Once we obtain
 \begin_inset Formula $\beta$
 \end_inset
 
- probabilities, the incomplete-data likelihood of HMM can finally be easily
- calculated:
+ probabilities, the incomplete-data likelihood of HMM can be easily calculated:
 \end_layout
 
 \begin_layout Standard
@@ -2818,7 +2876,7 @@ P_{\theta}\left(x_{1:L}\right)=\sum_{j\in[m]}P_{\theta}\left(y_{L}=j,x_{1:L}\rig
 \end_layout
 
 \begin_layout Standard
-And so can the posterior probability be computed:
+And so can the posterior probability:
 \end_layout
 
 \begin_layout Standard
@@ -2834,42 +2892,46 @@ P_{\theta}\left(y_{t}=j|x_{1:L}\right)=\frac{P_{\theta}\left(y_{t}=j,x_{1:L}\rig
 
 \begin_layout Standard
 Although HMM is simple and efficient, applying it on DNA sequences has a
- major disadvantage: the inherit Markovian lack-of-memory property.
- That is, the model's next state is always dependent only on the previous
- state, without further history consideration.
- For the task of emitting a TFBS motif, where each position has a different
- emission distribution depending on the location in the motif, a HMM would
- need to different hidden states per position in the motif.
+ major disadvantage: the inherited Markovian lack-of-memory property.
+ That is, the next state of the model always depends only on the previous
+ state, without further historical consideration.
+ For the task of emitting a TFBS motif where each position has a different
+ emission distribution depending on the location in the motif, an HMM would
+ need to differentiate multiple hidden states according to their positions
+ in the motif.
  This means that for an HMM to be able to emit even a small number of short
- motifs, it needs to hold a large number of states that require learning
+ motifs, it needs to hold a large number of states which require learning
  a large number of parameters, e.g.
- for the ability to emit 50 motifs of length 5, an HMM needs to have over
- 60,000 parameters.
+ for the ability to emit 50 motifs of length 5, an HMM would need to have
+ over 60,000 parameters.
  Furthermore, the enhancer modeling task at hand is even more complex, since
  we would like to model multiple enhancers and backgrounds states, each
- having different probability of emitting motifs and unique k-order emission
- distribution when not in those motifs.
- For our data structure prior assumption the required number of model's
- parameters would have been about 
+ having a different probability of emitting motifs and an unique k-order
+ emission distribution when not in these motifs.
+ For the prior assumption of our data structure, the required number of
+ model parameters would have been about 
 \begin_inset Formula $10^{7}$
 \end_inset
 
-, large enough to introduce problems such as unfeasible memory complexity
+, large enough to generate problems such as unfeasible memory complexity
  and overfitting.
+ 
 \end_layout
 
 \begin_layout Standard
 A common way to avoid overfitting the data when training machine learning
- models is reducing the model's complexity by fixing some of its parameters.
+ models is to reduce the complexity of the model by fixing some of its parameter
+s.
  Our proposed HOP-HMM addresses both the memory issue and the overfitting
- issue while remaining equivalent to a regularized HMM with a large number
- of states with fixed parameters.
+ issue while remaining equivalent to a regular HMM with a large number of
+ states having fixed parameters.
  Namely, most of the transition probabilities are fixed to zero and therefore
- never stored in memory, and some of the emission probabilities are predetermine
-d and are fixed during the training.
- This allows us to learn a model with the enhancer prior assumptions of
- motifs and high-order emission without overfitting, and with reasonable
+ never stored in the memory, and some of the emission probabilities are
+ predetermined and remain fixed during the training.
+ This allows us to train a model with the enhancer prior assumptions of
+ motifs and higher order emission without overfitting, and with reasonable
  memory complexity.
+ 
 \end_layout
 
 \begin_layout Subsubsection*
@@ -2883,7 +2945,7 @@ In a generalized HMM (GHMM), the transition or the emission are sampled
  Some of the states in the system may emit zero or multiple observable variables
 , sampled from custom emission models specifically tailored for the expected
  scenario.
- Such models were used for genes prediction in the 1990's (
+ Such models were used for genes prediction in the 1990’s (
 \begin_inset CommandInset citation
 LatexCommand citet
 key "key-24"
@@ -2897,9 +2959,10 @@ key "key-22"
 
 \end_inset
 
-), where specific exon states emitted codons instead of single nucleotides
- and feed forward neural networks were used for evaluating the probability
+), in which specific exon states emitted codons instead of single nucleotides,
+ and feed forward neural networks were used to evaluate the probability
  of certain transitions.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -2909,6 +2972,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/sHMM_two_states.jpg
 	scale 50
@@ -2932,13 +2997,13 @@ name "GHMM"
 \series bold
 A)
 \series default
- GHMM with a TF-state which emits using a PWM.
+ GHMM with a TF state which emits using a PWM.
  The model has one background hidden state (yellow) and one TF hidden state.
  
 \series bold
 B,C,D)
 \series default
- Although the TF-state emits motifs with 5 bp, the rest of the emissions,
+ Although the TF state emits motifs with 5 bp, the rest of the emissions,
  transitions and start probabilities remain the same as in a regular HMM.
  
 \series bold
@@ -2959,9 +3024,9 @@ E)
 \end_layout
 
 \begin_layout Standard
-Another generalization made to the HMM called higher-order HMM uses conditional
- distribution by making the transition and emission dependent on previous
- hidden states (
+Another generalization made to the HMM and called higher order HMM uses
+ conditional distribution by making the transition and emission dependent
+ on previous hidden states (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-17"
@@ -3000,19 +3065,16 @@ k
  of the DNA structure.
  The increase of hidden states needed may introduce overfitting in the learning
  process, when the data size is limited.
+ 
 \end_layout
 
 \begin_layout Standard
-Instead of higher-order emission which depends on the previous hidden states
- was previous used, high-order emission which depends on previous emitted
- observable variables is a less researched field.
- Such a HMM variant fits better to the locality nature for the task of emission
- 
-\emph on
-k
-\emph default
--mer structures, but it only requires 
-\begin_inset Formula $O\left(m^{2}+4^{K}\right)$
+Instead of higher order emission which depends on the previous hidden states,
+ the less researched field of higher order emission depending on previously
+ emitted observable variables was used.
+ Such an HMM variant is better suited to the local-spannature of of the
+ emission of k-mer structures, but it only requires 
+\begin_inset Formula $O\left(m^{2}+4^{k}\right)$
 \end_inset
 
  compared to 
@@ -3020,7 +3082,7 @@ k
 \end_inset
 
  
-\begin_inset Formula $\left(m^{K}\right)$
+\begin_inset Formula $\left(m^{k}\right)$
 \end_inset
 
  parameters that would have been required for holding a 
@@ -3028,7 +3090,11 @@ k
 k
 \emph default
 -mer distribution in a regular HMM, where m is the number of hidden states
- of the HOP-HMM, and K is the number of previous states in the dependency.
+ of the HOP-HMM, and 
+\begin_inset Formula $k$
+\end_inset
+
+ is the number of previous states in the dependency.
  
 \end_layout
 
@@ -3037,18 +3103,15 @@ HOP-HMM
 \end_layout
 
 \begin_layout Standard
-HOP-HMM is a GHMM that is well fitted to utilize the structure of enhancers
- containing TFBSs inside them, due to the TFBS emitting TF-states that take
- part in the generation process of the sequence.
- Due to the assumed local physical nature of the TF binding of the DNA sequence
- and success of HMM in gene prediction, we think the memorylessness of HMMs
- fit well to the task of enhancer prediction.
+HOP-HMM is a GHMM that is well fitted to the utilization of the structure
+ of enhancers containing TFBSs, due to the TFBS emitting TF states which
+ take part in the generation process of the sequence.
+ In view of the assumed local physical nature of the TF binding of DNA sequences
+ and of the success of HMM in gene prediction, we think the memorylessness
+ of HMMs fits well the task of enhancer prediction.
  HOP-HMM balances between the Markovian memorylessness and the observed
+ k-mer of the TFBS present in regulatory regions in the DNA.
  
-\emph on
-k
-\emph default
--mer of the TFBS present in regulatory regions in the DNA.
 \end_layout
 
 \begin_layout Standard
@@ -3060,9 +3123,9 @@ key "key-64"
 \end_inset
 
 , where some of the hidden states emit TFBS sampled from PWMs to predict
- enhancers location in the genome.
- In HOP-HMM we added the high order conditional emission probability on
- non-TF-states.
+ enhancer location in the genome.
+ In HOP-HMM we added the higher order conditional emission probability on
+ non-TF states.
  
 \end_layout
 
@@ -3073,6 +3136,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/HOP_HMM_two_states.jpg
 	scale 50
@@ -3093,25 +3158,26 @@ name "HOPHMM1"
 \series bold
 A)
 \series default
- Small HOP-HMM that has one background-state and one TF-state.
+ Small HOP-HMM with one background state and one TF state.
  
 \series bold
-B) 
+B)
 \series default
-The background-state emits a single observable variable, and is has 2-order
+ The background state emits a single observable variable, and has 2-order
  emission, meaning it is conditioned on the previous observable variable.
  
 \series bold
 C,D)
 \series default
- Unlike GHMM, in HOP-HMM TF-state can transition into itself and cannot
- be the starting hidden state and the background-state.
+ Unlike GHMM, in HOP-HMM TF state can transition into itself and cannot
+ be the starting hidden state and the background state .
  
 \series bold
 E)
 \series default
- The TF-state emits multiple observable variable that represent a TFBS sampled
- from a PWM.
+ The TF state emits multiple observable variables which represent a TFBS
+ sampled from a PWM.
+ 
 \end_layout
 
 \end_inset
@@ -3131,6 +3197,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/Transition_repack.jpg
 	scale 50
@@ -3153,11 +3221,12 @@ Instead of holding a single sparse 8
 
 8 transition matrix, an alternative compact form holds only the non-fixed
  transition probabilities, split into T and G matrices.
- The non-fixed transition probabilities held in the compact form are the
- ones in between background-states, and between background-states to their
- TF-states (outlined with blue).
- A concatenation of a row in T and G holds the probability of the next hidden-st
-ate given the current background-state.
+ The non-fixed transition probabilities held in the compact form are those
+ between background states, and between background states to their TF states
+ (outlined with blue).
+ The concatenation of a row in T and G holds the probability of the next
+ hidden state given the current background state.
+ 
 \end_layout
 
 \end_inset
@@ -3177,6 +3246,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/HOP_HMM_multi_states.jpg
 	scale 50
@@ -3197,7 +3268,7 @@ name "HOPHMM2"
 
 A)
 \series default
- A more complex HOP-HMM with two background-state 
+ A more complex HOP-HMM with two background states 
 \begin_inset Formula $BG_{1}$
 \end_inset
 
@@ -3205,34 +3276,43 @@ A)
 \begin_inset Formula $BG_{2}$
 \end_inset
 
-, where each has 3 TF-states.
+, where each has 3 TF states.
  
 \series bold
-B)
+B) 
 \series default
- each of the background-states has its own 2-order emission distribution
- in a 4x4 matrix.
+Each of the background states has its own 2-order emission distribution
+ in a 
+\begin_inset Formula $4\times4$
+\end_inset
+
+ matrix.
  
 \series bold
 C)
 \series default
  The start hidden state distribution 
-\begin_inset Formula $\pi$
+\begin_inset Formula $π$
 \end_inset
 
- allows only background-states to start the hidden sequence.
+ allows only background states to start the hidden sequence.
  
 \series bold
 D)
 \series default
- The transition probability is held by matrices T and G.
+ The transition probability is held by matrices 
+\begin_inset Formula $T$
+\end_inset
+
+ and G.
  
 \series bold
 E)
 \series default
- The example generated sequence is built out of two types of sequences,
- each has its own TFBS frequency and background nucleotide bigram frequency,
+ The example-generated sequence is built out of two types of sequences,
+ each with its own TFBS frequency and background nucleotide bigram frequency,
  representing two alternating types of enhancers.
+ 
 \end_layout
 
 \end_inset
@@ -3246,11 +3326,11 @@ E)
 \end_layout
 
 \begin_layout Standard
-We use two indices to describe a hidden-state in HOP-HMM:
+We use two indices to describe a hidden state in HOP-HMM: 
 \end_layout
 
 \begin_layout Itemize
-Background-states are indexed as 
+background states are indexed as 
 \begin_inset Formula $(j,0)$
 \end_inset
 
@@ -3262,11 +3342,11 @@ Background-states are indexed as
 \begin_inset Formula $m$
 \end_inset
 
- is the number background-states.
+ is the number background states.
 \end_layout
 
 \begin_layout Itemize
-TF-states are indexed as 
+TF states are indexed as 
 \begin_inset Formula $(j,l)$
 \end_inset
 
@@ -3283,7 +3363,7 @@ TF-states are indexed as
 \begin_inset Formula $k$
 \end_inset
 
- is the number of TF-states each of the background-states has.
+ is the number of TF states each of the background states has.
 \end_layout
 
 \begin_layout Standard
@@ -3302,8 +3382,12 @@ reference "HOPHMM2"
 \begin_inset Formula $k=3$
 \end_inset
 
- and a total of 8 hidden-states.
- The TF-state indexed 
+ and a total of 8 hidden-states (
+\begin_inset Formula $2+3\times2$
+\end_inset
+
+).
+ The TF state indexed 
 \begin_inset Formula $(j,l)$
 \end_inset
 
@@ -3311,7 +3395,7 @@ reference "HOPHMM2"
 \begin_inset Formula $(j,0)$
 \end_inset
 
- background-state (see figure 
+ background state (see figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "HOPHMM3"
@@ -3319,10 +3403,10 @@ reference "HOPHMM3"
 \end_inset
 
 ), and the only allowed transfer into 
-\begin_inset Formula $(j,l)$
+\begin_inset Formula $(j, l)$
 \end_inset
 
- only from its background-state 
+ is from its background state 
 \begin_inset Formula $(j,0)$
 \end_inset
 
@@ -3355,10 +3439,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/HOP_HMM_general_mk.jpg
 	scale 50
@@ -3383,19 +3465,19 @@ General hidden states graph of HOP-HMM.
 \begin_inset Formula $m$
 \end_inset
 
- background-states (yellow) has 
+ background states (yellow) has 
 \begin_inset Formula $k$
 \end_inset
 
 
 \shape default
 \emph default
- TF-state
+ TF state
 \shape italic
 \emph on
 s (green).
  Not all transitions are possible, moving between the rows is possible only
- by a background-state to background-state transition.
+ by a background state to background state transition.
 \end_layout
 
 \end_inset
@@ -3409,16 +3491,17 @@ s (green).
 \end_layout
 
 \begin_layout Standard
-While most background-states 
+While most background states 
 \begin_inset Formula $(j,0)$
 \end_inset
 
- represent an enhancer type, we also would like to model true background
- regions in between the enhancer that carry no regulatory role and have
+ represent an enhancer type, we also would also like to model true background
+ regions in between the enhancers that carry no regulatory role and have
  no TFBSs.
- For that end we predefine one or more background-states as non-enhancers
- by restricting their transfer probability into their TF-states, as seen
+ For To that end, we predefine one or more background states as non-enhancers
+ by restricting their transfer probability into their TF states, as seen
  in the results section.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -3427,7 +3510,7 @@ HOP-HMM is defined with k PWMs
 \end_inset
 
  that remain fixed during training.
- Each of the k PWMs is shared with m TF-states, e.g.
+ Each of the k PWMs is shared with m TF states, e.g.
  the PWM 
 \begin_inset Formula $W_{l}$
 \end_inset
@@ -3440,11 +3523,11 @@ HOP-HMM is defined with k PWMs
 \begin_inset Formula $(1,l),(2,l),...,(m,l)$
 \end_inset
 
- and is used for the TF-state emission sampling.
+ and is used for the TF state emission sampling.
  The PWMs vary in their column amounts (as the different TFBSs vary in length),
- where each column represents a nucleotide distribution at that position.
- When the model enters a TF-state, it emits a motif by sampling from a PWM
- column by column independently, as described in Figure 
+ and each column represents a nucleotide distribution at that position.
+ When the model enters a TF state, it emits a motif by sampling independently
+ from a PWM column by column, as described in figure e 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "GHMM"
@@ -3455,22 +3538,38 @@ reference "GHMM"
 \end_layout
 
 \begin_layout Standard
-The background-states, denoted as 
+The background states, denoted as 
 \begin_inset Formula $(1,0),(2,0),...,(m,0)$
 \end_inset
 
 , are responsible for the emission of inter-TFBS parts of the enhancers
  lacking long motifs.
- Similarly to regular states in HMM, background-states emit single nucleotides,
- where their emission is conditional on the previous of letters emitted
- in the DNA sequence.
- The emission from background-states is done by sampling a nucleotide from
- the distributions stored in E tensor.
- E dimension is o+1, and its size is 
+ Similarly to regular states in HMM, background states emit single nucleotides
+ whose emission is conditional on the previous nucleotides emitted in the
+ DNA sequence.
+ The emission from background states is done by sampling a nucleotide from
+ the distributions stored in 
+\begin_inset Formula $E$
+\end_inset
+
+ tensor.
+ 
+\begin_inset Formula $E$
+\end_inset
+
+ dimension is 
+\begin_inset Formula $o+1$
+\end_inset
+
+, and its size is 
 \begin_inset Formula $\text{ }m\times4\times4\times...\times4$
 \end_inset
 
- (with o fours) and its values are describe the emission probability 
+ (with 
+\begin_inset Formula $o$
+\end_inset
+
+ fours) and its values describe the emission probability 
 \begin_inset Formula $E_{j,x_{t-o+1},x_{t-o+2},...,x_{t}}=P\left(x_{t}|y_{t}=(j,0),x_{t-o+1},...,x_{t-1}\right)$
 \end_inset
 
@@ -3482,7 +3581,7 @@ The background-states, denoted as
 \begin_inset Formula $o-1$
 \end_inset
 
- observed variables are used as indices of the tensor for getting emission
+ observed variables are used as indices of the tensor for getting the emission
  probability vector 
 \begin_inset Formula $E_{j,x_{t-o+1},x_{t-o+2},...,x_{t-1},*}$
 \end_inset
@@ -3513,8 +3612,9 @@ For the first variables emitted in the sequence, the missing dimensions
 \end_layout
 
 \begin_layout Standard
-In HOP-HMM, the first hidden state in a sequence can only be a background-state.
- The first background-state, as in HMM, is chosen by sampling from 
+In HOP-HMM, the first hidden state in a sequence can only be a background
+ state.
+ As in HMM, the first background state is chosen by sampling from 
 \begin_inset Formula $\pi,$
 \end_inset
 
@@ -3523,9 +3623,9 @@ In HOP-HMM, the first hidden state in a sequence can only be a background-state.
 \end_inset
 
 .
- Once in a background-state, the model can only transit into a small subset
- of states, and since most of the possible transition are not allowed, a
- single transition matrix from all states to all states would be sparse.
+ Once in a background state, the model can only transit into a small subset
+ of states, and since most of the possible transitions are not allowed,
+ a single transition matrix from all states to all states would be sparse.
  Instead, as described in figure 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3533,12 +3633,12 @@ reference "TGCompact"
 
 \end_inset
 
-, we hold only the possible transition probabilities in two matrices, representi
-ng the two types of allowed transitions:
+, we only hold the possible transition probabilities in two matrices, representi
+ng the two types of allowed transitions: 
 \end_layout
 
 \begin_layout Itemize
-T for background-state to background-state transitions, a 
+T for background state to background state transitions, a 
 \begin_inset Formula $m\times m$
 \end_inset
 
@@ -3550,7 +3650,7 @@ T for background-state to background-state transitions, a
 \end_layout
 
 \begin_layout Itemize
-G for background-state to TF-state transitions a 
+G for background state to TF state transitions a 
 \begin_inset Formula $m\times k$
 \end_inset
 
@@ -3562,12 +3662,13 @@ G for background-state to TF-state transitions a
 \end_layout
 
 \begin_layout Standard
-When in a background-state, after the observable variable emission, the
- model samples its next hidden state from a probability vector that is a
- concatenation of a row in T and a row in G.
- If a TF-state is chosen, after the TF-state's motif emission, the model
- returns back to the background-state to emit another single observable
- variable and so on.
+When in a background state, after the observable variable emission, the
+ model samples its next hidden state from a probability vector which is
+ the concatenation of a row in T and a row in G.
+ If a TF state is chosen,,the model returns back to the background state
+ after the TF state’s motif emission to emit another single observable variable
+ and so on.
+ 
 \end_layout
 
 \begin_layout Section*
@@ -4131,9 +4232,17 @@ The transitions and emissions mechanisms of HOP-HMM are different, and therefore
 \begin_inset Formula $\theta=\{\pi,E,G,T\}$
 \end_inset
 
- from a DNA sequence X.
+ from a DNA sequence 
+\begin_inset Formula $X$
+\end_inset
+
+.
  As in the regular Baum-Welch algorithm covered in the previous section,
- given a sequence X at each EM iteration we optimize the Q function in 
+ given a sequence 
+\begin_inset Formula $X$
+\end_inset
+
+ at each EM iteration we optimize the Q function in 
 \begin_inset CommandInset ref
 LatexCommand eqref
 reference "Q"
@@ -4512,7 +4621,7 @@ For the calculation of these probabilities, we first need to calculate the
  forward and backward probabilities output from an HOP-HMM adjusted Forward-Back
 ward algorithm.
  In this HOP-Forward-Backward algorithm, we will only build the probabilities
- for being in background-states since the TF-states probabilities are not
+ for being in background states since the TF states probabilities are not
  needed in the later parts of the E-step.
 \end_layout
 
@@ -4919,7 +5028,7 @@ We used the fact that
 
  and the assumption that the observable variables preceding the sequence
  came from a uniform distribution.
- Also, when summing the TF-state transition part, PWMs 
+ Also, when summing the TF state transition part, PWMs 
 \begin_inset Formula $W_{l}$
 \end_inset
 
@@ -5240,11 +5349,15 @@ Note that when
 \begin_inset Formula $t>L-|W_{l}|$
 \end_inset
 
-, there are missing observable variables to fully calculate the TF-state
+, there are missing observable variables to fully calculate the TF state
  transition.
  In these situations this contribution of these component to the summation
  is zero, meaning our HOP-HMM as the behavior of avoiding a transition into
- a TF-state when the PWM is too long to fit into the sequence X length.
+ a TF state when the PWM is too long to fit into the sequence 
+\begin_inset Formula $X$
+\end_inset
+
+ length.
 \end_layout
 
 \begin_layout Standard
@@ -5254,6 +5367,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/HOP-EM forward Algorithm.jpg
 	scale 50
@@ -5272,9 +5387,9 @@ In HOP-HMM, the Forward-Backward algorithm dynamic tables
 \begin_inset Formula $\beta$
 \end_inset
 
- cells are filled from both the adjacent background-states transitions and
- the background-states preceding or proceeding the motifs emitted by the
- TF-states.
+ cells are filled from both the adjacent background states transitions and
+ the background states preceding or proceeding the motifs emitted by the
+ TF states.
 \end_layout
 
 \end_inset
@@ -5306,7 +5421,7 @@ We will now explain why the described dynamic calculation result with
 \end_inset
 
  is the sum of probabilities of all the possible transition that ended in
- the background-state (j,0):
+ the background state (j,0):
 \end_layout
 
 \begin_layout Standard
@@ -5332,7 +5447,7 @@ We will now explain why the described dynamic calculation result with
 \end_layout
 
 \begin_layout Standard
-right-side term of a TF-state transition can be split with the chain rule
+right-side term of a TF state transition can be split with the chain rule
  to:
 \end_layout
 
@@ -5427,7 +5542,7 @@ P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot P\left(y_{t-|W_{l}|:t
 \end_layout
 
 \begin_layout Standard
-This process is similar to the background-state transition.
+This process is similar to the background state transition.
  Using the chain rule:
 \end_layout
 
@@ -5490,7 +5605,7 @@ For the backward probabilities
 \begin_inset Formula $x_{t-o+2:t}$
 \end_inset
 
-, which are necessary for the background-state emission is conditional on
+, which are necessary for the background state emission is conditional on
  them.
 \end_layout
 
@@ -5521,7 +5636,7 @@ P\left(x_{t+1:L}|y_{t}=(j,0),x_{t-o+2:t}\right)=
 \end_layout
 
 \begin_layout Standard
-For the background-state transition term, we can use the chain rule and
+For the background state transition term, we can use the chain rule and
  the Markovian independence of the transitions and emissions:
 \end_layout
 
@@ -5581,7 +5696,7 @@ P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0),x_{t-o+2:t}\right)=
 \end_layout
 
 \begin_layout Standard
-For the TF-state transition term, we use once more the chain rule, followed
+For the TF state transition term, we use once more the chain rule, followed
  the simplification using the conditional independencies of HMM:
 \end_layout
 
@@ -5797,8 +5912,11 @@ reference "HOP-gamma"
 
 \end_inset
 
- of the background-state at a given position given the sequence X, denoted
- as 
+ of the background state at a given position given the sequence 
+\begin_inset Formula $X$
+\end_inset
+
+, denoted as 
 \begin_inset Formula $\gamma$
 \end_inset
 
@@ -5839,8 +5957,12 @@ reference "HOP-xi"
 
 \end_inset
 
- is the background-state to background-state transition given the sequence
- X, denoted as 
+ is the background state to background state transition given the sequence
+ 
+\begin_inset Formula $X$
+\end_inset
+
+, denoted as 
 \begin_inset Formula $\xi$
 \end_inset
 
@@ -5903,8 +6025,12 @@ reference "HOP-eta"
 
 \end_inset
 
- is the background-state to background-state transition given the sequence
- X, denoted as 
+ is the background state to background state transition given the sequence
+ 
+\begin_inset Formula $X$
+\end_inset
+
+, denoted as 
 \begin_inset Formula $\psi$
 \end_inset
 
@@ -7249,15 +7375,15 @@ Acquiring the maximal likelihood
 \end_layout
 
 \begin_layout Enumerate
-Most likely hidden-state at any position in a sequence
+Most likely hidden state at any position in a sequence
 \end_layout
 
 \begin_layout Enumerate
-Most likely hidden-state sequence
+Most likely hidden state sequence
 \end_layout
 
 \begin_layout Enumerate
-Dominant hidden-state in a short sequence
+Dominant hidden state in a short sequence
 \end_layout
 
 \begin_layout Standard
@@ -7326,13 +7452,13 @@ reference "HOP-gamma"
 
 \end_inset
 
- is not sufficient since it holds only the probability of background-state
+ is not sufficient since it holds only the probability of background state
  
 \begin_inset Formula $P_{\theta}\left(y_{t}=(j,0)|x_{1:L}\right)$
 \end_inset
 
 .
- To calculate the posterior probability for TF-states, 
+ To calculate the posterior probability for TF states, 
 \begin_inset Formula $P_{\theta}\left(y_{t}=(j,l)|x_{1:L}\right)$
 \end_inset
 
@@ -7340,7 +7466,7 @@ reference "HOP-gamma"
 \begin_inset Formula $l>0$
 \end_inset
 
- we sum all options of a TF-state 
+ we sum all options of a TF state 
 \begin_inset Formula $(j,l)$
 \end_inset
 
@@ -7415,6 +7541,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/PWM_posterior_2.jpg
 	scale 50
@@ -7435,7 +7563,7 @@ name "PWM Posterior"
 \begin_inset Formula $P\left(y_{t}=(j,t)|x_{1:L}\right)$
 \end_inset
 
- is the posterior probability to be in TF-state 
+ is the posterior probability to be in TF state 
 \begin_inset Formula $(j,l)$
 \end_inset
 
@@ -7444,7 +7572,7 @@ name "PWM Posterior"
 \end_inset
 
 , marked in dark green.
- It is equal to the sum of probabilities of entering into the TF-state before
+ It is equal to the sum of probabilities of entering into the TF state before
  position 
 \begin_inset Formula $y_{t}$
 \end_inset
@@ -8452,7 +8580,7 @@ Algorithm:
 
 
 \emph on
- # background-state to background-state
+ # background state to background state
 \end_layout
 
 \begin_layout Plain Layout
@@ -8509,7 +8637,7 @@ Algorithm:
 
  
 \emph on
-# background-state to TF-state
+# background state to TF state
 \end_layout
 
 \begin_layout Plain Layout
@@ -8647,7 +8775,7 @@ Algorithm:
 
  
 \emph on
-# mandatory background-state at the end of the sequence
+# mandatory background state at the end of the sequence
 \end_layout
 
 \begin_layout Plain Layout
@@ -8805,7 +8933,7 @@ if
 \begin_inset Formula $t-1$
 \end_inset
 
- is a background-state
+ is a background state
 \end_layout
 
 \begin_layout Plain Layout
@@ -9258,9 +9386,9 @@ enhancer-mimicking
 \begin_inset Quotes erd
 \end_inset
 
- background-states, which are predefined background-states that have high
- probability of transitioning into TF-state.
- The rest of the background-states will have low probability to create TFBS,
+ background states, which are predefined background states that have high
+ probability of transitioning into TF state.
+ The rest of the background states will have low probability to create TFBS,
  aiming to model the non-regulatory regions of the DNA with sparse TFBSs.
  In our experiments 
 \begin_inset Formula $ENH$
@@ -9270,11 +9398,11 @@ enhancer-mimicking
 \begin_inset Formula $\left(m,0\right)$
 \end_inset
 
- meaning only one background-state had almost no TFBS and the rest 
+ meaning only one background state had almost no TFBS and the rest 
 \begin_inset Formula $m-1$
 \end_inset
 
- background-states did have TFBSs.
+ background states did have TFBSs.
 \end_layout
 
 \end_deeper
@@ -9319,7 +9447,7 @@ The start state distribution
 \end_inset
 
  is non-random, and set so the first states are always one of the non-enhancer
- background-states: 
+ background states: 
 \begin_inset Formula 
 \[
 \pi_{i}=\frac{\boldsymbol{1}_{\left(i,0\right)\notin ENH}}{m-|ENH|}
@@ -9427,6 +9555,8 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/Workflow.jpg
 	scale 50
@@ -9522,7 +9652,7 @@ reference "Regularization"
 \end_inset
 
 ).
- Following each M-step update we draw the background-states transition probabili
+ Following each M-step update we draw the background states transition probabili
 ties 
 \begin_inset Formula $T$
 \end_inset
@@ -9642,6 +9772,8 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/rmse_vs_likelihood_m5bg1k25o3b1s0r0N3000L1000.jpg
 	scale 50
@@ -9692,6 +9824,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/dec_likelihood.jpg
 	scale 32
@@ -9702,6 +9836,8 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/dec_theta_error.jpg
 	scale 32
@@ -9712,6 +9848,8 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/dec_theta_error_scatter.jpg
 	scale 32
@@ -9722,6 +9860,8 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/dec_viterbi.jpg
 	scale 32
@@ -9783,8 +9923,8 @@ D)
  The mean log likelihood of the sequences increases during the EM iterations.
  The experiment was done on 500 synthetic sequences (85% train, 15% test),
  1000 long.
- The trained model had 6 hidden background-states with emission order of
- 2, each background-state had 25 TF-states.
+ The trained model had 6 hidden background states with emission order of
+ 2, each background state had 25 TF states.
 \end_layout
 
 \end_inset
@@ -9804,6 +9944,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/synthetic_posterior_with_tfs.jpg
 	scale 50
@@ -9836,7 +9978,7 @@ Posterior probability of sequences, estimated by a trained HOP-HMM
 
  and the true hidden states of each sequence.
  The black TFBS is the sum of all the probabilities of being in any of the
- TF-states.
+ TF states.
 \end_layout
 
 \end_inset
@@ -9856,6 +9998,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/confusion_matrix.jpg
 	scale 50
@@ -9875,7 +10019,7 @@ name "ConfutionMatrix"
 Confusion matrix of true and estimated states by the Viterbi algorithm of
  HOP-HMM synthetic sequences.
  Rows are normalized so their sum is equal to 1.
- The majority of prediction are in the background-states 
+ The majority of prediction are in the background states 
 \begin_inset Formula $(1,0)$
 \end_inset
 
@@ -9895,7 +10039,7 @@ Confusion matrix of true and estimated states by the Viterbi algorithm of
 \begin_inset Formula $(5,0)$
 \end_inset
 
-, where TF-states are sometimes misclassified as their background-state
+, where TF states are sometimes misclassified as their background state
  state.
 \end_layout
 
@@ -9945,13 +10089,13 @@ We wanted to evaluate if HOP-HMM can distinguish and detect enhancers active
 
 \begin_layout Standard
 A HOP-HMM is trained by the HOP-Baum-Welch algorithm on the collected sequences.
- The trained model is then used to produce a Viterbi estimated hidden-states
+ The trained model is then used to produce a Viterbi estimated hidden states
  sequence and posterior probability, which can then be compared to the epigeneti
 c tracks.
 \end_layout
 
 \begin_layout Standard
-For the set of PWMs used by the TF-states of the HOP-HMM, we used JASPAR
+For the set of PWMs used by the TF states of the HOP-HMM, we used JASPAR
  dataset of 519 vertebrates PWMs, out of which we selected 50 PWMs for a
  practical run-time.
  The selected PWMs are chosen by 3 methods, each method responsible for
@@ -10031,6 +10175,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/realSeq1.jpg
 	scale 35
@@ -10041,6 +10187,8 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/realSeq2.jpg
 	scale 35
@@ -10051,6 +10199,8 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/realSeq3.jpg
 	scale 35
@@ -10061,6 +10211,8 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Figures/realSeqLegend.jpg
 	scale 30
@@ -10080,7 +10232,7 @@ name "fig:RealSequences"
 Examples of HOP-HMM classification of 5000pb long tissue specific enhancer
  sequences from the human genome.
  Each of the 3 graphs is the output of a different HOP-HMM with three background
--states (two enhancer states and one non-enhancer state) and 50 TF-states,
+ states (two enhancer states and one non-enhancer state) and 50 TF states,
  each was trained on enhancers from the two tissues.
  The H3K27ac and DNase-I measurements are in 
 \begin_inset Formula $-log_{10}(p-value)$
@@ -10315,7 +10467,7 @@ m
 \begin_inset Text
 
 \begin_layout Plain Layout
-Number of background-states
+Number of background states
 \end_layout
 
 \end_inset
@@ -10344,7 +10496,7 @@ k
 \begin_inset Text
 
 \begin_layout Plain Layout
-Number of TF-states of each background-state
+Number of TF states of each background state
 \end_layout
 
 \end_inset
@@ -10373,7 +10525,7 @@ order
 \begin_inset Text
 
 \begin_layout Plain Layout
-Dependency order of the emission of the background-states done by 
+Dependency order of the emission of the background states done by 
 \begin_inset Formula $E$
 \end_inset
 
@@ -10418,8 +10570,8 @@ backgroundAmount
 \begin_inset Text
 
 \begin_layout Plain Layout
-Number of background-states which are non-enhancers by having low transition
- probability into TF-states
+Number of background states which are non-enhancers by having low transition
+ probability into TF states
 \end_layout
 
 \end_inset
@@ -10516,7 +10668,7 @@ doESharing
 \begin_inset Formula $E$
 \end_inset
 
- to share the emission across all background-states 
+ to share the emission across all background states 
 \end_layout
 
 \end_deeper
@@ -10528,7 +10680,15 @@ HOP-HMM/src/misc/genSyntheticMergedPeaksMin.m
 
 \begin_deeper
 \begin_layout Standard
-Generates DNA sequences X and hidden variables Y out of a random 
+Generates DNA sequences 
+\begin_inset Formula $X$
+\end_inset
+
+ and hidden variables 
+\begin_inset Formula $Y$
+\end_inset
+
+ out of a random 
 \begin_inset Formula $\theta$
 \end_inset
 
@@ -10574,7 +10734,7 @@ startWithBackground
 \begin_inset Formula $\pi$
 \end_inset
 
- to allow starting only from non-enhancer background-states and 
+ to allow starting only from non-enhancer background states and 
 \begin_inset Flex Code
 status open
 
@@ -10584,7 +10744,7 @@ backgroundGNoise
 
 \end_inset
 
- is the background rate of background-state to TF-state transition, marked
+ is the background rate of background state to TF state transition, marked
  as 
 \begin_inset Formula $noiseG$
 \end_inset
@@ -10868,6 +11028,13 @@ repeat
 \end_layout
 
 \end_deeper
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
@@ -11124,7 +11291,7 @@ key "key-47"
  Du Preez, J.
  A.
  (1998).
- Efficient training of high-order hidden Markov models using first-order
+ Efficient training of higher-order hidden Markov models using first-order
  representations.
  Computer speech & language, 12(1), 23-39.
 \end_layout
@@ -11553,8 +11720,8 @@ key "key-38"
  M., & Lee, J.
  C.
  (2006, June).
- A study on high-order hidden Markov models and applications to speech recogniti
-on.
+ A study on higher-order hidden Markov models and applications to speech
+ recognition.
  In International Conference on Industrial, Engineering and Other Applications
  of Applied Intelligent Systems (pp.
  682-690).
