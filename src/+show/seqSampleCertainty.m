@@ -151,6 +151,16 @@ function showConfusionMatrix(params, YEst, Y)
     enhancerStateY = Y(:, :, 1);
     enhancerStateYEst = YEst(:, :, 1);
     confusionRaw = confusionmat(enhancerStateY(:), enhancerStateYEst(:));
+    for i = 1: size(confusionRaw, 1)
+        precision(i) = confusionRaw(i, i) / sum(confusionRaw(:, i), 1);
+        recall(i) = confusionRaw(i, i) / sum(confusionRaw(i, :), 2);
+    end
+
+    precision = precision(not(isnan(precision)))
+    recall = recall(not(isnan(recall)))
+    fprintf('precision: %.4f', mean(precision));
+    fprintf('recall: %.4f', mean(recall));
+
     confusion = confusionRaw ./ repmat(sum(confusionRaw, 2), [1, size(confusionRaw, 2)]);
     figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     imagesc(confusion); colorbar; title('Viterbi Confusion Matrix (floors only)');
@@ -165,6 +175,16 @@ function showConfusionMatrix(params, YEst, Y)
     enhancerStateY = 100 * Y(:, :, 1) + Y(:, :, 2);
     enhancerStateYEst = 100 * YEst(:, :, 1) + YEst(:, :, 2);
     confusionRaw = confusionmat(enhancerStateY(:), enhancerStateYEst(:));
+
+    for i = 1: size(confusionRaw, 1)
+        precision(i) = confusionRaw(i, i) / sum(confusionRaw(:, i), 1);
+        recall(i) = confusionRaw(i, i) / sum(confusionRaw(i, :), 2);
+    end
+    precision = precision(not(isnan(precision)))
+    recall = recall(not(isnan(recall)))
+    fprintf('precision: %.4f', mean(precision));
+    fprintf('recall: %.4f', mean(recall));
+
     confusion = confusionRaw ./ repmat(sum(confusionRaw, 2), [1, size(confusionRaw, 2)]);
     figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     imagesc(confusion); colorbar; title('Viterbi Confusion Matrix (including TF states)');
@@ -175,7 +195,7 @@ function showConfusionMatrix(params, YEst, Y)
     xlabel('Estimated Enhancer States');
     ylabel('True Enhancer States');
 
-    confusion = logRaw(confusionRaw);
+    confusion = log(confusionRaw);
     figure('units', 'pixels', 'Position', [0 0 1000 1000]);
     imagesc(confusion); colorbar; title('Viterbi Confusion Matrix (log)');
     ax = gca;

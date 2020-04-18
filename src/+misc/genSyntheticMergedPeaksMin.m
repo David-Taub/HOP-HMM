@@ -52,14 +52,11 @@ end
 
 
 function G = genHumanG(params, backgroundGNoise)
+    ACTIVE_TFS = 10;
     G = params.minG;
-    G = G + (rand(params.m, params.k) .* backgroundGNoise ./ params.k);
-    enhCount =
-    intensifiedGMask = rand(params.enhancerAmount, params.k) < (params.k / params.m);
-    G(1:params.enhancerAmount, :) = G(params.enhancerAmount, :) +  intensifiedGMask * params.maxEnhMotif
-    for i = 1:params.enhancerAmount
-        G(i, datasample(1: params.k, ceil(params.k / params.m))) = params.maxEnhMotif;
-    end
+    G = G + (rand(params.m, params.k) .* params.maxEnhMotif .* backgroundGNoise ./ params.k);
+    intensifiedGMask = rand(params.enhancerAmount, params.k) < (ACTIVE_TFS / (params.k * params.enhancerAmount));
+    G(1:params.enhancerAmount, :) = G(params.enhancerAmount, :) + (intensifiedGMask .* params.maxEnhMotif);
     G = log(G);
 end
 

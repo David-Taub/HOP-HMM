@@ -32,7 +32,9 @@ function [G, T, startT] = GTbound4(params, G, T, startT)
     originT = T;
     originStartT = startT;
     MIN_G = [ones(params.enhancerAmount, 1) ./ MIN_ENH_RATE; ones(params.backgroundAmount, 1) .* EPS];
-    MAX_G = [ones(params.enhancerAmount, 1); ones(params.backgroundAmount, 1) .* EPS];
+    MAX_G = [ones(params.enhancerAmount, 1); ones(params.backgroundAmount, 1) .* (1 / 3000)];
+    % MIN_G = params.minG;
+    % MAX_G = params.maxG;
     % Restrict startT
     startT(:) = EPS;
     startT(end) = 1 - EPS;

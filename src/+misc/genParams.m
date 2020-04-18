@@ -43,15 +43,15 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
     % Regularization Params
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     params.EPS = 10 ^ -7;
-    maxBbMotifRatio = 1 / 90; % maximal ratio of all motif letters in BG section
-    maxEnhMotifRatio = 1 / 20; % maximal ratio of a single motif letters in enhancer section
+    maxBbMotifRatio = 1 / 3000; % maximal ratio of all motif letters in BG section
+    maxEnhMotifRatio = 1 / 100; % maximal ratio of a single motif letters in enhancer section
     % minEnhMotifRatio = 1 / 15; % minimal ratio of a single motif letters in enhancer section
     maxCrossEnhRatio = 1 / 100; % maximal ratio of transition to any another enhancer
     maxCrossBgRatio = 1 / 30; % maximal ratio of transition to any another enhancer
     maxEnhLen = 1500;
     minEnhLen = 300;
-    maxBgLen = 10000;
-    minBgLen = 7000;
+    maxBgLen = 1000;
+    minBgLen = 500;
 
     params.maxEnhMotif = maxEnhMotifRatio / mean(params.lengths);
     % params.minEnhMotifTotal = minEnhMotifRatio / mean(params.lengths);
