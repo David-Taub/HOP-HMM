@@ -4,36 +4,36 @@ cd ../raw_bed
 # Downloads
 ###############################
 
-# wget -O $1-H3K27ac.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K27ac.narrowPeak.gz"
-# if [ ! -f $1-H3K27ac.narrowPeak.gz ]; then
-#     echo "$1-H3K27ac.narrowPeak.gz not found!"
-#     exit 1
-# fi
-# wget -O $1-DNase.macs2.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-DNase.macs2.narrowPeak.gz"
-# if [ ! -f $1-DNase.macs2.narrowPeak.gz ]; then
-#     echo "$1-DNase.macs2.narrowPeak.gz not found!"
-#     exit 1
-# fi
-# wget -O $1-H3K4me3.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K4me3.narrowPeak.gz"
-# if [ ! -f $1-H3K4me3.narrowPeak.gz ]; then
-#     echo "$1-H3K4me3.narrowPeak.gz not found!"
-#     exit 1
-# fi
-# wget -O $1-H3K4me1.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K4me1.narrowPeak.gz"
-# if [ ! -f $1-H3K4me1.narrowPeak.gz ]; then
-#     echo "$1-H3K4me1.narrowPeak.gz not found!"
-#     exit 1
-# fi
-# wget -O $1-H3K27me3.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K27me3.narrowPeak.gz"
-# if [ ! -f $1-H3K27me3.narrowPeak.gz ]; then
-#     echo "$1-H3K27me3.narrowPeak.gz not found!"
-#     exit 1
-# fi
+wget -O $1-H3K27ac.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K27ac.narrowPeak.gz"
+if [ ! -f $1-H3K27ac.narrowPeak.gz ]; then
+    echo "$1-H3K27ac.narrowPeak.gz not found!"
+    exit 1
+fi
+wget -O $1-DNase.macs2.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-DNase.macs2.narrowPeak.gz"
+if [ ! -f $1-DNase.macs2.narrowPeak.gz ]; then
+    echo "$1-DNase.macs2.narrowPeak.gz not found!"
+    exit 1
+fi
+wget -O $1-H3K4me3.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K4me3.narrowPeak.gz"
+if [ ! -f $1-H3K4me3.narrowPeak.gz ]; then
+    echo "$1-H3K4me3.narrowPeak.gz not found!"
+    exit 1
+fi
+wget -O $1-H3K4me1.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K4me1.narrowPeak.gz"
+if [ ! -f $1-H3K4me1.narrowPeak.gz ]; then
+    echo "$1-H3K4me1.narrowPeak.gz not found!"
+    exit 1
+fi
+wget -O $1-H3K27me3.narrowPeak.gz "https://egg2.wustl.edu/roadmap/data/byFileType/peaks/consolidated/narrowPeak/$1-H3K27me3.narrowPeak.gz"
+if [ ! -f $1-H3K27me3.narrowPeak.gz ]; then
+    echo "$1-H3K27me3.narrowPeak.gz not found!"
+    exit 1
+fi
 
-# echo "done downloading"
-# gunzip -f ./*.gz
-# rm -f ./*.gz
-# echo "done extracting"
+echo "done downloading"
+gunzip -f ./*.gz
+rm -f ./*.gz
+echo "done extracting"
 
 find . -empty -delete
 

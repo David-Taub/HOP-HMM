@@ -477,18 +477,18 @@ Enhancers are regulatory DNA sequences that, when bound to proteins called
  and tissue-specific regulation of genes.
  It has been shown over the years that genetic variations within enhancer
  sequences might cause cell behavior modifications and diseases.
- The rules and nuances of enhancer structure is not fully understood yet,
- though it has been shown that transcription factors tend to attach to them
- at unique motifs called transcription factor binding sites, which are over-repr
-esented in enhancer sequences.
+ The structural rules and nuances of enhancers are not fully understood
+ yet, though it has been shown that transcription factors tend to bind to
+ them at unique and over-represented motifs called transcription factor
+ binding sites.
  Enhancer activity can be detected by the epigenetic data from the local
  environment around its position.
  The main indicators for an enhancer lay in the adjacent histone modifications,
  around which the flanks of the enhancer are wrapped.
- The enhancer itself tends to be spatial accessible for biochemical interactions
- between the DNA and the proteins around it.
+ The enhancer itself tends to be spatially accessible for biochemical interactio
+ns between the DNA and the proteins around it.
  Though useful, the epigenetic data are often noisy and require a costly
- extraction process of specific cells out of a tissue sample, which is not
+ extraction process of specific cells from a tissue sample, which is not
  necessarily practical for all cell types and their different stages.
  An alternative approach to enhancer detection is to observe the genetic
  content of its sequence, since it contains all the essential information
@@ -499,8 +499,9 @@ in vivo
 \emph default
  that the cell requires no other mechanism than the genetic sequence in
  order to regulate its gene expression.
- With that idea in mind, we offer a computational approach for the detection
- of enhancers based on their sequences alone, and in an unsupervised manner.
+ With that idea in mind, this work offers a computational approach for the
+ detection of enhancers based only on their sequences, and in an unsupervised
+ manner.
  We created a higher-order positional weight matrix based hidden Markov
  model (HOP-HMM), with two kinds of states: one which emits transcription
  factor binding sites by using a positional weight matrix model, and one
@@ -509,22 +510,23 @@ in vivo
  Compared to a regular hidden Markov model, this model learns a more complex
  underlying structure of DNA sequences, containing both binding site motifs
  and higher-order distribution of nucleotides in between them.
- We'll first review the biological background of enhancers, specifically
+ We will first review the biological background of enhancers, specifically
  in humans.
- Then we'll review in depth the background of Markov and hidden Markov models,
- and discuss how to calculate the likelihood of a sequence given this model.
- We'll describe our generalized model in detail and develop the expectation
- maximization and Viterbi algorithms for hidden Markov models, followed
- by the adjustments needed for our generalized model.
- These algorithms implementations are demonstrated by applying them to a
- synthetic dataset of enhancer-like sequences created by using the generative
- property of the generalized model.
+ Then we will review in depth the background of Markov and hidden Markov
+ models, and discuss how to calculate the likelihood of a sequence given
+ this model.
+ We will describe our generalized model in detail and develop the expectation-ma
+ximization and Viterbi algorithms for hidden Markov models, followed by
+ the adjustments needed for our generalized model.
+ These implementations of these algorithms are demonstrated by applying
+ them to a synthetic dataset of enhancer-like sequences created by using
+ the generative property of the generalized model.
  We simulate the model in a controlled way to evaluate its performance by
  inferring estimated parameters of the model and comparing them to the real
  parameters used to create the dataset.
- Finally, we apply the expectation maximization algorithm for training a
- HOP-HMM from human DNA enhancer sequences, selected by the epigenetic data
- of the Roadmap project.
+ Finally, we apply the expectation-maximization algorithm to train a HOP-HMM
+ from human DNA enhancer sequences, selected by the epigenetic data of the
+ Roadmap project.
  We demonstrate the capabilities of the model by comparing its estimation
  to the epigenetic tracks, showing it can predict the loci of enhancers
  and in which tissues they will be active, without exposure to epigenetic
@@ -541,7 +543,7 @@ in vivo
 
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 
 \lang english
 Introduction
@@ -552,10 +554,11 @@ Introduction
 \lang english
 The genome of every living organism contains the inherited information which
  defines its complex structure and function.
- The genome is built out of deoxyribonucleic acid (DNA) molecules, a structure
- of two chains of nucleotides units forming a double helix shape.
- Nucleotides are built out of 4 different basic elements: cytosine, guanine,
- adenine or thymine or in short A,C,G and T.
+ The genome is built out of two intertwined strands of deoxyribonucleic
+ acid (DNA) molecules called nucleotides.
+ that form that form a double-helical structure.
+ Nucleotides can be one of 4 different basic bases: cytosine, guanine, adenine,
+ and thymine or in short A,C,G and T respectively.
  The nucleotides are organized in pairs called base pairs, with each of
  the paired nucleotides being complementary to the other and providing redundanc
 y.
@@ -565,32 +568,34 @@ y.
 \begin_layout Standard
 
 \lang english
-Proteins are macromolecules, which ensure various roles and functions within
+Proteins are macromolecules, which play various roles and functions within
  organisms.
  They have the structure of a polymer built out of 20 different amino acids,
- whose order and structure are encoded in genes (genetic segments within
+ whose order and configuration are encoded in genes (genetic segments within
  the genome).
  Through transcription followed by translation processes, the genes are
  expressed and result in the formation of proteins.
- In the transcription process the gene is read and transcribed into a single
- strand sequence of RNA.
- Later, the formed RNA molecule, which at this stage is called messenger
- RNA (mRNA), is translated by a complex molecule called the ribosome.
+ During the transcription process the gene is read and transcribed into
+ a single strand sequence of ribonucleic acids (RNA).
+ Next, the formed RNA strand, which at this stage is called messenger RNA
+ (mRNA), is translated by a complex molecule called the ribosome.
  The mRNA sequence is built out of triplets of nucleotides called codons,
- which are read by the ribosome and instruct it how to generate a sequence
- of amino acids constituting the protein.
+ which are read by the ribosome and instruct it how to generate the sequence
+ of amino acids constituting the required protein.
  
 \end_layout
 
 \begin_layout Standard
 
 \lang english
-Gene sequences are built out of fragmented introns and exons, where only
- the exons mature into mRNA molecules which are translated into proteins,
- while the introns are spliced away beforehand.
- Counter intuitively, even though the exons hold the recipe for the construction
- of the proteins of the organism, its complexity is not a product of their
- number or their length.
+Gene sequences are comprised of fragmented coding regions (exons) and noncoding
+ regions (introns).
+ Following its formation, the RNA molecule undergoes splicing, where the
+ introns are removed from the strand, and only the exons mature into mRNA
+ molecules which are translated into proteins.
+ Counter intuitively, even though the exons hold the instructions for the
+ proteins construction, the complexity of the organism is not correlated
+ to then number of exons or their total length in its genome.
  For example, both humans and Caenorhabditis elegans roundworms have about
  19,000 genes with roughly the same total exon length and number (
 \begin_inset CommandInset citation
@@ -606,11 +611,11 @@ key "key-16"
 
 \end_inset
 
-), even though the human body is much more diverse and complex.
- Although the genes are responsible for the variety of proteins a cell can
- produce, the source of organism complexity, with different cells performing
- different tasks while carrying the same genome, stems from the gene regulation
- mechanism.
+), despite the greater diversity and complexity of the former.
+ Although the genes are responsible for the variety of proteins a cell is
+ able to produce, the complexity of an organism (i.e.
+ the number of different cell types specializing in different tasks) stems
+ from the gene regulation mechanisms.
  In the case of humans, the genome is 3.23 Gb long and it is estimated that
  the total length of gene regulation regions involves 10-20% of it (
 \begin_inset CommandInset citation
@@ -633,13 +638,13 @@ key "key-45"
 
 \lang english
 Enhancers are non-coding regulatory DNA sequences which play a key role
- in the regulation transcription of genes.
+ in the regulation of gene expression.
  In humans, there are hundreds of thousands of enhancers scattered over
  the non-coding regions of the genome, usually of a length between 100-1000
  base pairs (bp).
- When activated, the DNA folding draws the enhancer spatially closer to
- another type of regulatory element called promoter, resulting in the translatio
-n of the gene adjacent to the promoter (see figure 
+ When the enhancer is activated, the DNA folding draws it spatially closer
+ to another type of regulatory element called promoter, resulting in the
+ translation of the gene adjacent to the promoter (see figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "Transcription"
@@ -647,9 +652,9 @@ reference "Transcription"
 \end_inset
 
 ).
- The gene expressed by this activation process is the enhancer’s target
+ The gene expressed by this activation process is named the enhancer’s target
  gene, and it can be located up to one megabase pair (Mb) upstream or downstream
- from its activating enhancer as enhancers generally function independently
+ from its activating enhancer since enhancers generally function independently
  of orientation (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -753,9 +758,9 @@ key "key-60"
  to a LacZ reporter gene, encoding an enzyme protein with a blue color.
  Since they were synthesized, the injected DNA sequences containing the
  enhancer and reporter genes bore no epigenetic information, and they were
- integrated into the mouse genome in an arbitral position.
+ integrated into the mouse genome in an arbitrary position.
  The enhancers in the injected DNA sequences originated from the human genome,
- and each enhancer was injected into a different embryo.
+ and each enhancer was injected into a different mouse egg.
  When the transgenic embryos were photographed after 11.5 days some had a
  distinctive anatomical pattern, such as blue limbs or blue spine, depending
  on the injected DNA sequence.
@@ -831,7 +836,7 @@ Transcription factors (TF) are proteins that bind to the DNA, and together
  the DNA sequence.
  TFs tend to bind to their transcription factor binding sites (TFBS), which
  are motifs of nucleotides in the DNA sequence.
- The average length of TFBS in humans is 12 bp (
+ The average length of TFBSs in humans is 12 bp (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-36"
@@ -869,7 +874,7 @@ key "key-32"
 \lang english
 The TFBSs in both enhancers and promoters are critical for their correct
  regulatory activity.
- Multiple studies have shown that genetic alterations in enhancer’s TFBSs
+ Multiple studies have shown that genetic alterations in TFBSs inside enhancers
  can affect the expression of their target genes and are a major cause of
  various human diseases (
 \begin_inset CommandInset citation
@@ -1059,11 +1064,11 @@ where
  is the prior background model, which is 0.25 in case of nucleotides.
  From a generative model point of view, the TFBS sequence is generated by
  an emission model of the PWM.
- When a convolution of 
+ When a correlation is applied on 
 \begin_inset Formula $M$
 \end_inset
 
- is applied on the one-hot encoding of the sequence (see figure 
+ and the one-hot encoding of the sequence (see figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "PWM"
@@ -1072,10 +1077,10 @@ reference "PWM"
 
 ), the result is the log likelihood of a TF binding to a sequence relative
  to a random sequence.
- In this work we'll use the more familiar term PWMs though we actually used
- the unnormalized PPMs for the TFBS emission model, since we required the
- likelihood of a TF binding and not a length-independent comparison between
- TFs.
+ In this work we will use the more familiar term PWMs though we actually
+ used the unnormalized PPMs for the TFBS emission model, since we required
+ the likelihood of a TF binding and not a length-independent comparison
+ between TFs.
  
 \end_layout
 
@@ -1110,13 +1115,9 @@ name "PWM"
 
 \end_inset
 
-Sub-sequences out of the DNA are represented in a one-hot encoding, and
- multiplied entry-wise by a PWM.
- Then, the sum of the logs of the maximal values in each column of the resulting
- matrix is calculated, which represents the log likelihood of the TF binding
- to the sub-sequence.
- This log likelihood is calculated for each location in the sequence, in
- which locations with high values indicate a high likelihood of TF binding.
+The 2-dimentional correlation between the PWM matrix and the one-hot representat
+ion of the DNA sequence represents the log likelihood of a TF binding event
+ at every location in the sequence.
 \end_layout
 
 \end_inset
@@ -1669,7 +1670,7 @@ https://genome-euro.ucsc.edu/cgi-bin/hgTracks
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
 
 \lang english
 Related Work
@@ -1784,7 +1785,7 @@ nted, structured and fixed-length data encoding, similarly to the bag of
  
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
 
 \lang english
 Machine Learning Models
@@ -2176,8 +2177,8 @@ E)
 \series default
  The output of the model is an observable sequence with an underlying hidden
  sequence.
- The hidden sequence is a Markov chain, where on each step the hidden state
- emits a single observed variable.
+ The hidden sequence is a Markov chain, where the hidden state emits a single
+ observed variable on each step.
 \end_layout
 
 \end_inset
@@ -2232,9 +2233,9 @@ key "key-59"
 \begin_layout Standard
 
 \lang english
-For example, in the case where the observable sequence is made out of DNA,
- a simplistic model can assume that the DNA sequence is composed out of
- 4 states: genes, promoter enhancers and background regions.
+For example, in the case of an observable DNA sequence, a simplistic model
+ can assume that the sequence is composed of 4 states: genes, promoters,
+ enhancers and background regions.
  Each of these states will have a different nucleotide frequency, and we
  assume that the DNA sequence was generated by an HMM with underlying sequences
  of 4 hidden states, one for each region type.
@@ -2388,7 +2389,7 @@ key "key-4"
 
 \end_inset
 
-), which is an expectation maximization (EM) algorithm for finding the unknown
+), which is an expectation-maximization (EM) algorithm for finding the unknown
  
 \begin_inset Formula $θ$
 \end_inset
@@ -2427,7 +2428,7 @@ key "key-4"
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
 
 \lang english
 Forward Algorithm
@@ -2849,7 +2850,7 @@ Forward algorithm dynamically calculates the probability stored in
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
 
 \lang english
 Backward Algorithm
@@ -3302,7 +3303,7 @@ s.
  
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
 
 \lang english
 Generalized HMM
@@ -3456,8 +3457,12 @@ k
 Instead of higher order emission which depends on the previous hidden states,
  the less researched field of higher order emission depending on previously
  emitted observable variables was used.
- Such an HMM variant is better suited to the local-spannature of of the
- emission of k-mer structures, but it only requires 
+ Such an HMM variant is better suited to the local-span nature of the emission
+ of 
+\emph on
+k
+\emph default
+-mer structures, but it only requires 
 \begin_inset Formula $O\left(m^{2}+4^{k}\right)$
 \end_inset
 
@@ -3485,7 +3490,7 @@ k
  
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
 
 \lang english
 HOP-HMM
@@ -3707,7 +3712,7 @@ A)
 \series bold
 B) 
 \series default
-Each of the background states has its own 2-order emission distribution
+Each of the background states has its own second-order emission distribution
  in a 
 \begin_inset Formula $4\times4$
 \end_inset
@@ -3816,7 +3821,7 @@ reference "HOPHMM2"
 \begin_inset Formula $k=3$
 \end_inset
 
- and a total of 8 hidden-states (
+ and a total of 8 hidden states (
 \begin_inset Formula $2+3\times2$
 \end_inset
 
@@ -3915,8 +3920,8 @@ General hidden states graph of HOP-HMM.
 \shape italic
 \emph on
 s (green).
- Not all transitions are possible, moving between the rows is possible only
- by a background state to background state transition.
+ Not all transitions are possible: moving between the rows is possible only
+ though a background state to background state transition.
 \end_layout
 
 \end_inset
@@ -4146,7 +4151,7 @@ When in a background state, after the observable variable emission, the
  
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 
 \lang english
 Methods
@@ -4165,8 +4170,8 @@ When fitting an HMM to a DNA sequence, we seek the parameters
 \begin_inset Formula $x_{1:L}$
 \end_inset
 
-, we would like to find the parameters that maximize the incomplete-likelihood:
- 
+, we would like to find the parameters that maximize the incomplete-data
+ likelihood: 
 \begin_inset Formula 
 \[
 \theta^{*}=argmax_{\theta}\mathcal{L}\left(\theta|x_{1:L}\right)
@@ -4560,7 +4565,7 @@ T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=j_{1},
 \begin_layout Standard
 
 \lang english
-Finally, we'll define a Lagrange multiplier 
+Finally, we will define a Lagrange multiplier 
 \begin_inset Formula $\lambda_{j}$
 \end_inset
 
@@ -4704,7 +4709,7 @@ key "key-50"
 
 \end_inset
 
-, the first widely accepted HMM application, we'll denote these as 
+, the first widely accepted HMM application, we will denote these as 
 \begin_inset Formula $\gamma$
 \end_inset
 
@@ -4822,7 +4827,7 @@ The calculation of
  and finish the EM iteration.
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
 
 \lang english
 Baum-Welch Algorithm for HOP-HMM
@@ -4927,7 +4932,7 @@ The
 \begin_inset Formula $\theta^{*}=argmax_{\theta}Q(\theta,\theta')$
 \end_inset
 
-, is achieved by optimizing its 3 independent parts simillarly to , each
+, is achieved by optimizing its 3 independent parts similarly to , each
  having its own constrain under which we optimize 
 \begin_inset Formula $Q$
 \end_inset
@@ -4970,7 +4975,7 @@ The
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
 
 \lang english
 M-step
@@ -5178,7 +5183,7 @@ G_{j,l}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j,0),y_{t}=(j
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
 
 \lang english
 E-step
@@ -5278,9 +5283,9 @@ reference "HOP-G-Update"
 For the calculation of these probabilities, we first need to calculate the
  forward and backward probabilities output from a HOP-HMM adjusted Forward-Backw
 ard algorithm.
- In this HOP-Forward-Backward algorithm, we will only build the probabilities
- for being in background states since the TF states probabilities are not
- needed in the later parts of the E-step.
+ In the Forward-Backward algorithm adaptation for HOP-HMM, we will only
+ build the probabilities for being in background states since the TF states
+ probabilities are not needed in the later parts of the E-step.
 \end_layout
 
 \begin_layout Standard
@@ -5345,7 +5350,7 @@ status open
 \begin_layout Plain Layout
 
 \lang english
-HOP Forward Algorithm
+Forward Algorithm for HOP-HMM
 \end_layout
 
 \end_inset
@@ -6181,8 +6186,8 @@ We will now explain why the described dynamic calculation result with
 \begin_layout Standard
 
 \lang english
-right-side term of a TF state transition can be split with the chain rule
- to:
+The right side term of a TF state transition can be split with the chain
+ rule to:
 \end_layout
 
 \begin_layout Standard
@@ -6965,7 +6970,7 @@ status open
 \begin_layout Plain Layout
 
 \lang english
-HOP Baum-Welch
+Baum-Welch for HOP-HMM
 \end_layout
 
 \end_inset
@@ -8254,7 +8259,7 @@ key "key-50"
 s update.
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
 
 \lang english
 Sequence States Inference
@@ -8562,10 +8567,10 @@ The main difference with inference 1 is the consideration of the dependency
  
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
 
 \lang english
-HOP-Viterbi Algorithm
+Viterbi Algorithm for HOP-HMM
 \end_layout
 
 \begin_layout Standard
@@ -8604,7 +8609,7 @@ Indices of the states with the maximal likelihood are kept in the dynamic
 \begin_inset Formula $V^{2}$
 \end_inset
 
-, and are eventually used to back-trace the chosen states in the most likely
+, and are eventually used to backtrack the chosen states in the most likely
  path.
  
 \end_layout
@@ -9195,8 +9200,8 @@ return
 \begin_layout Standard
 
 \lang english
-For HOP-HMM, the Viterbi algorithm is adapted into a HOP-Viterbi algorithm
- in two ways: 
+For HOP-HMM, the Viterbi algorithm is adapted into to HOP-HMM in two ways:
+ 
 \end_layout
 
 \begin_layout Itemize
@@ -9209,7 +9214,7 @@ d to background and background to TF, held in A and B vectors.
 \begin_layout Itemize
 
 \lang english
-The traces held in 
+The backtracking indices held in 
 \begin_inset Formula $V^{2}$
 \end_inset
 
@@ -9232,7 +9237,7 @@ status open
 \begin_layout Plain Layout
 
 \lang english
-HOP-Viterbi Algorithm
+Viterbi Algorithm for HOP-HMM
 \end_layout
 
 \end_inset
@@ -10340,7 +10345,7 @@ y_{class}=mode_{t\in[L]}\hat{y}_{t}
 
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 
 \lang english
 Results
@@ -10567,7 +10572,7 @@ The start state distribution
 \begin_inset Formula $Y$
 \end_inset
 
- sequences into train and test for cross validation.
+ sequences into train and test sections for cross validation.
  
 \end_layout
 
@@ -10576,10 +10581,10 @@ The start state distribution
 \lang english
 3.
  From the DNA sequences of 
-\begin_inset Formula $X$
+\begin_inset Formula $X_{train}$
 \end_inset
 
- train, we trained a 
+ , we trained a 
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
@@ -10594,44 +10599,44 @@ Using the trained parameters
 \end_inset
 
 , we estimated 
-\begin_inset Formula $\hat{Y}$
+\begin_inset Formula $\hat{Y}_{test}$
 \end_inset
 
- test from 
-\begin_inset Formula $X$
+ from 
+\begin_inset Formula $X_{test}$
 \end_inset
 
- test and 
-\begin_inset Formula $\hat{Y}$
+ and 
+\begin_inset Formula $\hat{Y}_{train}$
 \end_inset
 
- train from 
-\begin_inset Formula $X$
+ from 
+\begin_inset Formula $X_{train}$
 \end_inset
 
- train by the HOP-Viterbi algorithm.
+ by the Viterbi algorithm adaptation to HOP-HMM.
  We also calculated the posterior probability of 
 \begin_inset Formula $P_{\hat{\theta}}\left(y_{t}|x_{1:L}\right)$
 \end_inset
 
  from 
-\begin_inset Formula $X$
+\begin_inset Formula $X_{test}$
 \end_inset
 
- test and 
-\begin_inset Formula $X$
+ and 
+\begin_inset Formula $X_{train}$
 \end_inset
 
- train.
+.
  These results were then compared to the real 
-\begin_inset Formula $Y$
+\begin_inset Formula $Y_{test}$
 \end_inset
 
- test and 
-\begin_inset Formula $Y$
+ and 
+\begin_inset Formula $Y_{train}$
 \end_inset
 
- train to check for accuracy.
+ to check for accuracy.
  
 \end_layout
 
@@ -10681,14 +10686,14 @@ Workflow of the evaluation process.
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
- is then fitted to the train section of the observed sequences, via a HOP-Baum-W
-elch algorithm.
+ is then fitted to the train section of the observed sequences, via a Baum-Welch
+ algorithm.
  With 
 \begin_inset Formula $\hat{\theta},$
 \end_inset
 
- a hidden sequence is then estimated by a HOP-Viterbi algorithm, and a posterior
- probability estimation is calculated by 
+ a hidden sequence is then estimated by a Viterbi algorithm adapted for
+ HOP-HMM, and a posterior probability estimation is calculated by 
 \begin_inset CommandInset ref
 LatexCommand eqref
 reference "PosteriorEstimation"
@@ -10898,7 +10903,7 @@ The experiment was done on 500 synthetic sequences (85% train, 15% test),
  1500 bp-long.
  The trained model had 6 hidden background states with an emission order
  of 3, and each background state had 25 TF states.
- The background-state precision was 98.5% and the recall of 97.6%.
+ The background state precision was 98.5% and the recall of 97.6%.
  
 \end_layout
 
@@ -10937,8 +10942,8 @@ name "LikelihoodVsErr"
 
 \end_inset
 
-Over multiple runs of HOP-Baum-Welch, higher sequences likelihood for the
- estimated 
+Over multiple runs of Baum-Welch adaptation for HOP-HMM, higher sequences
+ likelihood for the estimated 
 \begin_inset Formula $\theta$
 \end_inset
 
@@ -11245,7 +11250,7 @@ key "key-68"
  We chose the intersection of DNase-I, H3K27ac and H3K4me1 peaks, while
  avoiding peaks of H3K27me3 and H3K4me3, and sequences within 5000 bp from
  known genes.
- The sequences chosen where 5000 bp-long sequences from the hg19 assembly,
+ The sequences chosen were 5000 bp-long sequences from the hg19 assembly,
  centered around their DNase-I peak to ensure the flanks of the enhancer.
  Among these enhancers, we chose only sequences of tissue-specific enhancers
  in one of two types of tissues, while choosing the two tissues out of the
@@ -11262,7 +11267,7 @@ key "key-68"
 \begin_layout Standard
 
 \lang english
-A HOP-HMM was trained by the HOP-Baum-Welch algorithm on the collected sequences.
+A HOP-HMM was trained by the Baum-Welch algorithm on the collected sequences.
  The trained model was then used to produce a Viterbi estimated hidden states
  sequence and posterior probability, which could be compared to the epigenetic
  tracks.
@@ -11338,7 +11343,7 @@ PWMs that had strong presence in sequences from one tissue compared to the
 \lang english
 In our experiment, posterior probability of some sequences had a good resemblanc
 e to the DNase-seq track, causing a good overlap between the Viterbi-path
- and the ChromeHMM classifications (see figure 
+ and the ChromHMM classifications (see figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:RealSequences"
@@ -11452,7 +11457,7 @@ Examples of HOP-HMM classification of 5000pb long tissue specific enhancer
 
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 
 \lang english
 Discussion and Conclusions
@@ -11461,14 +11466,14 @@ Discussion and Conclusions
 \begin_layout Standard
 
 \lang english
-In this work I aimed to develop a generalized HMM, HOP-HMM, tailored for
+In this work we aimed to develop a generalized HMM, HOP-HMM, tailored for
  the enhancer structure.
- I developed the mathematical adjustments to the different parts of the
+ We developed the mathematical adjustments to the different parts of the
  EM algorithm and provided reasoning for the correctness of inferring the
  altered model from data.
- I also implemented a model and an algorithm in Matlab code for the evaluation
+ We also implemented a model and an algorithm in Matlab code for the evaluation
  on real or synthetic data, as described in the results.
- During the algorithm implementation, I overcame a few difficulties originating
+ During the algorithm implementation, we overcame a few difficulties originating
  from the scale of the data, such as caching the costly response of the
  PWMs to the sequences during the Forward Backward algorithms, and splitting
  sequences into batches in order to hold and manipulate the large 
@@ -11496,7 +11501,7 @@ reference "HOP-eta"
 \begin_layout Standard
 
 \lang english
-In order to apply the EM algorithm to real data, I designed an experiment
+In order to apply the EM algorithm to real data, we designed an experiment
  to assess the ability of the model to detect real human enhancers whose
  locations were deducted from epigenetic data of the Roadmap project.
  This experiment was based on a dataset we created and which contained tissue-sp
@@ -11504,7 +11509,7 @@ ecific enhancers from two tissues and non-regulatory “background” sequences.
  Though some of these sequences were correctly classified, no tested pair
  of tissues had an HOP-HMM classification with consistent similarity to
  its epigenetic data.
- This might be caused by one of two reasons: the EM algorithm didn't converge
+ This might be caused by one of two reasons: the EM algorithm did not converge
  toward good enough parameters, or no such parameters exist.
 \end_layout
 
@@ -11574,7 +11579,7 @@ n of learning to the PWMs preceding or during EM iterations, or the entire
 
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 
 \lang english
 Appendix: Source Code

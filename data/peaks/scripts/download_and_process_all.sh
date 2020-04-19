@@ -29,7 +29,7 @@ mkdir ../../Jaspar
 mkdir ../../Jaspar/raw
 pushd ../../Jaspar/raw
 # PWMs
-wget 'jaspar.genereg.net/download/CORE/JASPAR2020_CORE_vertebrates_non-redundant_pfms_jaspar.txt'
+wget 'http://jaspar.genereg.net/download/CORE/JASPAR2020_CORE_vertebrates_non-redundant_pfms_jaspar.txt'
 # expression of TFs
 wget 'https://egg2.wustl.edu/roadmap/data/byDataType/rna/expression/57epigenomes.N.pc.gz'
 gunzip -vf 57epigenomes.N.pc.gz

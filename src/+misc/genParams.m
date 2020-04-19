@@ -44,7 +44,7 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     params.EPS = 10 ^ -7;
     maxBbMotifRatio = 1 / 3000; % maximal ratio of all motif letters in BG section
-    maxEnhMotifRatio = 1 / 100; % maximal ratio of a single motif letters in enhancer section
+    maxEnhMotifRatio = 1 / 200; % maximal ratio of a single motif letters in enhancer section
     % minEnhMotifRatio = 1 / 15; % minimal ratio of a single motif letters in enhancer section
     maxCrossEnhRatio = 1 / 100; % maximal ratio of transition to any another enhancer
     maxCrossBgRatio = 1 / 30; % maximal ratio of transition to any another enhancer
