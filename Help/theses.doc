@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="http://www.nongnu.org/elyxer/">
-<meta name="create-date" content="2020-04-20">
+<meta name="create-date" content="2020-04-21">
 <link rel="stylesheet" href="http://elyxer.nongnu.org/lyx.css" type="text/css" media="all">
 <title>Converted document</title>
 </head>
@@ -56,9 +56,6 @@ degree of Master of Science in Computer Science</span>
 </span><span class="larger"> </span><span class="large"><br>
 </span><span class="larger"> </span><span class="large"><br>
 </span><span class="larger"> </span><span class="large"><br>
-</span><span class="larger"> </span><span class="large"><br>
-</span><span class="larger"> </span><span class="large"><br>
-</span><span class="larger"> </span><span class="large"><br>
 </span>
 </div>
 
@@ -79,7 +76,7 @@ The Hebrew University of Jerusalem, Israel</span></span>
 <a class="toc" name="toc-Section--1"></a>תקציר
 </h1>
 <div class="Standard">
-מעצמים )srecnahne( הם קטעי בקרה גנטיים שבהקשרם לחלבונים גורמי שעתוק )rotcaf noitpircsnart( הם מגבירים את סיכוי השעתוק של גן המטרה של המעצם. בקרת השעתוק היא צורה חשובה של בקרת ביטוי הגנים וממלאת תפקיד משמעותי בבקרת גנים יחודיים לשלבי תא ורקמות ספציפיים. במשך השנים נצטברו עדויות לכך ששינויים גנטיים ברצפי המעצמים עלולים לגרום לשינוי בהתנהגותם של תאים ולמחלות. הכללים והדקויות של מבנה המעצם טרם הובנו לחלוטין, אף כי ניסויים הראו כי גורמי שעתוק נוטים להצמד לאתרי קשירה של גורמי שעתוק, שהם מוטיבים יחודיים אשר נפוצים יחסית בקטעי המעצמים. ניתן לאתר את פעילות המעצם לפי מידע אפיגנטי בסביבתו, כשהסימנים העיקריים הם השינויי בהיסטונים )snoitacifidom enotsih( אשר סביבם כרוכים אגפי המעצם. המעצם נוטה להיות נגיש מרחבית עבור אינטראקציות ביוכימיות בין ה-AND לחלבונים שסביבו. על אף תועלתו הרבה, המידע האפיגנטי לעיתים קרובות רועש ומצריך תהליכים יקרים של חילוץ תאים ספציפיים מתוך רקמותיהם, פעולה אשר לא תמיד ברת ביצוע לכלל סוגי התאים בשלביהם השונים. דרך נוספת לזיהוים של מעצמים היא בחינת תוכנם של רצפם הגנטי, משום שבהם נמצא כל המידע הדרוש ל-AND על מנת שיתחיל לפעול כמעצם. ניסויים אשר נערכו בחיות מעבדה הראו כי התא איננו זקוק למנגנון נוסף מעבר לרצף הגנטי על מנת לגרום לבקרת הגנים שבו. בשל תפישה זו, אנו מציעים גישה חישובית לזיהוי של מעצמים על בסיס רצפם הגנטי בלבד, בדרך למידה לא מונחית. יצרנו מודל מרקוב חבוי מסדר גבוה מבוסס מטריצות משקול מיקום, בעלי שני סוגי מצבים: מצב אחד אשר פולט אתרי קשירה של גורמי שעתוק מתוך מטריצות משקול מקום, ואחד אשר פולט נוקלאוטידים בודדים תוך תלות מסדר גבוה באלה שנפלטו לפניהם. בהשוואה למודל מרקוב חבוי רגיל, מודל זה לומד מבנה מורכב יותר של הרצף הגנטי, אשר מכיל מוטבים של אתרי קשירה והתפלגות מסדר גבוה של נוקלאוטידים המצויים בינהם. אנו נבחן תחילה את הרקע הביולוגי של המעצמים, תוך התרכזות בבני אדם. לאחר מכן נסקור לעומק את הרקע של מודלי מרקוב חבויים, ונדון בדרך לחישוב הנראות )doohilekil( של רצפים בהנתן המודל. נתאר לפרטים את המודל המוכלל שלנו ונפתח את אלגוריתם מיקסום התוחלת )noitazimixam noitatcepxe( ואת אלגוריתם ויטרבי עבור מודלי מרקוב חבויים, ולאחר מכן את ההתאמות הנדרשות עבור המודל המוכלל שלנו. מימושי האלגוריתמים הללו מוצגים על ידי הפעלתם על מידע סינטטי של רצפים דמויי-מעצמים אשר נוצרו תוך שימו ביכולת הגנרטיבית של מודל המרקוב החבוי המוכלל. אנו מדמים למודל סביבה מבוקרת על מנת להעריך את ביצועיו בשיערוך פרמטרי המודל והשוואתם לפרמטרים האמיתיים בהם היה שימוש עבור יצירת המידע. לסיום, אני מבצעים את אלגוריתם מיקסום התוחלת על מנת לאמן את המודל שלנו על רצפים גנטיים של מעצמים אנושיים, אשר נבחרו לפי המידע האפיגנטי של פרוייקט ה-pamdaoR. אנו מדגימים את יכולות המודל על ידי השוואת שיערוכו למידע האפיגנטי של הרצפים, ומראים כי המודל מסוגל לחזות את מיקומם בגנום של המעצמים ואת הרקמה בהם יופעלו, ללא חשיפה מוקדמת למידע אפיגנטי.
+מעצמים )srecnahne( הם קטעי בקרה גנטיים אשר מגבירים את סיכוי השעתוק של גן המטרה שלהם בהקשרם לחלבונים גורמי שעתוק )rotcaf noitpircsnart( והצמדות לאזור הגן. בקרת השעתוק היא צורה חשובה של בקרת ביטוי הגנים וממלאת תפקיד משמעותי בבקרת גנים יחודיים לשלבי תא ורקמות ספציפיים. במשך השנים נצטברו עדויות לכך ששינויים גנטיים ברצפי המעצמים עלולים לגרום לשינוי בהתנהגותם של תאים ולמחלות. הכללים והדקויות של מבנה המעצם טרם הובנו לחלוטין, אף כי ניסויים הראו כי גורמי שעתוק נוטים להצמד לאתרי קשירה של גורמי שעתוק, שהם מוטיבים יחודיים אשר נפוצים יחסית בקטעי המעצמים. ניתן לאתר את פעילות המעצם לפי מידע אפיגנטי בסביבתו, כשהסימנים העיקריים הם השינויי בהיסטונים )snoitacifidom enotsih( אשר סביבם כרוכים אגפי המעצם. המעצם נוטה להיות נגיש מרחבית עבור אינטראקציות ביוכימיות בין ה-AND לחלבונים שסביבו. על אף תועלתו הרבה, המידע האפיגנטי לעיתים קרובות רועש ומצריך תהליכים יקרים של חילוץ תאים ספציפיים מתוך רקמותיהם, פעולה אשר לא תמיד ברת ביצוע לכלל סוגי התאים בשלביהם השונים. דרך נוספת לזיהוים של מעצמים היא בחינת תוכנם של רצפם הגנטי, משום שבהם נמצא כל המידע הדרוש ל-AND על מנת שיתחיל לפעול כמעצם. ניסויים אשר נערכו בחיות מעבדה הראו כי התא איננו זקוק למנגנון נוסף מעבר לרצף הגנטי על מנת לגרום לבקרת הגנים שבו. בשל תפישה זו, אנו מציעים גישה חישובית לזיהוי של מעצמים על בסיס רצפם הגנטי בלבד, בדרך למידה לא מונחית. יצרנו מודל מרקוב חבוי מסדר גבוה מבוסס מטריצות משקול מיקום, בעלי שני סוגי מצבים: מצב אחד אשר פולט אתרי קשירה של גורמי שעתוק מתוך מטריצות משקול מקום, ואחד אשר פולט נוקלאוטידים בודדים תוך תלות מסדר גבוה באלה שנפלטו לפניהם. בהשוואה למודל מרקוב חבוי רגיל, מודל זה לומד מבנה מורכב יותר של הרצף הגנטי, אשר מכיל מוטיבים של אתרי קשירה והתפלגות מסדר גבוה של נוקלאוטידים המצויים בינהם. אנו נבחן תחילה את הרקע הביולוגי של המעצמים, תוך התרכזות בבני אדם. לאחר מכן נסקור לעומק את הרקע של מודלי מרקוב חבויים, ונדון בדרך לחישוב הנראות )doohilekil( של רצפים בהנתן המודל. נתאר לפרטים את המודל המוכלל שלנו ונפתח את אלגוריתם מיקסום התוחלת )noitazimixam noitatcepxe( ואת אלגוריתם ויטרבי עבור מודלי מרקוב חבויים, ולאחר מכן את ההתאמות הנדרשות עבור המודל המוכלל שלנו. מימושי האלגוריתמים הללו מוצגים על ידי הפעלתם על מידע סינטטי של רצפים דמויי-מעצמים אשר נוצרו תוך שימוש ביכולת הגנרטיבית של מודל המרקוב החבוי המוכלל. אנו מדמים למודל סביבה מבוקרת על מנת להעריך את ביצועיו בשיערוך פרמטרי המודל והשוואתם לפרמטרים האמיתיים בהם היה שימוש בעת יצירת המידע. לסיום, אנו משתמשים באלגוריתם מיקסום התוחלת על מנת לאמן את המודל שיצרנו על רצפים גנטיים של מעצמים אנושיים, אשר נבחרו לפי המידע האפיגנטי של פרוייקט ה-pamdaoR. אנו מדגימים את יכולות המודל על ידי השוואת שיערוכו למידע האפיגנטי של הרצפים, וביאים ראיה ליכולת המודל לחזות את מיקום המעצמים בגנום ואת הריקמה בהם יופעלו, ללא חשיפה מוקדמת למידע אפיגנטי.
 </div>
 <div class="Standard">
 <span lang="en"><p><br>
@@ -90,12 +87,89 @@ The Hebrew University of Jerusalem, Israel</span></span>
 <a class="toc" name="toc-Section--2"></a><span lang="en">Abstract</span>
 </h1>
 <div class="Standard">
-<span lang="en">Enhancers are regulatory DNA sequences that, when bound to proteins called transcription factors, increase the likelihood of transcription of the enhancer target genes. Regulation of transcription is an important form of control of gene expression, and the activity of enhancers plays a significant role in the stage-specific and tissue-specific regulation of genes. It has been shown over the years that genetic variations within enhancer sequences might cause cell behavior modifications and diseases. The structural rules and nuances of enhancers are not fully understood yet, though it has been shown that transcription factors tend to bind to them at unique and over-represented motifs called transcription factor binding sites. Enhancer activity can be detected by the epigenetic data from the local environment around its position. The main indicators for an enhancer lay in the adjacent histone modifications, around which the flanks of the enhancer are wrapped. The enhancer itself tends to be spatially accessible for biochemical interactions between the DNA and the proteins around it. Though useful, the epigenetic data are often noisy and require a costly extraction process of specific cells from a tissue sample, which is not necessarily practical for all cell types and their different stages. An alternative approach to enhancer detection is to observe the genetic content of its sequence, since it contains all the essential information for the DNA to act as an enhancer. Over the years, it was demonstrated <i>in vivo</i> that the cell requires no other mechanism than the genetic sequence in order to regulate its gene expression. With that idea in mind, this work offers a computational approach for the detection of enhancers based only on their sequences, and in an unsupervised manner. We created a higher-order positional weight matrix based hidden Markov model (HOP-HMM), with two kinds of states: one which emits transcription factor binding sites by using a positional weight matrix model, and one which emits single nucleotides with higher-order dependency on previously emitted nucleotides. Compared to a regular hidden Markov model, this model learns a more complex underlying structure of DNA sequences, containing both binding site motifs and higher-order distribution of nucleotides in between them. We will first review the biological background of enhancers, specifically in humans. Then we will review in depth the background of Markov and hidden Markov models, and discuss how to calculate the likelihood of a sequence given this model. We will describe our generalized model in detail and develop the expectation-maximization and Viterbi algorithms for hidden Markov models, followed by the adjustments needed for our generalized model. These implementations of these algorithms are demonstrated by applying them to a synthetic dataset of enhancer-like sequences created by using the generative property of the generalized model. We simulate the model in a controlled way to evaluate its performance by inferring estimated parameters of the model and comparing them to the real parameters used to create the dataset. Finally, we apply the expectation-maximization algorithm to train a HOP-HMM from human DNA enhancer sequences, selected by the epigenetic data of the Roadmap project. We demonstrate the capabilities of the model by comparing its estimation to the epigenetic tracks, showing it can predict the loci of enhancers and in which tissues they will be active, without exposure to epigenetic data. </span>
+<span lang="en">Enhancers are regulatory DNA sequences that, when bound to proteins called transcription factors, increase the likelihood of transcription of the enhancer target genes. Regulation of transcription is an important form of control of gene expression, and the activity of enhancers plays a significant role in the stage-specific and tissue-specific regulation of genes. It has been shown over the years that genetic variations within enhancer sequences might cause cell behavior modifications and diseases. The structural rules and nuances of enhancers are not fully understood yet, though it has been shown that transcription factors tend to bind to them at unique and over-represented motifs called transcription factor binding sites. Enhancer activity can be detected by the epigenetic data from the local environment around its position. The main indicators for an enhancer lay in the adjacent histone modifications, around which the flanks of the enhancer are wrapped. The enhancer itself tends to be spatially accessible for biochemical interactions between the DNA and the proteins around it. Though useful, the epigenetic data are often noisy and require a costly extraction process of specific cells from a tissue sample, which is not necessarily practical for all cell types and their different stages. An alternative approach to enhancer detection is to observe the genetic content of its sequence, since it contains all the essential information for the DNA to act as an enhancer. Over the years, it was demonstrated <i>in vivo</i> that the cell requires no other mechanism than the genetic sequence in order to regulate its gene expression. With that idea in mind, this work offers a computational approach for the detection of enhancers based only on their sequences, and in an unsupervised manner. We created a higher-order positional weight matrix based hidden Markov model (HOP-HMM), with two kinds of states: one which emits transcription factor binding sites by using a positional weight matrix model, and one which emits single nucleotides with higher-order dependency on previously emitted nucleotides. Compared to a regular hidden Markov model, this model learns a more complex underlying structure of DNA sequences, containing both binding site motifs and higher-order distribution of nucleotides in between them. We will first review the biological background of enhancers, specifically in humans. Then we will review in depth the background of Markov and hidden Markov models, and discuss how to calculate the likelihood of a sequence given this model. We will describe our generalized model in detail and develop the expectation-maximization and Viterbi algorithms for hidden Markov models, followed by the adjustments needed for our generalized model. These implementations of these algorithms are demonstrated by applying them to a synthetic dataset of enhancer-like sequences created by using the generative property of the generalized model. We simulate the model in a controlled way to evaluate its performance by inferring estimated parameters of the model and comparing them to the real parameters used to create the dataset. Finally, we apply the expectation-maximization algorithm to train a HOP-HMM from human DNA enhancer sequences, selected by the epigenetic data of the Roadmap project. We demonstrate the capabilities of the model by comparing its estimation to the epigenetic tracks, showing it can predict the loci of enhancers and the tissues in which they will be active, without exposure to epigenetic data. </span>
 </div>
 <div class="Standard">
 <span lang="en"><p><br>
 </p>
 </span>
+</div>
+<div class="fulltoc">
+<div class="tocheader">
+Table of Contents
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Section--1">Section: תקציר</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Section--2">Section: <span lang="en">Abstract</span></a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Section-1">Section 1: <span lang="en">Introduction</span></a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsection-1.1">Subsection 1.1: <span lang="en">Related Work</span></a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-1.2">Subsection 1.2: <span lang="en">Machine Learning Classification</span></a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-1.3">Subsection 1.3: <span lang="en">Forward Algorithm</span></a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-1.4">Subsection 1.4: <span lang="en">Backward Algorithm</span></a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-1.5">Subsection 1.5: <span lang="en">Generalized HMM</span></a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-1.6">Subsection 1.6: <span lang="en">HOP-HMM</span></a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-1.7">Subsection 1.7: <span lang="en">Methods</span></a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-1.7.1">Subsubsection 1.7.1: <span lang="en">Baum-Welch Algorithm Adaptation</span></a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-1.7.2">Subsubsection 1.7.2: <span lang="en">M-step</span></a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-1.7.3">Subsubsection 1.7.3: <span lang="en">E-step</span></a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-1.7.4">Subsubsection 1.7.4: <span lang="en">State Sequence Inference</span></a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-1.7.5">Subsubsection 1.7.5: <span lang="en">Viterbi Algorithm Adaptation</span></a>
+</div>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Section-2">Section 2: <span lang="en">Results</span></a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsection-2.1">Subsection 2.1: <span lang="en">Synthetic Data</span></a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-2.2">Subsection 2.2: <span lang="en">Human DNA Experiment</span></a>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Section-3">Section 3: <span lang="en">Discussion and Conclusions</span></a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Section-4">Section 4: <span lang="en">Appendix: Source Code</span></a>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#References">References</a>
+</div>
+
 </div>
 <h1 class="Section">
 <a class="toc" name="toc-Section-1">1</a> <span lang="en">Introduction</span>
@@ -222,16 +296,16 @@ Figure 3 <span lang="en">The 2-dimentional correlation between the PWM matrix 
 
 </ul>
 <div class="Standard">
-<span lang="en">These mechanisms have measurable features that can be added as a data layer, on top of the genome. Their combination is the main source of identification and prediction for enhancer regions in the genome. A single cell has its own epigenetic features, often in binary form, e.g. a specific element of the genome can be either accessible or not. When several cells epigenetic properties are measured, usually a frequency or count of the measured feature per DNA locus is calculated along the reference genome. The epigenetic data is commonly further processed by calculating its p-value compared to a local environment, to which peak boundaries are determined (peak calling) using algorithms such as MACS2 (<span class="bibcites">[<a class="bibliocite" name="cite-71" href="#biblio-71">71</a>]</span>).</span>
+<span lang="en">These mechanisms have measurable features that can be added as a data layer, on top of the genome. Their combination is the main source of identification and prediction for enhancer regions in the genome. Every cell has its own epigenetic features at any element of the genome, often in binary form (e.g. it is either accessible or not, methylated or not). When the epigenetic properties of several cells are measured, a frequency or count of the measured features per DNA locus is usually calculated along the reference genome (see figure <a class="Reference" href="#GenomeBrowser">5↓</a>). The epigenetic data are commonly further processed by calculating their p-value compared to a local environment, to which peak boundaries are determined (peak calling) using algorithms such as MACS2 (<span class="bibcites">[<a class="bibliocite" name="cite-71" href="#biblio-71">71</a>]</span>).</span>
 </div>
 <div class="Standard">
-<span lang="en">In eukaryotes, the DNA is packed around a structure of 8 histone proteins called a nucleosome, and they form together a chromatin complex. Similarly to the TFs, the nucleosome binding location in the DNA sequence is not arbitrary. Like them, it has a tendency for specific DNA binding sites (<span class="bibcites">[<a class="bibliocite" name="cite-11" href="#biblio-11">11</a>]</span>). The DNA wrapped around a nucleosome has a lesser likelihood for interaction with proteins, because it is physically inaccessible. Accessibility enables the TFs and other proteins to bind to the DNA molecule, hence the enhancer, the promoter and the gene all need to be accessible for a successful transcription to occur. DNase-I hypersensitive (DHS) sites are regions of the DNA which are sensitive to cleavage by the DNase-I enzyme. In these regions the DNA loses the nucleosome, and becomes accessible and therefore potentially active. Measurement of DHS cleavages is available through DNase-seq (<span class="bibcites">[<a class="bibliocite" name="cite-6" href="#biblio-6">6</a>]</span>), a high-throughput method for measuring the accessibility epigenetic data of the DNA, usually with a better resolution than histone modifications measurements. A faster and more sensitive technique for accessibility measurement is called ATAC-seq (<span class="bibcites">[<a class="bibliocite" name="cite-8" href="#biblio-8">8</a>]</span>), and is currently more commonly used. </span>
+<span lang="en">In eukaryotes, the DNA is packed around a structure of 8 histone proteins called a nucleosome, and together they form a chromatin complex. Similarly to the TFs, the nucleosome binding location in the DNA sequence is not arbitrary. Like them, it has a tendency for specific DNA binding sites (<span class="bibcites">[<a class="bibliocite" name="cite-11" href="#biblio-11">11</a>]</span>). The DNA wrapped around a nucleosome has a lesser likelihood of interaction with proteins, because it is physically inaccessible. Accessibility enables the TFs and other proteins to bind to the DNA molecule, hence the enhancer, the promoter and the gene all need to be accessible for a successful transcription to occur. DNase-I hypersensitive (DHS) sites are regions of the DNA which are sensitive to cleavage by the DNase-I enzyme. In these regions the DNA loses the nucleosome, and becomes accessible and therefore potentially active. Measurement of DHS cleavages is available through DNase-seq (<span class="bibcites">[<a class="bibliocite" name="cite-6" href="#biblio-6">6</a>]</span>), a high-throughput method for measuring the accessibility epigenetic data of the DNA, usually with a better resolution than histone modifications measurements. A faster and more sensitive technique for accessibility measurement is called ATAC-seq (<span class="bibcites">[<a class="bibliocite" name="cite-8" href="#biblio-8">8</a>]</span>), and is currently more commonly used. </span>
 </div>
 <div class="Standard">
-<span lang="en">Histone modifications, also called histone marks and chromatin modifications, are chemical alterations which happen to the long tail-like section of the histone protein. Histones are numbered from 1 to 8, and for example, the acetylation of the lysine amino-acid situated in 14th position in the protein of the 3rd histone will be abbreviated as H3K14ac. Along many roles in the cell, such as DNA repair and mitosis, histone modifications have a function in the gene regulation processes. In the past 20 years, a substantial body of research has shown that histone modifications are predictive of enhancer position and activity status (<span class="bibcites">[<a class="bibliocite" name="cite-64" href="#biblio-64">64</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-28" href="#biblio-28">28</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-24" href="#biblio-24">24</a>]</span>). The histone modifications are considered to form a certain &ldquo;histone code” along the genome, which encodes complex information underlying the genomic code and is connected to transcription regulation and other aspects. Compared to other epigenetic information, chromatin modifications have a shorter time scale ranging from seconds to hours (<span class="bibcites">[<a class="bibliocite" name="cite-26" href="#biblio-26">26</a>]</span>), and are therefore considered related to the dynamic changes of the cell.</span>
+<span lang="en">Histone modifications, also called histone marks or chromatin modifications, are chemical alterations which happen to the long tail-like section of the histone protein. Histones are numbered from 1 to 8, and for example, the acetylation of the lysine amino-acid situated in 14th position in the protein of the 3rd histone will be abbreviated as H3K14ac. Along many roles in the cell, such as DNA repair and mitosis, histone modifications have a function in the gene regulation processes. In the past 20 years, a substantial body of research has shown that histone modifications are predictive of enhancer position and activity status (<span class="bibcites">[<a class="bibliocite" name="cite-64" href="#biblio-64">64</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-28" href="#biblio-28">28</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-24" href="#biblio-24">24</a>]</span>). The histone modifications are considered to form a certain &ldquo;histone code” along the genome, which encodes complex information underlying the genomic code and is connected to transcription regulation and other aspects. Compared to other epigenetic information, chromatin modifications have a shorter time scale ranging from seconds to hours (<span class="bibcites">[<a class="bibliocite" name="cite-26" href="#biblio-26">26</a>]</span>), and are therefore considered as being related to the dynamic changes of the cell.</span>
 </div>
 <div class="Standard">
-<span lang="en">Measurement of histone modifications is also performed using the ChIP-seq method, similarly to the TF binding detection described above. In histone ChIP-seq, antibodies attach to the modifications in the histone tails (and not to the TF proteins). H3K4me1 and H3K27ac are among the predominant histone modifications of active enhancers; H3K4me1 is enriched on transcribed genes and enhancers prior to activation (<span class="bibcites">[<a class="bibliocite" name="cite-58" href="#biblio-58">58</a>]</span>), and is thought to precede the H3K27ac modification (<span class="bibcites">[<a class="bibliocite" name="cite-59" href="#biblio-59">59</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-53" href="#biblio-53">53</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-70" href="#biblio-70">70</a>]</span>) which is known to occur during activation. Other histone modifications present on active enhancers and used for their detection are H3K9ac (<span class="bibcites">[<a class="bibliocite" name="cite-19" href="#biblio-19">19</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-33" href="#biblio-33">33</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-70" href="#biblio-70">70</a>]</span>) and H3K18ac (<span class="bibcites">[<a class="bibliocite" name="cite-30" href="#biblio-30">30</a>]</span>). Even though H3K27ac has been identified as an important mark for the differentiation of active enhancers from poised enhancers (<span class="bibcites">[<a class="bibliocite" name="cite-59" href="#biblio-59">59</a>]</span>), it is not sufficient by itself since when present alongside H3K4me3 it is also an indication for active promoters (<span class="bibcites">[<a class="bibliocite" name="cite-27" href="#biblio-27">27</a>]</span>). In contrast, absence of H3K27ac and enrichment of H3K4me1and H3K27me3 are typical of poised enhancers (<span class="bibcites">[<a class="bibliocite" name="cite-59" href="#biblio-59">59</a>]</span>).<br>
+<span lang="en">Measurement of histone modifications is also performed using the ChIP-seq method, similarly to the TF binding detection described above. In histone ChIP-seq, antibodies attach to the modifications in the histone tails (and not to the TF proteins). H3K4me1 and H3K27ac are among the predominant histone modifications of active enhancers; H3K4me1 is enriched on transcribed genes and enhancers prior to activation (<span class="bibcites">[<a class="bibliocite" name="cite-58" href="#biblio-58">58</a>]</span>), and is thought to precede the H3K27ac modification (<span class="bibcites">[<a class="bibliocite" name="cite-59" href="#biblio-59">59</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-53" href="#biblio-53">53</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-70" href="#biblio-70">70</a>]</span>) which is known to occur during activation. Other histone modifications present on active enhancers and used for their detection are H3K9ac (<span class="bibcites">[<a class="bibliocite" name="cite-19" href="#biblio-19">19</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-33" href="#biblio-33">33</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-70" href="#biblio-70">70</a>]</span>) and H3K18ac (<span class="bibcites">[<a class="bibliocite" name="cite-30" href="#biblio-30">30</a>]</span>). Even though H3K27ac has been identified as an important marker for the differentiation of active enhancers from poised enhancers (<span class="bibcites">[<a class="bibliocite" name="cite-59" href="#biblio-59">59</a>]</span>), it is not sufficient by itself since when present alongside H3K4me3 it is also an indication for active promoters (<span class="bibcites">[<a class="bibliocite" name="cite-27" href="#biblio-27">27</a>]</span>). In contrast, absence of H3K27ac and enrichment of H3K4me1and H3K27me3 are typical of poised enhancers (<span class="bibcites">[<a class="bibliocite" name="cite-59" href="#biblio-59">59</a>]</span>).<br>
 </span>
 </div>
 <div class="Standard">
@@ -251,7 +325,7 @@ Figure 4 <span lang="en">The accessibility of an enhancer’s sequence and its
 </span>
 </div>
 <div class="Standard">
-<span lang="en">DNA methylation of cytosine nucleotides and cytosine guanine nucleotides pairs (CpG) has been involved in long-term genome silencing in multiple processes (<span class="bibcites">[<a class="bibliocite" name="cite-31" href="#biblio-31">31</a>]</span>) and cell aging (<span class="bibcites">[<a class="bibliocite" name="cite-49" href="#biblio-49">49</a>]</span>). It has been documented as widely correlated with inhibition of gene expression when present in promoters (<span class="bibcites">[<a class="bibliocite" name="cite-61" href="#biblio-61">61</a>]</span>). In enhancer elements, an anti-correlation was found between DNA methylation density and enrichment of active enhancer histone modifications, and TF binding (<span class="bibcites">[<a class="bibliocite" name="cite-57" href="#biblio-57">57</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-62" href="#biblio-62">62</a>]</span>), although the cause and consequence relationships underlying these correlations is not yet clear. Currently, the most accurate method for the wide-scale prediction of the loci of enhancer sequences in a genome is the analysis of histone modifications, and TF and cofactors presence using ChIP-seq from a cell line or from a tissue, combined with DNase-I hypersensitivity (DHS). </span>
+<span lang="en">DNA methylation of cytosine nucleotides and cytosine guanine nucleotides pairs (CpG) has been involved in long-term genome silencing in multiple processes (<span class="bibcites">[<a class="bibliocite" name="cite-31" href="#biblio-31">31</a>]</span>) and in cell aging (<span class="bibcites">[<a class="bibliocite" name="cite-49" href="#biblio-49">49</a>]</span>). It has been documented as widely correlated with inhibition of gene expression when present in promoters (<span class="bibcites">[<a class="bibliocite" name="cite-61" href="#biblio-61">61</a>]</span>). In enhancer elements, an anti-correlation was found between DNA methylation density and enrichment of active enhancer histone modifications, and TF binding (<span class="bibcites">[<a class="bibliocite" name="cite-57" href="#biblio-57">57</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-62" href="#biblio-62">62</a>]</span>), although the causes and consequences relationships underlying these correlations is not yet clear. Currently, the most accurate method for wide-scale prediction of the loci of enhancer sequences in a genome is the analysis of histone modifications, and TF and cofactors presence using ChIP-seq from a cell line or from a tissue, combined with DNase-I hypersensitivity (DHS). </span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="float">
@@ -259,7 +333,7 @@ Figure 4 <span lang="en">The accessibility of an enhancer’s sequence and its
 <div class="center">
 <span lang="en"><img class="embedded" src="Figures/genome_browser.png" alt="figure Figures/genome_browser.png">
 <div class="caption">
-Figure 5 <span lang="en">UCSC Genome Browser showing epigenetic features tracks, taken from the 10th chromosome of a H1-hESC cell line. Highlighted in light blue, the peaks of H3K27ac (1st green plot) and H3K4me1 (2nd green plot) histone modifications and the DNase-I hypersensitivity features (4th green plot), together with the absence of H3K27me3 (3rd green plot) signal indicate an active enhancer, as also marked by the ChromHMM classification (bottom). Note that the decrease between the two peaks of H3K27ac and H3K4me1 is located on top of the increase of the DNase-I hypersensitivity, which implies a cleavage in between two nucleosomes with modifications. Taken from <a class="FlexURL" href="https://genome-euro.ucsc.edu/cgi-bin/hgTracks">https://genome-euro.ucsc.edu/cgi-bin/hgTracks</a></span>
+Figure 5 <span lang="en">UCSC Genome Browser showing epigenetic features tracks, taken from the 10th chromosome of a H1-hESC cell line. Highlighted in light blue, the peaks of H3K27ac (1st green plot) and H3K4me1 (2nd green plot) histone modifications and the DNase-I hypersensitivity features (4th green plot), together with the absence of H3K27me3 (3rd green plot) signal indicate an active enhancer, as also marked by the ChromHMM classification (bottom). Note that the decrease between the two peaks of H3K27ac and H3K4me1 is located on top of the increase of the DNase-I hypersensitivity, which implies a cleavage between two histone modifications. Taken from <a class="FlexURL" href="https://genome-euro.ucsc.edu/cgi-bin/hgTracks">https://genome-euro.ucsc.edu/cgi-bin/hgTracks</a></span>
 </div>
 </span>
 </div>
@@ -273,20 +347,20 @@ Figure 5 <span lang="en">UCSC Genome Browser showing epigenetic features track
 <a class="toc" name="toc-Subsection-1.1">1.1</a> <span lang="en">Related Work</span>
 </h2>
 <div class="Standard">
-<span lang="en">Several significant computational efforts were made in the last few years for predicting the epigenetic and regulatory properties of DNA elements based on the genetic sequence alone. DeepSEA (<span class="bibcites">[<a class="bibliocite" name="cite-72" href="#biblio-72">72</a>]</span>) uses a deep convolutional neural network (DCNN) which receives an input of 1000 bp sequence, and outputs a prediction vector of 919 binary features representing the chromatin modifications of 200 bp in the center of the input sequence. The training labels used are the chromatin modifications extracted from ENCODE and Roadmap epigenetic data releases. Basset (<span class="bibcites">[<a class="bibliocite" name="cite-35" href="#biblio-35">35</a>]</span>) also used DCNN on the same data, with known PWMs as weight initialization, to predict a binary vector representing accessibility in 164 cell types, based on 600 bp DNA sequences. In DeepBind (<span class="bibcites">[<a class="bibliocite" name="cite-3" href="#biblio-3">3</a>]</span>) a DCNN was used to predict binding of 538 TFs and 194 RNA binding proteins from DNA sequences of varying lengths. In gkm-SVM (<span class="bibcites">[<a class="bibliocite" name="cite-12" href="#biblio-12">12</a>]</span>), gapped <i>k</i>-mers presence indicator vectors were used as features for a SVM classifier in order to predict the role of DNA sequences of varying lengths. ChromHMM (<span class="bibcites">[<a class="bibliocite" name="cite-18" href="#biblio-18">18</a>]</span>) is a widely used software that tackles the problem of analyzing the epigenetic data to predict the role of fragments of genomic sequence. The algorithm converts to binary the chromatin modification values by whether or not it exceeded a threshold, which is then inserted as input to HMM that classifies the genome states. A disadvantage of these methods is their need for training data of known regulatory elements or epigenetic data which are commonly obtained from GWAS surveys, such as those that were done on 127 obtained human cell types in the Roadmap and ENCODE projects (<span class="bibcites">[<a class="bibliocite" name="cite-39" href="#biblio-39">39</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-19" href="#biblio-19">19</a>]</span>). </span>
+<span lang="en">In the last few years, several significant computational efforts were made for the prediction of the epigenetic and regulatory properties of DNA elements based on the genetic sequence alone. DeepSEA (<span class="bibcites">[<a class="bibliocite" name="cite-72" href="#biblio-72">72</a>]</span>) used a deep convolutional neural network (DCNN) which receives an input of 1000 bp sequence, and outputs a prediction vector of 919 binary features representing the chromatin modifications of 200 bp in the center of the input sequence. The training labels used were the chromatin modifications extracted from ENCODE and Roadmap epigenetic data releases. Basset (<span class="bibcites">[<a class="bibliocite" name="cite-35" href="#biblio-35">35</a>]</span>) also used DCNN on the same data, with known PWMs as weight initialization, to predict a binary vector representing accessibility in 164 cell types, based on 600 bp DNA sequences. In DeepBind (<span class="bibcites">[<a class="bibliocite" name="cite-3" href="#biblio-3">3</a>]</span>) a DCNN was used to predict binding of 538 TFs and 194 RNA binding proteins from DNA sequences of varying lengths. In gkm-SVM (<span class="bibcites">[<a class="bibliocite" name="cite-12" href="#biblio-12">12</a>]</span>), gapped <i>k</i>-mers presence indicator vectors were used as features for a SVM classifier in order to predict the role of DNA sequences of varying lengths. ChromHMM (<span class="bibcites">[<a class="bibliocite" name="cite-18" href="#biblio-18">18</a>]</span>) is a widely used software which tackles the problem of analyzing the epigenetic data to predict the role of fragments of genomic sequence. The algorithm converts the input data of chromatin modification values to a binary form by whether or not they exceed a threshold. The binary input is then inserted to an HMM that classifies the genome states. A disadvantage of these methods is their need for training data of known regulatory elements or epigenetic data which are commonly obtained from GWAS surveys, such as those that were done on 127 obtained human cell types in the Roadmap and ENCODE projects (<span class="bibcites">[<a class="bibliocite" name="cite-39" href="#biblio-39">39</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-19" href="#biblio-19">19</a>]</span>). </span>
 </div>
 <div class="Standard">
 <span lang="en">When a DNA sequence is read from a tissue sample, it is often stored as a sequence of the characters A,C,G and T in FASTA format. For an algorithm to process it, these characters are mapped into a data structure of integers 1,2,3 and 4 respectively. For many algorithms, such as in DeepSEA, Basset, and our HOP-HMM, it is preferable to encode these sequences of integers as a sequence one-hot vectors (also called indicator vectors), as described in figure <a class="Reference" href="#PWM">3↑</a>. A commonly used feature extraction technique of DNA sequences is to represent them as vectors of their in-sequence k-mer frequencies as used in gkm-SVM. In this technique, the order of the k-mer is sacrificed for a more meaning-oriented, structured and fixed-length data encoding, similarly to the bag of words technique in text analysis and natural language processing. </span>
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-1.2">1.2</a> <span lang="en">Machine Learning Models</span>
+<a class="toc" name="toc-Subsection-1.2">1.2</a> <span lang="en">Machine Learning Classification</span>
 </h2>
 <div class="Standard">
-<span lang="en">The goal of machine learning classification models is to arrive from the observed <span class="formula"><i>X</i></span> to its label <span class="formula"><i>Y</i></span>. In the DNA classification case discussed in this work, the goal is deciding its role label <span class="formula"><i>Y</i></span> for a given a DNA sequence <span class="formula"><i>X</i></span>. There are two main approaches to this goal: generative models and discriminative models. Both approaches assume observed variables <span class="formula"><i>X</i></span> and target variables <span class="formula"><i>Y</i></span>, also commonly referred to as data samples and labels. </span>
+<span lang="en">The goal of machine learning classification models is to arrive from the observed <span class="formula"><i>X</i></span> to its label <span class="formula"><i>Y</i></span>. In the DNA classification case discussed in this work, the goal is to decide the role <span class="formula"><i>Y</i></span> of a DNA sequence <span class="formula"><i>X</i></span>. There are two main approaches to this goal: generative models and discriminative models. Both approaches assume observed variables <span class="formula"><i>X</i></span> and target variables <span class="formula"><i>Y</i></span>, also commonly referred to as data samples and labels. </span>
 </div>
 <ul>
 <li>
-<span lang="en">Generative models assume a joint probability <span class="formula"><i>P</i><span class="symbol">(</span><i>X</i>, <i>Y</i><span class="symbol">)</span></span>. Using dataset of <span class="formula"><span class="symbol">(</span><i>x</i>, <i>y</i><span class="symbol">)</span></span> pairs, one can estimate the distribution <span class="formula"><i>P</i><span class="symbol">(</span><i>X</i>, <i>Y</i><span class="symbol">)</span></span>, then estimate from it <span class="formula"><i>P</i><span class="symbol">(</span><i>Y</i>|<i>X</i><span class="symbol">)</span></span>. The distinctive feature of these models is their ability to generate random instances of the data, either as pairs of <span class="formula"><span class="symbol">(</span><i>x</i>, <i>y</i><span class="symbol">)</span></span> or as instances of <span class="formula"><i>x</i></span> given <span class="formula"><i>y</i></span>.</span>
+<span lang="en">Generative models assume a joint probability <span class="formula"><i>P</i><span class="symbol">(</span><i>X</i>, <i>Y</i><span class="symbol">)</span></span>. Using dataset of <span class="formula"><span class="symbol">(</span><i>x</i>, <i>y</i><span class="symbol">)</span></span> pairs, one can estimate the distribution <span class="formula"><i>P</i><span class="symbol">(</span><i>X</i>, <i>Y</i><span class="symbol">)</span></span>, then estimate <span class="formula"><i>P</i><span class="symbol">(</span><i>Y</i>|<i>X</i><span class="symbol">)</span></span>. The distinctive feature of these models is their ability to generate random instances of the data, either as pairs of <span class="formula"><span class="symbol">(</span><i>x</i>, <i>y</i><span class="symbol">)</span></span> or as instances of <span class="formula"><i>x</i></span> given <span class="formula"><i>y</i></span>.</span>
 </li>
 <li>
 <span lang="en">Discriminative models assume conditional probability <span class="formula"><i>P</i><span class="symbol">(</span><i>Y</i>|<i>X</i><span class="symbol">)</span></span>, which is estimated directly from the dataset.</span>
@@ -303,7 +377,7 @@ Figure 5 <span lang="en">UCSC Genome Browser showing epigenetic features track
 </span>
 </div>
 <div class="Standard">
-<span lang="en">Discriminative models are more widely used than generative models, they are often easier to use and build since they require fewer assumptions on the origin and generation of the data. For instance, the deep neural network (DNN) is a model that has gained much interest lately in the machine learning field, and was also used for the task of classifying the role of DNA sequences. As a discriminative model it assumes very little regarding the way the DNA sequence is generated based on its role, but finds instead features in the sequence that imply its role. Hence it is often difficult to use such a model for a later understanding of the nature of the data generation process, or to generate new data from it. </span>
+<span lang="en">Discriminative models are more widely used than generative models and they are often easier to use and build since they require fewer assumptions on the origin and generation of the data. For instance, the deep neural network (DNN) is a model that has gained much interest lately in the machine learning field, and has also been used for the task of DNA sequences classification. As a discriminative model it assumes very little regarding the way the DNA sequence is generated based on its role, but instead finds features in the sequence which imply its role. Hence it is often difficult to use such a model for later understanding of the nature of the data generation process, or to generate new data from it. </span>
 </div>
 <div class="Standard">
 <span lang="en">Markov model (<span class="bibcites">[<a class="bibliocite" name="cite-44" href="#biblio-44">44</a>]</span>), named after the Russian mathematician Andrey Markov, is a stochastic model which is applied to a system that changes randomly, such as the weather or car traffic. This model is at one of <span class="formula"><i>m</i></span> states <span class="formula"><span class="symbol">{</span><i>S</i><sub>1</sub>, ..., <i>S</i><sub><i>m</i></sub><span class="symbol">}</span></span> at any time, with the first state being sampled from a distribution <span class="formula"><i>π</i><sub><i>i</i></sub> = <i>P</i><span class="symbol">(</span><i>y</i><sub>1</sub> = <i>S</i><sub><i>i</i></sub><span class="symbol">)</span></span> and the probability of transitions between the states being denoted by <span class="formula"><i>T</i><sub><i>i</i>, <i>j</i></sub> = <i>P</i><span class="symbol">(</span><i>y</i><sub><i>t</i></sub> = <i>S</i><sub><i>i</i></sub>|<i>y</i><sub><i>t</i> − 1</sub> = <i>S</i><sub><i>j</i></sub><span class="symbol">)</span></span>. The travel of the model over the states is named a Markov process, and the sequence of the states visited in the process is called a Markov chain. The likelihood of a Markov chain <span class="formula"><i>X</i></span> generated by a Markov Model <span class="formula"><i>θ</i> = {<i>π</i>, <i>T</i>}</span> is a joint probability of the first state and of all following transitions which, due to the independence between transition events, can be written as:</span>
@@ -353,7 +427,7 @@ Figure 7 <span lang="en"><b>A)</b> HMM with 2 hidden states. <b>B)</b> The obs
 <span lang="en">HMM is a very popular signal processing algorithm that has been adopted in the various fields of computational biology since the 1980’s. HMM was proposed by Leonard Baum (<span class="bibcites">[<a class="bibliocite" name="cite-4" href="#biblio-4">4</a>]</span>) and is used for modeling regions with alternating frequencies of patterns and symbols. In a non-biological context, it was used extensively in various engineering fields, especially in speech recognition (<span class="bibcites">[<a class="bibliocite" name="cite-51" href="#biblio-51">51</a>]</span>), handwriting recognition (<span class="bibcites">[<a class="bibliocite" name="cite-29" href="#biblio-29">29</a>]</span>) and digital communication (<span class="bibcites">[<a class="bibliocite" name="cite-63" href="#biblio-63">63</a>]</span>).</span>
 </div>
 <div class="Standard">
-<span lang="en">For example, in the case of an observable DNA sequence, a simplistic model can assume that the sequence is composed of 4 states: genes, promoters, enhancers and background regions. Each of these states will have a different nucleotide frequency, and we assume that the DNA sequence was generated by an HMM with underlying sequences of 4 hidden states, one for each region type. The emitted DNA sequence <span class="formula"><i>x</i><sub>1:<i>L</i></sub></span> is determined by the underlying hidden sequence <span class="formula"><i>y</i><sub>1:<i>L</i></sub></span> that describes the “mode” of the sequence for each location.<br>
+<span lang="en">For example, in the case of an observable DNA sequence, a simplistic model can assume that the sequence is composed of 4 states: genes, promoters, enhancers and background regions. Each of these states will have a different nucleotide frequency, and we assume that the DNA sequence was generated by an HMM with underlying sequences of 4 hidden states, one for each region type. The emitted DNA sequence <span class="formula"><i>x</i><sub>1:<i>L</i></sub></span> is determined by the underlying hidden sequence <span class="formula"><i>y</i><sub>1:<i>L</i></sub></span> which describes the &ldquo;mode” of the sequence for each location.<br>
 </span>
 </div>
 <div class="Standard">
@@ -387,7 +461,7 @@ Figure 7 <span lang="en"><b>A)</b> HMM with 2 hidden states. <b>B)</b> The obs
 </span>
 </div>
 <div class="Standard">
-<span lang="en">Although the computation of the complete-data likelihood of <span class="formula"><i>θ</i></span> in <a class="Reference" href="#Complete-Likelihood">(3↑)</a> is linear-by-L, naively computing the incomplete-data likelihood as in <a class="Reference" href="#Likelihoods">(2↑)</a> involves the summation of all possible hidden sequences, an impracticable exponential-by-L operation. A dynamic approach to overcome this gap uses the Markovian memorylessness of HMM, and answers both the likelihood and the posterior questions we raised above. This approach is called Forward-Backward algorithm: it was suggested as a step in the Baum-Welch algorithm (<span class="bibcites">[<a class="bibliocite" name="cite-4" href="#biblio-4">4</a>]</span>), which is an expectation-maximization (EM) algorithm for finding the unknown <span class="formula"><i>θ</i></span> given an observed sequence, and will be described further in a later section. In the Forward-Backward algorithm, two matrices of size <span class="formula"><i>m</i>×<i>L</i></span> are dynamically calculated, holding the probabilities:</span>
+<span lang="en">Although the computation of the complete-data likelihood of <span class="formula"><i>θ</i></span> in <a class="Reference" href="#Complete-Likelihood">(3↑)</a> is linear-by-L, naively computing the incomplete-data likelihood as in <a class="Reference" href="#Likelihoods">(2↑)</a> involves the summation of all possible hidden sequences, an impracticable exponential-by-L operation. A dynamic approach to overcome this gap uses the Markovian memorylessness of HMM, and answers both the likelihood and the posterior questions raised above. This approach is called the forward-backward algorithm: it was suggested as a step in the Baum-Welch algorithm (<span class="bibcites">[<a class="bibliocite" name="cite-4" href="#biblio-4">4</a>]</span>), which is an expectation-maximization (EM) algorithm for finding the unknown <span class="formula"><i>θ</i></span> given an observed sequence, and will be described further in a later section. In the forward-backward algorithm, two matrices of size <span class="formula"><i>m</i>×<i>L</i></span> are dynamically calculated, holding the probabilities:</span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="formula">
@@ -462,7 +536,7 @@ Algorithm 1 <span lang="en">Forward Algorithm</span>
 <div class="center">
 <span lang="en"><img class="embedded" src="Figures/HMM forward Algorithm.jpg" alt="figure Figures/HMM forward Algorithm.jpg">
 <div class="caption">
-Figure 8 <span lang="en">Forward algorithm dynamically calculates the probability stored in <span class="formula"><i>α</i><sub><i>j</i>, <i>t</i></sub></span> by using the previously calculated <span class="formula"><i>α</i><sub><i>j</i>’, <i>t</i> − 1</sub></span> values.</span>
+Figure 8 <span lang="en">The forward algorithm dynamically calculates the probability stored in <span class="formula"><i>α</i><sub><i>j</i>, <i>t</i></sub></span> by using the previously calculated <span class="formula"><i>α</i><sub><i>j</i>’, <i>t</i> − 1</sub></span> values.</span>
 </div>
 </span>
 </div>
@@ -529,7 +603,7 @@ Algorithm 2 <span lang="en">Backward Algorithm</span>
 <div class="center">
 <span lang="en"><img class="embedded" src="Figures/HMM backward Algorithm.jpg" alt="figure Figures/HMM backward Algorithm.jpg">
 <div class="caption">
-Figure 9 <span lang="en">Backward algorithm dynamically calculates the probability stored in <span class="formula"><i>β</i><sub><i>j</i>, <i>t</i></sub></span> by using the previously calculated <span class="formula"><i>β</i><sub><i>j</i>’, <i>t</i> + 1</sub></span> values</span>
+Figure 9 <span lang="en">The backward algorithm dynamically calculates the probability stored in <span class="formula"><i>β</i><sub><i>j</i>, <i>t</i></sub></span> by using the previously calculated <span class="formula"><i>β</i><sub><i>j</i>’, <i>t</i> + 1</sub></span> values</span>
 </div>
 </span>
 </div>
@@ -540,7 +614,7 @@ Figure 9 <span lang="en">Backward algorithm dynamically calculates the probabi
 </span>
 </div>
 <div class="Standard">
-<span lang="en">Once we obtain <span class="formula"><i>α</i></span> and <span class="formula"><i>β</i></span> probabilities, the incomplete-data likelihood of HMM can be easily calculated:</span>
+<span lang="en">Once <span class="formula"><i>α</i></span> and <span class="formula"><i>β</i></span> probabilities are obtained, the incomplete-data likelihood of HMM can be easily calculated:</span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="formula">
@@ -558,16 +632,16 @@ Figure 9 <span lang="en">Backward algorithm dynamically calculates the probabi
 </span>
 </div>
 <div class="Standard">
-<span lang="en">Although HMM is simple and efficient, applying it on DNA sequences has a major disadvantage: the inherited Markovian lack-of-memory property. That is, the next state of the model always depends only on the previous state, without further historical consideration. For the task of emitting a TFBS motif where each position has a different emission distribution depending on the location in the motif, an HMM would need to differentiate multiple hidden states according to their positions in the motif. This means that for an HMM to be able to emit even a small number of short motifs, it needs to hold a large number of states which require learning a large number of parameters, e.g. for the ability to emit 50 motifs of length 5, an HMM would need to have over 60,000 parameters. Furthermore, the enhancer modeling task at hand is even more complex, since we would like to model multiple enhancers and backgrounds states, each having a different probability of emitting motifs and an unique k-order emission distribution when not in these motifs. For the prior assumption of our data structure, the required number of model parameters would have been about <span class="formula">10<sup>7</sup></span>, large enough to generate problems such as unfeasible memory complexity and overfitting. </span>
+<span lang="en">Although HMM is simple and efficient, applying it to DNA sequences has a major inherited disadvantage: the Markovian lack-of-memory property. That is, the next state of the model always depends only on the previous state, without further historical consideration. For the task of emitting a TFBS motif where each position has a different emission distribution depending on the location in the motif, an HMM would need to differentiate multiple hidden states according to their positions in the motif. This means that for an HMM to be able to emit even a small number of short motifs, it needs to hold a large number of states which require learning a large number of parameters, e.g. for the ability to emit 50 motifs of length 5, an HMM would need to have over 60,000 parameters. Furthermore, the enhancer modeling task at hand is even more complex, since we wish to model multiple enhancers and backgrounds states, each having a different probability of emitting motifs and an unique k-order emission distribution when not in these motifs. For the prior assumption of our data structure, the required number of model parameters would have been about <span class="formula">10<sup>7</sup></span>, large enough to generate problems such as unfeasible memory complexity and overfitting. </span>
 </div>
 <div class="Standard">
-<span lang="en">A common way to avoid overfitting the data when training machine learning models is to reduce the complexity of the model by fixing some of its parameters. Our proposed HOP-HMM addresses both the memory issue and the overfitting issue while remaining equivalent to a regular HMM with a large number of states having fixed parameters. Namely, most of the transition probabilities are fixed to zero and therefore never stored in the memory, and some of the emission probabilities are predetermined and remain fixed during the training. This allows us to train a model with the enhancer prior assumptions of motifs and higher order emission without overfitting, and with reasonable memory complexity. </span>
+<span lang="en">A common way to avoid overfitting the data when training machine learning models is to reduce the complexity of the model by fixing some of its parameters. Our proposed HOP-HMM addresses both the memory issue and the overfitting issue, while remaining equivalent to a regular HMM with a large number of states having fixed parameters. Namely, most of the transition probabilities are fixed to zero and therefore never stored in the memory, and some of the emission probabilities are predetermined and remain fixed during the training. This allows us to train a model with the enhancer prior assumptions of motifs and higher order emission without overfitting, and with reasonable memory complexity. </span>
 </div>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-1.5">1.5</a> <span lang="en">Generalized HMM</span>
 </h2>
 <div class="Standard">
-<span lang="en">In a generalized HMM (GHMM), the transition or the emission are sampled from a different distribution type assigned to each of the states in the model. Some of the states in the system may emit zero or multiple observable variables, sampled from custom emission models specifically tailored for the expected scenario. Such models were used for genes prediction in the 1990’s (<span class="bibcites">[<a class="bibliocite" name="cite-25" href="#biblio-25">25</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-7" href="#biblio-7">7</a>]</span>), in which specific exon states emitted codons instead of single nucleotides, and feed forward neural networks were used to evaluate the probability of certain transitions. </span>
+<span lang="en">In a generalized HMM (GHMM), the transition or the emission are sampled from a different distribution type assigned to each of the states in the model. Some of the states in the system may emit zero or multiple observable variables, sampled from custom emission models specifically tailored for the expected scenario. Such models were used for gene prediction in the 1990’s (<span class="bibcites">[<a class="bibliocite" name="cite-25" href="#biblio-25">25</a>]</span>; <span class="bibcites">[<a class="bibliocite" name="cite-7" href="#biblio-7">7</a>]</span>), in which specific exon states emitted codons instead of single nucleotides, and feed forward neural networks were used to evaluate the probability of certain transitions. </span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="float">
@@ -598,10 +672,10 @@ Figure 10 <span lang="en"><b>A)</b> GHMM with a TF state which emits using a P
 <a class="toc" name="toc-Subsection-1.6">1.6</a> <span lang="en">HOP-HMM</span>
 </h2>
 <div class="Standard">
-<span lang="en">HOP-HMM is a GHMM that is well fitted to the utilization of the structure of enhancers containing TFBSs, due to the TFBS emitting TF states which take part in the generation process of the sequence. In view of the assumed local physical nature of the TF binding of DNA sequences and of the success of HMM in gene prediction, we think the memorylessness of HMMs fits well the task of enhancer prediction. HOP-HMM balances between the Markovian memorylessness and the observed k-mer of the TFBS present in regulatory regions in the DNA. </span>
+<span lang="en">HOP-HMM is a GHMM well adapted the structure of enhancers containing TFBSs, due to the TFBS emitting TF states which take part in the generation process of the sequence. In view of the assumed local physical nature of the TF binding of DNA sequences and of the success of HMM in gene prediction, we think the memorylessness of HMMs fits well the task of enhancer prediction. HOP-HMM balances between the Markovian memorylessness and the observed k-mer of the TFBS present in regulatory regions in the DNA. </span>
 </div>
 <div class="Standard">
-<span lang="en">HOP-HMM extends the GHMM model of <span class="bibcites">[<a class="bibliocite" name="cite-32" href="#biblio-32">32</a>]</span>, where some of the hidden states emit TFBS sampled from PWMs to predict enhancer location in the genome. In HOP-HMM we added the higher order conditional emission probability on non-TF states. </span>
+<span lang="en">HOP-HMM extends the GHMM model of <span class="bibcites">[<a class="bibliocite" name="cite-32" href="#biblio-32">32</a>]</span>, where some of the hidden states emit TFBS sampled from PWMs in order to predict enhancer location in the genome. HOP-HMM was added a higher order conditional emission probability on non-TF states. </span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="float">
@@ -609,7 +683,7 @@ Figure 10 <span lang="en"><b>A)</b> GHMM with a TF state which emits using a P
 <div class="center">
 <span lang="en"><img class="embedded" src="Figures/HOP_HMM_two_states.jpg" alt="figure Figures/HOP_HMM_two_states.jpg">
 <div class="caption">
-Figure 11 <span lang="en"><b>A)</b> Small HOP-HMM with one background state and one TF state. <b>B)</b> The background state emits a single observable variable, and has 2-order emission, meaning it is conditioned on the previous observable variable. <b>C,D)</b> Unlike GHMM, in HOP-HMM TF state can transition into itself and cannot be the starting hidden state and the background state . <b>E)</b> The TF state emits multiple observable variables which represent a TFBS sampled from a PWM. </span>
+Figure 11 <span lang="en"><b>A)</b> Small HOP-HMM with one background state and one TF state. <b>B)</b> The background state emits a single observable variable, and has second-order emission, meaning it is conditioned on the previous observable variable. <b>C,D)</b> Unlike GHMM, in HOP-HMM TF state can transition into itself and cannot be the starting hidden state and the background state. <b>E)</b> The TF state emits multiple observable variables that represent a TFBS sampled from a PWM. </span>
 </div>
 </span>
 </div>
@@ -641,7 +715,7 @@ Figure 12 <span lang="en">Instead of holding a single sparse 8<span class="for
 <div class="center">
 <span lang="en"><img class="embedded" src="Figures/HOP_HMM_multi_states.jpg" alt="figure Figures/HOP_HMM_multi_states.jpg">
 <div class="caption">
-Figure 13 <b><span lang="en">A)</span></b> A more complex HOP-HMM with two background states <span class="formula"><i>BG</i><sub>1</sub></span> and <span class="formula"><i>BG</i><sub>2</sub></span>, where each has 3 TF states. <b>B) </b>Each of the background states has its own second-order emission distribution in a <span class="formula">4 × 4</span> matrix. <b>C)</b> The start hidden state distribution <span class="formula"><i>π</i></span> allows only background states to start the hidden sequence. <b>D)</b> The transition probability is held by matrices <span class="formula"><i>T</i></span> and G. <b>E)</b> The example-generated sequence is built out of two types of sequences, each with its own TFBS frequency and background nucleotide bigram frequency, representing two alternating types of enhancers. 
+Figure 13 <b><span lang="en">A)</span></b> A more complex HOP-HMM with two background states <span class="formula"><i>BG</i><sub>1</sub></span> and <span class="formula"><i>BG</i><sub>2</sub></span>, where each has three TF states. <b>B) </b>Each of the background states has its own second-order emission distribution in a <span class="formula">4 × 4</span> matrix. <b>C)</b> The start hidden state distribution <span class="formula"><i>π</i></span> allows only background states to start the hidden sequence. <b>D)</b> The transition probability is held by matrices <span class="formula"><i>T</i></span> and G. <b>E)</b> The example-generated sequence is built out of two types of sequences, each with its own TFBS frequency and background nucleotide bigram frequency, representing two alternating types of enhancers. 
 </div>
 </span>
 </div>
@@ -656,7 +730,7 @@ Figure 13 <b><span lang="en">A)</span></b> A more complex HOP-HMM with two bac
 </div>
 <ul>
 <li>
-<span lang="en">background states are indexed as <span class="formula">(<i>j</i>, 0)</span> where <span class="formula"><i>j</i> ∈ [<i>m</i>]</span> and <span class="formula"><i>m</i></span> is the number background states.</span>
+<span lang="en">background states are indexed as <span class="formula">(<i>j</i>, 0)</span> where <span class="formula"><i>j</i> ∈ [<i>m</i>]</span> and <span class="formula"><i>m</i></span> is the number of background states.</span>
 </li>
 <li>
 <span lang="en">TF states are indexed as <span class="formula">(<i>j</i>, <i>l</i>)</span> where <span class="formula"><i>j</i> ∈ [<i>m</i>]</span>, <span class="formula"><i>l</i> ∈ [<i>k</i>]</span>. and <span class="formula"><i>k</i></span> is the number of TF states each of the background states has.</span>
@@ -664,7 +738,7 @@ Figure 13 <b><span lang="en">A)</span></b> A more complex HOP-HMM with two bac
 
 </ul>
 <div class="Standard">
-<span lang="en">For example, in figure <a class="Reference" href="#HOPHMM2">13↑</a> we see a HOP-HMM with <span class="formula"><i>m</i> = 2</span> and <span class="formula"><i>k</i> = 3</span> and a total of 8 hidden states (<span class="formula">2 + 3 × 2</span>). The TF state indexed <span class="formula">(<i>j</i>, <i>l</i>)</span> belongs to the <span class="formula">(<i>j</i>, 0)</span> background state (see figure <a class="Reference" href="#HOPHMM3">14↓</a>), and the only allowed transfer into <span class="formula">(<i>j</i>, <i>l</i>)</span> is from its background state <span class="formula">(<i>j</i>, 0)</span>. Note that we used a simpler <span class="formula"><i>BG</i><sub><i>j</i></sub></span> notation in figures <a class="Reference" href="#HOPHMM1">11↑</a> and <a class="Reference" href="#HOPHMM2">13↑</a> for readability.</span>
+<span lang="en">For example, in figure <a class="Reference" href="#HOPHMM2">13↑</a> we see a HOP-HMM with <span class="formula"><i>m</i> = 2</span> and <span class="formula"><i>k</i> = 3</span> and a total of 8 hidden states (<span class="formula">2 + 3 × 2</span>). The TF state <span class="formula">(<i>j</i>, <i>l</i>)</span> belongs to the <span class="formula">(<i>j</i>, 0)</span> background state (see figure <a class="Reference" href="#HOPHMM3">14↓</a>), and the only allowed transfer into <span class="formula">(<i>j</i>, <i>l</i>)</span> is from its background state <span class="formula">(<i>j</i>, 0)</span>. Note that we used a simpler <span class="formula"><i>BG</i><sub><i>j</i></sub></span> notation in figures <a class="Reference" href="#HOPHMM1">11↑</a> and <a class="Reference" href="#HOPHMM2">13↑</a> for readability.</span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="float">
@@ -683,13 +757,13 @@ Figure 14 <i><i><span lang="en">General hidden states graph of HOP-HMM. Each r
 </span>
 </div>
 <div class="Standard">
-<span lang="en">While most background states <span class="formula">(<i>j</i>, 0)</span> represent an enhancer type, we also would also like to model true background regions in between the enhancers that carry no regulatory role and have no TFBSs. For To that end, we predefine one or more background states as non-enhancers by restricting their transfer probability into their TF states, as seen in the results section. </span>
+<span lang="en">While most background states <span class="formula">(<i>j</i>, 0)</span> represent an enhancer type, we also wish to model true background regions between enhancers, which carry no regulatory role and have no TFBSs. To that end, we predefine one or more background states as non-enhancers by restricting their transfer probability into their TF states, as seen in the results section. </span>
 </div>
 <div class="Standard">
 <span lang="en">HOP-HMM is defined with <span class="formula"><i>k</i></span> PWMs <span class="formula"><i>W</i><sub>1</sub>, <i>W</i><sub>2</sub>, ..., <i>W</i><sub><i>k</i></sub></span> that remain fixed during training. Each of the <span class="formula"><i>k</i></span> PWMs is shared with <span class="formula"><i>m</i></span> TF states, e.g. the PWM <span class="formula"><i>W</i><sub><i>l</i></sub></span>, where <span class="formula"><i>l</i> ∈ [<i>k</i>]</span>, is shared between subs-states <span class="formula">(1, <i>l</i>), (2, <i>l</i>), ..., (<i>m</i>, <i>l</i>)</span> and is used for the TF state emission sampling. The PWMs vary in their column amounts (as the different TFBSs vary in length), and each column represents a nucleotide distribution at that position. When the model enters a TF state, it emits a motif by sampling independently from a PWM column by column, as described in figure <a class="Reference" href="#GHMM">10↑</a>.</span>
 </div>
 <div class="Standard">
-<span lang="en">The background states, denoted as <span class="formula">(1, 0), (2, 0), ..., (<i>m</i>, 0)</span>, are responsible for the emission of inter-TFBS parts of the enhancers lacking long motifs. Similarly to regular states in HMM, background states emit single nucleotides whose emission is conditional on the previous nucleotides emitted in the DNA sequence. The emission from background states is done by sampling a nucleotide from the distributions stored in <span class="formula"><i>E</i></span> tensor. <span class="formula"><i>E</i></span> dimension is <span class="formula"><i>o</i> + 1</span>, and its size is <span class="formula"><span class="text"> </span><i>m</i> × 4 × 4 × ... × 4</span> (with <span class="formula"><i>o</i></span> fours) and its values describe the emission probability <span class="formula"><i>E</i><sub><i>j</i>, <i>x</i><sub><i>t</i> − <i>o</i> + 1</sub>, <i>x</i><sub><i>t</i> − <i>o</i> + 2</sub>, ..., <i>x</i><sub><i>t</i></sub></sub> = <i>P</i><span class="symbol">(</span><i>x</i><sub><i>t</i></sub>|<i>y</i><sub><i>t</i></sub> = (<i>j</i>, 0), <i>x</i><sub><i>t</i> − <i>o</i> + 1</sub>, ..., <i>x</i><sub><i>t</i> − 1</sub><span class="symbol">)</span></span>, meaning that when <span class="formula"><i>x</i><sub><i>t</i></sub></span> is sampled by the model, the preceding <span class="formula"><i>o</i> − 1</span> observed variables are used as indices of the tensor for getting the emission probability vector <span class="formula"><i>E</i><sub><i>j</i>, <i>x</i><sub><i>t</i> − <i>o</i> + 1</sub>, <i>x</i><sub><i>t</i> − <i>o</i> + 2</sub>, ..., <i>x</i><sub><i>t</i> − 1</sub>, *</sub></span>.</span>
+<span lang="en">The background states, denoted as <span class="formula">(1, 0), (2, 0), ..., (<i>m</i>, 0)</span>, are responsible for the emission of inter-TFBS parts of the enhancers lacking long motifs. Similarly to regular states in HMM, background states emit single nucleotides whose emission is conditional on the previous nucleotides emitted in the DNA sequence. The emission from background states is preformed by sampling a nucleotide from the distributions stored in <span class="formula"><i>E</i></span> tensor. <span class="formula"><i>E</i></span> dimension is <span class="formula"><i>o</i> + 1</span>, its size is <span class="formula"><span class="text"> </span><i>m</i> × 4 × 4 × ... × 4</span> (with <span class="formula"><i>o</i></span> fours) and its values describe the emission probability <span class="formula"><i>E</i><sub><i>j</i>, <i>x</i><sub><i>t</i> − <i>o</i> + 1</sub>, <i>x</i><sub><i>t</i> − <i>o</i> + 2</sub>, ..., <i>x</i><sub><i>t</i></sub></sub> = <i>P</i><span class="symbol">(</span><i>x</i><sub><i>t</i></sub>|<i>y</i><sub><i>t</i></sub> = (<i>j</i>, 0), <i>x</i><sub><i>t</i> − <i>o</i> + 1</sub>, ..., <i>x</i><sub><i>t</i> − 1</sub><span class="symbol">)</span></span>, meaning that when <span class="formula"><i>x</i><sub><i>t</i></sub></span> is sampled by the model, the preceding <span class="formula"><i>o</i> − 1</span> observed variables are used as indices of the tensor to obtain the emission probability vector <span class="formula"><i>E</i><sub><i>j</i>, <i>x</i><sub><i>t</i> − <i>o</i> + 1</sub>, <i>x</i><sub><i>t</i> − <i>o</i> + 2</sub>, ..., <i>x</i><sub><i>t</i> − 1</sub>, *</sub></span>.</span>
 </div>
 <div class="Standard">
 <span lang="en">For the first variables emitted in the sequence, the missing dimensions of the preceding variables are summed to form the probability vector, e.g. if <span class="formula"><i>t</i> = <i>o</i> − 1</span>, a single variable is missing for emitting <span class="formula"><i>x</i><sub><i>t</i></sub></span> and the distribution used for emission sampling is <span class="formula"><span class="limits"><span class="limit">∑</span></span><sub><i>i</i> ∈ [4]</sub><span class="fraction"><span class="ignored">(</span><span class="numerator"><i>E</i><sub><i>j</i>, <i>i</i>, <i>x</i><sub>1</sub>, ..., <i>x</i><sub><i>t</i> − 1</sub></sub></span><span class="ignored">)/(</span><span class="denominator">4</span><span class="ignored">)</span></span></span>.<br>
@@ -708,11 +782,11 @@ Figure 14 <i><i><span lang="en">General hidden states graph of HOP-HMM. Each r
 
 </ul>
 <div class="Standard">
-<span lang="en">When in a background state, after the observable variable emission, the model samples its next hidden state from a probability vector which is the concatenation of a row in <span class="formula"><i>T</i></span> and a row in <span class="formula"><i>G</i></span>. If a TF state is chosen,,the model returns back to the background state after the TF state’s motif emission to emit another single observable variable and so on. </span>
+<span lang="en">When in a background state, after its observable variable emission the model samples its next hidden state from a probability vector which is comprised of the concatenation of the row in <span class="formula"><i>T</i></span> and the row in <span class="formula"><i>G</i></span>, both rows are of the index of the background state. If the next hidden state is chosen to be a TF state, it emits its TFBS from the PWM associated to the TF state. After that, the model will return back to the preceding background state, which will emit another observable variable and so on.</span>
 </div>
-<h1 class="Section">
-<a class="toc" name="toc-Section-2">2</a> <span lang="en">Methods</span>
-</h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-1.7">1.7</a> <span lang="en">Methods</span>
+</h2>
 <div class="Standard">
 <span lang="en">When fitting an HMM to a DNA sequence, we seek the parameters <span class="formula"><i>θ</i><sup>*</sup></span> that best explain the sequence via an algorithm called Baum-Welch algorithm, which is a special case of EM algorithm. Formally, given the observed DNA sequence <span class="formula"><i>x</i><sub>1:<i>L</i></sub></span>, we would like to find the parameters that maximize the incomplete-data likelihood: <div class="formula">
 <i>θ</i><sup>*</sup> = <i>argmax</i><sub><i>θ</i></sub>ℒ<span class="symbol">(</span><i>θ</i>|<i>x</i><sub>1:<i>L</i></sub><span class="symbol">)</span>
@@ -720,7 +794,7 @@ Figure 14 <i><i><span lang="en">General hidden states graph of HOP-HMM. Each r
 </span>
 </div>
 <div class="Standard">
-<span lang="en">Even though the incomplete-data likelihood of HMM in <a class="Reference" href="#Likelihoods">(2↑)</a> is derivable by <span class="formula"><i>θ</i></span>, optimizing it is as difficult as calculating it, and is therefore also impractical. Instead, the strategy of the EM algorithm is to iteratively optimize the expected value of the complete data log-likelihood <span class="formula"><i>log</i><span class="symbol">(</span><i>P</i><span class="symbol">(</span><i>x</i><sub>1:<i>L</i></sub>, <i>y</i><sub>1:<i>L</i></sub>|<i>θ</i><sup>’</sup><span class="symbol">)</span><span class="symbol">)</span></span> over all possible <span class="formula"><i>y</i><sub>1:<i>L</i></sub></span> where <span class="formula"><i>θ</i><sup>’</sup></span> is the model parameters from previous EM iteration (or guessed parameters in the first iteration) and while assuming a fixed observed <span class="formula"><i>x</i><sub>1:<i>L</i></sub></span>, as it is in the given DNA sequence. For this task we define our target function Q:</span>
+<span lang="en">Even though the incomplete-data likelihood of HMM in <a class="Reference" href="#Likelihoods">(2↑)</a> is derivable by <span class="formula"><i>θ</i></span>, optimizing it is as difficult as calculating it, and is therefore impractical as well. Instead, the strategy of the EM algorithm is to iteratively optimize the expected value of the complete data log-likelihood <span class="formula"><i>log</i><span class="symbol">(</span><i>P</i><span class="symbol">(</span><i>x</i><sub>1:<i>L</i></sub>, <i>y</i><sub>1:<i>L</i></sub>|<i>θ</i><sup>’</sup><span class="symbol">)</span><span class="symbol">)</span></span> over all possible <span class="formula"><i>y</i><sub>1:<i>L</i></sub></span> where <span class="formula"><i>θ</i><sup>’</sup></span> is the model parameters from the previous EM iteration (or guessed parameters in the first iteration) and while assuming a fixed observed <span class="formula"><i>x</i><sub>1:<i>L</i></sub></span>, as it is in the given DNA sequence. For this task, we define our target function Q:</span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="formula">
@@ -879,7 +953,7 @@ Figure 14 <i><i><span lang="en">General hidden states graph of HOP-HMM. Each r
 </span>
 </div>
 <div class="Standard">
-<span lang="en">For us to be able to calculate these reestimations of <span class="formula"><i>θ</i></span> as written in <a class="Reference" href="#Pi-Update">(6↑)</a>, <a class="Reference" href="#T-Update">(7↑)</a> and <a class="Reference" href="#E-Update">(8↑)</a>, \strikeout off\uuline off\uwave offwe still need to calculate the two probability terms they contain. To resemble the notations coined in <span class="bibcites">[<a class="bibliocite" name="cite-52" href="#biblio-52">52</a>]</span>, the first widely accepted HMM application, we will denote these as <span class="formula"><i>γ</i></span> and <span class="formula"><i>ξ</i></span></span>
+<span lang="en">In order to be able to calculate these reestimations of <span class="formula"><i>θ</i></span> as written in <a class="Reference" href="#Pi-Update">(6↑)</a>, <a class="Reference" href="#T-Update">(7↑)</a> and <a class="Reference" href="#E-Update">(8↑)</a>, \strikeout off\uuline off\uwave offwe still need to calculate the two probability terms they contain. To resemble the notations coined in <span class="bibcites">[<a class="bibliocite" name="cite-52" href="#biblio-52">52</a>]</span>, the first widely accepted HMM application, we will denote these as <span class="formula"><i>γ</i></span> and <span class="formula"><i>ξ</i></span></span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="formula">
@@ -891,7 +965,7 @@ Figure 14 <i><i><span lang="en">General hidden states graph of HOP-HMM. Each r
 </span>
 </div>
 <div class="Standard">
-<span lang="en">We will use <a class="Reference" href="#Incomplete-Likelihood">(4↑)</a> and the output of the Forward-Backward algorithm <span class="formula"><i>α</i></span> and <span class="formula"><i>β</i></span> for their calculation:</span>
+<span lang="en">We will use <a class="Reference" href="#Incomplete-Likelihood">(4↑)</a> and the output of the forward-backward algorithm <span class="formula"><i>α</i></span> and <span class="formula"><i>β</i></span> for their calculation:</span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="formula">
@@ -917,9 +991,9 @@ Figure 14 <i><i><span lang="en">General hidden states graph of HOP-HMM. Each r
 </div>
 The calculation of <span class="formula"><i>α</i>, <i>β</i>, <i>γ</i></span> and <span class="formula"><i>ξ</i></span> matrices is considered the E-step of the Baum-Welch algorithm and allows us to update <span class="formula"><i>θ</i></span> and finish the EM iteration.</span>
 </div>
-<h2 class="Subsection">
-<a class="toc" name="toc-Subsection-2.1">2.1</a> <span lang="en">Baum-Welch Algorithm for HOP-HMM</span>
-</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-1.7.1">1.7.1</a> <span lang="en">Baum-Welch Algorithm Adaptation</span>
+</h3>
 <div class="Standard">
 <span lang="en">The transition and emission mechanisms of HOP-HMM are different and therefore the complete data likelihood of HOP-HMM requires a different calculation for the Baum-Welch algorithm to hold. The Baum-Welch algorithm can be adjusted to infer the parameters of the HOP-HMM variant <span class="formula"><i>θ</i> = {<i>π</i>, <i>E</i>, <i>G</i>, <i>T</i>}</span> from a DNA sequence <span class="formula"><i>X</i></span>. As in the regular Baum-Welch algorithm covered in the previous section, given a sequence <span class="formula"><i>X</i></span> at each EM iteration we optimize the Q function in <a class="Reference" href="#Q">(5↑)</a>:</span>
 </div>
@@ -1017,7 +1091,7 @@ The calculation of <span class="formula"><i>α</i>, <i>β</i>, <i>γ</i></sp
 <span lang="en">Note that the last addition component, which holds the TFBS log likelihood, does not contain elements from  <span class="formula"><i>θ</i></span> since the PWMs are not learned in HOP-HMM and thus is not reestimated in the M-steps. </span>
 </div>
 <div class="Standard">
-<span lang="en">The <span class="formula"><i>θ</i><sup>*</sup></span> which optimizes <span class="formula"><i>Q</i></span> here, <span class="formula"><i>θ</i><sup>*</sup> = <i>argmax</i><sub><i>θ</i></sub><i>Q</i>(<i>θ</i>, <i>θ</i>’)</span>, is achieved by optimizing its 3 independent parts similarly to , each having its own constrain under which we optimize <span class="formula"><i>Q</i></span> are:</span>
+<span lang="en">Similarly to the process we covered in the regular EM, the <span class="formula"><i>θ</i><sup>*</sup></span> which optimizes <span class="formula"><i>Q</i></span> here, <span class="formula"><i>θ</i><sup>*</sup> = <i>argmax</i><sub><i>θ</i></sub><i>Q</i>(<i>θ</i>, <i>θ</i>’)</span>, is achieved by optimizing its 3 independent parts, each with its own constraint under which we optimize <span class="formula"><i>Q</i></span> are:</span>
 </div>
 <ul>
 <li>
@@ -1031,9 +1105,9 @@ The calculation of <span class="formula"><i>α</i>, <i>β</i>, <i>γ</i></sp
 </li>
 
 </ul>
-<h2 class="Subsection">
-<a class="toc" name="toc-Subsection-2.2">2.2</a> <span lang="en">M-step</span>
-</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-1.7.2">1.7.2</a> <span lang="en">M-step</span>
+</h3>
 <div class="Standard">
 <span lang="en">The <span class="formula"><i>π</i></span> and <span class="formula"><i>E</i></span> conditions produce almost exact same maximization as in regular Baum-Welch <a class="Reference" href="#Pi-Update">(6↑)</a> and <a class="Reference" href="#E-Update">(8↑)</a>:</span>
 </div>
@@ -1097,11 +1171,11 @@ The calculation of <span class="formula"><i>α</i>, <i>β</i>, <i>γ</i></sp
 </div>
 </span>
 </div>
-<h2 class="Subsection">
-<a class="toc" name="toc-Subsection-2.3">2.3</a> <span lang="en">E-step</span>
-</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-1.7.3">1.7.3</a> <span lang="en">E-step</span>
+</h3>
 <div class="Standard">
-<span lang="en">Preceding the M-step where we update components of <span class="formula"><i>θ</i></span> by <a class="Reference" href="#HOP-Pi-Update">(11↑)</a>, <a class="Reference" href="#HOP-E-Update">(12↑)</a>, <a class="Reference" href="#HOP-T-Update">(13↑)</a> and <a class="Reference" href="#HOP-G-Update">(14↑)</a>, we will calculate the three probability terms inside them in the E-step, denoted as <span class="formula"><i>γ</i>, </span> <span class="formula"><i>ξ</i></span> and <span class="formula"><i>η</i></span>:<br>
+<span lang="en">Preceding the M-step where we update components of <span class="formula"><i>θ</i></span> by <a class="Reference" href="#HOP-Pi-Update">(11↑)</a>, <a class="Reference" href="#HOP-E-Update">(12↑)</a>, <a class="Reference" href="#HOP-T-Update">(13↑)</a> and <a class="Reference" href="#HOP-G-Update">(14↑)</a>, in the E-step we will calculate the three probability terms they contain, denoted as <span class="formula"><i>γ</i>, </span> <span class="formula"><i>ξ</i></span> and <span class="formula"><i>η</i></span>:<br>
 <br>
  <div class="formula">
 <a class="eqnumber" name="HOP-gamma">(15) </a><i>γ</i><sub><i>j</i>, <i>t</i></sub> = <i>P</i><sub><i>θ</i><sup>’</sup></sub><span class="symbol">(</span><i>y</i><sub><i>t</i></sub> = (<i>j</i>, 0)|<i>x</i><sub>1:<i>L</i></sub><span class="symbol">)</span>
@@ -1118,7 +1192,7 @@ The calculation of <span class="formula"><i>α</i>, <i>β</i>, <i>γ</i></sp
 </span>
 </div>
 <div class="Standard">
-<span lang="en">For the calculation of these probabilities, we first need to calculate the forward and backward probabilities output from a HOP-HMM adjusted Forward-Backward algorithm. In the Forward-Backward algorithm adaptation for HOP-HMM, we will only build the probabilities for being in background states since the TF states probabilities are not needed in the later parts of the E-step.</span>
+<span lang="en">For the calculation of these probabilities, we first need to calculate the forward and backward probabilities output from a HOP-HMM adjusted forward-backward algorithm. In the forward-backward algorithm adaptation for HOP-HMM, we will build the probabilities for being only in background states since the TF states probabilities are not needed in the later parts of the E-step.</span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="formula">
@@ -1133,7 +1207,10 @@ The calculation of <span class="formula"><i>α</i>, <i>β</i>, <i>γ</i></sp
 </span>
 </div>
 <div class="Standard">
-<span lang="en">The adjustments for the forward and backward algorithm are straight forward, as the summation is composed of two parts. We calculate <span class="formula"><i>α</i></span> of size <span class="formula"><i>m</i> × <i>L</i></span>, iterating over <span class="formula"><i>t</i> = 1, 2, ..., <i>L</i></span> as following:</span>
+<span lang="en">The adjustments for the forward and backward algorithm are fairly simple, and evolve the new requirement to support transitions into both background states and TF states.</span>
+</div>
+<div class="Standard">
+<span lang="en">We calculate <span class="formula"><i>α</i></span> of size <span class="formula"><i>m</i> × <i>L</i></span>, iterating over <span class="formula"><i>t</i> = 1, 2, ..., <i>L</i></span> as following:</span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="float">
@@ -1156,7 +1233,7 @@ Algorithm 3 <span lang="en">Forward Algorithm for HOP-HMM</span>
 </span>
 </div>
 <div class="Standard">
-<span lang="en">In the beginning of the sequence, when <span class="formula">1 ≤ <i>t</i> &lt; <i>o</i></span>, part of the preceding observable variables are missing. Since <span class="formula"><i>E</i></span> has <span class="formula"><i>o</i> + 1</span> dimensions, <span class="formula"><i>E</i><sub><i>j</i>, <i>x</i><sub>1</sub>, ..., <i>x</i><sub><i>t</i></sub></sub></span> is not defined, so we define it here as: </span>
+<span lang="en">In the beginning of the sequence, when <span class="formula">1 ≤ <i>t</i> &lt; <i>o</i></span>, part of the preceding observable variables are missing. Since <span class="formula"><i>E</i></span> has <span class="formula"><i>o</i> + 1</span> dimensions, <span class="formula"><i>E</i><sub><i>j</i>, <i>x</i><sub>1</sub>, ..., <i>x</i><sub><i>t</i></sub></sub></span> is not defined for such locations, so we define it here as: </span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="formula">
@@ -1165,7 +1242,7 @@ Algorithm 3 <span lang="en">Forward Algorithm for HOP-HMM</span>
  </span>
 </div>
 <div class="Standard">
-<span lang="en">We used the fact that <span class="formula"><i>P</i>(<i>A</i>) = <span class="limits"><span class="limit">∑</span></span><sub><i>b</i> ∈ <i>B</i></sub><i>P</i>(<i>b</i>)⋅<i>P</i>(<i>A</i>|<i>b</i>)</span> and the assumption that the observable variables preceding the sequence came from a uniform distribution. Also, when summing the TF state transition part, PWMs <span class="formula"><i>W</i><sub><i>l</i></sub></span> with length equal or bigger than <span class="formula"><i>t</i> + 1</span> include out-of-sequence TFBS and are not part of the summation.</span>
+<span lang="en">We use the fact that <span class="formula"><i>P</i>(<i>A</i>) = <span class="limits"><span class="limit">∑</span></span><sub><i>b</i> ∈ <i>B</i></sub><i>P</i>(<i>b</i>)⋅<i>P</i>(<i>A</i>|<i>b</i>)</span> and the assumption that the observable variables preceding the sequence came from a uniform distribution. In addition, when summing the TF state transition part, PWMs with a length equal or bigger than <span class="formula"><i>t</i> + 1</span> are out-of-sequence TFBSs and therefore are not part of the summation.</span>
 </div>
 <div class="Standard">
 <span lang="en">For <span class="formula"><i>β</i></span> of size <span class="formula"><i>m</i> × <i>L</i></span>, we iterating over <span class="formula"><i>t</i> = <i>L</i>, <i>L</i> − 1, ..., 1</span> as following:</span>
@@ -1190,7 +1267,7 @@ Algorithm 4 <span lang="en">HOP Backward Algorithm</span>
 </span>
 </div>
 <div class="Standard">
-<span lang="en">Note that when <span class="formula"><i>t</i> &gt; <i>L</i> − |<i>W</i><sub><i>l</i></sub>|</span>, there are missing observable variables to fully calculate the TF state transition. In these situations this contribution of these component to the summation is zero, meaning our HOP-HMM has the behavior of avoiding a transition into a TF state when the PWM is too long to fit into the sequence <span class="formula"><i>X</i></span> length.</span>
+<span lang="en">Note that when <span class="formula"><i>t</i> &gt; <i>L</i> − |<i>W</i><sub><i>l</i></sub>|</span>, some observable variables are missing for the full calculation of the TF state transition. In such situations, the contribution of those components to the summation is zero, meaning that our HOP-HMM avoids the transition into a TF state at a location where the PWM is too long to fit into the sequence <span class="formula"><i>X</i></span>. </span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="float">
@@ -1198,7 +1275,7 @@ Algorithm 4 <span lang="en">HOP Backward Algorithm</span>
 <div class="center">
 <span lang="en"><img class="embedded" src="Figures/HOP-EM forward Algorithm.jpg" alt="figure Figures/HOP-EM forward Algorithm.jpg">
 <div class="caption">
-Figure 15 <span lang="en">In HOP-HMM, the Forward-Backward algorithm dynamic tables <span class="formula"><i>α</i></span> and <span class="formula"><i>β</i></span> cells are filled from both the adjacent background states transitions and the background states preceding or proceeding the motifs emitted by the TF states.</span>
+Figure 15 <span lang="en">In HOP-HMM, the forward-backward algorithm dynamic tables <span class="formula"><i>α</i></span> and <span class="formula"><i>β</i></span> cells are filled from both the adjacent background states transitions and the background states preceding or proceeding the motifs emitted by the TF states.</span>
 </div>
 </span>
 </div>
@@ -1209,7 +1286,7 @@ Figure 15 <span lang="en">In HOP-HMM, the Forward-Backward algorithm dynamic t
 </span>
 </div>
 <div class="Standard">
-<span lang="en">We will now explain why the described dynamic calculation result with <span class="formula"><i>α</i><sub><i>j</i>, <i>t</i></sub> = <i>P</i><span class="symbol">(</span><i>y</i><sub><i>t</i></sub> = (<i>j</i>, 0), <i>x</i><sub>1:<i>t</i></sub><span class="symbol">)</span></span> and <span class="formula"><i>β</i><sub><i>j</i>, <i>t</i></sub> = <i>P</i><span class="symbol">(</span><i>x</i><sub><i>t</i> + 1:<i>L</i></sub>|<i>y</i><sub><i>t</i></sub> = (<i>j</i>, 0)<span class="symbol">)</span></span>, starting with the forward probabilities <span class="formula"><i>α</i></span>. From the law of total probability, the probability <span class="formula"><i>α</i><sub><i>j</i>, <i>t</i></sub></span> is the sum of probabilities of all the possible transition that ended in the background state (j,0):</span>
+<span lang="en">We will now explain why the described dynamic calculation result in <span class="formula"><i>α</i><sub><i>j</i>, <i>t</i></sub> = <i>P</i><span class="symbol">(</span><i>y</i><sub><i>t</i></sub> = (<i>j</i>, 0), <i>x</i><sub>1:<i>t</i></sub><span class="symbol">)</span></span> and <span class="formula"><i>β</i><sub><i>j</i>, <i>t</i></sub> = <i>P</i><span class="symbol">(</span><i>x</i><sub><i>t</i> + 1:<i>L</i></sub>|<i>y</i><sub><i>t</i></sub> = (<i>j</i>, 0)<span class="symbol">)</span></span>, starting with the forward probability <span class="formula"><i>α</i></span>. From the law of total probability, the probability <span class="formula"><i>α</i><sub><i>j</i>, <i>t</i></sub></span> is the sum of probabilities of all the possible transitions that ended in the background state (j,0):</span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="formula">
@@ -1245,7 +1322,7 @@ Figure 15 <span lang="en">In HOP-HMM, the Forward-Backward algorithm dynamic t
 </span>
 </div>
 <div class="Standard">
-<span lang="en">Since <span class="formula"><i>x</i><sub><i>t</i></sub></span> is dependent only on <span class="formula"><i>y</i><sub><i>t</i></sub></span> and <span class="formula"><i>x</i><sub><i>t</i> − <i>o</i>:<i>t</i> − 1</sub></span> and since <span class="formula"><i>y</i><sub><i>t</i></sub></span> is dependent on only <span class="formula"><i>y</i><sub><i>t</i> − 1</sub></span>, we can simplify the probabilities:</span>
+<span lang="en">Since <span class="formula"><i>x</i><sub><i>t</i></sub></span> is dependent only on <span class="formula"><i>y</i><sub><i>t</i></sub></span> and <span class="formula"><i>x</i><sub><i>t</i> − <i>o</i>:<i>t</i> − 1</sub></span> and since <span class="formula"><i>y</i><sub><i>t</i></sub></span> is dependent only on <span class="formula"><i>y</i><sub><i>t</i> − 1</sub></span>, we can simplify the probabilities:</span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="formula">
@@ -1293,7 +1370,7 @@ Figure 15 <span lang="en">In HOP-HMM, the Forward-Backward algorithm dynamic t
 </span>
 </div>
 <div class="Standard">
-<span lang="en">For the backward probabilities <span class="formula"><i>β</i>, </span> the explanation is similar. The main difference between the regular HMM backward probability is the condition on the <span class="formula"><i>o</i> − 1</span> preceding observable variables <span class="formula"><i>x</i><sub><i>t</i> − <i>o</i> + 2:<i>t</i></sub></span>, which are necessary for the background state emission is conditional on them.</span>
+<span lang="en">For the backward probabilities <span class="formula"><i>β</i>, </span> the explanation is similar. The main difference from the regular HMM backward probability is the condition on the <span class="formula"><i>o</i> − 1</span> preceding observable variables to <span class="formula"><i>x</i><sub><i>t</i></sub></span>, which are necessary since for the background state emission is conditional on them.</span>
 </div>
 <div class="Standard">
 <span lang="en">Using the law of total probability:</span>
@@ -1344,7 +1421,7 @@ Figure 15 <span lang="en">In HOP-HMM, the Forward-Backward algorithm dynamic t
 </span>
 </div>
 <div class="Standard">
-<span lang="en">For the TF state transition term, we use once more the chain rule, followed the simplification using the conditional independencies of HMM:</span>
+<span lang="en">For the TF state transition term, we use once more the chain rule, followed by the simplification using the conditional independencies of HMM:</span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="formula">
@@ -1428,7 +1505,7 @@ Figure 15 <span lang="en">In HOP-HMM, the Forward-Backward algorithm dynamic t
 </span>
 </div>
 <div class="Standard">
-<span lang="en">The second probability is likelihood of the observed sequence <span class="formula"><i>x</i><sub>1:<i>L</i></sub></span>:</span>
+<span lang="en">The second probability is the likelihood of the observed sequence <span class="formula"><i>x</i><sub>1:<i>L</i></sub></span>:</span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="formula">
@@ -1437,7 +1514,7 @@ Figure 15 <span lang="en">In HOP-HMM, the Forward-Backward algorithm dynamic t
 </span>
 </div>
 <div class="Standard">
-<span lang="en">Now we can calculate probability <a class="Reference" href="#HOP-gamma">(15↑)</a> of the background state at a given position given the sequence <span class="formula"><i>X</i></span>, denoted as <span class="formula"><i>γ</i></span> of size <span class="formula"><i>m</i> × <i>L</i></span>:</span>
+<span lang="en">Now we can calculate the probability <a class="Reference" href="#HOP-gamma">(15↑)</a> of the background state at a given position given the sequence <span class="formula"><i>X</i></span>, denoted as <span class="formula"><i>γ</i></span> of size <span class="formula"><i>m</i> × <i>L</i></span>:</span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="formula">
@@ -1491,7 +1568,7 @@ Figure 15 <span lang="en">In HOP-HMM, the Forward-Backward algorithm dynamic t
 <span lang="en">Now with <a class="Reference" href="#HOP-gamma">(15↑)</a>, <a class="Reference" href="#HOP-xi">(16↑)</a> and <a class="Reference" href="#HOP-eta">(17↑)</a> at hand, we can complete the M-step and update <span class="formula"><i>θ</i></span> by assigning the updates of <a class="Reference" href="#HOP-Pi-Update">(11↑)</a>, <a class="Reference" href="#HOP-E-Update">(12↑)</a>, <a class="Reference" href="#HOP-T-Update">(13↑)</a> and <a class="Reference" href="#HOP-G-Update">(14↑)</a>.</span>
 </div>
 <div class="Standard">
-<span lang="en">The Baum-Welch algorithm adaptation for HOP-HMM, as described in this section:</span>
+<span lang="en">The iterative execution of the adjusted E-step and M-step, described in this section, constitute the adaptation of the Baum-Welch algorithm for HOP-HMM:</span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="float">
@@ -1562,11 +1639,11 @@ Algorithm 5 <span lang="en">Baum-Welch for HOP-HMM</span>
 </span>
 </div>
 <div class="Standard">
-<span lang="en">The algorithm is described with the input of a single sequence of observable variables <span class="formula"><i>x</i><sub>1:<i>L</i></sub></span>. In reality, we are faced with the task of learning <span class="formula"><i>θ</i></span> from multiple sequences at once. In HOP-HMM we can use the multi-sequence method as in <span class="bibcites">[<a class="bibliocite" name="cite-52" href="#biblio-52">52</a>]</span>, where the E-step probabilities are calculated separately for each sequence, and in the M-step all positions from all sequences are summed for the parameters update.</span>
+<span lang="en">The Baum-Welch algorithm is described with the input of a single sequence of observable variables <span class="formula"><i>x</i><sub>1:<i>L</i></sub></span>. In reality, we are often dealing with the task of learning <span class="formula"><i>θ</i></span> from multiple sequences at once. In HOP-HMM we can use the multi-sequence method as in <span class="bibcites">[<a class="bibliocite" name="cite-52" href="#biblio-52">52</a>]</span>, where the E-step probabilities are calculated separately for each sequence, and in the M-step all positions from all sequences are summed for the parameters update.</span>
 </div>
-<h2 class="Subsection">
-<a class="toc" name="toc-Subsection-2.4">2.4</a> <span lang="en">Sequence States Inference</span>
-</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-1.7.4">1.7.4</a> <span lang="en">State Sequence Inference</span>
+</h3>
 <div class="Standard">
 <span lang="en">Acquiring the maximal likelihood <span class="formula"><i>θ</i></span> opens the door to several needed inferences given a sequence <span class="formula"><i>x</i><sub>1:<i>L</i></sub></span> :</span>
 </div>
@@ -1583,7 +1660,7 @@ Algorithm 5 <span lang="en">Baum-Welch for HOP-HMM</span>
 
 </ol>
 <div class="Standard">
-<span lang="en"><span class="formula"><i>γ</i></span> <a class="Reference" href="#HOP-gamma">(15↑)</a> and <span class="formula"><i>η</i></span> <a class="Reference" href="#HOP-eta">(17↑)</a> can be used to solve inference 1 for HOP-HMM. We aim to maximize here a posterior probability in a specific position:</span>
+<span lang="en"><span class="formula"><i>γ</i></span> <a class="Reference" href="#HOP-gamma">(15↑)</a> and <span class="formula"><i>η</i></span> <a class="Reference" href="#HOP-eta">(17↑)</a> can be used to solve inference 1 for HOP-HMM. Here we aim to maximize here a posterior probability in a specific position:</span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="formula">
@@ -1592,7 +1669,7 @@ Algorithm 5 <span lang="en">Baum-Welch for HOP-HMM</span>
 </span>
 </div>
 <div class="Standard">
-<span lang="en">In regular HMM, we can approximate this by taking the state with the maximal posterior probability from <span class="formula"><i>γ</i></span> <a class="Reference" href="#gamma">(9↑)</a> built by a <span class="formula"><i>θ</i></span> that we obtained by the Baum-Welch algorithm. In HOP-HMM, <span class="formula"><i>γ</i></span> <a class="Reference" href="#HOP-gamma">(15↑)</a> is not sufficient since it only holds the probability of being in background state <span class="formula"><i>P</i><sub><i>θ</i></sub><span class="symbol">(</span><i>y</i><sub><i>t</i></sub> = (<i>j</i>, 0)|<i>x</i><sub>1:<i>L</i></sub><span class="symbol">)</span></span>. To calculate the posterior probability for TF states, <span class="formula"><i>P</i><sub><i>θ</i></sub><span class="symbol">(</span><i>y</i><sub><i>t</i></sub> = (<i>j</i>, <i>l</i>)|<i>x</i><sub>1:<i>L</i></sub><span class="symbol">)</span></span> where <span class="formula"><i>l</i> &gt; 0</span> we sum all options of a TF state <span class="formula">(<i>j</i>, <i>l</i>)</span> that cover position <span class="formula"><i>t</i></span> as described in <a class="Reference" href="#PWM Posterior">(16↓)</a>. </span>
+<span lang="en">In regular HMM, we can approximate this by taking the state with the maximal posterior probability from <span class="formula"><i>γ</i></span> <a class="Reference" href="#gamma">(9↑)</a> built by a <span class="formula"><i>θ</i></span> that we obtained by the Baum-Welch algorithm. In HOP-HMM, <span class="formula"><i>γ</i></span> <a class="Reference" href="#HOP-gamma">(15↑)</a> is not sufficient since it only holds the probability of being in background state <span class="formula"><i>P</i><sub><i>θ</i></sub><span class="symbol">(</span><i>y</i><sub><i>t</i></sub> = (<i>j</i>, 0)|<i>x</i><sub>1:<i>L</i></sub><span class="symbol">)</span></span>. In order to calculate the posterior probability for TF states, <span class="formula"><i>P</i><sub><i>θ</i></sub><span class="symbol">(</span><i>y</i><sub><i>t</i></sub> = (<i>j</i>, <i>l</i>)|<i>x</i><sub>1:<i>L</i></sub><span class="symbol">)</span></span> where <span class="formula"><i>l</i> &gt; 0</span> we sum all options of a TF state <span class="formula">(<i>j</i>, <i>l</i>)</span> that covers position <span class="formula"><i>t</i></span> as described in <a class="Reference" href="#PWM Posterior">(16↓)</a>. </span>
 </div>
 <div class="Standard">
 <span lang="en"><div class="formula">
@@ -1641,13 +1718,13 @@ Figure 16 <span lang="en"><span class="formula"><i>P</i><span class="symbol">(
 </span>
 </div>
 <div class="Standard">
-<span lang="en">The main difference with inference 1 is the consideration of the dependency between adjacent states. In inference 1, for example, two adjacent positions may be individually inferred states between which the transition probability equals 0. Even though each hidden state maximizes the likelihood at its position, as a sequence the result might not be the same states when accounting for the transitions. </span>
+<span lang="en">The main difference with inference 1 is the consideration of the dependency between adjacent states. In inference 1, for example, two adjacent positions may be individually inferred states between which the transition probability equals 0. In such a case, even though each state maximizes the likelihood at its own position, the likelihood of resulting sequence would be 0 since it contains an impossible transition. As a consequence, the requirement for the most likely hidden state sequence of inference 2, while accounting for the transitions inside it, is not as trivial as choosing the sequence of most likely states at each position from inference 1. </span>
 </div>
-<h2 class="Subsection">
-<a class="toc" name="toc-Subsection-2.5">2.5</a> <span lang="en">Viterbi Algorithm for HOP-HMM</span>
-</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-1.7.5">1.7.5</a> <span lang="en">Viterbi Algorithm Adaptation</span>
+</h3>
 <div class="Standard">
-<span lang="en">In HMM, deriving the maximal likelihood hidden sequence of <a class="Reference" href="#Viterbi">(19↑)</a> is done by the Viterbi algorithm, named after Andrew Viterbi who proposed it in <span class="bibcites">[<a class="bibliocite" name="cite-66" href="#biblio-66">66</a>]</span>. Viterbi algorithm resembles the Forward algorithm, with two main differences:</span>
+<span lang="en">In HMM, deriving the maximal likelihood hidden sequence of <a class="Reference" href="#Viterbi">(19↑)</a> is done by the Viterbi algorithm, named after Andrew Viterbi who proposed it in <span class="bibcites">[<a class="bibliocite" name="cite-66" href="#biblio-66">66</a>]</span>. The Viterbi algorithm resembles the forward algorithm, with two main differences:</span>
 </div>
 <ol>
 <li>
@@ -1779,14 +1856,17 @@ Algorithm 7 <span lang="en">Viterbi Algorithm for HOP-HMM</span>
 </span>
 </div>
 <h1 class="Section">
-<a class="toc" name="toc-Section-3">3</a> <span lang="en">Results</span>
+<a class="toc" name="toc-Section-2">2</a> <span lang="en">Results</span>
 </h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-2.1">2.1</a> <span lang="en">Synthetic Data</span>
+</h2>
 <div class="Standard">
 <span lang="en">In order to evaluate HOP-HMM, we first measured its capabilities on synthetic DNA data which were created in a controlled way. We could then experiment with HOP-HMM on real human DNA sequences. The evaluation process on synthetic data was performed through the following steps (see figure <a class="Reference" href="#Workflow">17↓</a>):</span>
 </div>
 <ol>
 <li>
-<span lang="en">We generated parameters for a HOP-HMM <span class="formula"><i>θ</i></span>, which were treated as the true <span class="formula"><i>θ</i></span>. <span class="formula"><i>θ</i></span> was sampled in the following way:</span><ol>
+<span lang="en">We generated parameters for a HOP-HMM <span class="formula"><i>θ</i></span>, which were treated as the true <span class="formula"><i>θ</i></span>. <span class="formula"><i>θ</i></span> was sampled in the following way:</span><ul>
 <li>
 <span lang="en">Each <span class="formula"><i>T</i></span> cell was sampled from a uniform distribution<div class="formula">
 <a class="eqnumber" name="minTmaxT">(20) </a><i>T</i><sub><i>i</i>, <i>j</i></sub> ~ <i>U</i><span class="symbol">(</span><i>minT</i><sub><i>i</i>, <i>j</i></sub>, <i>maxT</i><sub><i>i</i>, <i>j</i></sub><span class="symbol">)</span>
@@ -1857,7 +1937,7 @@ Algorithm 7 <span lang="en">Viterbi Algorithm for HOP-HMM</span>
 
 </li>
 <li>
-<span lang="en"><span class="formula"><i>E</i></span> was sampled from a uniform distribution <span class="formula"><i>E</i><sub><i>j</i>, <i>b</i><sub>1</sub>, ..., <i>b</i><sub><i>o</i></sub></sub> ~ <i>U</i><span class="symbol">(</span>0, 1<span class="symbol">)</span></span> and divided by the sum of its last index to become a distribution array, similar to (c):<div class="formula">
+<span lang="en"><span class="formula"><i>E</i></span> was sampled from a uniform distribution <span class="formula"><i>E</i><sub><i>j</i>, <i>b</i><sub>1</sub>, ..., <i>b</i><sub><i>o</i></sub></sub> ~ <i>U</i><span class="symbol">(</span>0, 1<span class="symbol">)</span></span> and divided by the sum of its last index to become a distribution array, similar to the previous step:<div class="formula">
 <i>E</i><sub><i>j</i>, <i>b</i><sub>1</sub>, ..., <i>b</i><sub><i>o</i></sub></sub> = <span class="fraction"><span class="ignored">(</span><span class="numerator"><i>E</i><sub><i>j</i>, <i>b</i><sub>1</sub>, ..., <i>b</i><sub><i>o</i></sub></sub></span><span class="ignored">)/(</span><span class="denominator"><span class="limits"><span class="limit">∑</span></span><sub><i>b</i>’ = [4]</sub><i>E</i><sub><i>j</i>, <i>b</i><sub>1</sub>, ..., <i>b</i><sub><i>o</i> − 1</sub>, <i>b</i>’</sub></span><span class="ignored">)</span></span>
 </div>
 </span>
@@ -1869,14 +1949,14 @@ Algorithm 7 <span lang="en">Viterbi Algorithm for HOP-HMM</span>
 </span>
 </li>
 
-</ol>
+</ul>
 
 </li>
 <li>
-<span lang="en">2. Sequences were generated using the HOP-HMMs with the true <span class="formula"><i>θ</i></span>. Both the observed and the hidden sequences were used, denoted <span class="formula"><i>X</i></span> and <span class="formula"><i>Y</i></span>. We split the <span class="formula"><i>X</i></span> and <span class="formula"><i>Y</i></span> sequences into train and test sections for cross validation. </span>
+<span lang="en">Sequences were generated using the HOP-HMMs with the true <span class="formula"><i>θ</i></span>. Both the observed and the hidden sequences were used, denoted <span class="formula"><i>X</i></span> and <span class="formula"><i>Y</i></span>. We split the <span class="formula"><i>X</i></span> and <span class="formula"><i>Y</i></span> sequences into train and test sections for cross validation. </span>
 </li>
 <li>
-<span lang="en">3. From the DNA sequences of <span class="formula"><i>X</i><sub><i>train</i></sub></span> , we trained a <span class="formula"><i>θ̂</i></span> with the HOP Baum-Welch algorithm.</span>
+<span lang="en">From the DNA sequences of <span class="formula"><i>X</i><sub><i>train</i></sub></span> , we trained a <span class="formula"><i>θ̂</i></span> with the HOP Baum-Welch algorithm.</span>
 </li>
 <li>
 <span lang="en">Using the trained parameters <span class="formula"><i>θ̂</i></span>, we estimated <span class="formula"><i>Ŷ</i><sub><i>test</i></sub></span> from <span class="formula"><i>X</i><sub><i>test</i></sub></span> and <span class="formula"><i>Ŷ</i><sub><i>train</i></sub></span> from <span class="formula"><i>X</i><sub><i>train</i></sub></span> by the Viterbi algorithm adaptation to HOP-HMM. We also calculated the posterior probability of <span class="formula"><i>P</i><sub><i>θ̂</i></sub><span class="symbol">(</span><i>y</i><sub><i>t</i></sub>|<i>x</i><sub>1:<i>L</i></sub><span class="symbol">)</span></span> from <span class="formula"><i>X</i><sub><i>test</i></sub></span> and <span class="formula"><i>X</i><sub><i>train</i></sub></span>. These results were then compared to the real <span class="formula"><i>Y</i><sub><i>test</i></sub></span> and <span class="formula"><i>Y</i><sub><i>train</i></sub></span> to check for accuracy. </span>
@@ -1900,15 +1980,14 @@ Figure 17 <span lang="en">Workflow of the evaluation process. A <span class="f
 </span>
 </div>
 <div class="Standard">
-<span lang="en">The Baum-Welch algorithm ensures the increase of the likelihood for each step. However it does not ensure convergence to the optimal <span class="formula"><i>θ</i><sup>*</sup></span> (<span class="bibcites">[<a class="bibliocite" name="cite-52" href="#biblio-52">52</a>]</span>) since there is no known analytical way to reach it. As a consequence, Baum-Welch algorithm converges into a local maximum <span class="formula"><i>θ̂</i></span> which could be a relatively low likelihood estimation, depending on the initialization point of the first <span class="formula"><i>θ</i></span>. During the initial evaluation of the inference EM algorithm, many runs converged to local maxima which tended to overshoot the inter-states transition probability, resulting in a tendency to irregular Viterbi paths with frequent state changes. This resembles the known issue of HMM parameter overfitting on small training data. </span>
+<span lang="en">The Baum-Welch algorithm ensures the increase of the likelihood for each step. However it does not ensure convergence to the optimal <span class="formula"><i>θ</i><sup>*</sup></span> (<span class="bibcites">[<a class="bibliocite" name="cite-52" href="#biblio-52">52</a>]</span>) since there is no known analytical way to reach it. Consequently, the Baum-Welch algorithm converges into a local maximum <span class="formula"><i>θ̂</i></span> that could be a relatively low likelihood estimation, depending on the initialization point of the first <span class="formula"><i>θ</i></span>. During the initial evaluation of the inference EM algorithm, many runs converged to local maxima which tended to overshoot the inter-states transition probability, resulting in a tendency to irregular Viterbi paths with frequent state changes. This resembles the known issue of HMM parameter overfitting on small training data. </span>
 </div>
 <div class="Standard">
 <span lang="en">We therefore addressed this issue in two ways that had a significant positive impact on the convergence rate and solution quality:</span>
 </div>
-<div class="Standard">
-<span lang="en">1. We used regularization for faster and better <span class="formula"><i>θ̂</i></span> convergence (see figure <a class="Reference" href="#Regularization">19↓</a>). Following each M-step update we drew the background states transition probabilities <span class="formula"><i>T</i></span> to remain between <span class="formula"><i>maxT</i></span> and <span class="formula"><i>minT</i></span> matrices from <a class="Reference" href="#minTmaxT">(20↑)</a>:</span>
-</div>
-<ul>
+<ol>
+<li>
+<span lang="en">We used regularization for faster and better <span class="formula"><i>θ̂</i></span> convergence (see figure <a class="Reference" href="#Regularization">19↓</a>). Following each M-step update, we drew the background states transition probabilities <span class="formula"><i>T</i></span> to remain between <span class="formula"><i>maxT</i></span> and <span class="formula"><i>minT</i></span> matrices from <a class="Reference" href="#minTmaxT">(20↑)</a>:</span><ul>
 <li>
 <span lang="en">If <span class="formula"><i>T</i><sub><i>i</i>, <i>j</i></sub> &lt; <i>minT</i><sub><i>i</i>, <i>j</i></sub></span> then we set <span class="formula"><i>T</i><sub><i>i</i>, <i>j</i></sub> = <i>minT</i><sub><i>i</i>, <i>j</i></sub></span></span>
 </li>
@@ -1920,9 +1999,13 @@ Figure 17 <span lang="en">Workflow of the evaluation process. A <span class="f
 </li>
 
 </ul>
-<div class="Standard">
-<span lang="en">2. Since Baum-Welch seeks local maxima, running it multiple times with different initializations would cause convergence for different <span class="formula"><i>θ̂</i></span> results. As could be expected, we observed throughout multiple initializations that the higher the log likelihood of final <span class="formula"><i>θ̂</i></span> the lower its root mean square error (RMSE) compared to the true <span class="formula"><i>θ</i></span> (see figure <a class="Reference" href="#LikelihoodVsErr">18↓</a>). This is important since on observed real sequences only the estimated <span class="formula"><i>θ̂</i></span> likelihood is known, while the true <span class="formula"><i>θ</i></span> is unknown. This correlation implies that in order to obtain an estimated <span class="formula"><i>θ̂</i></span> as close as possible to the true <span class="formula"><i>θ</i></span>, one should redo several EM runs and choose the <span class="formula"><i>θ̂</i></span> with the highest likelihood. </span>
-</div>
+
+</li>
+<li>
+<span lang="en">Since Baum-Welch seeks local maxima, running it multiple times with different initializations would cause convergence for different <span class="formula"><i>θ̂</i></span> results. As could be expected, we observed throughout multiple initializations that the higher the log likelihood of final <span class="formula"><i>θ̂</i></span> the lower its root mean square error (RMSE) compared to the true <span class="formula"><i>θ</i></span> (see figure <a class="Reference" href="#LikelihoodVsErr">18↓</a>). This is important since on observed real sequences only the estimated <span class="formula"><i>θ̂</i></span> likelihood is known, while the true <span class="formula"><i>θ</i></span> is unknown. This correlation implies that in order to obtain an estimated <span class="formula"><i>θ̂</i></span> as close as possible to the true <span class="formula"><i>θ</i></span>, one should redo several EM runs and choose the <span class="formula"><i>θ̂</i></span> with the highest likelihood. </span>
+</li>
+
+</ol>
 <div class="Standard">
 <span lang="en">The experiment was done on 500 synthetic sequences (85% train, 15% test), 1500 bp-long. The trained model had 6 hidden background states with an emission order of 3, and each background state had 25 TF states. The background state precision was 98.5% and the recall of 97.6%. </span>
 </div>
@@ -2003,7 +2086,7 @@ Figure 20 <span lang="en">Posterior probability of sequences, estimated by a t
 <div class="center">
 <span lang="en"><img class="embedded" src="Figures/confusion_matrix.jpg" alt="figure Figures/confusion_matrix.jpg">
 <div class="caption">
-Figure 21 <span lang="en">Confusion matrix of true and estimated states by the Viterbi algorithm of HOP-HMM synthetic sequences. Rows are normalized so their sum is equal to 1. The majority of predictions are in the background states <span class="formula">(1, 0)</span>, <span class="formula">(2, 0)</span>, <span class="formula">(3, 0)</span>, <span class="formula">(4, 0)</span> and <span class="formula">(5, 0)</span>, where TF states are sometimes misclassified as their background state state.</span>
+Figure 21 <span lang="en">Confusion matrix of true and estimated states by the Viterbi algorithm of HOP-HMM synthetic sequences. Rows are normalized so their sum is equal to 1. The majority of predicted states are background states <span class="formula">(1, 0)</span>, <span class="formula">(2, 0)</span>, <span class="formula">(3, 0)</span>, <span class="formula">(4, 0)</span> and <span class="formula">(5, 0)</span>, where TF states are sometimes misclassified as their background state state.</span>
 </div>
 </span>
 </div>
@@ -2013,32 +2096,35 @@ Figure 21 <span lang="en">Confusion matrix of true and estimated states by the
 </div>
 </span>
 </div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-2.2">2.2</a> <span lang="en">Human DNA Experiment</span>
+</h2>
 <div class="Standard">
 <span lang="en">For the testing of HOP-HMM on human genetic data, we sought to assess if HOP-HMM could distinguish and detect enhancers active in two human tissues.</span>
 </div>
 <div class="Standard">
-<span lang="en">We created a dataset of enhancer sequences based on epigenetic data collected from 57 tissues by the Roadmap project. To choose the location of the enhancer elements, we manipulated the Roadmap project Bed files with BEDTools (<span class="bibcites">[<a class="bibliocite" name="cite-50" href="#biblio-50">50</a>]</span>). We chose the intersection of DNase-I, H3K27ac and H3K4me1 peaks, while avoiding peaks of H3K27me3 and H3K4me3, and sequences within 5000 bp from known genes. The sequences chosen were 5000 bp-long sequences from the hg19 assembly, centered around their DNase-I peak to ensure the flanks of the enhancer. Among these enhancers, we chose only sequences of tissue-specific enhancers in one of two types of tissues, while choosing the two tissues out of the 57 tissues. After some trial and error, we chose the somewhat arbitrary cutoff of the top 40% strongest DNase-seq peaks, which yielded enough sequences (around 500 sequences per tissue sample on average) with distinguishable distributions between the tissues. We added sequences with no known role from random locations in the genome, distant from genes or enhancers background sequences. </span>
+<span lang="en">We created a dataset of enhancer sequences based on epigenetic data collected from 57 tissues by the Roadmap project. To choose the location of the enhancer elements, we manipulated the Roadmap project BED files with BEDTools (<span class="bibcites">[<a class="bibliocite" name="cite-50" href="#biblio-50">50</a>]</span>). We chose the intersection of DNase-I, H3K27ac and H3K4me1 peaks, while avoiding peaks of H3K27me3 and H3K4me3, and sequences within 5000 bp from known genes. The sequences chosen were 5000 bp-long sequences from the hg19 assembly, centered around their DNase-I peak to ensure the flanks of the enhancer. Among these enhancers, we chose only sequences of tissue-specific enhancers in one of two types of tissues, while choosing the two tissues out of the 57 tissues. After some trial and error, we chose the somewhat arbitrary cutoff of the top 40% strongest DNase-seq peaks, which yielded enough sequences (around 500 sequences per tissue sample on average) with distinguishable distributions between the tissues. We added sequences with no known role from random locations in the genome, distant from genes or enhancers background sequences. </span>
 </div>
 <div class="Standard">
 <span lang="en">A HOP-HMM was trained by the Baum-Welch algorithm on the collected sequences. The trained model was then used to produce a Viterbi estimated hidden states sequence and posterior probability, which could be compared to the epigenetic tracks. </span>
 </div>
 <div class="Standard">
-<span lang="en">For the set of PWMs used by the TF states of the HOP-HMM, we used a JASPAR dataset of 519 vertebrates PWMs, out of which we selected 50 PWMs for a practical run-time. The selected PWMs were chosen by 3 methods, each method being responsible for one third of these 50 PWMs: </span>
+<span lang="en">For the set of PWMs used by the TF states of the HOP-HMM, we used a JASPAR dataset of 519 vertebrates PWMs, out of which we selected 50 PWMs for a practical run-time. The selected PWMs were chosen by three methods, each method being responsible for one third of these 50 PWMs: </span>
 </div>
 <ul>
 <li>
 <span lang="en">PWMs of TFs relatively expressed for one tissue compared to the other, according to the Roadmap RNA-seq data. This method does not depend on the sequences themselves, but on the epigenetic properties of the tissues.</span>
 </li>
 <li>
-<span lang="en">PWMs which are abundant in the sequences, i.e. PWMs with the highest mean likelihood to attach to sequences. The average likelihood of PWM <span class="formula"><i>W</i></span> to bind to a sequence <span class="formula"><i>x</i></span> was simplified as the mean of the 3 highest binding likelihoods in the sequence, as described in figure <a class="Reference" href="#PWM">3↑</a>. Note that in order to compare between PWM likelihoods we used here the PWM form as in <a class="Reference" href="#PPM">(1↑)</a>, and not the PPM form. </span>
+<span lang="en">PWMs which are abundant in the sequences, i.e. PWMs with the highest mean likelihood of binding to sequences. The average likelihood of PWM <span class="formula"><i>W</i></span> to bind to a sequence <span class="formula"><i>x</i></span> was simplified as the mean of the three highest binding likelihoods in the sequence, as described in figure <a class="Reference" href="#PWM">3↑</a>. Note that in order to compare between PWM likelihoods we used here the PWM form as in <a class="Reference" href="#PPM">(1↑)</a>, and not the PPM form. </span>
 </li>
 <li>
-<span lang="en">PWMs that had strong presence in sequences from one tissue compared to the other. Specifically, the PWMs with sequence binding likelihoods (as defined in the previous method) that can best distinguish between the sequences from one tissue and the sequences of the other tissues in terms of AUC-ROC. </span>
+<span lang="en">PWMs that had stronger presence in sequences from one tissue when compared to the other. Specifically, the PWMs with sequence binding likelihoods (as defined in the previous method) that can best distinguish between the sequences from one tissue and the sequences of the other tissues in terms of AUC-ROC. </span>
 </li>
 
 </ul>
 <div class="Standard">
-<span lang="en">In our experiment, posterior probability of some sequences had a good resemblance to the DNase-seq track, causing a good overlap between the Viterbi-path and the ChromHMM classifications (see figure <a class="Reference" href="#fig:RealSequences">22↓</a>), though such similarity did not always occur.</span>
+<span lang="en">In our experiment, the posterior probability of some sequences had a good resemblance to the DNase-seq track, causing a good overlap between the Viterbi-path and the ChromHMM classifications (see figure <a class="Reference" href="#fig:RealSequences">22↓</a>), though such similarity did not always occur.</span>
 </div>
 <div class="Standard">
 <span lang="en"><p><br>
@@ -2070,7 +2156,7 @@ Figure 21 <span lang="en">Confusion matrix of true and estimated states by the
 <div class="center">
 <span lang="en"><img class="embedded" src="Figures/realSeqLegend.jpg" alt="figure Figures/realSeqLegend.jpg">
 <div class="caption">
-Figure 22 <span lang="en">Examples of HOP-HMM classification of 5000pb long tissue specific enhancer sequences from the human genome. Each of the 3 graphs is the output of a different HOP-HMM with three background states (two enhancer states and one non-enhancer state) and 50 TF states, and each was trained on enhancers from the two chosen tissues. H3K27ac and DNase-I measurements are in <span class="formula"> − <i>log</i><sub>10</sub>(<i>p</i> − <i>value</i>)</span> units.</span>
+Figure 22 <span lang="en">Examples of HOP-HMM classification of 5000pb long tissue specific enhancer sequences from the human genome. Each of the three graphs is the output of a different HOP-HMM with three background states (two enhancer states and one non-enhancer state) and 50 TF states, and each was trained on enhancers from the two chosen tissues. H3K27ac and DNase-I measurements are in <span class="formula"> − <i>log</i><sub>10</sub>(<i>p</i> − <i>value</i>)</span> units.</span>
 </div>
 </span>
 </div>
@@ -2083,10 +2169,10 @@ Figure 22 <span lang="en">Examples of HOP-HMM classification of 5000pb long ti
 </span>
 </div>
 <h1 class="Section">
-<a class="toc" name="toc-Section-4">4</a> <span lang="en">Discussion and Conclusions</span>
+<a class="toc" name="toc-Section-3">3</a> <span lang="en">Discussion and Conclusions</span>
 </h1>
 <div class="Standard">
-<span lang="en">In this work we aimed to develop a generalized HMM, HOP-HMM, tailored for the enhancer structure. We developed the mathematical adjustments to the different parts of the EM algorithm and provided reasoning for the correctness of inferring the altered model from data. We also implemented a model and an algorithm in Matlab code for the evaluation on real or synthetic data, as described in the results. During the algorithm implementation, we overcame a few difficulties originating from the scale of the data, such as caching the costly response of the PWMs to the sequences during the Forward Backward algorithms, and splitting sequences into batches in order to hold and manipulate the large <span class="formula"><i>η</i></span> <a class="Reference" href="#HOP-eta">(17↑)</a> matrix in the memory. The implementation also included a code for generating DNA sequences from a randomly selected HOP-HMM to which a different model can be fitted and compared. Naturally, in the synthetic data experiment, the larger the generated dataset that is used to fit the model the better the performance of the fitting. Overall, the generated DNA sequences experiment results were positive and provided evidence for the ability of the algorithm to train successfully on DNA sequences created under the HOP-HMM assumptions.</span>
+<span lang="en">In this work we aimed to develop a generalized HMM, HOP-HMM, tailored for the enhancer structure. We developed the mathematical adjustments to the different parts of the EM algorithm and provided reasoning for the correctness of inferring the altered model from the data. We also implemented a model and an algorithm in Matlab code for the evaluation on real or synthetic data, as described in the results. During the algorithm implementation, we overcame a few difficulties originating from the scale of the data, such as caching the costly response of the PWMs to the sequences during the forward-backward algorithms, and splitting sequences into batches in order to hold and manipulate the large <span class="formula"><i>η</i></span> <a class="Reference" href="#HOP-eta">(17↑)</a> matrix in the memory. The implementation also included a code for generating DNA sequences from a randomly selected HOP-HMM to which a different model can be fitted and compared. Naturally, in the synthetic data experiment, the larger the generated dataset that is used to fit the model the better the performance of the fitting. Overall, the generated DNA sequences experiment results were positive and provided evidence for the ability of the algorithm to train successfully on DNA sequences created under the HOP-HMM assumptions.</span>
 </div>
 <div class="Standard">
 <span lang="en">In order to apply the EM algorithm to real data, we designed an experiment to assess the ability of the model to detect real human enhancers whose locations were deducted from epigenetic data of the Roadmap project. This experiment was based on a dataset we created and which contained tissue-specific enhancers from two tissues and non-regulatory “background” sequences. Though some of these sequences were correctly classified, no tested pair of tissues had an HOP-HMM classification with consistent similarity to its epigenetic data. This might be caused by one of two reasons: the EM algorithm did not converge toward good enough parameters, or no such parameters exist.</span>
@@ -2098,7 +2184,7 @@ Figure 22 <span lang="en">Examples of HOP-HMM classification of 5000pb long ti
 <span lang="en">As for the latter possibility, this could mean that the spanned solution space of the HOP-HMM assumption do not match our human enhancers dataset. This could stem from several reasons: wrong PWMs selection as hyperparameters, too small or noisy dataset building from the Roadmap data, and even a more complex enhancer structure than assumed by the HOP-HMM hypothesis. </span>
 </div>
 <div class="Standard">
-<span lang="en">In further research, the use of updated data with cleaner experiments and/or more tissue diversity would likely provide better results. Improvements to HOP-HMM which should be tried in the future are the introduction of learning to the PWMs preceding or during EM iterations, or the entire replacement of the PWMs emission by a different TFBS modeling method. </span>
+<span lang="en">In further research, the use of updated data with cleaner experiments and/or more tissue diversity would be likely to provide better results. Improvements to HOP-HMM which should be tried in the future are the introduction of learning to the PWMs preceding or during EM iterations, or the entire replacement of the PWMs emissions by a different TFBS modeling method. </span>
 </div>
 <div class="Standard">
 <span lang="en"><p><br>
@@ -2106,7 +2192,7 @@ Figure 22 <span lang="en">Examples of HOP-HMM classification of 5000pb long ti
 </span>
 </div>
 <h1 class="Section">
-<a class="toc" name="toc-Section-5">5</a> <span lang="en">Appendix: Source Code</span>
+<a class="toc" name="toc-Section-4">4</a> <span lang="en">Appendix: Source Code</span>
 </h1>
 <div class="Standard">
 <span lang="en">The code for this research was written in Matlab, and can be found in <a class="FlexURL" href="https://github.com/David-Taub/HOP-HMM">https://github.com/David-Taub/HOP-HMM</a>.</span>
@@ -2269,7 +2355,7 @@ Figure 22 <span lang="en">Examples of HOP-HMM classification of 5000pb long ti
 </li>
 <li>
 <b><span lang="en">HOP-HMM/src/mainRealData.m</span></b><div class="Standard">
-<span lang="en">Entry point of the code, reads data from the human genome, trains HOP-HMMs model and compares posterior probability to real epigenetic data. Execution of mainRealData will produce figures similar to figure <a class="Reference" href="#RealData">↓</a></span>
+<span lang="en">Entry point of the code, reads data from the human genome, trains HOP-HMMs model and compares posterior probability to real epigenetic data. Execution of mainRealData will produce figures similar to figure <a class="Reference" href="#fig:RealSequences">22↑</a></span>
 </div>
 <blockquote class="Quote">
 <span lang="en"><span class="code"><span lang="en">mainRealData();</span></span></span>
