@@ -10,6 +10,9 @@
 \usepackage{babel}
 \usepackage{float}
 \usepackage{fancyhdr}
+\usepackage{wrapfig}
+\usepackage{caption}
+\captionsetup{justification=justified,singlelinecheck=false}
 \end_preamble
 \use_default_options false
 \begin_modules
@@ -146,11 +149,11 @@ Classification of Regulatory Sequences
 \begin_inset Newline newline
 \end_inset
 
-in the Human Genome Using Higher-Order 
+in the Human Genome Using High-Order 
 \begin_inset Newline newline
 \end_inset
 
-Generalized Hidden Markov Model 
+Generalized Hidden Markov Models 
 \begin_inset Newline newline
 \end_inset
 
@@ -164,20 +167,12 @@ Generalized Hidden Markov Model
 
 
 \lang hebrew
-סיווג קטעי בקרה מהגנום האנושי על ידי מודל מרקוב
-\lang english
-
+סיווג קטעי בקרה מהגנום האנושי על ידי
 \begin_inset Newline newline
 \end_inset
 
-
-\lang hebrew
-חבוי מוכלל מסדר גבוה
+מודל מרקוב חבוי מוכלל מסדר גבוה
 \lang english
-
-\begin_inset space ~
-\end_inset
-
 
 \begin_inset Newline newline
 \end_inset
@@ -366,6 +361,72 @@ The Hebrew University of Jerusalem, Israel
 \end_layout
 
 \begin_layout Section*
+
+\lang english
+Acknowledgments
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+My deepest gratitude goes my supervisor, professor Tommy Kaplan, who sparked
+ my curiosity in one of the open lectures he gave to the students of computer
+ science faculty.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+####### EDIT
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+In our many talks since then, Tommy's insights grew my interest in the fields
+ of machine learning and computational biology.
+ He taught me that patient and methodological work is an irreplaceable property
+ of a good researcher,
+\emph on
+ 
+\begin_inset Quotes eld
+\end_inset
+
+As a man sows, so shall he reap
+\begin_inset Quotes erd
+\end_inset
+
+.
+
+\emph default
+ Thanks for your guidance, advice and ideas during the research, your support
+ and understanding gave me confidence through hard parts of this road.
+ Your unique character conveys a unique and pleasant atmosphere in your
+ research group.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+#######
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+I  also wish to thank my mother, Dr.
+ Jenny Taub and my sister Matty Ariel for their careful review of this work.
+ I am in debt for the many helpful suggestions they provided, which greatly
+ improved the language and content of this thesis.
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
 תקציר
 \end_layout
 
@@ -468,14 +529,14 @@ in vivo
  With that idea in mind, this work offers a computational approach for the
  detection of enhancers based only on their sequences, and in an unsupervised
  manner.
- We created a higher-order positional weight matrix based hidden Markov
+ We created a higher-order positional weight matrix-based hidden Markov
  model (HOP-HMM), with two kinds of states: one which emits transcription
  factor binding sites by using a positional weight matrix model, and one
- which emits single nucleotides with higher-order dependency on previously
+ which emits single nucleotides with high-order dependency on previously
  emitted nucleotides.
  Compared to a regular hidden Markov model, this model learns a more complex
  underlying structure of DNA sequences, containing both binding site motifs
- and higher-order distribution of nucleotides in between them.
+ and high-order distribution of nucleotides in between them.
  We will first review the biological background of enhancers, specifically
  in humans.
  Then we will review in depth the background of Markov and hidden Markov
@@ -530,6 +591,12 @@ LatexCommand tableofcontents
 Introduction
 \end_layout
 
+\begin_layout Subsection
+
+\lang english
+Background
+\end_layout
+
 \begin_layout Standard
 
 \lang english
@@ -569,7 +636,7 @@ Proteins are macromolecules, which play various roles and functions within
 \begin_layout Standard
 
 \lang english
-Gene sequences are comprised of fragmented coding regions (exons) and noncoding
+Gene sequences are composed of fragmented coding regions (exons) and noncoding
  regions (introns).
  Following its formation, the RNA molecule undergoes splicing, where the
  introns are removed from the strand, and only the exons mature into mRNA
@@ -633,10 +700,10 @@ reference "Transcription"
 \end_inset
 
 ).
- The gene expressed by this activation process is named the enhancer’s target
- gene, and it can be located up to one megabase pair (Mb) upstream or downstream
- from its activating enhancer since enhancers generally function independently
- of orientation (
+ The gene expressed by this activation process, also known as the target
+ gene of the enhancer, can be located up to one megabase pair (Mb) upstream
+ or downstream from its activating enhancer since enhancers generally function
+ independently of orientation (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-43"
@@ -660,19 +727,43 @@ key "key-20"
 
 \lang english
 \begin_inset Float figure
-placement h
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align left
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/Enhancer_gene_transcription.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -688,23 +779,31 @@ name "Transcription"
 
 \end_inset
 
-
+The stages of the activation process of an enhancer.
+ 
 \series bold
 A)
 \series default
- An enhancer and its distal target gene.
+ A distal enhancer and upstream promoter and gene, positioned on a DNA strand.
+ The sequences of both the enhancer and the promoter contain multiple TFBSs.
  
 \series bold
 B)
 \series default
- The DNA folds and the attaches to transcription factors, which then draw
- other co-factor proteins that together form the transcription complex.
+ The DNA folds and recruits TFs from its surrounding environment.
+
+\series bold
+ C) 
+\series default
+Other co-factor proteins are recruited and together form the transcription
+ initiation complex, binding the two parts of the folded DNA strand to each
+ other.
  
 \series bold
-C)
+D)
 \series default
- The RNA Polymerase II is recruited and while moving along the gene, it
- generates a new RNA molecule which is transcribed off the gene.
+ The RNA Polymerase II is bound to the formed complex and starts moving
+ along the gene, while generating a new RNA molecule.
  
 \end_layout
 
@@ -720,7 +819,6 @@ C)
 
 \begin_layout Standard
 \noindent
-\align left
 
 \lang english
 An enhancer is described as being in an active status when it is causing
@@ -728,20 +826,25 @@ An enhancer is described as being in an active status when it is causing
  types of cells.
  The activity of the enhancer sequence plays a critical role in the resulting
  type of cells.
- In the VISTA Project (
+ In a large 
+\emph on
+in vivo
+\emph default
+ enhancer assay by 
 \begin_inset CommandInset citation
-LatexCommand citealp
+LatexCommand citet
 key "key-60"
 
 \end_inset
 
-), fertilized mouse eggs were injected with enhancer sequences adjacent
- to a LacZ reporter gene, encoding an enzyme protein with a blue color.
- Since they were synthesized, the injected DNA sequences containing the
- enhancer and reporter genes bore no epigenetic information, and they were
- integrated into the mouse genome in an arbitrary position.
- The enhancers in the injected DNA sequences originated from the human genome,
- and each enhancer was injected into a different mouse egg.
+, fertilized mouse eggs were injected with enhancer sequences adjacent to
+ a minimal promoter and a LacZ reporter gene, encoding an enzyme protein
+ with a blue color.
+ Since the injected DNA were synthesized, the enhancer, the promoter and
+ the reporter gene bore no epigenetic information, and they were integrated
+ into the mouse genome in an arbitrary position.
+ The enhancer sequences in the injected DNA originated from the human and
+ mouse genomes, and each enhancer was injected into a different mouse egg.
  When the transgenic embryos were photographed after 11.5 days some had a
  distinctive anatomical pattern, such as blue limbs or blue spine, depending
  on the injected DNA sequence.
@@ -761,13 +864,32 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/f735.jpg
-	scale 15
+	scale 13
 
 \end_inset
 
@@ -775,6 +897,11 @@ status open
 \begin_inset Graphics
 	filename Figures/experiment_process.png
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -790,13 +917,36 @@ name "Mouse"
 
 \end_inset
 
-Transgenic mouse embryo on the 11.5 day.
- A fertilized egg was injected with a synthetic enhancer sequence known
- to be related to the dorsal root ganglia of spinal neurons.
- The enhancer became activated and caused the expression of the blue color
- marker gene that was coupled to it.
- Both images are taken from Vista Enhancer Browser, on the left is experiment
- hs-51 embryo 2.
+Transgenic mouse embryo on the 11.5 day with distinct anatomical pattern
+ of enhancer activation in specific tissue types.
+ In a large enhancer assay, fertilized eggs were injected 
+\emph on
+in vivo 
+\emph default
+with synthetic DNA sequences which contained an enhancer, a minimal promoter
+ and a LacZ reporter gene.
+ On the left, a human enhancer known to be related to neurons in the dorsal
+ root of the spinal nerve became activated in these tissues and caused to
+ the expression of the reporter gene that was coupled to it.
+ Experiment hs51 embryo 2, taken from the VISTA Enhancer Browser [
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://enhancer.lbl.gov/
+\end_layout
+
+\end_inset
+
+] (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-60"
+
+\end_inset
+
+).
 \end_layout
 
 \end_inset
@@ -832,13 +982,26 @@ key "key-12"
 \end_inset
 
 ).
- When analyzing a tissue sample for TF interaction density, a chromatin
- immunoprecipitation sequencing (ChIP-seq) method is used to probe the amount
- of TFs in affinity to the DNA strands.
+ When analyzing a tissue sample for TF and cofactors interaction density
+ with the DNA, the chromatin immunoprecipitation sequencing (ChIP-seq) method
+ is used to probe the amount of proteins in affinity to the DNA strands.
  Briefly, this method involved applying antibodies on cross-linked DNA,
- which attach to the TFs linked to the DNA.
- This antibody attachment is followed by massive parallel sequencing of
- the short DNA sequences around the TF and the antibody.
+ which bind to the protein linked to the DNA.
+ The antibody binding followed by massive parallel sequencing of the short
+ DNA around the TF and the antibody.
+ A ChIP-seq assay 
+\emph on
+in vivo 
+\emph default
+by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "key-61"
+
+\end_inset
+
+ has shown that ChIP-seq mapping of p300/CBP cofactors can accurately predict
+ the location of enhancers.
  Genome-wide association studies (GWAS) of ChIP-seq found that different
  TFs have different and distinct distributions of TFBS (
 \begin_inset CommandInset citation
@@ -952,18 +1115,17 @@ key "key-67"
  For samples of such distribution, the peaks of the ChIP-seq readings marking
  the TF binding are often used, from which a binding site “grammar” can
  be modeled.
- Position weight matrix (PWM), as introduced in 
+ Position weight matrix (PWM), as introduced by 
 \begin_inset CommandInset citation
-LatexCommand citealp
+LatexCommand citet
 key "key-7"
 
 \end_inset
 
 , is the most commonly used probabilistic model to address this task.
- The underlying assumption of the PWM model is that every position in the
- DNA sequence has an independent probability to attach to the TF, and therefore
- the total binding probability is a multiplication of all the per-position
- probabilities in the motif:
+ The underlying assumption of the PWM model is that the probability of every
+ position at a TFBS is calculated independently, and therefore the total
+ motif probability is a multiplication of its per-position probabilities:
 \end_layout
 
 \begin_layout Standard
@@ -983,7 +1145,7 @@ Where
  is the length of the relevant sequences affected by the binding event,
  and is derived from the physical characteristics of the TF.
  Practically, this size is often estimated from the observed motifs in the
- TF’s ChIP-seq peaks.
+ ChIP-seq peaks of the TF.
  For each 
 \begin_inset Formula $j$
 \end_inset
@@ -1002,8 +1164,11 @@ Where
 \begin_inset Formula $J$
 \end_inset
 
-, the estimation of this probability is stored in a position probability
- matrix (PPM) W as followed: 
+, the estimation of this probability is stored in a PWM 
+\begin_inset Formula $W$
+\end_inset
+
+ as followed: 
 \end_layout
 
 \begin_layout Standard
@@ -1020,7 +1185,11 @@ where
 \begin_inset Formula $x^{(n)}$
 \end_inset
 
- is the n’th sequence of the found binding sites, 
+ is the 
+\begin_inset Formula $n$
+\end_inset
+
+’th sequence of the found binding sites, 
 \begin_inset Formula $j\in[J]$
 \end_inset
 
@@ -1030,10 +1199,11 @@ where
 
  the nucleotide index of A,C,G and T.
  To enable comparison between the binding likelihood of TFBS of different
- lengths, the use of the normalized form of PPM, the PWM, is more convenient:
+ lengths, the use of the normalized form of PWM, the position-specific scoring
+ matrix (PSSM), is more convenient:
 \begin_inset Formula 
 \begin{equation}
-{\displaystyle M_{i,j}=\mathrm{log}\left(\frac{W_{i,j}}{b_{i}}\right)}\label{PPM}
+{\displaystyle M_{i,j}=\mathrm{log_{2}}\left(\frac{W_{i,j}}{b_{i}}\right)}\label{PSSM}
 \end{equation}
 
 \end_inset
@@ -1058,10 +1228,6 @@ reference "PWM"
 
 ), the result is the log likelihood of a TF binding to a sequence relative
  to a random sequence.
- In this work we will use the more familiar term PWMs though we actually
- used the unnormalized PPMs for the TFBS emission model, since we required
- the likelihood of a TF binding and not a length-independent comparison
- between TFs.
  
 \end_layout
 
@@ -1069,18 +1235,43 @@ reference "PWM"
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/pwm_mult.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -1096,8 +1287,8 @@ name "PWM"
 
 \end_inset
 
-The 2-dimentional correlation between the PWM matrix and the one-hot representat
-ion of the DNA sequence represents the log likelihood of a TF binding event
+The 2-dimensional correlation between the one-hot encoding of the DNA sequence
+ and the log of the PWM matrix result in the log likelihood of the TF binding
  at every location in the sequence.
 \end_layout
 
@@ -1137,14 +1328,14 @@ in silico
  The ultimate goal of an efficient computational method which would predict
  and explain the functional nature of an enhancer sequence has produced
  positive, yet far from sufficient results over the last years, as reviewed
- in (
+ by 
 \begin_inset CommandInset citation
-LatexCommand citealp
+LatexCommand citet
 key "key-33"
 
 \end_inset
 
-).
+.
 \end_layout
 
 \begin_layout Standard
@@ -1202,11 +1393,18 @@ key "key-1"
 
 ).
  Nevertheless, an assay of elements with 100% sequence identity of over
- 200 bp between human and mouse found that 50% showed enhancer activity
- in mice (
+ 200 bp between human and mouse found that less than half showed enhancer
+ activity in mice (
 \begin_inset CommandInset citation
 LatexCommand citealp
-key "key-60"
+key "key-23"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-70"
 
 \end_inset
 
@@ -1234,8 +1432,8 @@ Almost all cells in every organism contain their entire genomic payload,
 \begin_layout Standard
 
 \lang english
-Several epigenetic features, which do not involve the genetic code directly,
- correlate with enhancer regions in the genome: 
+Several epigenetic features, correlate with enhancer regions in the genome:
+ 
 \end_layout
 
 \begin_layout Itemize
@@ -1348,7 +1546,7 @@ Histone modifications, also called histone marks or chromatin modifications,
  the histone protein.
  Histones are numbered from 1 to 8, and for example, the acetylation of
  the lysine amino-acid situated in 14th position in the protein of the 3rd
- histone will be abbreviated as H3K14ac.
+ histone is abbreviated as H3K14ac.
  Along many roles in the cell, such as DNA repair and mitosis, histone modificat
 ions have a function in the gene regulation processes.
  In the past 20 years, a substantial body of research has shown that histone
@@ -1398,14 +1596,14 @@ key "key-25"
 \lang english
 Measurement of histone modifications is also performed using the ChIP-seq
  method, similarly to the TF binding detection described above.
- In histone ChIP-seq, antibodies attach to the modifications in the histone
+ In histone ChIP-seq, antibodies bind to the modifications in the histone
  tails (and not to the TF proteins).
  H3K4me1 and H3K27ac are among the predominant histone modifications of
  active enhancers; H3K4me1 is enriched on transcribed genes and enhancers
  prior to activation (
 \begin_inset CommandInset citation
 LatexCommand citealp
-key "key-7"
+key "key-34"
 
 \end_inset
 
@@ -1478,8 +1676,8 @@ key "key-26"
 \end_inset
 
 ).
- In contrast, absence of H3K27ac and enrichment of H3K4me1and H3K27me3 are
- typical of poised enhancers (
+ In contrast, absence of H3K27ac and enrichment of H3K4me1 and H3K27me3
+ are typical of poised enhancers (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-8"
@@ -1497,18 +1695,43 @@ key "key-8"
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/Enhancers_status.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -1524,8 +1747,8 @@ name "Enhancer"
 
 \end_inset
 
-The accessibility of an enhancer’s sequence and its surrounding histone
- modifications are connected to its regulatory activity state.
+The sequence accessibility of the enhancer and its surrounding histone modificat
+ions are connected to its regulatory activity state.
  The upper diagram shows an active enhancer sequence accessible to the protein
  interaction needed for transcription, whereas the lower one shows an inactive
  enhancer wrapped around a nucleosome and therefore inaccessible.
@@ -1599,18 +1822,43 @@ ons is not yet clear.
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/genome_browser.png
 	scale 40
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -1636,7 +1884,7 @@ UCSC Genome Browser showing epigenetic features tracks, taken from the 10th
  Note that the decrease between the two peaks of H3K27ac and H3K4me1 is
  located on top of the increase of the DNase-I hypersensitivity, which implies
  a cleavage between two histone modifications.
- Taken from 
+ Taken from [
 \begin_inset Flex URL
 status open
 
@@ -1647,7 +1895,7 @@ https://genome-euro.ucsc.edu/cgi-bin/hgTracks
 
 \end_inset
 
-
+].
 \end_layout
 
 \end_inset
@@ -1669,7 +1917,26 @@ Related Work
 \begin_layout Standard
 
 \lang english
-In the last few years, several significant computational efforts were made
+The advent of automated DNA sequencing techniques in the 1990s, caused a
+ surge of genomic databases, with the most notable Human Genome Project
+ among them.
+ This great increase of available data led to the development of many computatio
+nal methods for the analysis of genetic sequences.
+ The main focus of research of these years was on the prediction of genes
+ location, expression and structure using techniques such as HMM, decision
+ trees, and dynamic programming-based as reviewed by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "key-69"
+
+\end_inset
+
+.
+ In the 2000s new techniques for sequence-based high-resolution, genome-scale
+ emerged and resulted in large epigenetic datasets that contributed to the
+ understanding of gene regulation and other interactions between the genome
+ and its environment.
+ In the last few years, several significant computational efforts were made
  for the prediction of the epigenetic and regulatory properties of DNA elements
  based on the genetic sequence alone.
  DeepSEA (
@@ -1688,7 +1955,7 @@ key "key-63"
  Basset (
 \begin_inset CommandInset citation
 LatexCommand citealp
-key "key-32"
+key "key-31"
 
 \end_inset
 
@@ -1963,7 +2230,7 @@ key "key-42"
 \lang english
 \begin_inset Formula 
 \[
-\mathcal{L}(\theta;X)=P_{\theta}(x_{0},x_{1},...,x_{L})=\pi_{x_{0}}\cdot T_{x_{0},x_{1}}\cdot T_{x_{1},x_{2}}\cdot...\cdot T_{x_{L-1},x_{L}}
+\mathcal{L}\left(\theta;X\right)=P\left(x_{0},x_{1},...,x_{L};\theta\right)=\pi_{x_{0}}\cdot T_{x_{0},x_{1}}\cdot T_{x_{1},x_{2}}\cdot...\cdot T_{x_{L-1},x_{L}}
 \]
 
 \end_inset
@@ -1975,18 +2242,43 @@ key "key-42"
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/Markov_model.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -2106,18 +2398,43 @@ The hidden Markov model (HMM) is a Markov model extension which models a
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/HMM_two_states.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -2186,7 +2503,7 @@ E)
 
 \lang english
 HMM is a very popular signal processing algorithm that has been adopted
- in the various fields of computational biology since the 1980’s.
+ in the various fields of computational biology since the 1980s.
  HMM was proposed by Leonard Baum (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -2227,7 +2544,7 @@ key "key-59"
 For example, in the case of an observable DNA sequence, a simplistic model
  can assume that the sequence is composed of 4 states: genes, promoters,
  enhancers and background regions.
- Each of these states will have a different nucleotide frequency, and we
+ Each of these states would have a different nucleotide frequency, and we
  assume that the DNA sequence was generated by an HMM with underlying sequences
  of 4 hidden states, one for each region type.
  The emitted DNA sequence 
@@ -2275,7 +2592,7 @@ What is the likelihood that
 \end_inset
 
  or 
-\begin_inset Formula $P_{\theta}\left(x_{1:L}\right)$
+\begin_inset Formula $P\left(x_{1:L};\theta\right)$
 \end_inset
 
 ?
@@ -2285,7 +2602,7 @@ What is the likelihood that
 
 \lang english
 What is the probability of a hidden state at every location or 
-\begin_inset Formula $P_{\theta}\left(y_{t}=j|x_{1:L}\right)$
+\begin_inset Formula $P\left(y_{t}=j|x_{1:L};\theta\right)$
 \end_inset
 
 ?
@@ -2296,7 +2613,7 @@ What is the probability of a hidden state at every location or
 \lang english
 The two above-mentioned probabilities are named the likelihood function
  and the posterior probabilities of HMM.
- As in many generative models, HMM’s likelihood function 
+ As in many generative models, HMM likelihood function 
 \begin_inset Formula $\mathcal{L}\left(\theta|x_{1:L}\right)$
 \end_inset
 
@@ -2309,7 +2626,7 @@ The two above-mentioned probabilities are named the likelihood function
 \lang english
 \begin_inset Formula 
 \begin{equation}
-\mathcal{L}\left(\theta;x_{1:L}\right)=P_{\theta}\left(x_{1:L}\right)=\sum_{y_{1:L}\in\left[m\right]^{L}}P_{\theta}\left(x_{1:L},y_{1:L}\right)\label{Likelihoods}
+\mathcal{L}\left(\theta;x_{1:L}\right)=P\left(x_{1:L};\theta\right)=\sum_{y_{1:L}\in\left[m\right]^{L}}P\left(x_{1:L},y_{1:L};\theta\right)\label{Likelihoods}
 \end{equation}
 
 \end_inset
@@ -2321,11 +2638,11 @@ The two above-mentioned probabilities are named the likelihood function
 
 \lang english
 The probability 
-\begin_inset Formula $P_{\theta}\left(x_{1:L}\right)$
+\begin_inset Formula $P\left(x_{1:L};\theta\right)$
 \end_inset
 
  is called the incomplete-data likelihood function and the probability 
-\begin_inset Formula $P_{\theta}\left(x_{1:L},y_{1:L}\right)$
+\begin_inset Formula $P\left(x_{1:L},y_{1:L};\theta\right)$
 \end_inset
 
  is called the complete-data likelihood function.
@@ -2341,7 +2658,7 @@ The probability
 \lang english
 \begin_inset Formula 
 \begin{equation}
-P_{\theta}\left(x_{1:L},y_{1:L}\right)=P_{\theta}\left(y_{1}\right)\cdot P_{\theta}\left(x_{1}|y_{1}\right)\cdot\prod_{i=2}^{N}P_{\theta}\left(y_{i}|y_{i-1}\right)\cdot P_{\theta}\left(x_{i}|y_{i}\right)=\pi_{y_{1}}E_{y_{1},x_{1}}\prod_{i=2}^{L}T_{y_{i-1},y_{i}}E_{y_{i},x_{i}}\label{Complete-Likelihood}
+P\left(x_{1:L},y_{1:L};\theta\right)=P\left(y_{1};\theta\right)\cdot P\left(x_{1}|y_{1};\theta\right)\cdot\prod_{i=2}^{N}P\left(y_{i}|y_{i-1};\theta\right)\cdot P\left(x_{i}|y_{i};\theta\right)=\pi_{y_{1}}E_{y_{1},x_{1}}\prod_{i=2}^{L}T_{y_{i-1},y_{i}}E_{y_{i},x_{i}}\label{Complete-Likelihood}
 \end{equation}
 
 \end_inset
@@ -2402,20 +2719,15 @@ key "key-4"
 \lang english
 \begin_inset Formula 
 \[
-\alpha_{j,t}=P_{\theta}\left(y_{t}=j,x_{1:t}\right)
+\alpha_{j,t}=P\left(y_{t}=j,x_{1:t};\theta\right)
 \]
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
-\beta_{j,t}=P_{\theta}\left(x_{t+1:L}|y_{t}=j\right)
+\beta_{j,t}=P\left(x_{t+1:L}|y_{t}=j;\theta\right)
 \]
 
 \end_inset
@@ -2448,7 +2760,7 @@ The forward probabilities matrix
 \lang english
 \begin_inset Formula 
 \[
-\alpha_{j,t}=P_{\theta}\left(y_{t}=j,x_{1:t}\right)
+\alpha_{j,t}=P\left(y_{t}=j,x_{1:t};\theta\right)
 \]
 
 \end_inset
@@ -2759,30 +3071,20 @@ The building of the table is based on the HMM basic assumptions that each
 \lang english
 \begin_inset Formula 
 \[
-\alpha_{j,t}=P_{\theta}\left(y_{t}=j,x_{1:t}\right)=P_{\theta}\left(x_{t}|y_{t}=j,x_{1:t-1}\right)\cdot P_{\theta}\left(y_{t}=j,x_{1:t-1}\right)=
+\alpha_{j,t}=P\left(y_{t}=j,x_{1:t};\theta\right)=P\left(x_{t}|y_{t}=j,x_{1:t-1};\theta\right)\cdot P\left(y_{t}=j,x_{1:t-1};\theta\right)=
 \]
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
-=P_{\theta}\left(x_{t}|y_{t}=j\right)\cdot\sum_{j'\in[m]}P_{\theta}\left(y_{t}=j|y_{t-1}=j'\right)\cdot P_{\theta}\left(y_{t-1}=j',x_{1:t-1}\right)=
+=P\left(x_{t}|y_{t}=j;\theta\right)\cdot\sum_{j'\in[m]}P\left(y_{t}=j|y_{t-1}=j';\theta\right)\cdot P\left(y_{t-1}=j',x_{1:t-1};\theta\right)=
 \]
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =E_{j,x_{t}}\cdot\sum_{j'\in[m]}T_{j',j}\cdot\alpha_{j',t-1}
@@ -2797,18 +3099,43 @@ The building of the table is based on the HMM basic assumptions that each
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/HMM forward Algorithm.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -2874,7 +3201,7 @@ The backward probabilities matrix
 \lang english
 \begin_inset Formula 
 \[
-\beta_{j,t}=P_{\theta}\left(x_{t+1:L}|y_{t}=j\right)
+\beta_{j,t}=P\left(x_{t+1:L}|y_{t}=j;\theta\right)
 \]
 
 \end_inset
@@ -3123,7 +3450,7 @@ This matrix building process is similarly explained by:
 \lang english
 \begin_inset Formula 
 \[
-\beta_{j,t}=P_{\theta}\left(x_{t+1:L}|y_{t}=j\right)=\sum_{j'\in[m]}P_{\theta}\left(y_{t+1}=j',x_{t+1:L}|y_{t}=j\right)=
+\beta_{j,t}=P\left(x_{t+1:L}|y_{t}=j;\theta\right)=\sum_{j'\in[m]}P\left(y_{t+1}=j',x_{t+1:L}|y_{t}=j;\theta\right)=
 \]
 
 \end_inset
@@ -3131,17 +3458,12 @@ This matrix building process is similarly explained by:
 
 \begin_inset Formula 
 \[
-=\sum_{j'\in[m]}P_{\theta}\left(x_{t+2:L}|y_{t+1}=j'\right)\cdot P_{\theta}\left(x_{t+1}|y_{t+1}=j'\right)\cdot P_{\theta}\left(y_{t+1}=j'|y_{t}=j\right)=
+=\sum_{j'\in[m]}P\left(x_{t+2:L}|y_{t+1}=j';\theta\right)\cdot P\left(x_{t+1}|y_{t+1}=j';\theta\right)\cdot P\left(y_{t+1}=j'|y_{t}=j;\theta\right)=
 \]
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =\sum_{j'\in[m]}\beta_{j',t+1}\cdot E_{j',x_{t+1}}\cdot T_{j,j'}
@@ -3156,18 +3478,43 @@ This matrix building process is similarly explained by:
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/HMM backward Algorithm.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -3225,7 +3572,7 @@ Once
 \lang english
 \begin_inset Formula 
 \begin{equation}
-P_{\theta}\left(x_{1:L}\right)=\sum_{j\in[m]}P_{\theta}\left(y_{L}=j,x_{1:L}\right)=\sum_{j\in[m]}\alpha_{j,L}\label{Incomplete-Likelihood}
+P\left(x_{1:L};\theta\right)=\sum_{j\in[m]}P\left(y_{L}=j,x_{1:L};\theta\right)=\sum_{j\in[m]}\alpha_{j,L}\label{Incomplete-Likelihood}
 \end{equation}
 
 \end_inset
@@ -3244,12 +3591,18 @@ And so can the posterior probability:
 \lang english
 \begin_inset Formula 
 \[
-P_{\theta}\left(y_{t}=j|x_{1:L}\right)=\frac{P_{\theta}\left(y_{t}=j,x_{1:L}\right)}{P\left(x_{1:L}\right)}=\frac{P_{\theta}\left(y_{t}=j,x_{1:t}\right)\cdot P_{\theta}\left(x_{t+1:L}|y_{t}=j\right)}{P\left(x_{1:L}\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{P_{\theta}\left(x_{1:L}\right)}
+P\left(y_{t}=j|x_{1:L};\theta\right)=\frac{P\left(y_{t}=j,x_{1:L};\theta\right)}{P\left(x_{1:L};\theta\right)}=\frac{P\left(y_{t}=j,x_{1:t};\theta\right)\cdot P\left(x_{t+1:L}|y_{t}=j;\theta\right)}{P\left(x_{1:L};\theta\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{P\left(x_{1:L};\theta\right)}
 \]
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+
+\lang english
+Generalized HMM
 \end_layout
 
 \begin_layout Standard
@@ -3267,7 +3620,15 @@ Although HMM is simple and efficient, applying it to DNA sequences has a
  motifs, it needs to hold a large number of states which require learning
  a large number of parameters, e.g.
  for the ability to emit 50 motifs of length 5, an HMM would need to have
- over 60,000 parameters.
+ over 60,000 parameters (
+\begin_inset Formula $50\times5$
+\end_inset
+
+ states and 
+\begin_inset Formula $\left(50\times5\right)^{2}$
+\end_inset
+
+ transitions).
  Furthermore, the enhancer modeling task at hand is even more complex, since
  we wish to model multiple enhancers and backgrounds states, each having
  a different probability of emitting motifs and an unique k-order emission
@@ -3295,15 +3656,9 @@ s.
  never stored in the memory, and some of the emission probabilities are
  predetermined and remain fixed during the training.
  This allows us to train a model with the enhancer prior assumptions of
- motifs and higher order emission without overfitting, and with reasonable
+ motifs and high-order emission without overfitting, and with reasonable
  memory complexity.
  
-\end_layout
-
-\begin_layout Subsection
-
-\lang english
-Generalized HMM
 \end_layout
 
 \begin_layout Standard
@@ -3315,7 +3670,7 @@ In a generalized HMM (GHMM), the transition or the emission are sampled
  Some of the states in the system may emit zero or multiple observable variables
 , sampled from custom emission models specifically tailored for the expected
  scenario.
- Such models were used for gene prediction in the 1990’s (
+ Such models were used for gene prediction in the 1990s (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-24"
@@ -3339,18 +3694,43 @@ key "key-22"
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/sHMM_two_states.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -3404,9 +3784,9 @@ E)
 \begin_layout Standard
 
 \lang english
-Another generalization made to the HMM and called higher order HMM uses
- conditional distribution by making the transition and emission dependent
- on previous hidden states (
+Another generalization made to the HMM and called high-order HMM uses conditiona
+l distribution by making the transition and emission dependent on previous
+ hidden states (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-17"
@@ -3451,8 +3831,8 @@ k
 \begin_layout Standard
 
 \lang english
-Instead of higher order emission which depends on the previous hidden states,
- the less researched field of higher order emission depending on previously
+Instead of high-order emission which depends on the previous hidden states,
+ the less researched field of high-order emission depending on previously
  emitted observable variables was used.
  Such an HMM variant is better suited to the local-span nature of the emission
  of 
@@ -3519,7 +3899,7 @@ key "key-64"
 
 , where some of the hidden states emit TFBS sampled from PWMs in order to
  predict enhancer location in the genome.
- HOP-HMM was added a higher order conditional emission probability on non-TF
+ HOP-HMM was added a high-order conditional emission probability on non-TF
  states.
  
 \end_layout
@@ -3528,18 +3908,43 @@ key "key-64"
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/HOP_HMM_two_states.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -3595,18 +4000,43 @@ E)
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/Transition_repack.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -3666,18 +4096,43 @@ Instead of holding a single sparse 8
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/HOP_HMM_multi_states.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -3872,18 +4327,43 @@ reference "HOPHMM2"
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/HOP_HMM_general_mk.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -4081,7 +4561,7 @@ In HOP-HMM, the first hidden state in a sequence can only be a background
 \end_inset
 
  a probability vector 
-\begin_inset Formula $\pi_{j}=P(y_{1}=(j,0))$
+\begin_inset Formula $\pi_{j}=P\left(y_{1}=(j,0)\right)$
 \end_inset
 
 .
@@ -4102,36 +4582,50 @@ ng the two types of allowed transitions:
 \begin_layout Itemize
 
 \lang english
-T for background state to background state transitions, a 
+\begin_inset Formula $T$
+\end_inset
+
+ is a 
 \begin_inset Formula $m\times m$
 \end_inset
 
- matrix where 
-\begin_inset Formula $T_{j_{1},j_{2}}=P\left(y_{t+1}=(j_{2},0)|y_{t}=(j_{1},0)\right)$
+ matrix for background state to background state transitions 
+\begin_inset Formula 
+\[
+T_{j_{1},j_{2}}=P\left(y_{t+1}=(j_{2},0)|y_{t}=(j_{1},0)\right)
+\]
+
 \end_inset
 
-.
+
 \end_layout
 
 \begin_layout Itemize
 
 \lang english
-G for background state to TF state transitions a 
+\begin_inset Formula $G$
+\end_inset
+
+ is a 
 \begin_inset Formula $m\times k$
 \end_inset
 
- matrix where 
-\begin_inset Formula $G_{j,l}=P\left(y_{t+1:t+|W_{l}|}=(j,l)|y_{t}=(j,0)\right)$
+ matrix for background state to TF state transitions 
+\begin_inset Formula 
+\[
+G_{j,l}=P\left(y_{t+1:t+|W_{l}|}=(j,l)|y_{t}=(j,0)\right)
+\]
+
 \end_inset
 
-.
+
 \end_layout
 
 \begin_layout Standard
 
 \lang english
 When in a background state, after its observable variable emission the model
- samples its next hidden state from a probability vector which is comprised
+ samples its next hidden state from a probability vector which is composed
  of the concatenation of the row in 
 \begin_inset Formula $T$
 \end_inset
@@ -4147,21 +4641,27 @@ When in a background state, after its observable variable emission the model
  which will emit another observable variable and so on.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Section
 
 \lang english
 Methods
+\end_layout
+
+\begin_layout Subsection
+
+\lang english
+Baum-Welch Algorithm
 \end_layout
 
 \begin_layout Standard
 
 \lang english
 When fitting an HMM to a DNA sequence, we seek the parameters 
-\begin_inset Formula $\theta^{*}$
+\begin_inset Formula $\text{\hat{\theta}}$
 \end_inset
 
  that best explain the sequence via an algorithm called Baum-Welch algorithm,
- which is a special case of EM algorithm.
+ which is a specific case of EM algorithm.
  Formally, given the observed DNA sequence 
 \begin_inset Formula $x_{1:L}$
 \end_inset
@@ -4170,7 +4670,7 @@ When fitting an HMM to a DNA sequence, we seek the parameters
  likelihood: 
 \begin_inset Formula 
 \[
-\theta^{*}=argmax_{\theta}\mathcal{L}\left(\theta|x_{1:L}\right)
+\hat{\theta}=argmax_{\theta}\mathcal{L}\left(\theta|x_{1:L}\right)
 \]
 
 \end_inset
@@ -4221,7 +4721,7 @@ reference "Likelihoods"
 \lang english
 \begin_inset Formula 
 \begin{equation}
-Q\left(\theta,\theta^{'}\right)=E_{Y}\left[log\left(P_{\theta}\left(x_{1:L},y_{1:L}\right)\right)|x_{1:L},\theta^{'}\right]=\sum_{y_{1:L}\in\left[m\right]^{L}}log\left(P_{\theta}\left(x_{1:L},y_{1:L}\right)\right)\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)\label{Q}
+Q\left(\theta,\theta^{'}\right)=E_{Y}\left[log\left(P\left(X,Y;\theta\right)\right)|X=x_{1:L},\theta^{'}\right]=\sum_{y_{1:L}\in\left[m\right]^{L}}log\left(P\left(x_{1:L},y_{1:L};\theta\right)\right)\cdot P\left(x_{1:L},y_{1:L};\theta^{'}\right)\label{Q}
 \end{equation}
 
 \end_inset
@@ -4257,11 +4757,11 @@ Here
 \end_inset
 
  that maximizes it.
- We will update the 
+ We will update 
 \begin_inset Formula $\theta$
 \end_inset
 
- for maximizing 
+ to the maximum of 
 \begin_inset Formula $Q\left(\theta,\theta^{'}\right)$
 \end_inset
 
@@ -4294,20 +4794,15 @@ reference "Q"
 \lang english
 \begin_inset Formula 
 \[
-Q\left(\theta,\theta^{'}\right)=\sum_{y_{1:L}\in\left[m\right]^{L}}log\pi_{y_{1}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)+
+Q\left(\theta,\theta^{'}\right)=\sum_{y_{1:L}\in\left[m\right]^{L}}log\pi_{y_{1}}\cdot P\left(x_{1:L},y_{1:L};\theta^{'}\right)+
 \]
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
-+\sum_{y_{1:L}\in\left[m\right]^{L}}\left(\sum_{t\in2...L}logT_{y_{t-1},y_{t}}\right)\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)+\sum_{y_{1:L}\in\left[m\right]^{L}}\left(\sum_{t\in[L]}logE_{y_{t},x_{t}}\right)\cdot P_{\theta^{'}}\left(x_{1:L},y_{1:L}\right)
++\sum_{y_{1:L}\in\left[m\right]^{L}}\left(\sum_{t\in2...L}logT_{y_{t-1},y_{t}}\right)\cdot P\left(x_{1:L},y_{1:L};\theta^{'}\right)+\sum_{y_{1:L}\in\left[m\right]^{L}}\left(\sum_{t\in[L]}logE_{y_{t},x_{t}}\right)\cdot P\left(x_{1:L},y_{1:L};\theta^{'}\right)
 \]
 
 \end_inset
@@ -4327,20 +4822,15 @@ Then by manipulating the summation, the exponential state sequence summation
 \lang english
 \begin_inset Formula 
 \[
-Q\left(\theta,\theta^{'}\right)=\sum_{j\in[m]}log\pi_{j}\cdot P_{\theta^{'}}\left(x_{1:L},y_{1}=j\right)+
+Q\left(\theta,\theta^{'}\right)=\sum_{j\in[m]}log\pi_{j}\cdot P\left(x_{1:L},y_{1}=j;\theta^{'}\right)+
 \]
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
-+\sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t-1}=j_{1},y_{t}=j_{2}\right)+\sum_{t\in[L]}\sum_{j\in[m]}logE_{j,x_{t}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t}=j\right)
++\sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}\cdot P\left(x_{1:L},y_{t-1}=j_{1},y_{t}=j_{2};\theta^{'}\right)+\sum_{t\in[L]}\sum_{j\in[m]}logE_{j,x_{t}}\cdot P\left(x_{1:L},y_{t}=j;\theta^{'}\right)
 \]
 
 \end_inset
@@ -4428,7 +4918,7 @@ First, we start with maximizing the first
 \lang english
 \begin_inset Formula 
 \[
-\frac{\partial}{\partial\pi_{j}}\left(\sum_{j'\in[m]}log\pi_{j'}P_{\theta^{'}}\left(x_{1:L},y_{1}=j'\right)+\lambda\left(1-\sum_{j'\in[m]}\pi_{j'}\right)\right)=0
+\frac{\partial}{\partial\pi_{j}}\left(\sum_{j'\in[m]}log\pi_{j'}P\left(x_{1:L},y_{1}=j';\theta^{'}\right)+\lambda\left(1-\sum_{j'\in[m]}\pi_{j'}\right)\right)=0
 \]
 
 \end_inset
@@ -4440,7 +4930,7 @@ First, we start with maximizing the first
 
 \lang english
 we derive the term and get 
-\begin_inset Formula $\frac{P_{\theta^{'}}\left(x_{1:L},y_{1}=j\right)}{\pi_{j}}=\lambda$
+\begin_inset Formula $\frac{P\left(x_{1:L},y_{1}=j;\theta^{'}\right)}{\pi_{j}}=\lambda$
 \end_inset
 
  for 
@@ -4453,7 +4943,7 @@ we derive the term and get
 \end_inset
 
  equations to get 
-\begin_inset Formula $\lambda=P_{\theta^{'}}\left(x_{1:L}\right)$
+\begin_inset Formula $\lambda=P\left(x_{1:L};\theta^{'}\right)$
 \end_inset
 
 , which yields the reestimated 
@@ -4468,7 +4958,7 @@ we derive the term and get
 \lang english
 \begin_inset Formula 
 \begin{equation}
-\pi_{j}=\frac{P_{\theta^{'}}\left(x_{1:L},y_{1}=j\right)}{P_{\theta^{'}}\left(x_{1:L}\right)}=P_{\theta^{'}}\left(y_{1}=j|x_{1:L}\right)\label{Pi-Update}
+\pi_{j}=\frac{P\left(x_{1:L},y_{1}=j;\theta^{'}\right)}{P\left(x_{1:L};\theta^{'}\right)}=P\left(y_{1}=j|x_{1:L};\theta^{'}\right)\label{Pi-Update}
 \end{equation}
 
 \end_inset
@@ -4499,7 +4989,7 @@ Then, we define a Lagrange multiplier
 \lang english
 \begin_inset Formula 
 \[
-\frac{\partial}{\partial T_{j_{1},j_{2}}}\left(\sum_{t\in2...L}logT_{j_{1},j_{2}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t-1}=j_{1},y_{t}=j_{2}\right)+\lambda_{j_{1}}\left(1-\sum_{j'\in[m]}T_{j_{1},j'}\right)\right)=0
+\frac{\partial}{\partial T_{j_{1},j_{2}}}\left(\sum_{t\in2...L}logT_{j_{1},j_{2}}\cdot P\left(x_{1:L},y_{t-1}=j_{1},y_{t}=j_{2};\theta^{'}\right)+\lambda_{j_{1}}\left(1-\sum_{j'\in[m]}T_{j_{1},j'}\right)\right)=0
 \]
 
 \end_inset
@@ -4511,7 +5001,7 @@ Then, we define a Lagrange multiplier
 
 \lang english
 which yields 
-\begin_inset Formula $\lambda_{j_{1}}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=j_{1},y_{t}=j_{2}\right)}{T_{j_{1},j_{2}}}$
+\begin_inset Formula $\lambda_{j_{1}}=\frac{\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=j_{1},y_{t}=j_{2};\theta^{'}\right)}{T_{j_{1},j_{2}}}$
 \end_inset
 
  for 
@@ -4529,7 +5019,7 @@ and when all
 \end_inset
 
  equations are summed, gives 
-\begin_inset Formula $\lambda_{j_{1}}=\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=j_{1}\right)$
+\begin_inset Formula $\lambda_{j_{1}}=\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=j_{1};\theta^{'}\right)$
 \end_inset
 
  
@@ -4550,7 +5040,7 @@ Therefore the update of
 \lang english
 \begin_inset Formula 
 \begin{equation}
-T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=j_{1},y_{t}=j_{2}\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=j_{1}\right)}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=j_{1},y_{t}=j_{2}|x_{1:L}\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=j_{1}|x_{1:L}\right)}\label{T-Update}
+T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=j_{1},y_{t}=j_{2};\theta^{'}\right)}{\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=j_{1};\theta^{'}\right)}=\frac{\sum_{t\in2...L}P\left(y_{t-1}=j_{1},y_{t}=j_{2}|x_{1:L};\theta^{'}\right)}{\sum_{t\in2...L}P\left(y_{t-1}=j_{1}|x_{1:L};\theta^{'}\right)}\label{T-Update}
 \end{equation}
 
 \end_inset
@@ -4581,7 +5071,7 @@ Finally, we will define a Lagrange multiplier
 \lang english
 \begin_inset Formula 
 \[
-\frac{\partial}{\partial E_{j,b}}\left(\sum_{t\in[L]}logE_{j,x_{t}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t}=j\right)+\lambda_{j}\left(1-\sum_{b'\in[n]}E_{j,b'}\right)\right)=0
+\frac{\partial}{\partial E_{j,b}}\left(\sum_{t\in[L]}logE_{j,x_{t}}\cdot P\left(x_{1:L},y_{t}=j;\theta^{'}\right)+\lambda_{j}\left(1-\sum_{b'\in[n]}E_{j,b'}\right)\right)=0
 \]
 
 \end_inset
@@ -4610,7 +5100,7 @@ This step is slightly trickier due to the derivation of
 
 \lang english
 We get 
-\begin_inset Formula $\lambda_{j}=\frac{\sum_{t\in[L]}P_{\theta^{'}}\left(x_{1:L},y_{t}=j\right)\cdot\boldsymbol{1}_{b}(x_{t})}{E_{j,b}}$
+\begin_inset Formula $\lambda_{j}=\frac{\sum_{t\in[L]}P\left(x_{1:L},y_{t}=j;\theta^{'}\right)\cdot\boldsymbol{1}_{b}(x_{t})}{E_{j,b}}$
 \end_inset
 
  for 
@@ -4628,7 +5118,7 @@ and when all
 \end_inset
 
  equations are summed, gives 
-\begin_inset Formula $\lambda_{j}=\sum_{t\in[L]}P_{\theta^{'}}\left(x_{1:L},y_{t}=j\right)\cdot\boldsymbol{1}_{b}(x_{t})$
+\begin_inset Formula $\lambda_{j}=\sum_{t\in[L]}P\left(x_{1:L},y_{t}=j;\theta^{'}\right)\cdot\boldsymbol{1}_{b}(x_{t})$
 \end_inset
 
  
@@ -4649,7 +5139,7 @@ Therefore the update of
 \lang english
 \begin_inset Formula 
 \begin{equation}
-E_{j,b}=\frac{\sum_{t\in[L]}P_{\theta^{'}}\left(x_{1:L},y_{t}=j\right)\boldsymbol{\cdot1}_{b}(x_{t})}{\sum_{t\in[L]}P_{\theta^{'}}\left(x_{1:L},y_{t}=j\right)}=\frac{\sum_{t\in[L]}P_{\theta^{'}}\left(y_{t}=j|x_{1:L}\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P_{\theta^{'}}\left(y_{t}=j|x_{1:L}\right)}\label{E-Update}
+E_{j,b}=\frac{\sum_{t\in[L]}P\left(x_{1:L},y_{t}=j;\theta^{'}\right)\boldsymbol{\cdot1}_{b}(x_{t})}{\sum_{t\in[L]}P\left(x_{1:L},y_{t}=j;\theta^{'}\right)}=\frac{\sum_{t\in[L]}P\left(y_{t}=j|x_{1:L};\theta^{'}\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P\left(y_{t}=j|x_{1:L};\theta^{'}\right)}\label{E-Update}
 \end{equation}
 
 \end_inset
@@ -4721,7 +5211,7 @@ key "key-50"
 \lang english
 \begin_inset Formula 
 \begin{equation}
-\gamma_{t,j}=P_{\theta^{'}}\left(y_{t}=j|x_{1:L}\right)\label{gamma}
+\gamma_{t,j}=P\left(y_{t}=j|x_{1:L};\theta^{'}\right)\label{gamma}
 \end{equation}
 
 \end_inset
@@ -4729,7 +5219,7 @@ key "key-50"
  
 \begin_inset Formula 
 \begin{equation}
-\xi_{t,j_{1},j_{2}}=P_{\theta^{'}}\left(y_{t-1}=j_{1},y_{t}=j_{2}|x_{1:L}\right)\label{xi}
+\xi_{t,j_{1},j_{2}}=P\left(y_{t-1}=j_{1},y_{t}=j_{2}|x_{1:L};\theta^{'}\right)\label{xi}
 \end{equation}
 
 \end_inset
@@ -4763,7 +5253,15 @@ reference "Incomplete-Likelihood"
 \lang english
 \begin_inset Formula 
 \[
-\gamma_{t,j}=\frac{P_{\theta^{'}}\left(y_{t}=j,x_{1:L}\right)}{P_{\theta^{'}}\left(x_{1:L}\right)}=\frac{P_{\theta^{'}}\left(x_{1:L}|y_{t}=j\right)\cdot P_{\theta^{'}}\left(y_{t}=j\right)}{P_{\theta^{'}}\left(x_{1:L}\right)}=\frac{P_{\theta^{'}}\left(y_{t}=j,x_{1:t}\right)\cdot P_{\theta^{'}}\left(x_{t+1:L}|y_{t}=j\right)}{P_{\theta^{'}}\left(x_{1:L}\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{\sum_{j\in[m]}\alpha_{j,L}}
+\gamma_{t,j}=\frac{P\left(y_{t}=j,x_{1:L};\theta^{'}\right)}{P\left(x_{1:L};\theta^{'}\right)}=\frac{P\left(x_{1:L}|y_{t}=j;\theta^{'}\right)\cdot P\left(y_{t}=j;\theta^{'}\right)}{P\left(x_{1:L};\theta^{'}\right)}=
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+=\frac{P\left(y_{t}=j,x_{1:t};\theta^{'}\right)\cdot P\left(x_{t+1:L}|y_{t}=j;\theta^{'}\right)}{P\left(x_{1:L};\theta^{'}\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{\sum_{j\in[m]}\alpha_{j,L}}
 \]
 
 \end_inset
@@ -4776,30 +5274,20 @@ reference "Incomplete-Likelihood"
 \lang english
 \begin_inset Formula 
 \[
-\xi_{t,j_{1},j_{2}}=\frac{P\left(y_{t-1}=j_{1},y_{t]}=j_{2},x_{1:L}\right)}{P_{\theta^{'}}\left(x_{1:L}\right)}=
+\xi_{t,j_{1},j_{2}}=\frac{P\left(y_{t-1}=j_{1},y_{t]}=j_{2},x_{1:L}\right)}{P\left(x_{1:L};\theta^{'}\right)}=
 \]
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
-=\frac{P_{\theta^{'}}\left(y_{t-1}=j_{1},x_{1:t-1}\right)\cdot P_{\theta^{'}}\left(y_{t}=j_{2}|y_{t-1}=j_{1}\right)\cdot P_{\theta^{'}}\left(x_{t}|y_{t}=j_{2}\right)\cdot P_{\theta^{'}}\left(x_{t+1:L}|y_{t}=j_{2}\right)}{P_{\theta^{'}}\left(x_{1:L}\right)}=
+=\frac{P\left(y_{t-1}=j_{1},x_{1:t-1};\theta^{'}\right)\cdot P\left(y_{t}=j_{2}|y_{t-1}=j_{1};\theta^{'}\right)\cdot P\left(x_{t}|y_{t}=j_{2};\theta^{'}\right)\cdot P\left(x_{t+1:L}|y_{t}=j_{2};\theta^{'}\right)}{P\left(x_{1:L};\theta^{'}\right)}=
 \]
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =\frac{\alpha_{j_{1},t-1}\cdot T_{j_{1},j_{2},}\cdot E_{j_{2},x_{t}}\cdot\beta_{j',t}}{\sum_{j\in[m]}\alpha_{j,L}}
@@ -4820,10 +5308,10 @@ The calculation of
 \begin_inset Formula $\theta$
 \end_inset
 
- and finish the EM iteration.
+ in the M-step and finish the EM iteration.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 
 \lang english
 Baum-Welch Algorithm Adaptation
@@ -4865,11 +5353,11 @@ reference "Q"
 \lang english
 \begin_inset Formula 
 \begin{align*}
-Q\left(\theta,\theta^{'}\right)= & \sum_{j\in[m]}log\pi_{j}\cdot P_{\theta^{'}}\left(x_{1:L},y_{1}=(j,0)\right)\\
-+ & \sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)\\
-+ & \sum_{t\in2...L}\sum_{j\in[m],l\in[k]}logG_{j,l}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j,0),y_{t}=(j,l)\right)\\
-+ & \sum_{t\in o,...,L}\sum_{j\in[m]}logE_{j,b_{1},...,x_{t}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t}=(j,0)\right)\\
-+ & \sum_{t\in[L]}\sum_{l\in[k]}logL_{W}(x_{t:t+|W_{l}|-1})\cdot P_{\theta^{'}}\left(x_{1:L},y_{t:t+|W_{l}|-1S}=(j,l)\right)
+Q\left(\theta,\theta^{'}\right)= & \sum_{j\in[m]}log\pi_{j}\cdot P\left(x_{1:L},y_{1}=(j,0);\theta^{'}\right)\\
++ & \sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}\cdot P\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0);\theta^{'}\right)\\
++ & \sum_{t\in2...L}\sum_{j\in[m],l\in[k]}logG_{j,l}\cdot P\left(x_{1:L},y_{t-1}=(j,0),y_{t}=(j,l);\theta^{'}\right)\\
++ & \sum_{t\in o,...,L}\sum_{j\in[m]}logE_{j,b_{1},...,x_{t}}\cdot P\left(x_{1:L},y_{t}=(j,0);\theta^{'}\right)\\
++ & \sum_{t\in[L]}\sum_{l\in[k]}log\mathcal{L}\left(W_{l};x_{t:t+|W_{l}|-1}\right)\cdot P\left(x_{1:L},y_{t:t+|W_{l}|-1S}=(j,l);\theta^{'}\right)
 \end{align*}
 
 \end_inset
@@ -4881,7 +5369,7 @@ Q\left(\theta,\theta^{'}\right)= & \sum_{j\in[m]}log\pi_{j}\cdot P_{\theta^{'}}\
 
 \lang english
 where 
-\begin_inset Formula $L_{W}(\overline{x})$
+\begin_inset Formula $\mathcal{L}\left(W;\overline{x}\right)$
 \end_inset
 
  is the likelihood of the TFBS 
@@ -4893,7 +5381,7 @@ where
 \end_inset
 
 : 
-\begin_inset Formula $L_{M}(\overline{x})=P(\overline{x}|W)=\underset{i\in\{1,...,|\overline{x}|\}}{\prod}W_{\overline{x}_{i},i}$
+\begin_inset Formula $\mathcal{L}\left(W;\overline{x}\right)=P\left(\overline{x};W\right)=\underset{i\in\{1,...,|\overline{x}|\}}{\prod}W_{\overline{x}_{i},i}$
 \end_inset
 
 .
@@ -4917,19 +5405,15 @@ Note that the last addition component, which holds the TFBS log likelihood,
 
 \lang english
 Similarly to the process we covered in the regular EM, the 
-\begin_inset Formula $\theta^{*}$
+\begin_inset Formula $\theta$
 \end_inset
 
  which optimizes 
-\begin_inset Formula $Q$
+\begin_inset Formula $Q(\theta,\theta')$
 \end_inset
 
- here, 
-\begin_inset Formula $\theta^{*}=argmax_{\theta}Q(\theta,\theta')$
-\end_inset
-
-, is achieved by optimizing its 3 independent parts, each with its own constrain
-t under which we optimize 
+ is achieved by optimizing its 3 independent parts, each with its own constraint
+ under which we optimize 
 \begin_inset Formula $Q$
 \end_inset
 
@@ -5011,7 +5495,7 @@ reference "E-Update"
 \lang english
 \begin_inset Formula 
 \begin{equation}
-\pi_{j}=\frac{P_{\theta^{'}}\left(x_{1:L},y_{1}=(j,0)|\theta^{'}\right)}{P_{\theta^{'}}\left(x_{1:L}|\theta^{'}\right)}=P_{\theta^{'}}\left(y_{1}=(j,0)|x_{1:L}\right)\label{HOP-Pi-Update}
+\pi_{j}=\frac{P\left(x_{1:L},y_{1}=(j,0)|\theta^{'};\theta^{'}\right)}{P\left(x_{1:L}|\theta^{'};\theta^{'}\right)}=P\left(y_{1}=(j,0)|x_{1:L};\theta^{'}\right)\label{HOP-Pi-Update}
 \end{equation}
 
 \end_inset
@@ -5024,7 +5508,7 @@ reference "E-Update"
 \lang english
 \begin_inset Formula 
 \begin{equation}
-E_{j,b_{1},...,b_{o}}=\frac{\sum_{t\in o,...,L}P_{\theta^{'}}\left(x_{1:L},y_{t}=(j,0)\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P_{\theta^{'}}\left(x_{1:L},y_{t}=(j,0)\right)}\label{HOP-E-Update}
+E_{j,b_{1},...,b_{o}}=\frac{\sum_{t\in o,...,L}P\left(x_{1:L},y_{t}=(j,0);\theta^{'}\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P\left(x_{1:L},y_{t}=(j,0);\theta^{'}\right)}\label{HOP-E-Update}
 \end{equation}
 
 \end_inset
@@ -5067,20 +5551,15 @@ As for the second condition of
 \lang english
 \begin_inset Formula 
 \[
-\frac{\partial}{\partial T_{j_{1,}j_{2}}}\left(\sum_{t\in2...L}logT_{j_{1},j_{2}}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)+\lambda_{j_{1}}\left(1-\sum_{j'\in[m]}T_{j_{1},j'}-\sum_{l\in[k]}G_{j_{1}l}\right)\right)=0
+\frac{\partial}{\partial T_{j_{1,}j_{2}}}\left(\sum_{t\in2...L}logT_{j_{1},j_{2}}\cdot P\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0);\theta^{'}\right)+\lambda_{j_{1}}\left(1-\sum_{j'\in[m]}T_{j_{1},j'}-\sum_{l\in[k]}G_{j_{1}l}\right)\right)=0
 \]
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
-\frac{\partial}{\partial G_{j_{1},l}}\left(\sum_{t\in2...L}logG_{j_{1},l}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{1},l)\right)+\lambda_{j_{1}}\left(1-\sum_{j'\in[m]}T_{j_{1},j'}-\sum_{l\in[k]}G_{j_{1}l}\right)\right)=0
+\frac{\partial}{\partial G_{j_{1},l}}\left(\sum_{t\in2...L}logG_{j_{1},l}\cdot P\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{1},l);\theta^{'}\right)+\lambda_{j_{1}}\left(1-\sum_{j'\in[m]}T_{j_{1},j'}-\sum_{l\in[k]}G_{j_{1}l}\right)\right)=0
 \]
 
 \end_inset
@@ -5092,11 +5571,11 @@ As for the second condition of
 
 \lang english
 which yields 
-\begin_inset Formula $\lambda_{j_{1}}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)}{T_{j_{1},j_{2}}}$
+\begin_inset Formula $\lambda_{j_{1}}=\frac{\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0);\theta^{'}\right)}{T_{j_{1},j_{2}}}$
 \end_inset
 
  and 
-\begin_inset Formula $\lambda_{j_{1}}=\frac{\sum_{t\in2...L}\cdot P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{1},l)\right)}{G_{j_{1}l}}$
+\begin_inset Formula $\lambda_{j_{1}}=\frac{\sum_{t\in2...L}\cdot P\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{1},l);\theta^{'}\right)}{G_{j_{1}l}}$
 \end_inset
 
  for 
@@ -5126,20 +5605,15 @@ When the
 \lang english
 \begin_inset Formula 
 \[
-\lambda_{j_{1}}=\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)+\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{1},l)\right)=
+\lambda_{j_{1}}=\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0);\theta^{'}\right)+\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{1},l);\theta^{'}\right)=
 \]
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
-=\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j_{1},0)\right)
+=\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=(j_{1},0);\theta^{'}\right)
 \]
 
 \end_inset
@@ -5158,20 +5632,15 @@ which gives us the updates
 \lang english
 \begin_inset Formula 
 \begin{equation}
-T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j_{1},0)\right)}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|x_{1:L}\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j_{1},0)|x_{1:L}\right)}\label{HOP-T-Update}
+T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0);\theta^{'}\right)}{\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=(j_{1},0);\theta^{'}\right)}=\frac{\sum_{t\in2...L}P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|x_{1:L};\theta^{'}\right)}{\sum_{t\in2...L}P\left(y_{t-1}=(j_{1},0)|x_{1:L};\theta^{'}\right)}\label{HOP-T-Update}
 \end{equation}
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \begin{equation}
-G_{j,l}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j,0),y_{t}=(j,l)\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(x_{1:L},y_{t-1}=(j,0)\right)}=\frac{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j,0),y_{t}=(j,l)|x_{1:L}\right)}{\sum_{t\in2...L}P_{\theta^{'}}\left(y_{t-1}=(j,0)|x_{1:L}\right)}\label{HOP-G-Update}
+G_{j,l}=\frac{\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=(j,0),y_{t}=(j,l);\theta^{'}\right)}{\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=(j,0);\theta^{'}\right)}=\frac{\sum_{t\in2...L}P\left(y_{t-1}=(j,0),y_{t}=(j,l)|x_{1:L};\theta^{'}\right)}{\sum_{t\in2...L}P\left(y_{t-1}=(j,0)|x_{1:L};\theta^{'}\right)}\label{HOP-G-Update}
 \end{equation}
 
 \end_inset
@@ -5238,34 +5707,25 @@ reference "HOP-G-Update"
 \end_inset
 
 
-\begin_inset Newline newline
-\end_inset
-
- 
 \begin_inset Formula 
 \begin{equation}
-\gamma_{j,t}=P_{\theta^{'}}\left(y_{t}=(j,0)|x_{1:L}\right)\label{HOP-gamma}
-\end{equation}
-
-\end_inset
-
- 
-\begin_inset Formula 
-\begin{equation}
-\xi_{j_{1},j_{2},t}=P_{\theta^{'}}\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|x_{1:L}\right)\label{HOP-xi}
+\gamma_{j,t}=P\left(y_{t}=(j,0)|x_{1:L};\theta^{'}\right)\label{HOP-gamma}
 \end{equation}
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \begin{equation}
-\eta_{j,l,t}=P_{\theta^{'}}\left(y_{t-1}=(j,0),y_{t}=(j,l)|x_{1:L}\right)\label{HOP-eta}
+\xi_{j_{1},j_{2},t}=P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|x_{1:L};\theta^{'}\right)\label{HOP-xi}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\eta_{j,l,t}=P\left(y_{t-1}=(j,0),y_{t}=(j,l)|x_{1:L};\theta^{'}\right)\label{HOP-eta}
 \end{equation}
 
 \end_inset
@@ -5282,11 +5742,13 @@ ard algorithm.
  In the forward-backward algorithm adaptation for HOP-HMM, we will build
  the probabilities for being only in background states since the TF states
  probabilities are not needed in the later parts of the E-step.
+ 
 \end_layout
 
 \begin_layout Standard
 
 \lang english
+The forward and backward probabilities for the HOP-HMM are:
 \begin_inset Formula 
 \[
 \alpha_{j,t}=P\left(y_{t}=(j,0),x_{1:t}\right)
@@ -5295,11 +5757,6 @@ ard algorithm.
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 \beta_{j,t}=P\left(x_{t+1:L}|y_{t}=(j,0)\right)
@@ -5590,7 +6047,7 @@ Algorithm:
 \end_inset
 
  
-\begin_inset Formula $\alpha_{j,t}=\underset{\text{background-state transitions}}{\underbrace{\sum_{j'\in[m]}\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1},...,x_{t}}}}$
+\begin_inset Formula $\alpha_{j,t}=\underset{\text{background state transitions}}{\underbrace{\sum_{j'\in[m]}\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1},...,x_{t}}}}$
 \end_inset
 
 
@@ -5671,7 +6128,7 @@ Algorithm:
 \end_inset
 
  
-\begin_inset Formula $+\underset{\text{TF-state transitions}}{\underbrace{\sum_{l\in[k]}\alpha_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}}}$
+\begin_inset Formula $+\underset{\text{TF state transitions}}{\underbrace{\sum_{l\in[k]}\alpha_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot\mathcal{L}\left(W_{l};x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}}}$
 \end_inset
 
 
@@ -5777,7 +6234,7 @@ status open
 \begin_layout Plain Layout
 
 \lang english
-HOP Backward Algorithm
+Backward Algorithm for HOP-HMM
 \end_layout
 
 \end_inset
@@ -5974,7 +6431,7 @@ Algorithm:
 \end_inset
 
  
-\begin_inset Formula $\beta_{j,t}=\underset{\text{background-state transitions}}{\underbrace{\sum_{j'\in[m]}\beta_{j',t+1}\cdot E_{j',x_{t-o+2},...,x_{t+1}}\cdot T_{j,j'}}}$
+\begin_inset Formula $\beta_{j,t}=\underset{\text{background state transitions}}{\underbrace{\sum_{j'\in[m]}\beta_{j',t+1}\cdot E_{j',x_{t-o+2},...,x_{t+1}}\cdot T_{j,j'}}}$
 \end_inset
 
 
@@ -6055,7 +6512,7 @@ Algorithm:
 \end_inset
 
  
-\begin_inset Formula $+\underset{\text{TF-state transitions}}{\underbrace{\sum_{l\in[k]}\beta_{j,t+|W_{l}|+1}\cdot L_{W_{l}}\left(x_{t+1},...,x_{t+|W_{l}|}\right)\cdot E_{j,x_{t-o+|W_{l}|+2},...,x_{t+|W_{l}|+1}}\cdot G_{j,l}}}$
+\begin_inset Formula $+\underset{\text{TF state transitions}}{\underbrace{\sum_{l\in[k]}\beta_{j,t+|W_{l}|+1}\cdot\mathcal{L}\left(W_{l};x_{t+1},...,x_{t+|W_{l}|}\right)\cdot E_{j,x_{t-o+|W_{l}|+2},...,x_{t+|W_{l}|+1}}\cdot G_{j,l}}}$
 \end_inset
 
 
@@ -6089,18 +6546,43 @@ Note that when
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/HOP-EM forward Algorithm.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -6168,14 +6650,9 @@ We will now explain why the described dynamic calculation result in
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
-=\underset{\text{background-state transitions}}{\underbrace{\underset{j'\in[m]}{\sum}P\left(y_{t-1}=(j',0),y_{t}=(j,0),x_{1:t}\right)}}+\underset{\text{TF-state transitions}}{\underbrace{\underset{l\in[k]}{\sum}P\left(y_{t-|W_{l}|-1}=(j,0),y_{t-|W_{l}|:t-1}=(j,l),x_{1:t}\right)}}
+=\underset{\text{background state transitions}}{\underbrace{\underset{j'\in[m]}{\sum}P\left(y_{t-1}=(j',0),y_{t}=(j,0),x_{1:t}\right)}}+\underset{\text{TF state transitions}}{\underbrace{\underset{l\in[k]}{\sum}P\left(y_{t-|W_{l}|-1}=(j,0),y_{t-|W_{l}|:t-1}=(j,l),x_{1:t}\right)}}
 \]
 
 \end_inset
@@ -6191,6 +6668,8 @@ The right side term of a TF state transition can be split with the chain
 \end_layout
 
 \begin_layout Standard
+\paragraph_spacing single
+\noindent
 
 \lang english
 \begin_inset Formula 
@@ -6201,11 +6680,6 @@ P\left(y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)=
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 \,P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot P\left(y_{t-|W_{l}|:t-1}=(j,l)|y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot
@@ -6214,14 +6688,17 @@ P\left(y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t}\right)=
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
-\cdot P\left(x_{t-|W_{l}|:t-1}|y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot P\left(x_{t}|y_{t}=(j,0),x_{1:t-1},y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0)\right)
+\cdot P\left(x_{t-|W_{l}|:t-1}|y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\cdot P\left(x_{t}|y_{t}=(j,0),x_{1:t-1},y_{t-|W_{l}|:t-1}=(j,l),y_{t-|W_{l}|-1}=(j,0)\right)
 \]
 
 \end_inset
@@ -6266,11 +6743,6 @@ P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot P\left(y_{t-|W_{l}|:t
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 \cdot P\left(x_{t-|W_{l}|:t-1}|y_{t-|W_{l}|:t-1}=(j,l)\right)\cdot P\left(x_{t}|y_{t}=(j,0),x_{t-o:t-1}\right)=
@@ -6279,14 +6751,9 @@ P\left(y_{t-|W_{l}|-1}=(j,0),x_{1:t-|W_{l}|-1}\right)\cdot P\left(y_{t-|W_{l}|:t
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
-=\alpha_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}
+=\alpha_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot\mathcal{L}\left(W_{l};x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}
 \]
 
 \end_inset
@@ -6312,11 +6779,6 @@ P\left(y_{t-1}=(j',0),y_{t}=(j,0),x_{1:t}\right)=
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =P\left(y_{t-1}=(j',0),x_{1:t-1}\right)\cdot P\left(y_{t}=(j,0)|y_{t-1}=(j',0),x_{1:t-1}\right)\cdot P\left(x_{t}|y_{t}=(j,0),y_{t-1}=(j',0),x_{1:t-1}\right)=
@@ -6325,11 +6787,6 @@ P\left(y_{t-1}=(j',0),y_{t}=(j,0),x_{1:t}\right)=
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =P\left(y_{t-1}=(j',0),x_{1:t-1}\right)\cdot P\left(y_{t}=(j,0)|y_{t-1}=(j',0)\right)\cdot P\left(x_{t}|y_{t}=(j,0),x_{1:t-1}\right)=
@@ -6338,11 +6795,6 @@ P\left(y_{t-1}=(j',0),y_{t}=(j,0),x_{1:t}\right)=
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =\alpha_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1},...,x_{t}}
@@ -6377,6 +6829,15 @@ For the backward probabilities
 \begin_layout Standard
 
 \lang english
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\lang english
 Using the law of total probability:
 \end_layout
 
@@ -6391,14 +6852,17 @@ P\left(x_{t+1:L}|y_{t}=(j,0),x_{t-o+2:t}\right)=
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
-=\underset{\text{background-state transition}}{\underbrace{\sum_{j'\in[m]}P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0),x_{t-o+2:t}\right)}}+\underset{\text{TF-state transition}}{\underbrace{\sum_{l\in[k]}P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{t+1:L}|y_{t}=(j,0)\right)}}
+=\underset{\text{background state transition}}{\underbrace{\sum_{j'\in[m]}P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0),x_{t-o+2:t}\right)}}+
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
++\underset{\text{TF state transition}}{\underbrace{\sum_{l\in[k]}P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{t+1:L}|y_{t}=(j,0)\right)}}
 \]
 
 \end_inset
@@ -6424,11 +6888,6 @@ P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0),x_{t-o+2:t}\right)=
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =P\left(x_{t+2:L}|y_{t+1}=(j',0),y_{t}=(j,0),x_{t-o+2:t+1}\right)\cdot P\left(x_{t+1}|y_{t+1}=(j',0),y_{t}=(j,0),x_{t-o+2:t}\right)\cdot
@@ -6437,11 +6896,6 @@ P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0),x_{t-o+2:t}\right)=
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 \cdot P\left(y_{t+1}=(j',0)|y_{t}=(j,0),x_{t-o+2:t}\right)=
@@ -6450,11 +6904,6 @@ P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0),x_{t-o+2:t}\right)=
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =P\left(x_{t+2:L}|y_{t+1}=(j',0),x_{t-o+3:t+1}\right)\cdot P\left(x_{t+1}|y_{t+1}=(j',0),x_{t-o+2:t}\right)\cdot P\left(y_{t+1}=(j',0)|y_{t}=(j,0)\right)=
@@ -6463,11 +6912,6 @@ P\left(y_{t+1}=(j',0),x_{t+1:L}|y_{t}=(j,0),x_{t-o+2:t}\right)=
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =\beta_{j',t+1}\cdot E_{j',x_{t-o+2},...,x_{t+1}}\cdot T_{j,j'}
@@ -6496,11 +6940,6 @@ P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{t+
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 P\left(x_{t+\left|W_{l}\right|+2:L}|x_{t+1:t+\left|W_{l}\right|+1},y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),y_{t}=(j,0)\right)\cdot
@@ -6509,11 +6948,6 @@ P\left(x_{t+\left|W_{l}\right|+2:L}|x_{t+1:t+\left|W_{l}\right|+1},y_{t+1:t+\lef
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 \cdot P\left(x_{t+\left|W_{l}\right|+1}|x_{t+1:t+\left|W_{l}\right|},y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),y_{t}=(j,0)\right)\cdot
@@ -6522,11 +6956,6 @@ P\left(x_{t+\left|W_{l}\right|+2:L}|x_{t+1:t+\left|W_{l}\right|+1},y_{t+1:t+\lef
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 \cdot P\left(x_{t+1:t+\left|W_{l}\right|}|y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),y_{t}=(j,0)\right)\cdot
@@ -6535,11 +6964,6 @@ P\left(x_{t+\left|W_{l}\right|+2:L}|x_{t+1:t+\left|W_{l}\right|+1},y_{t+1:t+\lef
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 \cdot P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0)|y_{t}=(j,0)\right)=
@@ -6548,11 +6972,6 @@ P\left(x_{t+\left|W_{l}\right|+2:L}|x_{t+1:t+\left|W_{l}\right|+1},y_{t+1:t+\lef
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =P\left(x_{t+\left|W_{l}\right|+2:L}|y_{t+\left|W_{l}\right|+1}=(j,0)\right)\cdot P\left(x_{t+\left|W_{l}\right|+1}|y_{t+\left|W_{l}\right|+1}=(j,0)\right)\cdot
@@ -6561,11 +6980,6 @@ P\left(x_{t+\left|W_{l}\right|+2:L}|x_{t+1:t+\left|W_{l}\right|+1},y_{t+1:t+\lef
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 \cdot P\left(x_{t+1:t+\left|W_{l}\right|}|y_{t+1:t+\left|W_{l}\right|}=(j,l)\right)\cdot P\left(y_{t+1:t+\left|W_{l}\right|}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0)|y_{t}=(j,0)\right)=
@@ -6574,14 +6988,9 @@ P\left(x_{t+\left|W_{l}\right|+2:L}|x_{t+1:t+\left|W_{l}\right|+1},y_{t+1:t+\lef
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
-=\beta_{j,t+|W_{l}|+1}\cdot E_{j,x_{t-o+|W_{l}|+1},...,x_{t+|W_{l}|+1}}\cdot L_{W_{l}}\left(x_{t+1},...,x_{t+|W_{l}|}\right)\cdot G_{j,l}
+=\beta_{j,t+|W_{l}|+1}\cdot E_{j,x_{t-o+|W_{l}|+1},...,x_{t+|W_{l}|+1}}\cdot\mathcal{L}\left(W_{l};x_{t+1},...,x_{t+|W_{l}|}\right)\cdot G_{j,l}
 \]
 
 \end_inset
@@ -6644,11 +7053,6 @@ reference "HOP-eta"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =P\left(y_{t}=(j,0),y_{t+1}=(j,l),y_{t+\left|W_{l}\right|+1}=(j,0),x_{1:t+|W_{l}|+1}\right)\cdot P\left(x_{t+|W_{l}|+2:L}|y_{t+|W_{l}|+1}=(j,0),x_{1:t+|W_{l}|+1}\right)=
@@ -6657,11 +7061,6 @@ reference "HOP-eta"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =P\left(x_{1:t},y_{t}=(j,0)\right)\cdot P\left(y_{t+1}=(j,l)|y_{t}=(j,0)\right)\cdot P\left(x_{t+1:t+\left|W_{l}\right|}|y_{t+1:t+\left|W_{l}\right|}=(j,l)\right)\cdot
@@ -6670,11 +7069,6 @@ reference "HOP-eta"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 \cdot P\left(x_{t+\left|W_{l}\right|+1}|y_{t+\left|W_{l}\right|+1}=(j,0)\right)\text{\cdot}P\left(x_{t+|W_{l}|+2:L}|y_{t+|W_{l}|+1}=(j,0),x_{t+|W_{l}|-o+3:t+|W_{l}|+1}\right)=
@@ -6683,11 +7077,6 @@ reference "HOP-eta"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =\alpha_{j,t}\cdot G_{j,l}\cdot L_{W_{l,}}\left(x_{t+1},...,x_{t+|W_{l}|}\right)\cdot E_{j,x_{t+|W_{l}|-o+2},...,x_{t+|W_{l}|+1}}\cdot\beta_{j,t+|W_{l}|+1}
@@ -6757,11 +7146,6 @@ reference "HOP-gamma"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =\frac{P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{t-o+1:t},y_{t}=(j,0)\right)}{P\left(x_{1:L}\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{P\left(x_{1:L}\right)}
@@ -6809,11 +7193,6 @@ reference "HOP-xi"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =\frac{P\left(x_{1:t-1},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)\right)\cdot P\left(x_{t:L}|y_{t}=(j_{2},0),x_{1:t-1}\right)}{P\left(x_{1:L}\right)}=
@@ -6822,11 +7201,6 @@ reference "HOP-xi"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =\frac{P\left(x_{1:t-1},y_{t-1}=(j_{1},0)\right)\cdot P\left(y_{t}=(j_{2},0)|y_{t-1}=(j_{1},0)\right)\cdot P\left(x_{t}|y_{t}=(j_{2},0),x_{1:t-1}\right)\cdot P\left(x_{t+1:L}|y_{t}=(j_{2},0),x_{1:t-1}\right)}{P\left(x_{1:L}\right)}=
@@ -6835,11 +7209,6 @@ reference "HOP-xi"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
 =\frac{\alpha_{j_{1},t-1}\cdot T_{j_{1},j_{2}}\cdot E_{j_{2},x_{t-o+1},...,x_{t}}\cdot\beta_{j_{2},t}}{P\left(x_{1:L}\right)}
@@ -8245,13 +8614,13 @@ The Baum-Welch algorithm is described with the input of a single sequence
 
 .
  In reality, we are often dealing with the task of learning 
-\begin_inset Formula $\theta$
+\begin_inset Formula $\hat{\theta}$
 \end_inset
 
  from multiple sequences at once.
- In HOP-HMM we can use the multi-sequence method as in 
+ In HOP-HMM we can use the multi-sequence method as 
 \begin_inset CommandInset citation
-LatexCommand citealp
+LatexCommand citet
 key "key-50"
 
 \end_inset
@@ -8261,7 +8630,7 @@ key "key-50"
 s update.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 
 \lang english
 State Sequence Inference
@@ -8270,11 +8639,12 @@ State Sequence Inference
 \begin_layout Standard
 
 \lang english
-Acquiring the maximal likelihood 
-\begin_inset Formula $\theta$
+Acquiring the maximal likelihood estimation 
+\begin_inset Formula $\hat{\theta}$
 \end_inset
 
- opens the door to several needed inferences given a sequence 
+ from the Baum-Welch algorithm opens the door to several needed inferences
+ given a sequence 
 \begin_inset Formula $x_{1:L}$
 \end_inset
 
@@ -8356,10 +8726,10 @@ reference "gamma"
 \end_inset
 
  built by a 
-\begin_inset Formula $\theta$
+\begin_inset Formula $\hat{\theta}$
 \end_inset
 
- that we obtained by the Baum-Welch algorithm.
+ that was obtained by the Baum-Welch algorithm.
  In HOP-HMM, 
 \begin_inset Formula $\gamma$
 \end_inset
@@ -8373,12 +8743,12 @@ reference "HOP-gamma"
 
  is not sufficient since it only holds the probability of being in background
  state 
-\begin_inset Formula $P_{\theta}\left(y_{t}=(j,0)|x_{1:L}\right)$
+\begin_inset Formula $P\left(y_{t}=(j,0)|x_{1:L};\hat{\theta}\right)$
 \end_inset
 
 .
  In order to calculate the posterior probability for TF states, 
-\begin_inset Formula $P_{\theta}\left(y_{t}=(j,l)|x_{1:L}\right)$
+\begin_inset Formula $P\left(y_{t}=(j,l)|x_{1:L};\hat{\theta}\right)$
 \end_inset
 
  where 
@@ -8409,20 +8779,15 @@ reference "PWM Posterior"
 \lang english
 \begin_inset Formula 
 \[
-P_{\theta}\left(y_{t}=(j,l)|x_{1:L}\right)=\sum_{i\in\left[|W_{l}|\right]}P_{\theta}\left(y_{t-i+1:t-i+|W_{l}|}=(j,l)|x_{1:L}\right)=
+P\left(y_{t}=(j,l)|x_{1:L};\hat{\theta}\right)=\sum_{i\in\left[|W_{l}|\right]}P\left(y_{t-i+1:t-i+|W_{l}|}=(j,l)|x_{1:L};\hat{\theta}\right)=
 \]
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Formula 
 \[
-=\sum_{i\in\left[|W_{l}|\right]}P_{\theta}\left(y_{t-i}=(j,0),y_{t-i+1}=(j,l)|x_{1:L}\right)=\sum_{i\in\left[|W_{l}|\right]}\eta_{t-i+1,j,l}
+=\sum_{i\in\left[|W_{l}|\right]}P\left(y_{t-i}=(j,0),y_{t-i+1}=(j,l)|x_{1:L};\hat{\theta}\right)=\sum_{i\in\left[|W_{l}|\right]}\eta_{t-i+1,j,l}
 \]
 
 \end_inset
@@ -8434,11 +8799,11 @@ P_{\theta}\left(y_{t}=(j,l)|x_{1:L}\right)=\sum_{i\in\left[|W_{l}|\right]}P_{\th
 
 \lang english
 Choosing the maximum value over 
-\begin_inset Formula $P_{\theta}\left(y_{t}=(j,l)|x_{1:L}\right)$
+\begin_inset Formula $P\left(y_{t}=(j,l)|x_{1:L};\hat{\theta}\right)$
 \end_inset
 
  and 
-\begin_inset Formula $P_{\theta}\left(y_{t}=(j,0)|x_{1:L}\right)$
+\begin_inset Formula $P\left(y_{t}=(j,0)|x_{1:L};\hat{\theta}\right)$
 \end_inset
 
  will give us the most likely state of 
@@ -8465,18 +8830,43 @@ Choosing the maximum value over
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/PWM_posterior_2.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -8548,7 +8938,7 @@ Inference 2 aims to reach the most likely hidden sequence:
 \lang english
 \begin_inset Formula 
 \begin{equation}
-y_{1:L}^{*}=argmax_{y_{1:L}}P\left(y_{1:L}|x_{1:L}\right)\label{Viterbi}
+y_{1:L}^{*}=argmax_{y_{1:L}}P\left(y_{1:L}|x_{1:L};\hat{\theta}\right)\label{Viterbi}
 \end{equation}
 
 \end_inset
@@ -8573,7 +8963,7 @@ The main difference with inference 1 is the consideration of the dependency
  
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 
 \lang english
 Viterbi Algorithm Adaptation
@@ -9592,12 +9982,8 @@ Algorithm:
 \end_inset
 
  
-\begin_inset Formula $A=\left\{ V_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1},...,x_{t}}|j'\in[m]\right\} $
-\end_inset
-
-
 \emph on
- # background state to background state
+# background state to background state
 \end_layout
 
 \begin_layout Plain Layout
@@ -9651,12 +10037,122 @@ Algorithm:
 \end_inset
 
  
-\begin_inset Formula $B=\left\{ V_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot L_{W_{l}}\left(x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}|l\in[k]\right\} $
+\begin_inset Formula $A=\left\{ V_{j',t-1}\cdot T_{j',j}\cdot E_{j,x_{t-o+1},...,x_{t}}|j'\in[m]\right\} $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
 \end_inset
 
  
 \emph on
 # background state to TF state
+\end_layout
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $B=\left\{ V_{j,t-|W_{l}|-1}\cdot G_{j,l}\cdot\mathcal{L}\left(W_{l};x_{t-|W_{l}|},...,x_{t-1}\right)\cdot E_{j,x_{t-o+1},...,x_{t}}|l\in[k]\right\} $
+\end_inset
+
+
 \end_layout
 
 \begin_layout Plain Layout
@@ -10324,8 +10820,9 @@ return
 \begin_layout Standard
 
 \lang english
-The Viterbi paths of the DNA sequence can be used to evaluate the trained
- model by comparing it to the epigenetic data, as done in this work.
+The Viterbi algorithm outputs a sequence of hidden states, also called a
+ Viterbi path, which can be used to evaluate the trained model by comparing
+ it to the epigenetic data, as done in this work.
  In cases where the exact true boarders of the active element are unknown
  due to noisy data, short DNA sequences can be classified by their dominant
  states.
@@ -10627,7 +11124,7 @@ Using the trained parameters
 
  by the Viterbi algorithm adaptation to HOP-HMM.
  We also calculated the posterior probability of 
-\begin_inset Formula $P_{\hat{\theta}}\left(y_{t}|x_{1:L}\right)$
+\begin_inset Formula $P\left(y_{t}|x_{1:L};\hat{\theta}\right)$
 \end_inset
 
  from 
@@ -10655,22 +11152,43 @@ Using the trained parameters
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
 
-\end_layout
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
 
 \lang english
 \begin_inset Graphics
 	filename Figures/Workflow.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -10740,6 +11258,13 @@ key "key-50"
 
 \end_inset
 
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-66"
+
+\end_inset
+
 ) since there is no known analytical way to reach it.
  Consequently, the Baum-Welch algorithm converges into a local maximum 
 \begin_inset Formula $\hat{\theta}$
@@ -10774,10 +11299,17 @@ We used regularization for faster and better
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
- convergence (see figure 
+ convergence (see figures 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "Regularization"
+reference "Regularization1"
+
+\end_inset
+
+ and  
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Regularization2"
 
 \end_inset
 
@@ -10912,9 +11444,9 @@ reference "LikelihoodVsErr"
 \lang english
 The experiment was done on 500 synthetic sequences (85% train, 15% test),
  1500 bp-long.
- The trained model had 6 hidden background states with an emission order
+ The trained model had 5 hidden background states with an emission order
  of 3, and each background state had 25 TF states.
- The background state precision was 98.5% and the recall of 97.6%.
+ The background state test precision was 98.5% and the test recall of 97.6%.
  
 \end_layout
 
@@ -10922,22 +11454,43 @@ The experiment was done on 500 synthetic sequences (85% train, 15% test),
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
 
-\end_layout
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
 
 \lang english
 \begin_inset Graphics
 	filename Figures/rmse_vs_likelihood_m5bg1k25o3b1s0r0N3000L1000.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -10977,53 +11530,81 @@ Over multiple runs of Baum-Welch adaptation for HOP-HMM, higher sequences
 \end_layout
 
 \begin_layout Standard
+\noindent
+\align center
 
 \lang english
-\begin_inset Newpage newpage
-\end_inset
-
-
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
 
 \lang english
-\begin_inset Graphics
-	filename Figures/dec_likelihood.jpg
-	scale 32
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\noindent
-\align center
-
-\lang english
-\begin_inset Graphics
-	filename Figures/dec_theta_error.jpg
-	scale 32
-
-\end_inset
-
-
-\end_layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
 
 \lang english
 \begin_inset Graphics
 	filename Figures/dec_theta_error_scatter.jpg
-	scale 32
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Graphics
+	filename Figures/dec_theta_error.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -11031,13 +11612,140 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset CommandInset label
+LatexCommand label
+name "Regularization1"
+
+\end_inset
+
+Regularization aids the EM to converge faster and with less error compared
+ to the true parameters 
+\begin_inset Formula $\theta$
+\end_inset
+
+.
+ 
+\series bold
+A)
+\series default
+ The iterations of a single EM execution.
+ The dots represent the updates of the 
+\begin_inset Formula $\hat{\theta}$
+\end_inset
+
+ values during the EM iterations.
+ The diagram shows that with the regularization enabled, the estimated 
+\begin_inset Formula $\hat{θ}$
+\end_inset
+
+ values mostly advance toward the true value of 
+\begin_inset Formula $θ$
+\end_inset
+
+.
+
+\series bold
+ B)
+\series default
+ The RMSE between true 
+\begin_inset Formula $θ$
+\end_inset
+
+ and estimated 
+\begin_inset Formula $\hat{θ}$
+\end_inset
+
+ during multiple EM executions.
+ The regularization results in a significant error decrease during the EM
+ iterations.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Graphics
+	filename Figures/dec_likelihood.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/dec_viterbi.jpg
-	scale 32
+	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -11049,53 +11757,40 @@ status open
 \lang english
 \begin_inset CommandInset label
 LatexCommand label
-name "Regularization"
+name "Regularization2"
 
 \end_inset
 
+ On average, the regularization causes to 
+\begin_inset Formula $\hat{\theta}$
+\end_inset
 
+ estimations with higher likelihoods that produce Viterbi paths with lower
+  misclassification rates.
+ 
 \series bold
 A)
 \series default
- EM iterations mostly draw the estimated 
-\begin_inset Formula $θ$
-\end_inset
+ The mean log likelihood of the sequences increases until convergence during
+ the EM iterations.
+ With the regularization enabled, the likelihood is not always monotonous
+ since with it the likelihood increase of Baum-Welch updates is no longer
+ guaranteed.
 
- values closer to the true value of 
-\begin_inset Formula $θ$
-\end_inset
-
-.
- 
 \series bold
-B)
-\series default
- The error between true and estimated 
-\begin_inset Formula $θ$
-\end_inset
-
- decreases, and after a few iterations they converge to the same path regardless
- of the initialization.
- 
-\series bold
-C)
+ B)
 \series default
  During EM iterations, the learned 
-\begin_inset Formula $θ$
+\begin_inset Formula $\hat{θ}$
 \end_inset
 
- values yield a more accurate Viterbi estimation of the hidden states.
+ values yield a more accurate Viterbi path.
  Note that not even the true 
 \begin_inset Formula $θ$
 \end_inset
 
  could produce a Viterbi path that is a perfect match to the true hidden
- sequence.
- 
-\series bold
-D)
-\series default
- The mean log likelihood of the sequences increases during the EM iterations.
+ sequence, as the value of the purple and yellow charts is 0.1% and not 0%.
 \end_layout
 
 \end_inset
@@ -11112,18 +11807,43 @@ D)
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/synthetic_posterior_with_tfs.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -11148,7 +11868,7 @@ Posterior probability of sequences, estimated by a trained HOP-HMM
 \end_inset
 
 .
- The Viterbi hidden path by 
+ The Viterbi path by 
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
@@ -11173,18 +11893,43 @@ Posterior probability of sequences, estimated by a trained HOP-HMM
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/confusion_matrix.jpg
 	scale 50
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -11332,15 +12077,15 @@ reference "PWM"
 \end_inset
 
 .
- Note that in order to compare between PWM likelihoods we used here the
- PWM form as in 
+ Note that in order to compare between PWM likelihoods we used PSSM form
+ as in 
 \begin_inset CommandInset ref
 LatexCommand eqref
-reference "PPM"
+reference "PSSM"
 
 \end_inset
 
-, and not the PPM form.
+ for its length-independence property.
  
 \end_layout
 
@@ -11383,13 +12128,33 @@ reference "fig:RealSequences"
 
 \lang english
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
@@ -11401,9 +12166,33 @@ status open
 
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
@@ -11415,9 +12204,33 @@ status open
 
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
@@ -11429,14 +12242,43 @@ status open
 
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
 \begin_layout Plain Layout
-\noindent
-\align center
+
+\lang english
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 1
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
 
 \lang english
 \begin_inset Graphics
 	filename Figures/realSeqLegend.jpg
 	scale 30
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -12248,7 +13090,7 @@ reference "Workflow"
 
 .
  Execution of mainPosterior plots random set of sequences with their Viterbi
- sequences and posterior probabilities similar to figure 
+ path and posterior probabilities similar to figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "PostiriorProbability"
@@ -12302,10 +13144,17 @@ reference "Workflow"
 \end_inset
 
 , and at each iteration of the EM, likelihood and errors are collected to
- form plots similar to figure 
+ form plots similar to figures 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "Regularization"
+reference "Regularization1"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Regularization2"
 
 \end_inset
 
@@ -12516,6 +13365,24 @@ key "key-4"
 \lang english
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
+label "Bejerano et al.(2004)"
+key "key-23"
+
+\end_inset
+
+ Bejerano, G., Pheasant, M., Makunin, I., Stephen, S., Kent, W.
+ J., Mattick, J.
+ S., & Haussler, D.
+ (2004).
+ Ultraconserved elements in the human genome.
+ Science, 304(5675), 1321-1325.
+\end_layout
+
+\begin_layout Bibliography
+
+\lang english
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
 label "Benko et al.(2009)"
 key "key-6"
 
@@ -12572,30 +13439,8 @@ key "key-22"
 \lang english
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-label "Buenrostro et al.(2013)"
-key "key-70"
-
-\end_inset
-
- Buenrostro, J.
- D., Giresi, P.
- G., Zaba, L.
- C., Chang, H.
- Y., & Greenleaf, W.
- J.
- (2013).
- Transposition of native chromatin for fast and sensitive epigenomic profiling
- of open chromatin, DNA-binding proteins and nucleosome position.
- Nature methods, 10(12), 1213.
-\end_layout
-
-\begin_layout Bibliography
-
-\lang english
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
 label "Calo et al.(2013)"
-key "key-7"
+key "key-34"
 
 \end_inset
 
@@ -12603,6 +13448,24 @@ key "key-7"
  (2013).
  Modification of enhancer chromatin: what, how, and why?.
  Molecular cell, 49(5), 825-837.
+\end_layout
+
+\begin_layout Bibliography
+
+\lang english
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Claverie(1997)"
+key "key-69"
+
+\end_inset
+
+ Claverie, J.
+ M.
+ (1997).
+ Computational methods for the identification of genes in vertebrate genomic
+ sequences.
+ Human molecular genetics, 6(10), 1735-1744.
 \end_layout
 
 \begin_layout Bibliography
@@ -12665,31 +13528,6 @@ key "key-5"
  (2014).
  Redefining Ceratocystis and allied genera.
  Studies in Mycology, 79, 187-219.
-\end_layout
-
-\begin_layout Bibliography
-
-\lang english
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Diehl et al.(2016)"
-key "key-10"
-
-\end_inset
-
- Diehl, A.
- D., Meehan, T.
- F., Bradford, Y.
- M., Brush, M.
- H., Dahdul, W.
- M., Dougall, D.
- S., ...
- & Van Slyke, C.
- E.
- (2016).
- The Cell Ontology 2016: enhanced content, modularization, and ontology
- interoperability.
- Journal of biomedical semantics, 7(1), 44.
 \end_layout
 
 \begin_layout Bibliography
@@ -13570,25 +14408,10 @@ key "key-7"
  D., Schneider, T.
  D., Gold, L., & Ehrenfeucht, A.
  (1982).
- Use of the ‘Perceptron’algorithm to distinguish translational initiation
+ Use of the ‘Perceptron’ algorithm to distinguish translational initiation
  sites in E.
  coli.
  Nucleic acids research, 10(9), 2997-3011.
-\end_layout
-
-\begin_layout Bibliography
-
-\lang english
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "Staden(1984)"
-key "key-8"
-
-\end_inset
-
- Staden, R.
- (1984).
- Computer methods to locate signals in nucleic acid sequences.
 \end_layout
 
 \begin_layout Bibliography
@@ -13680,6 +14503,27 @@ key "key-60"
  (2007).
  VISTA Enhancer Browser—a database of tissue-specific human enhancers.
  Nucleic Acids Research, 35(Database issue), D88.
+\end_layout
+
+\begin_layout Bibliography
+
+\lang english
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Visel et al.(2008)"
+key "key-70"
+
+\end_inset
+
+ Visel, A., Prabhakar, S., Akiyama, J.
+ A., Shoukry, M., Lewis, K.
+ D., Holt, A., ...
+ & Pennacchio, L.
+ A.
+ (2008).
+ Ultraconservation identifies a small subset of extremely constrained developmen
+tal enhancers.
+ Nature genetics, 40(2), 158-160.
 \end_layout
 
 \begin_layout Bibliography
