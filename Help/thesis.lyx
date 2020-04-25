@@ -11948,7 +11948,15 @@ name "ConfutionMatrix"
 Confusion matrix of true and estimated states by the Viterbi algorithm of
  HOP-HMM synthetic sequences.
  Rows are normalized so their sum is equal to 1.
- The majority of predicted states are background states 
+ As seen in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "PostiriorProbability"
+
+\end_inset
+
+ The majority of true and estimated states are background states, indexed
+ by 
 \begin_inset Formula $(1,0)$
 \end_inset
 
@@ -11968,8 +11976,8 @@ Confusion matrix of true and estimated states by the Viterbi algorithm of
 \begin_inset Formula $(5,0)$
 \end_inset
 
-, where TF states are sometimes misclassified as their background state
- state.
+ (highlighted), where TF states are sometimes misclassified as their background
+ state state.
 \end_layout
 
 \end_inset
