@@ -1,8 +1,8 @@
 # On Linux
-# export PROMPT_COMMAND="echo -n \[\$(date +%H:%M:%S)\]\ "
-# cd /mnt/d/projects/HOP-HMM/data/peaks/scripts
-# yes | sudo apt update
-# yes | sudo apt install bedtools
+export PROMPT_COMMAND="echo -n \[\$(date +%H:%M:%S)\]\ "
+cd /mnt/d/projects/HOP-HMM/data/peaks/scripts
+yes | sudo apt update
+yes | sudo apt install bedtools
 
 
 # On Windows
@@ -29,13 +29,15 @@ mkdir ../../Jaspar
 mkdir ../../Jaspar/raw
 pushd ../../Jaspar/raw
 # PWMs
-wget 'http://jaspar.genereg.net/download/CORE/JASPAR2020_CORE_vertebrates_non-redundant_pfms_jaspar.txt'
+wget 'http://jaspar.genereg.net/download/CORE/JASPAR2020_CORE_vertebrates_non-redundant_pfms_jaspar.txt' --user-agent "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.22 (KHTML, like Gecko) Ubuntu Chromium/25.0.1364.160 Chrome/25.0.1364.160 Safari/537.22"
 # expression of TFs
 wget 'https://egg2.wustl.edu/roadmap/data/byDataType/rna/expression/57epigenomes.N.pc.gz'
 gunzip -vf 57epigenomes.N.pc.gz
 # names of TFs
 wget 'https://egg2.wustl.edu/roadmap/data/byDataType/rna/expression/Ensembl_v65.Gencode_v10.ENSG.gene_info'
-python pwm_expression.py
+
+/cygdrive/c/Python38/python.exe pwm_expressions.py
+
 popd
 
 ################################
@@ -48,7 +50,7 @@ tar zxvf all.mnemonics.bedFiles.tgz
 gunzip -vf E*
 popd
 ################################
-# BigWigToBedGraph
+# BigWigToBedGraph (ubuntu, no windows support)
 ################################
 wget -O bigWigToBedGraph "http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/bigWigToBedGraph"
 
@@ -311,10 +313,10 @@ mv ../scripts/download_and_process_one2.sh ../scripts/download_and_process_one.s
 # ../scripts/download_and_process_one.sh E128
 
 
-
-
-mv -f background.narrowPeak ../processed/background.cleaned.narrowPeak
+cp -f background.narrowPeak ../processed/background.cleaned.narrowPeak
 mv -f hg19.KnownGenes.bed ../processed/genes.cleaned.narrowPeak
+cd ../scripts
+python filter_background.py ../processed/background.cleaned.narrowPeak 5000
 
 ################################
 # Genome FASTA
@@ -499,16 +501,16 @@ cat ../processed/E125-H3K27ac.cleaned.narrowPeak >> ../tmp/enhancers.bed
 cat ../processed/E126-H3K27ac.cleaned.narrowPeak >> ../tmp/enhancers.bed
 cat ../processed/E127-H3K27ac.cleaned.narrowPeak >> ../tmp/enhancers.bed
 cat ../processed/E128-H3K27ac.cleaned.narrowPeak >> ../tmp/enhancers.bed
+cat ../processed/background.cleaned.narrowPeak >> ../tmp/enhancers.bed
 bedtools sort -i ../tmp/enhancers.bed > ../tmp/enhancers.sorted.bed
 bedtools merge -i ../tmp/enhancers.sorted.bed > ../tmp/enhancers.merged.bed
 bedtools slop -i ../tmp/enhancers.merged.bed -g ../raw_bed/hg19.chrom.sizes -b 3000 > ../tmp/enhancers.slopped.bed
 
 
 ################################
-# BigWigToBedGraph
+# BigWigToBedGraph (on linux only)
 ################################
 
-cd /mnt/d/projects/HOP-HMM/data/peaks/scripts
 export PROMPT_COMMAND="echo -n \[\$(date +%H:%M:%S)\]\ "
 
 ../scripts/bigWigToBedGraph ../raw_bigwig/E003-H3K27ac.pval.signal.bigwig ../raw_bedgraphs/E003-H3K27ac.pval.bedgraph

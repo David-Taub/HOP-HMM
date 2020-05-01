@@ -5,12 +5,12 @@ function mainRealData()
     conf.doEnhSpecific = false;
     conf.seqsPerTissue = 1000;
     conf.maxIters = 40;
-    conf.repeat = 10;
+    conf.repeat = 1;
     % conf.doGTBound = conf.maxIters + 1;
     conf.doGTBound = 10;
     conf.canCrossLayer = true;
     conf.patience = 5;
-    conf.L = 7000;
+    conf.L = 3000;
     conf.peakMaxLength = 3000;
     conf.peakMinL = 1000;
     conf.peakMaxL = 2000;
@@ -18,7 +18,7 @@ function mainRealData()
     conf.order = 2;
     conf.m = 6;
     conf.backgroundAmount = 1;
-    conf.k = 100;
+    conf.k = 50;
     conf.withBackground = false;
     conf.withGenes = false;
     conf.minSamplesCount = 5;
@@ -56,17 +56,27 @@ function main(conf)
                                              conf.minSamplesCount);
     N = size(mergedPeaksMin.seqs, 1);
     testTrainRatio = 0.999;
-    % testTrainRatio = 0.50;
+    testTrainRatio = 0.50;
     selectedPWMs = misc.PWMsFeatureSelect(mergedPeaksMin, conf.k);
     params = misc.genParams(conf.m, selectedPWMs, conf.backgroundAmount, conf.L, conf.order, ...
                             conf.doESharing, conf.doGTBound);
-    [test, train] = misc.crossValidationSplit(params, mergedPeaksMin, testTrainRatio);
+    % L x N
+
+    dict = peaks.fasta2mem();
+    chr1 = dict('chr3').Data;
+    len = length(chr1) - rem(length(chr1), conf.L);
+    N = len / conf.L;
+    X = reshape(chr1(1: len), conf.L, N)';
+    X = X(all(X <= 4, 2), :);
+    N, size(X)
+    dataset.X = X;
+    dataset.pcPWMp = misc.preComputePWMp(dataset.X, params);
+    [theta, a, b] = EM.EM(dataset, params, conf.maxIters, conf.patience, conf.repeat);
 
     % [E, G] = pretrain(params, train);
     % [theta, ~, ~] = EM.EM(test, params, conf.maxIters, conf.patience, conf.repeat, E, G);
     % theta.E(:, :) = E(:, :);
     % theta.G(:, :) = G(:, :);
-    [theta, a, b] = EM.EM(test, params, conf.maxIters, conf.patience, conf.repeat);
     % for tb = b
     %     show.showTheta(tb);
     % end
@@ -179,4 +189,3 @@ function YEst = maxPostEstimator(theta, params, psi, gamma)
     YEstSubStates(subStateMask) = subStates(subStateMask);
     YEst = cat(3, YEstBaseStates, YEstSubStates);
 end
-

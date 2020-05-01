@@ -10,7 +10,7 @@ function theta = GTbound3(params, theta)
     end
     % theta.E = log(E);
     theta.T = log(T);
-    theta.G = log(G);
+    % theta.G = log(G);
     theta.startT = log(startT);
 end
 
