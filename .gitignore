@@ -5,3 +5,4 @@
 *.bed
 src/+peaks/beds2mats.m.bak
 data/ChromHMM/all.mnemonics.bedFiles.tgz
+*.narrowPeak
