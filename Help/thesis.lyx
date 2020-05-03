@@ -403,40 +403,31 @@ Acknowledgments
 \begin_layout Standard
 
 \lang english
-My deepest gratitude goes to my supervisor, professor Tommy Kaplan, who
- sparked my curiosity for the nature of DNA in one of the open lectures
- I attended when I was an undergraduate computer science student.
- In our many talks since then, professor Kaplan's insights in the field
- of computational biology through the prism of the machine learning paradigm
- grew my interest even more.
- He taught me that patience and methodological work are irreplaceable properties
- of any good researcher,
+My deepest gratitude goes to my supervisor, Professor Tommy Kaplan, who
+ sparked my curiosity for the nature of DNA in one of his open lectures
+ I attended as an undergraduate student.
+ In our many talks since then, Professor Kaplan's insights in the field
+ of computational biology increased my interest even more.
+ He also taught me that patience and methodological work are the irreplaceable
+ properties of any good researcher
 \emph on
- 
-\begin_inset Quotes eld
-\end_inset
-
-As a man sows, so shall he reap
-\begin_inset Quotes erd
-\end_inset
-
 .
 \end_layout
 
 \begin_layout Standard
 
 \lang english
-Thank you for your guidance, advice and ideas during my participation in
- the research, your support and understanding gave me confidence through
- the hard parts of this road.
- It is well known among your students that your unique character always
- conveys a merry and pleasant atmosphere in your research group.
+So thank you for your guidance and ideas during my participation in this
+ work, and for the positive and pleasant atmosphere you always maintain
+ in your research group.
+ Your support and understanding gave me confidence through the hard parts
+ of this road, and kept me going.
 \end_layout
 
 \begin_layout Standard
 
 \lang english
-I  would also wish to thank my mother, Dr.
+I would also wish to thank my mother, Dr.
  Jenny Taub and my sister Matty Ariel for their careful review of this work.
  I am in debt for the many helpful suggestions they provided, which greatly
  improved the language and content of this thesis.
@@ -451,10 +442,10 @@ I  would also wish to thank my mother, Dr.
 \end_layout
 
 \begin_layout Standard
-מעצמים )srecnahne( הם קטעי בקרה גנטיים אשר מגבירים את סיכוי השעתוק של גן
- המטרה שלהם בהקשרם לחלבונים גורמי שעתוק )srotcaf noitpircsnart( והצמדות
+מעצמים )srecnahne( הם קטעי בקרה גנטיים אשר מגבירים את סיכויי השעתוק של גן
+ המטרה שלהם על ידי קשירה לחלבונים גורמי שעתוק )srotcaf noitpircsnart( והצמדות
  לאזור הגן.
- בקרת השעתוק היא צורת שליטה חשובה בביטוי הגנים וממלאת תפקיד משמעותי בבקרת
+ בקרת השעתוק הינה צורת שליטה חשובה בביטוי הגנים וממלאת תפקיד משמעותי בבקרת
  הגנים על פי מצב התא והרקמה לה הוא שייך.
  במשך השנים נצטברו עדויות לכך ששינויים גנטיים ברצפי המעצמים עלולים לגרום
  לשינויים בהתנהגותם של תאים וכתוצאה מכך, למחלות.
@@ -546,9 +537,9 @@ in vivo
 \emph default
  that the cell requires no other mechanism than the genetic sequence in
  order to regulate its gene expression.
- With that idea in mind, in this work we offer a computational approach
- for the detection of enhancers based only on their sequences, and in an
- unsupervised manner.
+ With that in mind, this work presents a computational approach for the
+ detection of enhancers based only on their sequences, and in an unsupervised
+ manner.
  We created a higher-order positional weight matrix-based hidden Markov
  model (HOP-HMM), with two kinds of states: one which emits transcription
  factor binding sites by using a positional weight matrix model, and one
@@ -565,20 +556,19 @@ in vivo
  We will describe our generalized model in detail and develop the expectation-ma
 ximization and Viterbi algorithms for hidden Markov models, followed by
  the adjustments needed for our generalized model.
- The implementations of these algorithms are demonstrated by applying them
+ The implementation of these algorithms is demonstrated by applying them
  to a synthetic dataset of enhancer-like sequences created by using the
- generative property of the generalized model.
- We will simulate the model in a controlled way to evaluate it by inferring
- estimated parameters of the model and comparing them to the real parameters
- used to create the dataset.
+ generative properties of the generalized model.
+ We will use the model in a controlled way in order to assess it by inferring
+ estimated parameters and comparing them to the real parameters used to
+ create the dataset.
  Finally, we will apply the expectation-maximization algorithm to train
- a HOP-HMM on human enhancer sequences, which were selected  based on the
- epigenetic data of the Roadmap project.
- We demonstrate the capabilities of the model by comparing its estimation
- to the epigenetic tracks, showing it can predict both the loci of enhancers
- and the in which tissues they will be active, without exposure to epigenetic
- data.
- 
+ a HOP-HMM on human enhancer sequences, which were selected on the basis
+ of the epigenetic data of the Roadmap project.
+ We will demonstrate the capabilities of the model by comparing its estimations
+ to the epigenetic tracks, showing that it can predict both the loci of
+ enhancers and in which tissues they will be active, without any exposure
+ to epigenetic data.
 \end_layout
 
 \begin_layout Standard
@@ -664,8 +654,12 @@ Gene sequences are composed of fragmented coding regions (exons) and noncoding
  Counter intuitively, even though the exons hold the instructions for proteins
  formation, the complexity of the organism is not correlated to the number
  of exons or their total length in its genome.
- For example, both humans and Caenorhabditis elegans roundworms have about
- 19,000 genes with roughly the same total exon length and number (
+ For example, both humans and 
+\emph on
+Caenorhabditis elegans
+\emph default
+ roundworms have about 19,000 genes with roughly the same total exon length
+ and number (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-57"
@@ -936,17 +930,24 @@ name "Mouse"
 
 \end_inset
 
-Transgenic mouse embryo on the 11.5 day with distinct anatomical pattern
+Transgenic mouse embryos on the 11.5 day with distinct anatomical pattern
  of enhancer activation in specific tissue types.
- In a large enhancer assay, fertilized eggs were injected 
+ In a large enhancer assay by 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-60"
+
+\end_inset
+
+ described on the right, fertilized eggs were injected 
 \emph on
 in vivo 
 \emph default
 with synthetic DNA sequences which contained an enhancer, a minimal promoter
  and a LacZ reporter gene.
  On the left, a human enhancer known to be related to neurons in the dorsal
- root of the spinal nerve became activated in these tissues and caused to
- the expression of the reporter gene that was coupled to it.
+ roots of the spinal nerves became activated in these tissues and caused
+ to the expression of the reporter gene that was coupled to it.
  Embryo 2 of experiment hs51, taken from the VISTA Enhancer Browser [
 \begin_inset Flex URL
 status open
@@ -958,14 +959,7 @@ https://enhancer.lbl.gov/
 
 \end_inset
 
-] (
-\begin_inset CommandInset citation
-LatexCommand citealp
-key "key-60"
-
-\end_inset
-
-).
+].
 \end_layout
 
 \end_inset
@@ -1004,10 +998,11 @@ key "key-12"
  When analyzing a tissue sample for TF and cofactors interaction density
  with the DNA, the chromatin immunoprecipitation sequencing (ChIP-seq) method
  is used to probe the amount of proteins in affinity to the DNA strands.
- Briefly, this method involves applying antibodies on cross-linked DNA,
- which bind to the proteins linked to the DNA.
- The antibodies binding is then followed by a massive parallel sequencing
- of the short DNA strands around the TF and the bound antibody.
+ Briefly, this method involves applying antibodies on cross-linked and sheared
+ DNA, and allowing these antibodies to bind to their target proteins.
+ The bound antibodies and target proteins are precipitated together with
+ the linked DNA strands which are then released, and undergo massive parallel
+ sequencing.
  A ChIP-seq assay 
 \emph on
 in vivo 
@@ -1219,7 +1214,7 @@ where
 
  the nucleotide index of A,C,G and T.
  To enable comparison between the binding likelihood of TFBS of different
- lengths, the use of the normalized form of PWM, the position-specific scoring
+ length, the use of the normalized form of PWM, the position-specific scoring
  matrix (PSSM), is more convenient:
 \begin_inset Formula 
 \begin{equation}
@@ -1312,7 +1307,7 @@ name "PWM"
 \series default
 Calculation of a PWM log likelihood.
  The 2-dimensional correlation between the one-hot encoding of the DNA sequence
- and the log of the PWM matrix result in the log likelihood of the TF binding
+ and the log of the PWM matrix results in the log likelihood of the TF binding
  at every location in the sequence.
 \end_layout
 
@@ -1878,7 +1873,7 @@ status open
 \lang english
 \begin_inset Graphics
 	filename Figures/genome_browser.png
-	scale 40
+	scale 55
 
 \end_inset
 
@@ -1994,8 +1989,8 @@ key "key-2"
 
 \end_inset
 
-) a DCNN was used to predict binding of 538 TFs and 194 RNA binding proteins
- from DNA sequences of varying lengths, based on data from 
+) a DCNN was used to predict the binding of 538 TFs and 194 RNA-binding
+ proteins from DNA sequences of varying lengths, based on data from 
 \emph on
 in vitro
 \emph default
@@ -2013,7 +2008,7 @@ k
 \emph default
 -mers presence indicator vectors were used as features for a SVM classifier
  in order to predict the p300 ChIP-seq signal of DNA sequences of varying
- lengths.
+ length.
  ChromHMM (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -2070,14 +2065,10 @@ reference "PWM"
 \emph on
 k
 \emph default
--mer frequencies as used in gkm-SVM.
- In this technique, the order of the 
-\emph on
-k
-\emph default
--mer is sacrificed for a more meaning-oriented, structured and fixed-length
- data encoding, similarly to the bag of words technique in text analysis
- and natural language processing.
+-mer frequencies, as used in gkm-SVM.
+ With this technique, the structure in the order of the k-mers is sacrificed
+ for a more meaning-oriented data encoding of fixed length, similarly to
+ the bag-of-words technique in text analysis and natural language processing.
  
 \end_layout
 
@@ -2251,13 +2242,11 @@ key "key-42"
  The travel of the model over the states is named a Markov process, and
  the sequence of the states visited in the process is called a Markov chain.
  
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
+\begin_layout Standard
 
-\begin_inset Newpage newpage
-\end_inset
-
+\lang english
 The likelihood of a Markov chain 
 \begin_inset Formula $X$
 \end_inset
@@ -2340,7 +2329,7 @@ name "Markov"
 
 \end_inset
 
-Makrov model and 
+Markov model and 
 \series bold
 A)
 \series default
@@ -2349,11 +2338,11 @@ A)
 \series bold
 B,C)
 \series default
- The model starts with a state sampled from 
+ The model starts with a state sampled from the start distribution 
 \begin_inset Formula $π$
 \end_inset
 
-, and travels between the states with a transition distribution 
+, and travels between the states with a transition probability matrix 
 \begin_inset Formula $T$
 \end_inset
 
@@ -2382,7 +2371,7 @@ D)
 
 \lang english
 The HMM is a Markov model extension which models a system that travels over
- hidden states as a Markov process, and while doing so emits variables called
+ hidden states as a Markov process, and while doing so emits variables named
  observed variables.
  Like the Markov model, HMM is a generative model, and therefore assumes
  the existence of a joint probability 
@@ -2512,15 +2501,7 @@ HMM with 2 hidden states.
 C,D)
 \series default
  The hidden states (yellow and green) behave as Markov model states with
- starting and transition probabilities 
-\begin_inset Formula $\pi$
-\end_inset
-
- and 
-\begin_inset Formula $T$
-\end_inset
-
-.
+ start and transition distributions.
  
 \series bold
 E)
@@ -2528,7 +2509,7 @@ E)
  The output of the model is an observable sequence with an underlying hidden
  sequence.
  The hidden sequence is a Markov chain, where the hidden state emits a single
- observed variable on each step.
+ observed variable at each step.
 \end_layout
 
 \end_inset
@@ -3809,7 +3790,7 @@ name "GHMM"
 
 \end_inset
 
-GHMM that can emit TFBSs as described by 
+Generalized HMM that can emit TFBSs as described by 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "key-64"
@@ -3941,9 +3922,9 @@ HOP-HMM
 \begin_layout Standard
 
 \lang english
-HOP-HMM is a GHMM well adapted to the structure of enhancers containing
- TFBSs, due to the TFBS emitting TF states that take part in the generation
- process of the sequence.
+HOP-HMM is a GHMM well adapted to the structure of regulatory sequences
+ containing TFBSs, due to the TFBS emitting TF states that take part in
+ the generation process of the sequence.
  In view of the assumed local physical nature of the TF binding of DNA sequences
  and of the success of HMM in gene prediction, we think the memorylessness
  of HMMs fits well the task of enhancer prediction.
@@ -3952,14 +3933,14 @@ HOP-HMM is a GHMM well adapted to the structure of enhancers containing
 \emph on
 k
 \emph default
--mer of the TFBS present in regulatory regions in the DNA.
+-mer frequencies of the regulatory regions in the genome.
  
 \end_layout
 
 \begin_layout Standard
 
 \lang english
-HOP-HMM extends the GHMM of 
+HOP-HMM extends the GHMM that was introduced by 
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-64"
@@ -3968,8 +3949,8 @@ key "key-64"
 
 , where some of the hidden states emit TFBS sampled from PWMs in order to
  predict enhancer locations in the genome.
- In HOP-HMM we added a high-order conditional emission probability distribution
- to the background states.
+ In HOP-HMM we added a high-order conditioning to the emission probability
+ distribution of the background states.
  
 \end_layout
 
@@ -4038,8 +4019,8 @@ with two states.
 \series bold
 A)
 \series default
- The model has one background state that emits single nucleotides and one
- TF state that emits a TFBS and return to the background state.
+ The model has one background state that emits single nucleotides, and one
+ TF state that emits a TFBS and returns to the background state.
  
 \series bold
 B)
@@ -4050,8 +4031,8 @@ y distribution is conditioned on the previous nucleotide.
 \series bold
 C,D)
 \series default
- Unlike GHMM, in HOP-HMM a TF state cannot transition into itself and cannot
- be the starting hidden state and the background state.
+ Unlike GHMM, in HOP-HMM a TF state cannot transition into itself, and cannot
+ be the starting hidden state.
  
 \series bold
 E)
@@ -4127,7 +4108,7 @@ name "TGCompact"
 
 \end_inset
 
-Compact form pf HOP-HMM for holding the transition probability distributions.
+Compact form of HOP-HMM for holding the transition probability distributions.
  Instead of holding a single sparse 8
 \begin_inset Formula $\times$
 \end_inset
@@ -4143,7 +4124,7 @@ Compact form pf HOP-HMM for holding the transition probability distributions.
 
  matrices.
  The non-fixed transition probabilities held in the compact form are those
- between background states, and between background states to their TF states
+ between background states, and between background states and their TF states
  (outlined with blue).
  The concatenation of a row in 
 \begin_inset Formula $T$
@@ -4235,7 +4216,7 @@ A)
 \begin_inset Formula $BG_{2}$
 \end_inset
 
-, where each has three TF states.
+, where each has three TF states with three PWMs.
  
 \series bold
 B) 
@@ -4437,7 +4418,7 @@ status open
 \lang english
 \begin_inset Graphics
 	filename Figures/HOP_HMM_general_mk.jpg
-	scale 50
+	scale 80
 
 \end_inset
 
@@ -4721,6 +4702,13 @@ When in a background state, after its observable variable emission the model
  which will emit another observable variable and so on.
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 
 \lang english
@@ -4914,10 +4902,6 @@ Q\left(\theta,\theta^{'}\right)=\sum_{j\in[m]}log\pi_{j}\cdot P\left(x_{1:L},y_{
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 
 \end_layout
 
@@ -5471,7 +5455,7 @@ where
 
 \lang english
 Note that the last addition component, which holds the TFBS log likelihood,
- does not contain elements from  
+ does not contain elements from 
 \begin_inset Formula $θ$
 \end_inset
 
@@ -5819,10 +5803,10 @@ For the calculation of these probabilities, we first need to calculate the
  forward and backward probabilities output from a HOP-HMM adjusted forward-backw
 ard algorithm.
  In the forward-backward algorithm adaptation for HOP-HMM, we will only
- build the probabilities for entering the background states since the TF
- states probabilities are not needed in the later parts of the E-step.
- The adjustments for the forward and backward algorithm evolve the new requireme
-nt to support transitions into both background states and TF states.
+ build the probabilities of entering the background states since the TF
+ states probabilities will not be needed in the later parts of the E-step.
+ The adjustments for the forward and backward algorithms lead to the new
+ requirement to support transitions into both background states and TF states.
 \end_layout
 
 \begin_layout Standard
@@ -6269,14 +6253,15 @@ The backward probabilities for the HOP-HMM are:
 \begin_layout Standard
 
 \lang english
-The noticable difference between the backwards probabilities of HMM in 
+The noticeable difference between the backwards probabilities of HMM in
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:BackwardProp"
 
 \end_inset
 
- and these ones are the dependency on 
+ and those are the dependency on 
 \begin_inset Formula $x_{1:t}$
 \end_inset
 
@@ -6290,17 +6275,17 @@ reference "eq:BackwardProp"
 \begin_inset Formula $y_{t}$
 \end_inset
 
- and not the previous variables, meaning 
+ and not on the previous variables, meaning 
 \begin_inset Formula $P\left(x_{t+1:L}|y_{t}=j,x_{1:t}\right)=P\left(x_{t+1:L}|y_{t}=j\right)$
 \end_inset
 
 .
  On the other hand, this is not the case in HOP-HMM since the emission of
- the background states is high-order and therefore has dependency on the
- previous variables.
- After describing the adjustment backward algorithm, we will show that this
- adjustment leads to the required terms of the M-step of the Baum-Welch
- algorithm.
+ the background states has high-order conditioning and is therefore dependent
+ on the previous variables.
+ After describing the adjustment of the backward algorithm, we will show
+ that this adjustment leads to the required terms of the M-step of the Baum-Welc
+h algorithm.
 \end_layout
 
 \begin_layout Standard
@@ -6682,7 +6667,7 @@ status open
 
 \lang english
 Forward-backward dynamic algorithm for HOP-HMM.
- In HOP-HMM, the  tables 
+ In HOP-HMM, the tables 
 \begin_inset Formula $\alpha$
 \end_inset
 
@@ -6716,7 +6701,7 @@ We will now explain why the described calculations result in
 \lang english
 \begin_inset Formula 
 \begin{align*}
-\alpha_{j,t}=P\left(y_{t}=(j,0),x_{1:t}\right)\,\,\, & \beta_{j,t}=P\left(x_{t+1:L}|y_{t}=(j,0),x_{1:t}\right)
+\alpha_{j,t}=P\left(y_{t}=(j,0),x_{1:t}\right)\,\,\,\,\,\,\,\,\,\,\,\,\,\,\, & \beta_{j,t}=P\left(x_{t+1:L}|y_{t}=(j,0),x_{1:t}\right)
 \end{align*}
 
 \end_inset
@@ -6915,11 +6900,11 @@ P\left(y_{t-1}=(j',0),y_{t}=(j,0),x_{1:t}\right)=
 \begin_layout Standard
 
 \lang english
-For the backward probabilities 
+In order to explain the backward probabilities 
 \begin_inset Formula $\beta,$
 \end_inset
 
- the explanation we will use the law of total probability:
+ we will use the law of total probability:
 \end_layout
 
 \begin_layout Standard
@@ -7119,7 +7104,7 @@ reference "HOP-eta"
 \begin_layout Standard
 
 \lang english
-The first is a 
+The first is the 
 \begin_inset Formula $m\times k\times L$
 \end_inset
 
@@ -7253,7 +7238,7 @@ reference "HOP-gamma"
 \end_inset
 
  which holds the probability distribution of the background state at a given
- position given the sequence 
+ position, given the sequence 
 \begin_inset Formula $x_{1:L}$
 \end_inset
 
@@ -7300,7 +7285,7 @@ reference "HOP-xi"
 \end_inset
 
  which holds the probability distribution of the background-to-background
- state transitions given the sequence 
+ state transitions, given the sequence 
 \begin_inset Formula $x_{1:L}$
 \end_inset
 
@@ -7376,11 +7361,11 @@ reference "HOP-eta"
 \end_inset
 
  which holds the probability distribution for background-to-background state
- transitions given the sequence 
+ transitions, given the sequence 
 \begin_inset Formula $x_{1:L}$
 \end_inset
 
-, denoted as :
+:
 \end_layout
 
 \begin_layout Standard
@@ -7399,7 +7384,7 @@ reference "HOP-eta"
 \begin_layout Standard
 
 \lang english
-Now with 
+Now, with 
 \begin_inset CommandInset ref
 LatexCommand eqref
 reference "HOP-gamma"
@@ -8460,7 +8445,7 @@ for
 \begin_inset space ~
 \end_inset
 
-for  
+for 
 \begin_inset Formula $l=[1,...,k]:$
 \end_inset
 
@@ -8913,7 +8898,7 @@ reference "HOP-gamma"
 \begin_inset Formula $l>0$
 \end_inset
 
-,  we sum all options of a TF state 
+, we sum all options of a TF state 
 \begin_inset Formula $(j,l)$
 \end_inset
 
@@ -9107,16 +9092,16 @@ y_{1:L}^{*}=argmax_{y_{1:L}}P\left(y_{1:L}|x_{1:L};\hat{\theta}\right)\label{Vit
 \begin_layout Standard
 
 \lang english
-The main difference with inference 1 is the consideration of the dependency
+The main dissimilarity with inference 1 is the consideration of the dependency
  between adjacent states.
  In inference 1, for example, two adjacent positions may be individually
  inferred states between which the transition probability equals 0.
- In such a case, even though each state maximizes the likelihood at its
- own position, the likelihood of the resulting sequence would be 0 since
- it contains an impossible transition.
+ In such a case, even though each state maximizes the posterior probability
+ at its own position, the likelihood of the resulting sequence would be
+ 0 since it contains an impossible transition.
  As a consequence, the requirement in inference 2 for the most likely hidden
  sequence, with the transitions inside it taken into account, could not
- be simply achieved by concatenating all the most likely states at every
+ simply be achieved by concatenating all the most likely states at every
  position into a sequence.
 \end_layout
 
@@ -11366,7 +11351,7 @@ Workflow of the evaluation process.
 \begin_inset Formula $\theta$
 \end_inset
 
- is sampled and a HOP-HMM is created with which several fixed-length sequences
+ is sampled and a HOP-HMM is created, with which several fixed-length sequences
  are generated.
  A new model 
 \begin_inset Formula $\hat{\theta}$
@@ -11466,7 +11451,7 @@ reference "Regularization1"
 
 \end_inset
 
- and  
+ and 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "Regularization2"
@@ -11602,8 +11587,8 @@ reference "LikelihoodVsErr"
 \begin_layout Standard
 
 \lang english
-The experiment was done on a dataset of 500 synthetic sequences (85% train,
- 15% test), all of them 1500 bp-long.
+The experiment was performed on a dataset of 500 synthetic sequences (85%
+ train, 15% test), all of them 1500 bp-long.
  The trained model had 5 hidden background states with an emission order
  of 3, and each background state had 25 TF states.
  The background states mean test precision was 98.5% and the mean test recall
@@ -11691,12 +11676,7 @@ Over multiple runs of Baum-Welch adaptation for HOP-HMM, higher sequences
 \end_layout
 
 \begin_layout Standard
-\noindent
-\align center
-
-\lang english
 \begin_inset Float figure
-placement H
 wide false
 sideways false
 status open
@@ -11841,8 +11821,12 @@ A)
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+
+\lang english
 \begin_inset Float figure
-placement H
 wide false
 sideways false
 status open
@@ -11932,19 +11916,20 @@ name "Regularization2"
 
 \end_inset
 
- On average, the regularization causes to 
+ On average, the regularization causes to the EM algorithm to converge to
+ 
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
- estimations with higher likelihoods that produce Viterbi paths with lower
-  misclassification rates.
+ estimations with higher likelihoods and that produce Viterbi paths with
+ lower misclassification rates.
  
 \series bold
 A)
 \series default
  The mean log likelihood of the sequences increases until convergence during
  the EM iterations.
- With the regularization enabled, the likelihood is not always monotonous
+ With the regularization enabled, the likelihood is not always monotonous,
  since with it the likelihood increase of Baum-Welch updates is no longer
  guaranteed.
 
@@ -11960,8 +11945,8 @@ A)
 \begin_inset Formula $θ$
 \end_inset
 
- could produce a Viterbi path that is a perfect match to the true hidden
- sequence, as the value of the purple and yellow charts is 0.1% and not 0%.
+ could produce a Viterbi path that perfectly matches the true hidden sequence,
+ as the value of the purple and yellow charts is 0.1% and not 0%.
 \end_layout
 
 \end_inset
@@ -12034,7 +12019,7 @@ Posterior probability of sequences, estimated by a trained HOP-HMM
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
- on test dataset of sequences that were synthetically generated by a HOP-HMM
+ on a test dataset of sequences that were synthetically generated by a HOP-HMM
  
 \begin_inset Formula $\theta$
 \end_inset
@@ -12120,9 +12105,9 @@ name "ConfutionMatrix"
 Confusion matrix of true and estimated states by the Viterbi algorithm for
  synthetic sequences.
  Rows are normalized so their sum is equal to 1.
- For a smaller confusion matrix that can be easily presented, the HOP-HMMs
+ For a smaller confusion matrix that would be easier to present, the HOP-HMMs
  in this experiment contained 5 background states and only 10 TF states.
- Similar to the experiment with the larger HOP-HMM shown in figure 
+ Similarly to the experiment with the larger HOP-HMM shown in figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "PostiriorProbability"
@@ -12151,8 +12136,8 @@ reference "PostiriorProbability"
 \end_inset
 
 .
- Note that the Viterbi algorithm often missclassify TF states as their backgroun
-d state.
+ Note that the Viterbi algorithm often misclassifies TF states as their
+ background state.
 \end_layout
 
 \end_inset
@@ -12175,11 +12160,11 @@ Human DNA Experiment
 
 \lang english
 For the testing of HOP-HMM on human genetic data, we sought to assess if
- HOP-HMM could distinguish and detect enhancers active in two human tissues.
- We created a dataset of enhancer sequences based on epigenetic data collected
- from 57 tissues by the Roadmap project.
- To choose the location of the enhancer elements, we manipulated the Roadmap
- project BED files with BEDTools (
+ HOP-HMM could detect enhancers activity in two human tissues.
+ Thus, we created a dataset of enhancer sequences based on epigenetic data
+ collected from 57 tissues by the Roadmap project.
+ In order to choose the location of the enhancer elements, we manipulated
+ the Roadmap project BED files with BEDTools (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "key-68"
@@ -12188,12 +12173,13 @@ key "key-68"
 
 ).
  We chose the intersection of DNase-I, H3K27ac and H3K4me1 peaks, while
- avoiding peaks of H3K27me3 and H3K4me3, and sequences within 5000 bp from
- known genes.
+ avoiding peaks of H3K27me3 and H3K4me3, and all sequences within 5000 bp
+ from known genes.
  The sequences chosen were 5000 bp-long sequences from the hg19 assembly,
  centered around their DNase-I peak to ensure the flanks of the enhancer.
  Among these enhancers, we chose only sequences of tissue-specific enhancers
- in one of two types of tissues, which were selected out of the 57 tissues.
+ in one of two types of tissues, which were selected out of these same 57
+ tissues.
  After some trial and error, we chose the somewhat arbitrary cutoff of the
  top 40% strongest DNase-seq peaks, which yielded enough sequences (around
  500 sequences per tissue sample on average) with distinguishable distributions
@@ -12204,6 +12190,7 @@ key "key-68"
  The trained model was then used to produce a Viterbi estimated hidden states
  sequence and posterior probability, which could be compared to the epigenetic
  tracks.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -12286,11 +12273,10 @@ reference "fig:RealSequences"
 \end_inset
 
 ), though such similarity did not always occur.
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
 
-\lang english
 \begin_inset Newpage newpage
 \end_inset
 
@@ -12305,120 +12291,6 @@ placement H
 wide false
 sideways false
 status open
-
-\begin_layout Plain Layout
-
-\lang english
-\begin_inset Box Frameless
-position "t"
-hor_pos "c"
-has_inner_box 1
-inner_pos "t"
-use_parbox 0
-use_makebox 1
-width "100text%"
-special "none"
-height "1in"
-height_special "totalheight"
-thickness "0.4pt"
-separation "3pt"
-shadowsize "4pt"
-framecolor "black"
-backgroundcolor "none"
-status open
-
-\begin_layout Plain Layout
-
-\lang english
-\begin_inset Graphics
-	filename Figures/realSeq1.jpg
-	scale 40
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\lang english
-\begin_inset Box Frameless
-position "t"
-hor_pos "c"
-has_inner_box 1
-inner_pos "t"
-use_parbox 0
-use_makebox 1
-width "100text%"
-special "none"
-height "1in"
-height_special "totalheight"
-thickness "0.4pt"
-separation "3pt"
-shadowsize "4pt"
-framecolor "black"
-backgroundcolor "none"
-status open
-
-\begin_layout Plain Layout
-
-\lang english
-\begin_inset Graphics
-	filename Figures/realSeq2.jpg
-	scale 40
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\lang english
-\begin_inset Box Frameless
-position "t"
-hor_pos "c"
-has_inner_box 1
-inner_pos "t"
-use_parbox 0
-use_makebox 1
-width "100text%"
-special "none"
-height "1in"
-height_special "totalheight"
-thickness "0.4pt"
-separation "3pt"
-shadowsize "4pt"
-framecolor "black"
-backgroundcolor "none"
-status open
-
-\begin_layout Plain Layout
-
-\lang english
-\begin_inset Graphics
-	filename Figures/realSeq3.jpg
-	scale 40
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
 
 \begin_layout Plain Layout
 
@@ -12445,8 +12317,8 @@ status open
 
 \lang english
 \begin_inset Graphics
-	filename Figures/realSeqLegend.jpg
-	scale 42
+	filename Figures/RealSeqsMergedCentered.jpg
+	scale 45
 
 \end_inset
 
@@ -12523,18 +12395,19 @@ reference "HOP-eta"
  The implementation also included a code for generating DNA sequences from
  a randomly selected HOP-HMM to which a different model could be fitted
  and compared.
- Naturally, in the synthetic data experiment, the larger the generated dataset
- that is used to fit the model the better the performance of the fitting.
+ Naturally, the larger the generated dataset used to fit the model in the
+ synthetic data experiment, the better the performance of the fitting.
  Overall, the generated DNA sequences experiment results were positive and
  provided evidence for the ability of the algorithm to train successfully
  on DNA sequences created under our HOP-HMM assumptions.
+ 
 \end_layout
 
 \begin_layout Standard
 
 \lang english
 Like in other machine learning challenges, comparison to the state-of-the-art
- (SOTA) of regulatory sequences prediction model is not straight forward.
+ of prediction models for regulatory sequences is not straight forward.
  Several softwares accurately predict epigenetic features of DNA sequences:
  gkm-SVM by 
 \begin_inset CommandInset citation
@@ -12564,45 +12437,48 @@ key "key-31"
 
 \end_inset
 
-, while each of them approach the task with different datasets and definition
- to the problem.
+.
+ However, each of them approaches the task with a different definition of
+ the problem, and different datasets for it.
  Among these softwares, DeepSEA seems the most comprehensive since it was
- trained on all the human genome and since it predicts the most epigenetic
- features for multiple cell types.
- Though all of these softwares extract substantial information about how
- sequences determine their epigenetic, they are all based on a model that
- define the problem as supervised learning task.
- Using a model that defines the problem as an unsupervised learning task
- (such as ours) holds the potential to annotate whole genome 
+ trained on the entire human genome and predicts the largest number of epigeneti
+c features for multiple cell types.
+ Though all these softwares extract substantial information about how sequences
+ determine their epigenetic, they are all based on a model that defines
+ the problem as a supervised learning task.
+ Using a model that would define it as an unsupervised learning task (such
+ as ours) holds potential for the 
 \emph on
-de novo
+de novo 
 \emph default
- without the need for epigenetic data of extracted cells.
+annotation of the entire genome, without the need for epigenetic data from
+ extracted cells.
 \end_layout
 
 \begin_layout Standard
 
 \lang english
 The implementation of the HOP-HMM for this work was done in Matlab, and
- its run-time and memory requirements for training a significant parts of
- the human genome are intractable (several days for each EM iteration).
+ its run-time and memory requirements for training it with significant parts
+ of the human genome are still unreachable (several days for each EM iteration).
  In order to assess the ability of the model to detect real human enhancers
- on a smaller subset of the data, we have created a dataset of tissue-specific
+ on a smaller subset of the data, we created a dataset of tissue-specific
  enhancers from two tissues and non-regulatory “background” sequences whose
- locations were deducted from epigenetic data of the Roadmap project.
+ locations were deducted from the epigenetic data of the Roadmap project.
  Though some of these sequences were correctly classified by the trained
  model, no tested pair of tissues had a classification with consistent similarit
-y to its epigenetic data, and surely didn't surpass the results of DeepSEA.
- We have found that some of the tissues had many enhancers that were are
- well classified though no good classifications could be found for the rest.
- Over all, the small scale of experiment we executed is not sufficient to
- determine if the model could accurately predict enhancer sequences from
- the human genome.
- The causes for the mixed results of the human genome experiment compared
- to the positive results of the generated synthetic data experiment might
- origin from one of two reasons: the EM algorithm did not converge toward
- good enough parameters, or no such parameters existed in the HOP-HMM hypothesis
- space.
+y to its epigenetic data, and our results certainly did not surpass those
+ of DeepSEA.
+ We found that some of the tissues had many well-classified enhancers, though
+ no good classification could be found for the rest.
+ Over all, the small scale of the experiment we executed is not sufficient
+ to determine if the model could accurately predict enhancer sequences from
+ the entire human genome.
+ The causes of the mixed results of the human genome experiment compared
+ to the positive results of the generated synthetic data experiment may
+ reside in one of two reasons: either the EM algorithm did not converge
+ toward good enough parameters, or no such parameters existed in the HOP-HMM
+ hypothesis space.
 \end_layout
 
 \begin_layout Standard
@@ -12623,8 +12499,8 @@ As for the former possibility, the experiments done with our generated data
  In other words, convergence of the EM to low quality local maxima mainly
  occurred when the emission distributions in the generating parameters were
  not significantly different.
- This tradeoff is common in the machine learning field, as the ability of
- many models to distinguish between similar classes depends on the amount
+ This tradeoff is common in the machine learning field, as since the ability
+ of many models to distinguish between similar classes depends on the amount
  of relevant samples in the training dataset (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -12633,21 +12509,19 @@ key "key-75"
 \end_inset
 
 ).
- In our dataset of human enhancers, most tissues had only several hundreds
- of enhancer sequences, which might have been insufficient for a high quality
+ In our dataset of human enhancers, most tissues only had several hundred
+ enhancer sequences, which may have been insufficient for a high quality
  convergence of the EM algorithm.
- 
 \end_layout
 
 \begin_layout Standard
 
 \lang english
-As for the latter possibility, this could mean that the spanned solution
- space of the HOP-HMM assumption does not match our human enhancers dataset.
+As for the latter possibility, it could mean that the spanned solution space
+ of the HOP-HMM assumption does not match our human enhancer dataset.
  This could stem from several reasons: wrong PWMs selection as hyperparameters,
  too small or noisy dataset building from the Roadmap data, and even a more
  complex enhancer structure than assumed by the HOP-HMM hypothesis.
- 
 \end_layout
 
 \begin_layout Standard
@@ -12656,13 +12530,12 @@ As for the latter possibility, this could mean that the spanned solution
 In further research, the use of updated data with cleaner experiments and/or
  more tissue diversity would be likely to provide better results.
  Even without new data, a more efficient implementation of the algorithms
- would allow executing it on more significant parts of the genome in reasonable
- time, which might result in better classifications.
+ would allow executing it on more significant parts of the genome within
+ a reasonable time, which might result in better classifications.
  Improvements to HOP-HMM which should be tried in the future include the
- introduction of learning to the PWMs preceding or during EM iterations,
- or the entire replacement of the PWMs emissions by a different TFBS modeling
+ introduction of learning to the PWMs before or during EM iterations, or
+ the entire replacement of the PWMs emissions by a different TFBS modeling
  method.
- 
 \end_layout
 
 \begin_layout Standard
