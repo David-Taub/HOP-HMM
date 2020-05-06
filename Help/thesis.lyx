@@ -9,9 +9,12 @@
 \usepackage[nottoc,numbib]{tocbibind}
 \usepackage{babel}
 \usepackage{float}
+\usepackage{anyfontsize}
 \usepackage{fancyhdr}
 \usepackage{wrapfig}
 \usepackage[font=footnotesize,labelfont=bf]{caption}
+\usepackage{xcolor}
+\hypersetup{hidelinks}
 \captionsetup{justification=justified,singlelinecheck=false}
 \end_preamble
 \use_default_options false
@@ -118,12 +121,24 @@ End
 \begin_body
 
 \begin_layout Standard
-\paragraph_spacing double
 \noindent
 \align center
 
 \size larger
 \lang english
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{empty}
+\end_layout
+
+\end_inset
+
+
 \begin_inset space ~
 \end_inset
 
@@ -134,18 +149,6 @@ End
 \end_inset
 
 
-\size larger
-
-\begin_inset space ~
-\end_inset
-
-
-\size huge
-
-\begin_inset space ~
-\end_inset
-
-
 \begin_inset ERT
 status open
 
@@ -153,99 +156,156 @@ status open
 
 
 \backslash
-hrulefill
-\end_layout
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-Classification of Regulatory Sequences 
-\begin_inset Newline newline
-\end_inset
-
-in the Human Genome Using High-Order 
-\begin_inset Newline newline
-\end_inset
-
-Generalized Hidden Markov Models 
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\lang hebrew
-סיווג קטעי בקרה מהגנום האנושי על ידי
-\begin_inset Newline newline
-\end_inset
-
-מודל מרקוב חבוי מוכלל מסדר גבוה
-\lang english
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
+noindent
 \backslash
-hrulefill
+rule{
+\backslash
+textwidth}{1pt}
 \end_layout
 
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset Newline newline
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
-\paragraph_spacing double
 \noindent
 \align center
 
+\size huge
 \lang english
+Classification of Regulatory Sequences
+\begin_inset Newline newline
+\end_inset
+
+
+\size tiny
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size huge
+in the Human Genome Using High-Order
+\begin_inset Newline newline
+\end_inset
+
+
+\size tiny
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size huge
+Generalized Hidden Markov Models
+\end_layout
+
+\begin_layout Standard
+\paragraph_spacing other 0.5
+\noindent
+\align center
+
+\size huge
+\lang english
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+noindent
+\backslash
+rule[20pt]{
+\backslash
+textwidth}{1pt}
+\end_layout
+
+\end_inset
+
+
+\size default
+
+\begin_inset Newline newline
+\end_inset
+
 by
 \begin_inset Newline newline
 \end_inset
 
 
+\size tiny
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
 \size larger
-David Taub 
-\size small
-(302546163)
+David Taub
+\size tiny
+\emph on
+
+\begin_inset space ~
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-\paragraph_spacing double
+\paragraph_spacing other 0.5
 \noindent
 \align center
 
+\size tiny
 \lang english
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size default
 Supervised by
+\size tiny
+\emph on
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph default
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -257,137 +317,280 @@ Prof.
 \end_inset
 
 
+\size tiny
+
 \begin_inset space ~
 \end_inset
 
 
-\size huge
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size large
+
+\begin_inset Graphics
+	filename Figures/HUJI_LogoEng_only.jpg
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size tiny
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph default
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\size large
+A thesis submitted in partial fulfillment of the requirements
+\begin_inset Newline newline
+\end_inset
+
+
+\size tiny
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size large
+for the degree of Master of Science in Computer Science
+\begin_inset Newline newline
+\end_inset
+
+
+\size tiny
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
 
 \begin_inset Newline newline
 \end_inset
 
 
 \size larger
+May 2020
+\begin_inset Newline newline
+\end_inset
+
+
+\size tiny
 
 \begin_inset space ~
 \end_inset
 
 
-\size huge
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
 
 \begin_inset Newline newline
 \end_inset
 
 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size default
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\backslash
+fontsize{16pt}{18pt}
+\backslash
+selectfont
 \end_layout
 
-\begin_layout Standard
-\paragraph_spacing double
-\noindent
-\align center
-
-\lang english
-A thesis submitted in partial fulfillment of the requirements for the
-\begin_inset Newline newline
 \end_inset
 
-degree of Master of Science in Computer Science
+ The Rachel and Selim Benin School of Computer Science and Engineering
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
-\begin_layout Standard
-\paragraph_spacing double
-\noindent
-\align center
+\end_inset
 
-\size large
-\lang english
-April 2020
+
 \begin_inset Newline newline
 \end_inset
 
 
-\size larger
-\lang hebrew
-ניסן תש"פ
-\lang english
+\size tiny
 
 \begin_inset space ~
 \end_inset
 
 
-\size large
-
 \begin_inset Newline newline
 \end_inset
 
 
-\size larger
+\size default
 
-\begin_inset space ~
-\end_inset
+\begin_inset ERT
+status open
 
+\begin_layout Plain Layout
 
-\size large
-
-\begin_inset Newline newline
-\end_inset
-
-
-\size larger
-
-\begin_inset space ~
-\end_inset
-
-
-\size large
-
-\begin_inset Newline newline
-\end_inset
-
-
-\size larger
-
-\begin_inset space ~
-\end_inset
-
-
-\size large
-
-\begin_inset Newline newline
-\end_inset
-
-
-\size larger
-
-\begin_inset space ~
-\end_inset
-
-
-\size large
-
-\begin_inset Newline newline
-\end_inset
-
-
+{
+\backslash
+fontsize{16pt}{18pt}
+\backslash
+selectfont
 \end_layout
 
-\begin_layout Standard
-\paragraph_spacing double
-\noindent
-\align center
-
-\size larger
-\lang english
-The Faculty of Computer Science and Engineering
-\begin_inset Newline newline
 \end_inset
 
-The Hebrew University of Jerusalem, Israel
+ The Hebrew University of Jerusalem, Israel
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
-\begin_layout Standard
+\end_inset
 
-\lang english
+
 \begin_inset Newpage newpage
 \end_inset
 
@@ -431,62 +634,6 @@ I would also wish to thank my mother, Dr.
  Jenny Taub and my sister Matty Ariel for their careful review of this work.
  I am in debt for the many helpful suggestions they provided, which greatly
  improved the language and content of this thesis.
-\begin_inset Newpage newpage
-\end_inset
-
-
-\end_layout
-
-\begin_layout Section*
-תקציר
-\end_layout
-
-\begin_layout Standard
-מעצמים )srecnahne( הם קטעי בקרה גנטיים אשר מגבירים את סיכויי השעתוק של גן
- המטרה שלהם על ידי קשירה לחלבונים גורמי שעתוק )srotcaf noitpircsnart( והצמדות
- לאזור הגן.
- בקרת השעתוק הינה צורת שליטה חשובה בביטוי הגנים וממלאת תפקיד משמעותי בבקרת
- הגנים על פי מצב התא והרקמה לה הוא שייך.
- במשך השנים נצטברו עדויות לכך ששינויים גנטיים ברצפי המעצמים עלולים לגרום
- לשינויים בהתנהגותם של תאים וכתוצאה מכך, למחלות.
- הכללים והדקויות של מבנה המעצם טרם הובנו לחלוטין, אף כי ניסויים הראו כי
- גורמי שעתוק נוטים להצמד לאתרי קשירה של גורמי שעתוק, שהם מוטיבים יחודיים
- אשר נפוצים יחסית בקטעי המעצמים.
- ניתן לאתר את פעילות המעצם לפי מידע אפיגנטי בסביבתו, כשהסימנים העיקריים
- הם השינויי בהיסטונים )snoitacifidom enotsih( אשר סביבם כרוכים אגפי המעצם.
- המעצם נוטה להיות נגיש מרחבית עבור אינטראקציות ביוכימיות בין ה-AND לחלבונים
- שסביבו.
- על אף תועלתו הרבה, המידע האפיגנטי לעיתים קרובות רועש ומצריך תהליכים יקרים
- של חילוץ תאים ספציפיים מתוך רקמותיהם, פעולה אשר אינה תמיד ברת ביצוע לכלל
- סוגי התאים בשלביהם השונים.
- דרך נוספת לזיהוים של מעצמים היא בחינת תוכנם של ריצפם הגנטי, משום שבהם נמצא
- כל המידע הדרוש ל-AND על מנת שיתחיל לפעול כמעצם.
- ניסויים אשר נערכו בחיות מעבדה הראו כי התא איננו זקוק למנגנון נוסף מעבר
- לרצף הגנטי על מנת לגרום לבקרת הגנים שבו.
- בשל תפישה זו, אנו מציעים גישה חישובית לזיהוי של מעצמים על בסיס ריצפם הגנטי
- בלבד, בדרך למידה לא מונחית.
- יצרנו מודל מרקוב חבוי מסדר גבוה מבוסס מטריצות משקול מיקום, בעל שני סוגי
- מצבים: מצב אחד אשר פולט אתרי קשירה של גורמי שעתוק מתוך מטריצות משקול מקום,
- ואחד אשר פולט נוקלאוטידים בודדים תוך תלות מסדר גבוה באלה שנפלטו לפניהם.
- בהשוואה למודל מרקוב חבוי רגיל, מודל זה לומד מבנה מורכב יותר של הרצף הגנטי,
- אשר מכיל מוטיבים של אתרי קשירה והתפלגות מסדר גבוה של נוקלאוטידים המצויים
- בינהם.
- אנו נבחן תחילה את הרקע הביולוגי של המעצמים, תוך התרכזות בבני אדם.
- לאחר מכן נסקור לעומק את הרקע של מודלי מרקוב חבויים, ונדון בדרך לחישוב הנראות
- )doohilekil( של רצפים בהינתן המודל.
- נתאר לפרטים את המודל המוכלל שלנו ונפתח את אלגוריתם מיקסום התוחלת )noitazimixam
- noitatcepxe( ואת אלגוריתם ויטרבי עבור מודלי מרקוב חבויים, ולאחר מכן את
- ההתאמות הנדרשות עבור המודל המוכלל שלנו.
- מימושי האלגוריתמים הללו מוצגים על ידי הפעלתם על מידע סינטטי של רצפים דמויי-מעצמ
-ים אשר נוצרו תוך שימוש ביכולת הגנרטיבית של מודל המרקוב החבוי המוכלל.
- אנו מדמים למודל סביבה מבוקרת על מנת להעריך את ביצועיו בשיערוך פרמטרי המודל
- והשוואתם לפרמטרים האמיתיים בהם היה שימוש בעת יצירת המידע.
- לסיום, אנו משתמשים באלגוריתם מיקסום התוחלת על מנת לאמן את המודל שיצרנו
- על רצפים גנטיים של מעצמים אנושיים, אשר נבחרו לפי המידע האפיגנטי של פרוייקט
- pamdaoR.
- אנו מדגימים את יכולות המודל על ידי השוואת שיערוכו למידע האפיגנטי של הרצפים,
- ומביאים ראיה ליכולת המודל לחזות את מיקום המעצמים בגנום ואת הריקמה בהם יופעלו,
- ללא חשיפה מוקדמת למידע אפיגנטי.
 \end_layout
 
 \begin_layout Standard
