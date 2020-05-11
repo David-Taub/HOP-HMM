@@ -16,7 +16,7 @@ function  mainPosterior()
     conf.m = 5;
     conf.k = 25;
     conf.backgroundAmount = 1;
-    conf.doGTBound = 0;
+    conf.doGTBound = 5;
     conf.doResampling = false;
     main(conf);
 end
