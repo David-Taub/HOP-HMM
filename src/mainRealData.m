@@ -10,7 +10,7 @@ function mainRealData()
     conf.doGTBound = 10;
     conf.canCrossLayer = true;
     conf.patience = 5;
-    conf.L = 7000;
+    conf.L = 5000;
     conf.peakMaxLength = 3000;
     conf.peakMinL = 1000;
     conf.peakMaxL = 2000;
@@ -179,4 +179,4 @@ function YEst = maxPostEstimator(theta, params, psi, gamma)
     YEstSubStates(subStateMask) = subStates(subStateMask);
     YEst = cat(3, YEstBaseStates, YEstSubStates);
 end
-
+dict = peaks.fasta2mem();

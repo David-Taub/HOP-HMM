@@ -24,6 +24,7 @@ function mergedPeaksMin = genSyntheticMergedPeaksMin(N, L, params, startWithBack
 
     % theta = genHumanTheta(params, startWithBackground);
     show.showTheta(theta);
+    keyboard
     [seqs, Y] = misc.genSequences(theta, params, N, L);
     Y2 = Y(:,:,2);
     Y = Y(:,:,1);
@@ -52,11 +53,10 @@ end
 
 
 function G = genHumanG(params, backgroundGNoise)
-    ACTIVE_TFS = 10;
-    G = params.minG;
-    G = G + (rand(params.m, params.k) .* params.maxEnhMotif .* backgroundGNoise ./ params.k);
-    intensifiedGMask = rand(params.enhancerAmount, params.k) < (ACTIVE_TFS / (params.k * params.enhancerAmount));
-    G(1:params.enhancerAmount, :) = G(params.enhancerAmount, :) + (intensifiedGMask .* params.maxEnhMotif);
+    G = ones(params.m, params.k) .* params.minEnhMotif;
+    G = G + (rand(params.m, params.k) .* (backgroundGNoise * params.maxEnhMotif - params.minEnhMotif));
+    intensifiedGMask = rand(params.enhancerAmount, params.k) < (params.ACTIVE_TFS / params.k);
+    G(1:params.enhancerAmount, :) = G(1:params.enhancerAmount, :) + (intensifiedGMask .* params.maxEnhMotif);
     G = log(G);
 end
 

@@ -139,11 +139,24 @@ thispagestyle{empty}
 \end_inset
 
 
-\begin_inset space ~
+\size huge
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+noindent
+\backslash
+rule[-12pt]{
+\backslash
+textwidth}{3pt}
+\end_layout
+
 \end_inset
 
-
-\size huge
 
 \begin_inset Newline newline
 \end_inset
@@ -238,7 +251,11 @@ textwidth}{1pt}
 \begin_inset Newline newline
 \end_inset
 
+
+\size large
 by
+\size default
+
 \begin_inset Newline newline
 \end_inset
 
@@ -287,14 +304,15 @@ David Taub
 \end_inset
 
 
-\size default
+\size large
 Supervised by
-\size tiny
 \emph on
 
 \begin_inset space ~
 \end_inset
 
+
+\size tiny
 
 \begin_inset Newline newline
 \end_inset
@@ -353,6 +371,7 @@ Prof.
 
 \begin_inset Graphics
 	filename Figures/HUJI_LogoEng_only.jpg
+	scale 60
 
 \end_inset
 
@@ -362,6 +381,22 @@ Prof.
 
 
 \size tiny
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
 
 \begin_inset space ~
 \end_inset
@@ -433,6 +468,18 @@ for the degree of Master of Science in Computer Science
 \end_inset
 
 
+\emph on
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph default
+
 \begin_inset space ~
 \end_inset
 
@@ -480,6 +527,58 @@ May 2020
 \begin_inset Newline newline
 \end_inset
 
+
+\emph on
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph default
 
 \begin_inset space ~
 \end_inset
@@ -611,7 +710,7 @@ My deepest gratitude goes to my supervisor, Professor Tommy Kaplan, who
  I attended as an undergraduate student.
  In our many talks since then, Professor Kaplan's insights in the field
  of computational biology increased my interest even more.
- He also taught me that patience and methodological work are the irreplaceable
+ He taught me that patience and methodological work are the irreplaceable
  properties of any good researcher
 \emph on
 .
@@ -1081,7 +1180,7 @@ Transgenic mouse embryos on the 11.5 day with distinct anatomical pattern
  of enhancer activation in specific tissue types.
  In a large enhancer assay by 
 \begin_inset CommandInset citation
-LatexCommand citealp
+LatexCommand citet
 key "key-60"
 
 \end_inset
@@ -3216,6 +3315,15 @@ Algorithm:
 
 \end_layout
 
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
 \end_inset
 
 
@@ -3615,6 +3723,15 @@ Algorithm:
 
  
 \begin_inset Formula $\beta_{j,t}=\sum_{j'\in[m]}\beta_{j',t+1}\cdot T_{j,j'}\cdot E_{j',x_{t}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset space ~
 \end_inset
 
 
@@ -4089,7 +4206,7 @@ k
 \lang english
 HOP-HMM extends the GHMM that was introduced by 
 \begin_inset CommandInset citation
-LatexCommand citealp
+LatexCommand citet
 key "key-64"
 
 \end_inset
@@ -4589,7 +4706,7 @@ name "HOPHMM3"
 \end_inset
 
 General hidden states graph of HOP-HMM.
- Each row represents a sequence type, where each of the 
+ Each row represents an enhancer type, where each of the 
 \begin_inset Formula $m$
 \end_inset
 
@@ -5398,9 +5515,9 @@ reference "E-Update"
 \noun off
 \color none
 we still need to calculate the two probability terms they contain.
- To resemble the notations coined in 
+ To resemble the notations coined by 
 \begin_inset CommandInset citation
-LatexCommand citealp
+LatexCommand citet
 key "key-50"
 
 \end_inset
@@ -6318,6 +6435,15 @@ Algorithm:
 
 \begin_layout Plain Layout
 
+\lang english
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -6734,6 +6860,15 @@ Algorithm:
 
  
 \begin_inset Formula $+\underset{\text{TF state transitions}}{\underbrace{\sum_{l\in[k]}\beta_{j,t+|W_{l}|+1}\cdot\mathcal{L}\left(W_{l};x_{t+1},...,x_{t+|W_{l}|}\right)\cdot E_{j,x_{t-o+|W_{l}|+2},...,x_{t+|W_{l}|+1}}\cdot G_{j,l}}}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset space ~
 \end_inset
 
 
@@ -7585,6 +7720,15 @@ reference "HOP-G-Update"
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+\begin_inset Newpage newpage
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -8861,6 +9005,8 @@ If
 \begin_inset space ~
 \end_inset
 
+
+\emph on
 # EM converged or stopped
 \end_layout
 
@@ -8884,6 +9030,15 @@ If
 
 return 
 \begin_inset Formula $\theta$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset space ~
 \end_inset
 
 
@@ -9088,37 +9243,6 @@ P\left(y_{t}=(j,l)|x_{1:L};\hat{\theta}\right)=\sum_{i\in\left[|W_{l}|\right]}P\
 \begin_layout Standard
 
 \lang english
-Choosing the maximum value over 
-\begin_inset Formula $P\left(y_{t}=(j,l)|x_{1:L};\hat{\theta}\right)$
-\end_inset
-
- and 
-\begin_inset Formula $P\left(y_{t}=(j,0)|x_{1:L};\hat{\theta}\right)$
-\end_inset
-
- will give us the most likely state of 
-\begin_inset Formula $\hat{y}_{t}$
-\end_inset
-
-:
-\end_layout
-
-\begin_layout Standard
-
-\lang english
-\begin_inset Formula 
-\begin{equation}
-\hat{y}_{t}=\underset{j\in[m],l\in[k]\cup\{0\}}{argmax}\gamma_{j,t}\cup\sum_{i\in\left[|W_{l}|\right]}\eta_{t-i+1,j,l}\label{PosteriorEstimation}
-\end{equation}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\lang english
 \begin_inset Float figure
 placement H
 wide false
@@ -9208,9 +9332,36 @@ name "PWM Posterior"
 
 \end_layout
 
-\begin_layout Plain Layout
+\end_inset
+
 
 \end_layout
+
+\begin_layout Standard
+
+\lang english
+Choosing the maximum value over 
+\begin_inset Formula $P\left(y_{t}=(j,l)|x_{1:L};\hat{\theta}\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $P\left(y_{t}=(j,0)|x_{1:L};\hat{\theta}\right)$
+\end_inset
+
+ will give us the most likely state of 
+\begin_inset Formula $\hat{y}_{t}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+\begin_inset Formula 
+\begin{equation}
+\hat{y}_{t}=\underset{j\in[m],l\in[k]\cup\{0\}}{argmax}\gamma_{j,t}\cup\sum_{i\in\left[|W_{l}|\right]}\eta_{t-i+1,j,l}\label{PosteriorEstimation}
+\end{equation}
 
 \end_inset
 
@@ -9271,7 +9422,7 @@ reference "Viterbi"
  is done by the Viterbi algorithm, named after Andrew Viterbi who proposed
  it in 
 \begin_inset CommandInset citation
-LatexCommand citealp
+LatexCommand citet
 key "key-65"
 
 \end_inset
@@ -9873,6 +10024,15 @@ for
 
 return 
 \begin_inset Formula $\hat{y}_{1:L}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset space ~
 \end_inset
 
 
@@ -11154,7 +11314,7 @@ Synthetic Data
 
 \lang english
 In order to evaluate HOP-HMM, we first measured its capabilities on synthetic
- DNA data that were created in a controlled way.
+ DNA dataset that was created in a controlled way.
  We could then experiment with HOP-HMM on real human DNA sequences.
  The evaluation process on synthetic data was performed through the following
  steps (see figure 
@@ -11174,27 +11334,23 @@ We generated parameters for a HOP-HMM
 \begin_inset Formula $θ$
 \end_inset
 
-, which were treated as the true 
+, which were treated as the true parameters.
+ The generation process of 
 \begin_inset Formula $θ$
 \end_inset
 
-.
- 
-\begin_inset Formula $θ$
-\end_inset
-
- was sampled in the following way:
+ is done in the following way:
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
 
 \lang english
-Each 
+Each cell in 
 \begin_inset Formula $T$
 \end_inset
 
- cell was sampled from a uniform distribution
+ was sampled from a uniform distribution
 \begin_inset Formula 
 \begin{equation}
 T_{i,j}\sim U\left(minT_{i,j},maxT_{i,j}\right)\label{minTmaxT}
@@ -11208,15 +11364,14 @@ T_{i,j}\sim U\left(minT_{i,j},maxT_{i,j}\right)\label{minTmaxT}
 \begin_layout Itemize
 
 \lang english
-Each cell 
+Each cell in 
 \begin_inset Formula $G$
 \end_inset
 
- cell was sampled both from a uniform and from a Bernoulli distribution
- 
+ was sampled both from a uniform and from a Bernoulli distribution 
 \begin_inset Formula 
 \begin{equation}
-G_{i,j}\sim U\left(minG,noiseG\right)+\boldsymbol{1}_{\left(i,0\right)\in Reg}\cdot Bern\left(\frac{k}{m}\right)\cdot maxG\label{noiseG}
+G_{i,j}\sim U\left(minG,noiseG\cdot maxG\right)+\boldsymbol{1}_{\left(i,0\right)\in ENH}\cdot Bern\left(\frac{ActiveTFs}{k}\right)\cdot maxG\label{noiseG}
 \end{equation}
 
 \end_inset
@@ -11261,7 +11416,7 @@ where
 \begin_inset Formula $m-1$
 \end_inset
 
- background states did have TFBSs
+ background states did have TFBSs.
 \end_layout
 
 \end_deeper
@@ -11348,7 +11503,7 @@ The start state distribution
 \begin_layout Enumerate
 
 \lang english
-Sequences were generated using the HOP-HMMs with the true 
+Sequences were generated using the HOP-HMM with the true 
 \begin_inset Formula $θ$
 \end_inset
 
@@ -11377,21 +11532,21 @@ Sequences were generated using the HOP-HMMs with the true
 \begin_layout Enumerate
 
 \lang english
-From the DNA sequences of 
-\begin_inset Formula $X_{train}$
-\end_inset
-
- , we trained a 
+We trained a 
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
- with the HOP Baum-Welch algorithm.
+ on the DNA sequences of 
+\begin_inset Formula $X_{train}$
+\end_inset
+
+ with the Baum-Welch algorithm for HOP-HMM.
 \end_layout
 
 \begin_layout Enumerate
 
 \lang english
-Using the trained parameters 
+With the trained parameters 
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
@@ -11411,7 +11566,7 @@ Using the trained parameters
 \begin_inset Formula $X_{train}$
 \end_inset
 
- by the Viterbi algorithm adaptation to HOP-HMM.
+ using the Viterbi algorithm adaptation to HOP-HMM.
  We also calculated the posterior probability of 
 \begin_inset Formula $P\left(y_{t}|x_{1:L};\hat{\theta}\right)$
 \end_inset
@@ -11424,7 +11579,7 @@ Using the trained parameters
 \begin_inset Formula $X_{train}$
 \end_inset
 
-.
+ using the forward-backward algorithm for HOP-HMM.
  These results were then compared to the real 
 \begin_inset Formula $Y_{test}$
 \end_inset
@@ -11537,6 +11692,433 @@ reference "PosteriorEstimation"
 \begin_inset Newpage newpage
 \end_inset
 
+
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+In the synthetic data evaluation we used the following values for the hyperparam
+eters:
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+renewcommand{
+\backslash
+arraystretch}{1.3}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Tabular
+<lyxtabular version="3" rows="12" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+Constant Name
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+Values
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $L$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $1500$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $N_{train},N_{test}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $425,75$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $5$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $k$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $25$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $o$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $3$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $minG$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $10^{-7}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $maxG$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $10^{-3}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $noiseG$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $5\cdot10^{-2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $ActiveTFs$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $3$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $minT$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $\left(\begin{array}{ccccc}
+1-10^{-2} & 10^{-7} & 10^{-7} & 10^{-7} & 10^{-3}\\
+10^{-7} & 1-10^{-2} & 10^{-7} & 10^{-7} & 10^{-3}\\
+10^{-7} & 10^{-7} & 1-10^{-2} & 10^{-7} & 10^{-3}\\
+10^{-7} & 10^{-7} & 10^{-7} & 1-10^{-2} & 10^{-3}\\
+10^{-5} & 10^{-5} & 10^{-5} & 10^{-5} & 1-10^{-4}
+\end{array}\right)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $maxT$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $\left(\begin{array}{ccccc}
+1-10^{-3} & 10^{-5} & 10^{-5} & 10^{-5} & 5\cdot10^{-3}\\
+10^{-5} & 1-10^{-3} & 10^{-5} & 10^{-5} & 5\cdot10^{-3}\\
+10^{-5} & 10^{-5} & 1-10^{-3} & 10^{-5} & 5\cdot10^{-3}\\
+10^{-5} & 10^{-5} & 10^{-5} & 1-10^{-3} & 5\cdot10^{-3}\\
+10^{-4} & 10^{-4} & 10^{-4} & 10^{-4} & 1-10^{-3}
+\end{array}\right)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\lang english
 The Baum-Welch algorithm ensures the increase of the likelihood for each
  step.
  However it does not ensure convergence to the optimal 
@@ -11568,13 +12150,10 @@ key "key-66"
 \end_inset
 
 .
- During the initial evaluation of the inference EM algorithm, many runs
- converged to local maxima which tended to overshoot the inter-states transition
- probability, resulting in a tendency to irregular Viterbi paths with frequent
- state changes.
- This resembles the known issue of HMM parameter overfitting on small training
- data.
- 
+ During the initial evaluation of the inference EM algorithm, we noticed
+ that many of the executions converged to local maxima which tended to overshoot
+ the inter-states transition probability, resulting in a tendency to irregular
+ Viterbi paths with frequent state changes.
 \end_layout
 
 \begin_layout Standard
@@ -11606,8 +12185,8 @@ reference "Regularization2"
 \end_inset
 
 ).
- Following each M-step update, we drew the background states transition
- probabilities 
+ Following the M-step updates of the first 5 EM iterations, we fixed the
+ background states transition probabilities 
 \begin_inset Formula $T$
 \end_inset
 
@@ -11706,7 +12285,32 @@ reference "LikelihoodVsErr"
 \end_inset
 
 ).
- This is important since on observed real sequences only the estimated 
+ The RMSE measurement between 
+\begin_inset Formula $\theta$
+\end_inset
+
+ and 
+\begin_inset Formula $\hat{\theta}$
+\end_inset
+
+ required matching similar states by their distributions in 
+\begin_inset Formula $E$
+\end_inset
+
+ and 
+\begin_inset Formula $G$
+\end_inset
+
+, which was done with the use of the Hungarian algorithm (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "key-74"
+
+\end_inset
+
+).
+ This correlation is important since on observed real sequences only the
+ estimated 
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
@@ -11715,7 +12319,7 @@ reference "LikelihoodVsErr"
 \end_inset
 
  is unknown.
- This correlation implies that in order to obtain an estimated 
+ Therefore, in order to obtain an estimated 
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
@@ -11723,11 +12327,11 @@ reference "LikelihoodVsErr"
 \begin_inset Formula $\theta$
 \end_inset
 
-, one should redo several EM runs and choose the 
+, one should redo several EM executions and choose the 
 \begin_inset Formula $\hat{\theta}$
 \end_inset
 
- with the highest likelihood.
+ with the highest log likelihood.
  
 \end_layout
 
@@ -11799,17 +12403,21 @@ name "LikelihoodVsErr"
 
 \end_inset
 
-Over multiple runs of Baum-Welch adaptation for HOP-HMM, higher sequences
- likelihood for the estimated 
-\begin_inset Formula $\theta$
+The log likelihood of 
+\begin_inset Formula $\hat{\theta}$
 \end_inset
 
- resulted in lower errors compared to the true 
+ is correlated to its error.
+ Over multiple runs of the Baum-Welch algorithm for HOP-HMM, 
+\begin_inset Formula $\hat{\theta}$
+\end_inset
+
+ estimations with higher mean log likelihoods also had lower RMSE compared
+ to the true 
 \begin_inset Formula $\theta$
 \end_inset
 
 .
- 
 \end_layout
 
 \end_inset
@@ -12140,8 +12748,8 @@ status open
 
 \lang english
 \begin_inset Graphics
-	filename Figures/synthetic_posterior_with_tfs.jpg
-	scale 50
+	filename Figures/synthetic_posterior.jpg
+	scale 48
 
 \end_inset
 
@@ -12228,7 +12836,7 @@ status open
 \lang english
 \begin_inset Graphics
 	filename Figures/confusion_matrix.jpg
-	scale 50
+	scale 48
 
 \end_inset
 
@@ -12343,9 +12951,6 @@ key "key-68"
 \begin_layout Standard
 
 \lang english
-\begin_inset Newpage newpage
-\end_inset
-
 For the set of PWMs used by the TF states of the HOP-HMM, we used a JASPAR
  dataset of 519 vertebrates PWMs, out of which we selected 50 PWMs for a
  practical run-time.
@@ -12384,8 +12989,8 @@ reference "PWM"
 \end_inset
 
 .
- Note that in order to compare between PWM likelihoods we used PSSM form
- as in 
+ Note that in order to compare between PWM likelihoods we used the PSSM
+ form as in 
 \begin_inset CommandInset ref
 LatexCommand eqref
 reference "PSSM"
@@ -12558,28 +13163,28 @@ Like in other machine learning challenges, comparison to the state-of-the-art
  Several softwares accurately predict epigenetic features of DNA sequences:
  gkm-SVM by 
 \begin_inset CommandInset citation
-LatexCommand citealp
+LatexCommand citet
 key "key-5"
 
 \end_inset
 
 , DeepBind by 
 \begin_inset CommandInset citation
-LatexCommand citealp
+LatexCommand citet
 key "key-2"
 
 \end_inset
 
 , DeepSEA by 
 \begin_inset CommandInset citation
-LatexCommand citealp
+LatexCommand citet
 key "key-63"
 
 \end_inset
 
  and Basset by 
 \begin_inset CommandInset citation
-LatexCommand citealp
+LatexCommand citet
 key "key-31"
 
 \end_inset
@@ -12606,10 +13211,10 @@ annotation of the entire genome, without the need for epigenetic data from
 
 \lang english
 The implementation of the HOP-HMM for this work was done in Matlab, and
- its run-time and memory requirements for training it with significant parts
+ its run-time and memory requirements for the training of significant parts
  of the human genome are still unreachable (several days for each EM iteration).
  In order to assess the ability of the model to detect real human enhancers
- on a smaller subset of the data, we created a dataset of tissue-specific
+ on a smaller subset of the genome, we created a dataset of tissue-specific
  enhancers from two tissues and non-regulatory “background” sequences whose
  locations were deducted from the epigenetic data of the Roadmap project.
  Though some of these sequences were correctly classified by the trained
@@ -12617,10 +13222,10 @@ The implementation of the HOP-HMM for this work was done in Matlab, and
 y to its epigenetic data, and our results certainly did not surpass those
  of DeepSEA.
  We found that some of the tissues had many well-classified enhancers, though
- no good classification could be found for the rest.
+ no good classifications could be found for the rest.
  Over all, the small scale of the experiment we executed is not sufficient
- to determine if the model could accurately predict enhancer sequences from
- the entire human genome.
+ to determine whether the model could accurately predict enhancer sequences
+ from the entire human genome.
  The causes of the mixed results of the human genome experiment compared
  to the positive results of the generated synthetic data experiment may
  reside in one of two reasons: either the EM algorithm did not converge
@@ -12646,7 +13251,7 @@ As for the former possibility, the experiments done with our generated data
  In other words, convergence of the EM to low quality local maxima mainly
  occurred when the emission distributions in the generating parameters were
  not significantly different.
- This tradeoff is common in the machine learning field, as since the ability
+ This tradeoff is common in the machine learning field, since the ability
  of many models to distinguish between similar classes depends on the amount
  of relevant samples in the training dataset (
 \begin_inset CommandInset citation
@@ -12703,7 +13308,7 @@ Appendix: Source Code
 \begin_layout Standard
 
 \lang english
-The code for this research was written in Matlab, and can be found in 
+The code for this research was written in Matlab, and can be found at 
 \begin_inset Flex URL
 status open
 
@@ -12985,12 +13590,6 @@ Number of background states which are non-enhancers by having low transition
 
 \end_layout
 
-\begin_layout Standard
-
-\lang english
-The prominent code files in the project:
-\end_layout
-
 \begin_layout Itemize
 
 \series bold
@@ -13035,7 +13634,6 @@ status open
 
 \lang english
 params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBound);
- 
 \end_layout
 
 \end_inset
@@ -14308,6 +14906,23 @@ key "key-35"
  Predicting gene expression in massively parallel reporter assays: a comparative
  study.
  Human mutation, 38(9), 1240-1250.
+\end_layout
+
+\begin_layout Bibliography
+
+\lang english
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Kuhn(1955)"
+key "key-74"
+
+\end_inset
+
+ Kuhn, H.
+ W.
+ (1955).
+ The Hungarian method for the assignment problem.
+ Naval research logistics quarterly, 2(1‐2), 83-97.
 \end_layout
 
 \begin_layout Bibliography

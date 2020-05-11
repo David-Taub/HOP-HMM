@@ -43,33 +43,34 @@ function params = genParams(m, k, backgroundAmount, L, order, doESharing, doGTBo
     % Regularization Params
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     params.EPS = 10 ^ -7;
-    maxBbMotifRatio = 1 / 3000; % maximal ratio of all motif letters in BG section
-    maxEnhMotifRatio = 1 / 200; % maximal ratio of a single motif letters in enhancer section
+    maxBbMotifRatio = 1 / 10000; % maximal ratio of all motif letters in BG section
+    maxEnhMotifRatio = 1 / 1000; % maximal ratio of a single motif letters in enhancer section
     % minEnhMotifRatio = 1 / 15; % minimal ratio of a single motif letters in enhancer section
-    maxCrossEnhRatio = 1 / 100; % maximal ratio of transition to any another enhancer
-    maxCrossBgRatio = 1 / 30; % maximal ratio of transition to any another enhancer
-    maxEnhLen = 1500;
-    minEnhLen = 300;
-    maxBgLen = 1000;
+    maxCrossEnhRatio = 1 / 100000; % maximal ratio of transition to any another enhancer
+    maxCrossBgRatio = 1 / 3000; % maximal ratio of transition to any another enhancer
+    maxEnhLen = 1000;
+    minEnhLen = 200;
+    maxBgLen = 2000;
     minBgLen = 500;
 
-    params.maxEnhMotif = maxEnhMotifRatio / mean(params.lengths);
+    params.ACTIVE_TFS = 3;
+    params.maxEnhMotif = maxEnhMotifRatio;
     % params.minEnhMotifTotal = minEnhMotifRatio / mean(params.lengths);
     params.minEnhMotif = params.EPS;
-    params.maxCrossEnh = maxCrossEnhRatio / minEnhLen;
+    params.maxCrossEnh = maxCrossEnhRatio;
     params.minCrossEnh = params.EPS;
     params.maxBgMotif = maxBbMotifRatio / (mean(params.lengths) * params.k);
     params.minBgMotif = params.EPS;
-    params.maxStayEnh = 1;
-    params.minStayEnh = 1 - (1 / minEnhLen);
-    params.maxStayBg = 1 - (1 / maxBgLen);
-    params.minStayBg = 1 - (1 / minBgLen);
+    params.maxStayEnh = 1 - (1 / maxEnhLen);
+    params.minStayEnh = 1 - (1 / 100);
+    params.maxStayBg = 1 - (1 / minBgLen);
+    params.minStayBg = 1 - (1 / maxBgLen);
     params.maxCrossBg = 1 / minBgLen;
     params.minCrossBg = params.EPS;
-    params.maxBgToEnh = 1 / (minBgLen * params.enhancerAmount);
-    params.minBgToEnh = 1 / (maxBgLen * params.enhancerAmount);
+    params.maxBgToEnh = 1 / (minBgLen * params.m);
+    params.minBgToEnh = 1 / (maxBgLen * params.m);
     params.maxEnhToBg = 1 / minEnhLen;
-    params.minEnhToBg = 1 / (maxEnhLen * params.backgroundAmount);
+    params.minEnhToBg = 1 / maxEnhLen;
 
 
     [params.maxT, params.maxG] = genMaxGT(params);
@@ -87,7 +88,7 @@ function [minT, minG] = genMinGT(params)
         minT(t, t) = params.minStayBg;
     end
     minG = ones(params.m, params.k) .* params.minEnhMotif;
-    minG(end - params.backgroundAmount + 1:end, :) = params.minBgMotif;
+    % minG(end - params.backgroundAmount + 1:end, :) = params.minBgMotif;
     % assert(all(sum(minG, 2) + sum(minT, 2) < 1))
 end
 
@@ -102,5 +103,4 @@ function [maxT, maxG] = genMaxGT(params)
         maxT(t, t) = params.maxStayBg;
     end
     maxG = ones(params.m, params.k) .* params.maxEnhMotif;
-    maxG(end - params.backgroundAmount + 1:end, :) = params.maxBgMotif;
 end

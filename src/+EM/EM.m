@@ -42,7 +42,7 @@ end
 % iterates the EM algorithm, returns the likelihood of the best iteration, and theta parameters at that iteration
 function [iterationLikelihood, theta, thetas] = EMRun(dataset, params, initTheta, maxIter, ...
     doGTBound, patience, repeatsLeft)
-    LIKELIHOOD_CONVERGE_THRESHOLD = 10 ^ -4;
+    LIKELIHOOD_CONVERGE_THRESHOLD = 10 ^ -3;
     thetas(1) = initTheta;
     iterLikes = -inf(maxIter, 1);
 
@@ -56,13 +56,13 @@ function [iterationLikelihood, theta, thetas] = EMRun(dataset, params, initTheta
         eta = datestr(seconds(timeLapse * (maxIter * (repeatsLeft + 1) - iterationIndex)),'HH:MM:SS');
         fprintf('Iteration %d / %d, distance: %.2f, log-like: %.2f, motifs: %.2f%%, ETA: %s\n', ...
             iterationIndex, maxIter, thetaDiff, iterationLikelihood, motifsPer, eta);
-        if iterationIndex > patience && iterationIndex > 1 && ...
-            abs((iterationLikelihood - iterLikes(iterationIndex - 1)) / iterationLikelihood) < LIKELIHOOD_CONVERGE_THRESHOLD
+        if iterationIndex > patience && iterationIndex > 3 && ...
+            abs((iterationLikelihood - mean(iterLikes(iterationIndex - 3:iterationIndex))) / iterationLikelihood) < LIKELIHOOD_CONVERGE_THRESHOLD
             fprintf('Converged\n');
             break
         end
 
-        if iterationIndex > patience && iterationLikelihood < iterLikes(iterationIndex - patience)
+        if iterationIndex > patience + 2 && iterationLikelihood < iterLikes(iterationIndex - patience)
             fprintf('Patience reached, Converged\n');
             break
         end
@@ -77,7 +77,7 @@ function [iterationLikelihood, theta, thetas] = EMRun(dataset, params, initTheta
 % pX - N x 1
 % gamma - N x m x L
 function drawStatus(theta, params, alpha, beta, gamma, pX, xi, psi)
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     YsEst = mean(gamma, 3);
     YsEst = YsEst(:, 1);
     subplot(2,2,1);

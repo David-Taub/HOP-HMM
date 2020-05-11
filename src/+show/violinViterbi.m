@@ -1,5 +1,5 @@
 function violinViterbi(truePosVals, trueNegVals, estPosVals, estNegVals, outpath)
-    fig = figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    fig = figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     maxRange = max([truePosVals; trueNegVals; estPosVals; estNegVals], [], 1);
     minRange = min([truePosVals; trueNegVals; estPosVals; estNegVals], [], 1);
     show.distributionPlot({[truePosVals; minRange; maxRange], [trueNegVals; minRange; maxRange]}, 'histOri', 'right', 'color', 'r', 'widthDiv', [2 2], 'showMM', 0, 'histOpt', 0, 'divFactor', [minRange: maxRange]);

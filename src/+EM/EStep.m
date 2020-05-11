@@ -34,7 +34,6 @@ function [alpha, beta, pX, xi, gamma, psi] = EStep(params, theta, X, pcPWMp)
     psi = EM.makePsi(alpha, beta, X, params, theta, pcPWMp, pX);
     assert(not(any(isnan(psi(:)))));
     fprintf('. ');
-
     assert(all(size(psi) == [N, params.m, params.k, L]));
     assert(all(size(gamma) == [N, params.m, L]));
     assert(all(size(alpha) == [N, params.m, L]));

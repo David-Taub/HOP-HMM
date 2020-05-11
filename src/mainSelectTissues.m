@@ -2,7 +2,7 @@
 % then we choose the PWM with the max AucRoc and keep the
 function [tissueList, pwmsList] = mainSelectTissues(mergedPeaksMin, backgroundIndex, wantedM, wantedK)
     dbstop if error
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     title('tissue aucroc maximal PWM');
     numberOfTissues = size(mergedPeaksMin.overlaps, 2);
     [PWMs, lengths, names] = misc.PWMs();

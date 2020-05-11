@@ -2,21 +2,21 @@
 function  mainPosterior()
     conf.doESharing = false;
     conf.startWithBackground = true;
-    conf.maxIters = 100;
+    conf.maxIters = 30;
     conf.canCrossLayer = true;
-    conf.patience = 4;
+    conf.patience = 10;
     conf.L = 1500;
     conf.N = 500;
     conf.withExponent = false;
-    conf.repeat = 10;
+    conf.repeat = 2;
 
-    conf.background_g_noise = 0.2;
+    conf.background_g_noise = 1 / 50;
 
     conf.order = 3;
-    conf.m = 6;
+    conf.m = 5;
     conf.k = 25;
     conf.backgroundAmount = 1;
-    conf.doGTBound = 3;
+    conf.doGTBound = 0;
     conf.doResampling = false;
     main(conf);
 end
@@ -33,7 +33,12 @@ function main(conf)
 
     thetaEst = misc.permThetaByAnother(params, thetaOrig, thetaEst);
     outpath = sprintf('seqSample_m%dk%do%db%dN%dL%d.jpg', conf.m, conf.k, conf.order, conf.doGTBound, conf.N, conf.L);
-    show.showTheta(thetaEst);
+    distMat = pdist2(exp(misc.thetaToMat(params, thetaOrig, false)), ...
+                     exp(misc.thetaToMat(params, thetaEst, false)))
+    perm = misc.munkres(distMat)';
+    thetaEstPerm = misc.permTheta(thetaEst, perm);
+
+    show.showTheta(thetaEstPerm);
     show.showTheta(thetaOrig);
-    show.seqSampleCertainty(params, thetaEst, testDataset, 3, outpath);
+    show.seqSampleCertainty(params, thetaEstPerm, testDataset, 3, outpath);
 end

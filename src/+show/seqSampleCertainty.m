@@ -26,7 +26,7 @@ function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
 
 
 
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     confusionOutPath = "confMat_" + outpath;
     Y = dataset.Y;
     Y(:, :, 2) = dataset.Y2;
@@ -43,7 +43,7 @@ function seqSampleCertainty(params, theta, dataset, sequencesToShow, outpath)
     errorVal = params.m + 2;
     matchVal = params.m + 3;
     LOW_BAR_HIEGHT = 0.2;
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     for i = 1:sequencesToShow
         ind = inds(i);
         subplot(sequencesToShow, 1, i);
@@ -162,7 +162,7 @@ function showConfusionMatrix(params, YEst, Y)
     fprintf('recall: %.4f', mean(recall));
 
     confusion = confusionRaw ./ repmat(sum(confusionRaw, 2), [1, size(confusionRaw, 2)]);
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     imagesc(confusion); colorbar; title('Viterbi Confusion Matrix (floors only)');
     caxis([0 1]);
     ax = gca;
@@ -186,7 +186,7 @@ function showConfusionMatrix(params, YEst, Y)
     fprintf('recall: %.4f', mean(recall));
 
     confusion = confusionRaw ./ repmat(sum(confusionRaw, 2), [1, size(confusionRaw, 2)]);
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     imagesc(confusion); colorbar; title('Viterbi Confusion Matrix (including TF states)');
     caxis([0 1]);
     ax = gca;
@@ -196,7 +196,7 @@ function showConfusionMatrix(params, YEst, Y)
     ylabel('True Enhancer States');
 
     confusion = log(confusionRaw);
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     imagesc(confusion); colorbar; title('Viterbi Confusion Matrix (log)');
     ax = gca;
     ax.XTick = [1 : size(confusion, 1)];

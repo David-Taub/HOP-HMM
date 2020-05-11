@@ -85,7 +85,7 @@ function violinViterbi3(estVals1, estVals2, estVals3, outpath)
     % estVals1 = r1;
     % estVals2 = r2;
     % estVals3 = r3;
-    fig = figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    fig = figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     maxRange = max([estVals1; estVals2; estVals3], [], 1);
     minRange = min([estVals1; estVals2; estVals3], [], 1);
     % show.distributionPlot({estVals1, estVals2, estVals3}, 'showMM', 0);

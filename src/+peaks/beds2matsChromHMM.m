@@ -130,19 +130,3 @@ function [newTo, newFrom] = fitToL(peakPos, L, chrLength)
         newTo = L;
     end
 end
-
-
-function dict = makeMMDict(HG19Dir)
-    % save in dict opened hg19 fasta files as memory mapped files
-    fprintf('Making mm dict\n');
-    dict = containers.Map;
-    mmFiles = dir([HG19Dir, '/*.mm']);
-    assert(length(mmFiles) > 0)
-    for i = 1:length(mmFiles)
-        if not(mmFiles(i).isdir)
-            mmFilePath = fullfile(HG19Dir, mmFiles(i).name);
-            [~,filename,~] = fileparts(fullfile(HG19Dir, mmFiles(i).name));
-            dict(filename) = memmapfile(mmFilePath, 'format', 'uint8');
-        end
-    end
-end

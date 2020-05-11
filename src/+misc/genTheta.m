@@ -19,6 +19,8 @@ function theta = genTheta(params, startTUniform, totalRandom)
         theta.G = (params.maxG - params.minG) .* rand(params.m, params.k) + params.minG;
 
     end
+    theta.T = log(theta.T);
+    theta.G = log(theta.G);
 
     % m x n
     theta.E = rand([params.m, ones(1, params.order) .* params.n]);

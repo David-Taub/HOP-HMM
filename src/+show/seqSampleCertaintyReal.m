@@ -53,7 +53,7 @@ function seqInd = plotSequence(params, dataset, theta, bedGraphs, seqInd, tissue
     pwmVal = params.m + 1;
 
 
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     hold on;
 
 
@@ -335,7 +335,7 @@ function deeptoolsPlot(params, theta, dataset)
     isEnhancer = permute(isEnhancer, [1,3,2]);
     [~, seqsInds] = sort(isEnhancer(:, floor(L / 2)), 'desc');
     isEnhancer = isEnhancer(seqsInds, :);
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     subplot(1, 2, 1);
     imagesc(isEnhancer);
     colormap(gca, 'Gray');

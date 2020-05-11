@@ -1,6 +1,6 @@
 function showTheta(theta)
     % fprintf('Showing Theta\n')
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    figure('units', 'pixels', 'Position', [0 0 1500 1000]);
 
     subplot(1,4,1);
     imagesc(exp(theta.startT)); colorbar; title('startT');

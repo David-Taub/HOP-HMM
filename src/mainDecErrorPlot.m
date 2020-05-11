@@ -146,7 +146,7 @@ function viterbiErrorConvergence(params, conf, origTrainError, origTestError, ru
     TEST_PLOT_COLOR = [0.8500, 0.3250, 0.0980];
     PLOT_TRANSPERENCY = 0.5;
     % error decreasing plot
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     title('Viterbi Classification Convergence');
     hold on;
 
@@ -197,7 +197,7 @@ function thetaRMSEConvergence(params, conf, runsRepetitions)
     TEST_PLOT_COLOR = [0.8500, 0.3250, 0.0980];
     PLOT_TRANSPERENCY = 0.5;
 
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     title(sprintf('Learned \\theta Error Convergence'));
     hold on;
     meanTrainError = zeros(1, length([runsRepetitions(1).errorsTrain(:).rmse]));
@@ -226,7 +226,7 @@ function likelihoodConvergence(params, conf, runsRepetitions, origTrainError, or
     TEST_PLOT_COLOR = [0.8500, 0.3250, 0.0980];
     PLOT_TRANSPERENCY = 0.5;
 
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     title('Log Likelihood Convergence');
     hold on;
     origTrainPlot = plot([1, conf.maxIters], [origTrainError.likelihood, origTrainError.likelihood], 'LineWidth', 2);
@@ -262,7 +262,7 @@ end
 
 
 function likelihoodRMSEScatter(params, conf, runsRepetitions)
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     hold on;
     title('likelihood vs RMSE');
     for j = 1:length(runsRepetitions)
@@ -283,7 +283,7 @@ function likelihoodRMSEScatterConvergence(params, conf, runsRepetitions)
     END_INTENSITY = 0.55;
     START_INTENSITY = 0.9;
 
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     hold on;
     title('likelihood vs RMSE');
     for i = 1:conf.maxIters
@@ -311,7 +311,7 @@ end
 
 
 function showTwoThetasOverTime(conf, params, thetaOrig, thetaEsts, withExponent, outpath)
-    figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+    figure('units', 'pixels', 'Position', [0 0 1500 1000]);
     DOT_SIZE = 20;
     END_INTENSITY = 0.55;
     START_INTENSITY = 0.9;
@@ -324,7 +324,7 @@ function showTwoThetasOverTime(conf, params, thetaOrig, thetaEsts, withExponent,
         thetaOrigMat = misc.thetaToMat(params, thetaOrig, false);
         thetaEstMat = misc.thetaToMat(params, thetaEst, false);
         % if isempty(strfind(outpath, 'tmp'))
-            % fig = figure('units', 'pixels', 'Position', [0 0 1000 1000]);
+            % fig = figure('units', 'pixels', 'Position', [0 0 1500 1000]);
         % end
         if withExponent
             thetaOrigMat = exp(thetaOrigMat);
