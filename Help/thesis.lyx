@@ -5580,7 +5580,7 @@ reference "Incomplete-Likelihood"
 \lang english
 \begin_inset Formula 
 \[
-\gamma_{t,j}=\frac{P\left(y_{t}=j,x_{1:L};\theta^{'}\right)}{P\left(x_{1:L};\theta^{'}\right)}=\frac{P\left(x_{1:L}|y_{t}=j;\theta^{'}\right)\cdot P\left(y_{t}=j;\theta^{'}\right)}{P\left(x_{1:L};\theta^{'}\right)}=
+\gamma_{t,j}=\frac{P\left(y_{t}=j,x_{1:L};\theta^{'}\right)}{P\left(x_{1:L};\theta^{'}\right)}=\frac{P\left(y_{t}=j,x_{1:t};\theta^{'}\right)\cdot P\left(x_{t+1:L}|y_{t}=j,x_{1:t};\theta^{'}\right)}{P\left(x_{1:L};\theta^{'}\right)}=
 \]
 
 \end_inset
@@ -7532,15 +7532,7 @@ reference "HOP-gamma"
 \lang english
 \begin_inset Formula 
 \[
-\gamma_{j,t}=P\left(y_{t}=(j,0)|x_{1:L}\right)=\frac{P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{1:t},y_{t}=(j,0)\right)}{P\left(x_{1:L}\right)}=
-\]
-
-\end_inset
-
-
-\begin_inset Formula 
-\[
-=\frac{P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{1:t},y_{t}=(j,0)\right)}{P\left(x_{1:L}\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{P\left(x_{1:L}\right)}
+\gamma_{j,t}=P\left(y_{t}=(j,0)|x_{1:L}\right)=\frac{P\left(y_{t}=(j,0),x_{1:t}\right)\cdot P\left(x_{t+1:L}|x_{1:t}y_{t}=(j,0)\right)}{P\left(x_{1:L}\right)}=\frac{\alpha_{j,t}\cdot\beta_{j,t}}{P\left(x_{1:L}\right)}
 \]
 
 \end_inset
