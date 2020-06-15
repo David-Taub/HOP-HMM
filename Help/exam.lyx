@@ -93,6 +93,84 @@
 
 \begin_body
 
+\begin_layout Standard
+Prob
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\Omega$
+\end_inset
+
+ - sample space
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\sigma$
+\end_inset
+
+ algebra - F over 
+\begin_inset Formula $\Omega$
+\end_inset
+
+ is a set of subsets of 
+\begin_inset Formula $\Omega$
+\end_inset
+
+, closed to completment and union and intersection
+\end_layout
+
+\begin_layout Standard
+Porb - P from F to [0,1]
+\end_layout
+
+\begin_layout Standard
+Probability Space, 
+\begin_inset Formula $(\Omega,F,P)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+independence - 
+\begin_inset Formula $P(A)P(B)=P(A\cap B)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+total prob = 
+\begin_inset Formula $P(B)=\sum_{i}^{n}P(B\cap A_{i})$
+\end_inset
+
+ if 
+\begin_inset Formula $A_{i}$
+\end_inset
+
+ are pairwise disjoint events that their union is 
+\begin_inset Formula $\Omega$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Bayes - 
+\begin_inset Formula $P(A|B)=P(B|A)\frac{P(A)}{P(B)}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Section*
+COMP
+\end_layout
+
 \begin_layout Enumerate
 turing machine - 
 \begin_inset Formula $(Q,q,F,\Gamma,\beta,\Sigma,\text{\ensuremath{\delta})}$
@@ -112,10 +190,6 @@ states, starting state, final states, work alphabet, space sign, input alphabet,
 \end_layout
 
 \end_deeper
-\begin_layout Section*
-Languages
-\end_layout
-
 \begin_layout Itemize
 decidable language - a set of words 
 \begin_inset Formula $L$
@@ -155,7 +229,7 @@ CO-RE -
 \begin_inset Formula $R=RE\cap CO-RE$
 \end_inset
 
-,
+
 \end_layout
 
 \begin_layout Itemize
@@ -163,11 +237,11 @@ R is closed for completment(
 \begin_inset Formula $L\in R\Rightarrow\overline{L}\in R$
 \end_inset
 
-), for union
+)
 \end_layout
 
 \begin_layout Itemize
-RE and R are closed for intersection, and trancation
+RE and R are closed for union, intersection, and truncation
 \end_layout
 
 \end_body
