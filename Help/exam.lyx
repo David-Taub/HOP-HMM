@@ -163,10 +163,6 @@ Bayes -
  
 \end_layout
 
-\begin_layout Standard
-
-\end_layout
-
 \begin_layout Section*
 COMP
 \end_layout
@@ -242,6 +238,21 @@ R is closed for completment(
 
 \begin_layout Itemize
 RE and R are closed for union, intersection, and truncation
+\end_layout
+
+\begin_layout Standard
+examples 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $R-\emptyset,\Sigma^{*}$
+\end_inset
+
+, regular lang
+\end_layout
+
+\begin_layout Standard
+
 \end_layout
 
 \end_body
