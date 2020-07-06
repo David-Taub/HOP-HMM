@@ -27,7 +27,7 @@ function mainRealData()
     conf.startTUniform = false;
     conf.topPercent = 0.7;
     % conf.tissueList = [2, 18];
-    conf.tissueList = [24, 27]; % placenta, ovary
+    conf.tissueList = [38, 40];
     % main(conf);
     for i = randperm(44)
         v = randperm(44);
@@ -70,7 +70,12 @@ function main(conf)
     % for tb = b
     %     show.showTheta(tb);
     % end
-
+    YEst = misc.viterbi(params, theta, test.X, test.pcPWMp);
+    keyboard
+    for i = 1:size(test.X, 1)
+        test.chrs{i}
+        test.starts(i)
+    end
 
     % show.showTheta(theta);
 
@@ -179,4 +184,3 @@ function YEst = maxPostEstimator(theta, params, psi, gamma)
     YEstSubStates(subStateMask) = subStates(subStateMask);
     YEst = cat(3, YEstBaseStates, YEstSubStates);
 end
-dict = peaks.fasta2mem();
