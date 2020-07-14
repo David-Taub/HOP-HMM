@@ -5027,7 +5027,7 @@ reference "Likelihoods"
 , optimizing it is as difficult as calculating it, and is therefore impractical.
  Instead, the strategy of the EM algorithm is to iteratively optimize the
  expected value of the complete data log-likelihood 
-\begin_inset Formula $log\left(P\left(x_{1:L},y_{1:L}|\theta^{'}\right)\right)$
+\begin_inset Formula $E_{Y}\left[log\left(P\left(X,Y;\theta\right)\right)|X=x_{1:L},\theta^{'}\right]$
 \end_inset
 
  over all possible 
