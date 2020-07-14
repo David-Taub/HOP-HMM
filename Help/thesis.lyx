@@ -5052,7 +5052,7 @@ reference "Likelihoods"
 \lang english
 \begin_inset Formula 
 \begin{equation}
-Q\left(\theta,\theta^{'}\right)=E_{Y}\left[log\left(P\left(X,Y;\theta\right)\right)|X=x_{1:L},\theta^{'}\right]=\sum_{y_{1:L}\in\left[m\right]^{L}}log\left(P\left(x_{1:L},y_{1:L};\theta\right)\right)\cdot P\left(x_{1:L},y_{1:L};\theta^{'}\right)\label{Q}
+Q\left(\theta,\theta^{'}\right)=E_{Y}\left[log\left(P\left(X,Y;\theta\right)\right)|X=x_{1:L},\theta^{'}\right]=\sum_{y_{1:L}\in\left[m\right]^{L}}log\left(P\left(x_{1:L},y_{1:L};\theta\right)\right)\cdot P\left(y_{1:L}|x_{1:L};\theta^{'}\right)\label{Q}
 \end{equation}
 
 \end_inset
@@ -5125,7 +5125,7 @@ reference "Q"
 \lang english
 \begin_inset Formula 
 \[
-Q\left(\theta,\theta^{'}\right)=\sum_{y_{1:L}\in\left[m\right]^{L}}log\pi_{y_{1}}\cdot P\left(x_{1:L},y_{1:L};\theta^{'}\right)+
+Q\left(\theta,\theta^{'}\right)=\sum_{y_{1:L}\in\left[m\right]^{L}}log\pi_{y_{1}}\cdot P\left(y_{1:L}|x_{1:L};\theta^{'}\right)+
 \]
 
 \end_inset
@@ -5133,7 +5133,7 @@ Q\left(\theta,\theta^{'}\right)=\sum_{y_{1:L}\in\left[m\right]^{L}}log\pi_{y_{1}
 
 \begin_inset Formula 
 \[
-+\sum_{y_{1:L}\in\left[m\right]^{L}}\left(\sum_{t\in2...L}logT_{y_{t-1},y_{t}}\right)\cdot P\left(x_{1:L},y_{1:L};\theta^{'}\right)+\sum_{y_{1:L}\in\left[m\right]^{L}}\left(\sum_{t\in[L]}logE_{y_{t},x_{t}}\right)\cdot P\left(x_{1:L},y_{1:L};\theta^{'}\right)
++\sum_{y_{1:L}\in\left[m\right]^{L}}\left(\sum_{t\in2...L}logT_{y_{t-1},y_{t}}\right)\cdot P\left(y_{1:L}|x_{1:L};\theta^{'}\right)+\sum_{y_{1:L}\in\left[m\right]^{L}}\left(\sum_{t\in[L]}logE_{y_{t},x_{t}}\right)\cdot P\left(y_{1:L}|x_{1:L};\theta^{'}\right)
 \]
 
 \end_inset
@@ -5153,7 +5153,7 @@ Then by manipulating the summation, the exponential hidden sequence summation
 \lang english
 \begin_inset Formula 
 \[
-Q\left(\theta,\theta^{'}\right)=\sum_{j\in[m]}log\pi_{j}\cdot P\left(x_{1:L},y_{1}=j;\theta^{'}\right)+
+Q\left(\theta,\theta^{'}\right)=\sum_{j\in[m]}log\pi_{j}\cdot P\left(y_{1}=j|x_{1:L};\theta^{'}\right)+
 \]
 
 \end_inset
@@ -5161,7 +5161,7 @@ Q\left(\theta,\theta^{'}\right)=\sum_{j\in[m]}log\pi_{j}\cdot P\left(x_{1:L},y_{
 
 \begin_inset Formula 
 \[
-+\sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}\cdot P\left(x_{1:L},y_{t-1}=j_{1},y_{t}=j_{2};\theta^{'}\right)+\sum_{t\in[L]}\sum_{j\in[m]}logE_{j,x_{t}}\cdot P\left(x_{1:L},y_{t}=j;\theta^{'}\right)
++\sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}\cdot P\left(y_{t-1}=j_{1},y_{t}=j_{2}|x_{1:L};\theta^{'}\right)+\sum_{t\in[L]}\sum_{j\in[m]}logE_{j,x_{t}}\cdot P\left(y_{t}=j|x_{1:L};\theta^{'}\right)
 \]
 
 \end_inset
@@ -5245,7 +5245,7 @@ First, we start with maximizing the first
 \lang english
 \begin_inset Formula 
 \[
-\frac{\partial}{\partial\pi_{j}}\left(\sum_{j'\in[m]}log\pi_{j'}P\left(x_{1:L},y_{1}=j';\theta^{'}\right)+\lambda\left(1-\sum_{j'\in[m]}\pi_{j'}\right)\right)=0
+\frac{\partial}{\partial\pi_{j}}\left(\sum_{j'\in[m]}log\pi_{j'}P\left(y_{1}=j'|x_{1:L};\theta^{'}\right)+\lambda\left(1-\sum_{j'\in[m]}\pi_{j'}\right)\right)=0
 \]
 
 \end_inset
@@ -5257,7 +5257,7 @@ First, we start with maximizing the first
 
 \lang english
 we derive the term and get 
-\begin_inset Formula $\frac{P\left(x_{1:L},y_{1}=j;\theta^{'}\right)}{\pi_{j}}=\lambda$
+\begin_inset Formula $\frac{P\left(y_{1}=j|x_{1:L};\theta^{'}\right)}{\pi_{j}}=\lambda$
 \end_inset
 
  for 
@@ -5270,7 +5270,7 @@ we derive the term and get
 \end_inset
 
  equations to get 
-\begin_inset Formula $\lambda=P\left(x_{1:L};\theta^{'}\right)$
+\begin_inset Formula $\lambda=1$
 \end_inset
 
 , which yields the reestimated 
@@ -5285,7 +5285,7 @@ we derive the term and get
 \lang english
 \begin_inset Formula 
 \begin{equation}
-\pi_{j}=\frac{P\left(x_{1:L},y_{1}=j;\theta^{'}\right)}{P\left(x_{1:L};\theta^{'}\right)}=P\left(y_{1}=j|x_{1:L};\theta^{'}\right)\label{Pi-Update}
+\pi_{j}=P\left(y_{1}=j|x_{1:L};\theta^{'}\right)\label{Pi-Update}
 \end{equation}
 
 \end_inset
@@ -5316,7 +5316,7 @@ Then, we define a Lagrange multiplier
 \lang english
 \begin_inset Formula 
 \[
-\frac{\partial}{\partial T_{j_{1},j_{2}}}\left(\sum_{t\in2...L}logT_{j_{1},j_{2}}\cdot P\left(x_{1:L},y_{t-1}=j_{1},y_{t}=j_{2};\theta^{'}\right)+\lambda_{j_{1}}\left(1-\sum_{j'\in[m]}T_{j_{1},j'}\right)\right)=0
+\frac{\partial}{\partial T_{j_{1},j_{2}}}\left(\sum_{t\in2...L}logT_{j_{1},j_{2}}\cdot P\left(y_{t-1}=j_{1},y_{t}=j_{2}|x_{1:L};\theta^{'}\right)+\lambda_{j_{1}}\left(1-\sum_{j'\in[m]}T_{j_{1},j'}\right)\right)=0
 \]
 
 \end_inset
@@ -5328,7 +5328,7 @@ Then, we define a Lagrange multiplier
 
 \lang english
 which yields 
-\begin_inset Formula $\lambda_{j_{1}}=\frac{\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=j_{1},y_{t}=j_{2};\theta^{'}\right)}{T_{j_{1},j_{2}}}$
+\begin_inset Formula $\lambda_{j_{1}}=\frac{\sum_{t\in2...L}P\left(y_{t-1}=j_{1},y_{t}=j_{2}|x_{1:L};\theta^{'}\right)}{T_{j_{1},j_{2}}}$
 \end_inset
 
  for 
@@ -5346,7 +5346,7 @@ and when all
 \end_inset
 
  equations are summed, gives 
-\begin_inset Formula $\lambda_{j_{1}}=\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=j_{1};\theta^{'}\right)$
+\begin_inset Formula $\lambda_{j_{1}}=\sum_{t\in2...L}P\left(y_{t-1}=j_{1}|x_{1:L};\theta^{'}\right)$
 \end_inset
 
  
@@ -5367,7 +5367,7 @@ Therefore the update of
 \lang english
 \begin_inset Formula 
 \begin{equation}
-T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=j_{1},y_{t}=j_{2};\theta^{'}\right)}{\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=j_{1};\theta^{'}\right)}=\frac{\sum_{t\in2...L}P\left(y_{t-1}=j_{1},y_{t}=j_{2}|x_{1:L};\theta^{'}\right)}{\sum_{t\in2...L}P\left(y_{t-1}=j_{1}|x_{1:L};\theta^{'}\right)}\label{T-Update}
+T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P\left(y_{t-1}=j_{1},y_{t}=j_{2}|x_{1:L};\theta^{'}\right)}{\sum_{t\in2...L}P\left(y_{t-1}=j_{1}|x_{1:L};\theta^{'}\right)}\label{T-Update}
 \end{equation}
 
 \end_inset
@@ -5398,7 +5398,7 @@ Finally, we will define a Lagrange multiplier
 \lang english
 \begin_inset Formula 
 \[
-\frac{\partial}{\partial E_{j,b}}\left(\sum_{t\in[L]}logE_{j,x_{t}}\cdot P\left(x_{1:L},y_{t}=j;\theta^{'}\right)+\lambda_{j}\left(1-\sum_{b'\in[n]}E_{j,b'}\right)\right)=0
+\frac{\partial}{\partial E_{j,b}}\left(\sum_{t\in[L]}logE_{j,x_{t}}\cdot P\left(y_{t}=j|x_{1:L};\theta^{'}\right)+\lambda_{j}\left(1-\sum_{b'\in[n]}E_{j,b'}\right)\right)=0
 \]
 
 \end_inset
@@ -5427,7 +5427,7 @@ This step is slightly trickier due to the derivation of
 
 \lang english
 We get 
-\begin_inset Formula $\lambda_{j}=\frac{\sum_{t\in[L]}P\left(x_{1:L},y_{t}=j;\theta^{'}\right)\cdot\boldsymbol{1}_{b}(x_{t})}{E_{j,b}}$
+\begin_inset Formula $\lambda_{j}=\frac{\sum_{t\in[L]}P\left(y_{t}=j|x_{1:L};\theta^{'}\right)\cdot\boldsymbol{1}_{b}(x_{t})}{E_{j,b}}$
 \end_inset
 
  for 
@@ -5445,7 +5445,7 @@ and when all
 \end_inset
 
  equations are summed, gives 
-\begin_inset Formula $\lambda_{j}=\sum_{t\in[L]}P\left(x_{1:L},y_{t}=j;\theta^{'}\right)\cdot\boldsymbol{1}_{b}(x_{t})$
+\begin_inset Formula $\lambda_{j}=\sum_{t\in[L]}P\left(y_{t}=j|x_{1:L};\theta^{'}\right)\cdot\boldsymbol{1}_{b}(x_{t})$
 \end_inset
 
  
@@ -5466,7 +5466,7 @@ Therefore the update of
 \lang english
 \begin_inset Formula 
 \begin{equation}
-E_{j,b}=\frac{\sum_{t\in[L]}P\left(x_{1:L},y_{t}=j;\theta^{'}\right)\boldsymbol{\cdot1}_{b}(x_{t})}{\sum_{t\in[L]}P\left(x_{1:L},y_{t}=j;\theta^{'}\right)}=\frac{\sum_{t\in[L]}P\left(y_{t}=j|x_{1:L};\theta^{'}\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P\left(y_{t}=j|x_{1:L};\theta^{'}\right)}\label{E-Update}
+E_{j,b}=\frac{\sum_{t\in[L]}P\left(y_{t}=j|x_{1:L};\theta^{'}\right)\boldsymbol{1}_{b}(x_{t})}{\sum_{t\in[L]}P\left(y_{t}=j|x_{1:L};\theta^{'}\right)}\label{E-Update}
 \end{equation}
 
 \end_inset
@@ -5680,11 +5680,11 @@ reference "Q"
 \lang english
 \begin_inset Formula 
 \begin{align*}
-Q\left(\theta,\theta^{'}\right)= & \sum_{j\in[m]}log\pi_{j}\cdot P\left(x_{1:L},y_{1}=(j,0);\theta^{'}\right)\\
-+ & \sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}\cdot P\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0);\theta^{'}\right)\\
-+ & \sum_{t\in2...L}\sum_{j\in[m],l\in[k]}logG_{j,l}\cdot P\left(x_{1:L},y_{t-1}=(j,0),y_{t}=(j,l);\theta^{'}\right)\\
-+ & \sum_{t\in o,...,L}\sum_{j\in[m]}logE_{j,b_{1},...,x_{t}}\cdot P\left(x_{1:L},y_{t}=(j,0);\theta^{'}\right)\\
-+ & \sum_{t\in[L]}\sum_{l\in[k]}log\mathcal{L}\left(W_{l};x_{t:t+|W_{l}|-1}\right)\cdot P\left(x_{1:L},y_{t:t+|W_{l}|-1S}=(j,l);\theta^{'}\right)
+Q\left(\theta,\theta^{'}\right)= & \sum_{j\in[m]}log\pi_{j}\cdot P\left(y_{1}=(j,0)|x_{1:L};\theta^{'}\right)\\
++ & \sum_{t\in2...L}\sum_{j_{1},j_{2}\in[m]}logT_{j_{1},j_{2}}\cdot P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|x_{1:L};\theta^{'}\right)\\
++ & \sum_{t\in2...L}\sum_{j\in[m],l\in[k]}logG_{j,l}\cdot P\left(y_{t-1}=(j,0),y_{t}=(j,l)|x_{1:L};\theta^{'}\right)\\
++ & \sum_{t\in o,...,L}\sum_{j\in[m]}logE_{j,b_{1},...,x_{t}}\cdot P\left(y_{t}=(j,0)|x_{1:L};\theta^{'}\right)\\
++ & \sum_{t\in[L]}\sum_{l\in[k]}log\mathcal{L}\left(W_{l};x_{t:t+|W_{l}|-1}\right)\cdot P\left(y_{t:t+|W_{l}|-1S}=(j,l)|x_{1:L};\theta^{'}\right)
 \end{align*}
 
 \end_inset
@@ -5822,7 +5822,7 @@ reference "E-Update"
 \lang english
 \begin_inset Formula 
 \begin{equation}
-\pi_{j}=\frac{P\left(x_{1:L},y_{1}=(j,0)|\theta^{'};\theta^{'}\right)}{P\left(x_{1:L}|\theta^{'};\theta^{'}\right)}=P\left(y_{1}=(j,0)|x_{1:L};\theta^{'}\right)\label{HOP-Pi-Update}
+\pi_{j}=P\left(y_{1}=(j,0)|x_{1:L};\theta^{'}\right)\label{HOP-Pi-Update}
 \end{equation}
 
 \end_inset
@@ -5835,7 +5835,7 @@ reference "E-Update"
 \lang english
 \begin_inset Formula 
 \begin{equation}
-E_{j,b_{1},...,b_{o}}=\frac{\sum_{t\in o,...,L}P\left(x_{1:L},y_{t}=(j,0);\theta^{'}\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P\left(x_{1:L},y_{t}=(j,0);\theta^{'}\right)}\label{HOP-E-Update}
+E_{j,b_{1},...,b_{o}}=\frac{\sum_{t\in o,...,L}P\left(y_{t}=(j,0)|x_{1:L};\theta^{'}\right)\boldsymbol{1}_{b_{1},...,b_{o}}(x_{t-o+1,...,t})}{\sum_{t\in o,...,L}P\left(y_{t}=(j,0)|x_{1:L};\theta^{'}\right)}\label{HOP-E-Update}
 \end{equation}
 
 \end_inset
@@ -5878,7 +5878,7 @@ As for the second condition of
 \lang english
 \begin_inset Formula 
 \[
-\frac{\partial}{\partial T_{j_{1,}j_{2}}}\left(\sum_{t\in2...L}logT_{j_{1},j_{2}}\cdot P\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0);\theta^{'}\right)+\lambda_{j_{1}}\left(1-\sum_{j'\in[m]}T_{j_{1},j'}-\sum_{l\in[k]}G_{j_{1}l}\right)\right)=0
+\frac{\partial}{\partial T_{j_{1,}j_{2}}}\left(\sum_{t\in2...L}logT_{j_{1},j_{2}}\cdot P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|x_{1:L};\theta^{'}\right)+\lambda_{j_{1}}\left(1-\sum_{j'\in[m]}T_{j_{1},j'}-\sum_{l\in[k]}G_{j_{1}l}\right)\right)=0
 \]
 
 \end_inset
@@ -5886,7 +5886,7 @@ As for the second condition of
 
 \begin_inset Formula 
 \[
-\frac{\partial}{\partial G_{j_{1},l}}\left(\sum_{t\in2...L}logG_{j_{1},l}\cdot P\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{1},l);\theta^{'}\right)+\lambda_{j_{1}}\left(1-\sum_{j'\in[m]}T_{j_{1},j'}-\sum_{l\in[k]}G_{j_{1}l}\right)\right)=0
+\frac{\partial}{\partial G_{j_{1},l}}\left(\sum_{t\in2...L}logG_{j_{1},l}\cdot P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{1},l)|x_{1:L};\theta^{'}\right)+\lambda_{j_{1}}\left(1-\sum_{j'\in[m]}T_{j_{1},j'}-\sum_{l\in[k]}G_{j_{1}l}\right)\right)=0
 \]
 
 \end_inset
@@ -5932,7 +5932,7 @@ for
 \lang english
 \begin_inset Formula 
 \[
-\lambda_{j_{1}}=\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0);\theta^{'}\right)+\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{1},l);\theta^{'}\right)=
+\lambda_{j_{1}}=\sum_{t\in2...L}P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|x_{1:L};\theta^{'}\right)+\sum_{t\in2...L}P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{1},l)|x_{1:L};\theta^{'}\right)=
 \]
 
 \end_inset
@@ -5940,7 +5940,7 @@ for
 
 \begin_inset Formula 
 \[
-=\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=(j_{1},0);\theta^{'}\right)
+=\sum_{t\in2...L}P\left(y_{t-1}=(j_{1},0)|x_{1:L};\theta^{'}\right)
 \]
 
 \end_inset
@@ -5959,7 +5959,7 @@ which gives us the updates
 \lang english
 \begin_inset Formula 
 \begin{equation}
-T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_{2},0);\theta^{'}\right)}{\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=(j_{1},0);\theta^{'}\right)}=\frac{\sum_{t\in2...L}P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|x_{1:L};\theta^{'}\right)}{\sum_{t\in2...L}P\left(y_{t-1}=(j_{1},0)|x_{1:L};\theta^{'}\right)}\label{HOP-T-Update}
+T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P\left(y_{t-1}=(j_{1},0),y_{t}=(j_{2},0)|x_{1:L};\theta^{'}\right)}{\sum_{t\in2...L}P\left(y_{t-1}=(j_{1},0)|x_{1:L};\theta^{'}\right)}\label{HOP-T-Update}
 \end{equation}
 
 \end_inset
@@ -5967,7 +5967,7 @@ T_{j_{1},j_{2}}=\frac{\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=(j_{1},0),y_{t}=(j_
 
 \begin_inset Formula 
 \begin{equation}
-G_{j,l}=\frac{\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=(j,0),y_{t}=(j,l);\theta^{'}\right)}{\sum_{t\in2...L}P\left(x_{1:L},y_{t-1}=(j,0);\theta^{'}\right)}=\frac{\sum_{t\in2...L}P\left(y_{t-1}=(j,0),y_{t}=(j,l)|x_{1:L};\theta^{'}\right)}{\sum_{t\in2...L}P\left(y_{t-1}=(j,0)|x_{1:L};\theta^{'}\right)}\label{HOP-G-Update}
+G_{j,l}=\frac{\sum_{t\in2...L}P\left(y_{t-1}=(j,0),y_{t}=(j,l)|x_{1:L};\theta^{'}\right)}{\sum_{t\in2...L}P\left(y_{t-1}=(j,0)|x_{1:L};\theta^{'}\right)}\label{HOP-G-Update}
 \end{equation}
 
 \end_inset
